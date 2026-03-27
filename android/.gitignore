@@ -1,0 +1,67 @@
+# Gradle files
+.gradle/
+build/
+*.apk
+*.ap_
+*.aab
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Android Studio
+.idea/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+out/
+captures/
+.externalNativeBuild
+.cxx
+
+# NDK
+.ndkconfig
+
+# Kotlin/Java
+*.jad
+*.class
+*.classpath
+*.jar
+*.jars
+bin/
+.kotlin/
+.classpath
+.project
+.settings/
+
+# IntelliJ
+*.iml
+.idea/
+out/
+*.swp
+*.swo
+*~
+.vscode/
+.history/
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

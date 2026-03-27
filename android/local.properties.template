@@ -1,0 +1,11 @@
+# This file is intentionally git-ignored.
+# Copy this file to local.properties and fill in your local paths.
+
+# Android SDK location
+sdk.dir=/path/to/android/sdk
+
+# Signing configuration (for release builds)
+# signing.keystore.path=/path/to/keystore.jks
+# signing.keystore.password=YOUR_KEYSTORE_PASSWORD
+# signing.key.alias=YOUR_KEY_ALIAS
+# signing.key.password=YOUR_KEY_PASSWORD

@@ -1,0 +1,21 @@
+# Build
+*.iml
+.gradle/
+/local.properties
+/.idea/
+.DS_Store
+/build/
+/app/build/
+*.apk
+*.aab
+*.jks
+*.keystore
+keystore.properties
+Thumbs.db
+desktop.ini
+.vscode/
+node_modules/
+__pycache__/
+*.pyc
+.env
+.env.local
