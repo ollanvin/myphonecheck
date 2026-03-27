@@ -7,9 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -26,16 +25,18 @@ import app.callcheck.mobile.core.model.ActionRecommendation
 import app.callcheck.mobile.feature.decisionui.theme.CallCheckTheme
 
 /**
- * Row of 3 action buttons: Answer (green), Reject (orange), Block (red).
+ * 사용자 액션 버튼 행: 거절 / 차단 / 자세히 보기
  *
- * The recommended action is visually emphasized.
+ * "수신(Answer)" 버튼 의도적 제외.
+ * 수신 행동은 시스템 콜 UI가 담당합니다.
+ * CallCheck는 판단 재료를 제공할 뿐, 행동을 대행하지 않습니다.
  */
 @Composable
 fun ActionButtonRow(
     recommendation: ActionRecommendation,
-    onAnswer: () -> Unit = {},
     onReject: () -> Unit = {},
     onBlock: () -> Unit = {},
+    onDetail: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -44,20 +45,6 @@ fun ActionButtonRow(
             .height(56.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        ActionButton(
-            label = "응답",
-            icon = {
-                Icon(
-                    imageVector = Icons.Filled.Call,
-                    contentDescription = "Answer call",
-                    tint = Color.White,
-                )
-            },
-            backgroundColor = CallCheckTheme.colors.buttonAnswer,
-            onClick = onAnswer,
-            modifier = Modifier.weight(1f),
-        )
-
         ActionButton(
             label = "거절",
             icon = {
@@ -83,6 +70,20 @@ fun ActionButtonRow(
             },
             backgroundColor = CallCheckTheme.colors.buttonBlock,
             onClick = onBlock,
+            modifier = Modifier.weight(1f),
+        )
+
+        ActionButton(
+            label = "자세히",
+            icon = {
+                Icon(
+                    imageVector = Icons.Filled.Info,
+                    contentDescription = "View details",
+                    tint = Color.White,
+                )
+            },
+            backgroundColor = CallCheckTheme.colors.primary,
+            onClick = onDetail,
             modifier = Modifier.weight(1f),
         )
     }
@@ -124,6 +125,6 @@ private fun ActionButton(
 @Composable
 private fun ActionButtonRowPreview() {
     CallCheckTheme {
-        ActionButtonRow(recommendation = ActionRecommendation.BLOCK_REVIEW)
+        ActionButtonRow(recommendation = ActionRecommendation.RISK_HIGH)
     }
 }

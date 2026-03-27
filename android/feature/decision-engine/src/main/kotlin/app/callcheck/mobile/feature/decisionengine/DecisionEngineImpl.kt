@@ -53,14 +53,8 @@ class DecisionEngineImpl @Inject constructor(
             riskScore = riskScore,
         )
 
-        // Step 4: Risk badge (raw score → enum)
-        val rawRiskLevel = riskBadgeMapper.map(riskScore, hasAnyEvidence)
-
-        // Step 4.5: Category-risk consistency enforcement
-        // Prevents contradictions like SCAM_RISK_HIGH + MEDIUM risk.
-        // Industry standard: Google Safe Browsing applies minimum threat
-        // levels based on threat type classification.
-        val riskLevel = enforceCategoryRiskConsistency(category, rawRiskLevel)
+        // Step 4: Risk badge
+        val riskLevel = riskBadgeMapper.map(riskScore, hasAnyEvidence)
 
         // Step 5: Action recommendation
         val action = actionMapper.map(category, riskLevel)
@@ -153,6 +147,11 @@ class DecisionEngineImpl @Inject constructor(
     /**
      * 0.0 = safe, 1.0 = max danger.
      *
+     * 핵심 원칙: "Unknown ≠ Danger"
+     * - 정보가 없다는 것은 위험하다는 뜻이 아님
+     * - 위험 점수는 실제 위험 신호(search/device 패턴)에서만 발생
+     * - 정보 부재는 confidence 저하로 반영 (리스크 가산 아님)
+     *
      * Factors from search evidence:
      * - hasScamSignal → +0.40
      * - hasSpamSignal → +0.25
@@ -160,9 +159,13 @@ class DecisionEngineImpl @Inject constructor(
      * - high 30d search intensity → +0.10
      *
      * Factors from device patterns:
-     * - Zero history (not saved, no calls, no sms) → +0.15
      * - Short call pattern (many <10s, no >60s) → +0.10
      * - User rejected multiple times → +0.10
+     *
+     * 제거됨 (Unknown ≠ Danger 원칙):
+     * - Zero history → +0.15 (제거)
+     * - No device evidence → +0.15 (제거)
+     * → 이 정보 부재는 hasAnyEvidence=false → UNKNOWN 분류로 처리
      */
     private fun calculateRiskScore(
         device: DeviceEvidence?,
@@ -170,7 +173,7 @@ class DecisionEngineImpl @Inject constructor(
     ): Float {
         var score = 0f
 
-        // --- Search-based signals ---
+        // --- Search-based signals (실제 위험 신호) ---
         if (search != null && !search.isEmpty) {
             if (search.hasScamSignal) score += 0.40f
             if (search.hasSpamSignal) score += 0.25f
@@ -185,26 +188,21 @@ class DecisionEngineImpl @Inject constructor(
             }
         }
 
-        // --- Device-based signals ---
+        // --- Device-based signals (실제 행동 패턴) ---
         if (device != null) {
-            // Completely unknown: not saved, no history at all
-            if (!device.isSavedContact && !device.hasAnyHistory) {
-                score += 0.15f
-            }
-
             // Short call pattern — robo-call indicator
+            // 실제 통화 기록이 있고, 짧은 통화만 반복 → 위험 패턴
             if (device.shortCallCount >= 3 && device.longCallCount == 0 && device.connectedCount > 0) {
                 score += 0.10f
             }
 
             // User actively rejected multiple times — they don't want this call
+            // 사용자의 명시적 거부 의사 → 위험 신호
             if (device.rejectedCount >= 2) {
                 score += 0.10f
             }
-        } else {
-            // No device evidence at all
-            score += 0.15f
         }
+        // device == null 또는 history 없음: 리스크 가산 없음 (Unknown ≠ Danger)
 
         // Saved contact dampens risk
         if (device?.isSavedContact == true) {
@@ -222,13 +220,18 @@ class DecisionEngineImpl @Inject constructor(
      * Priority-ordered decision tree for PRD 7 categories.
      *
      * Priority order:
-     * 1. KNOWN_CONTACT — saved in contacts
+     * 1. KNOWN_CONTACT — saved in contacts (단, 강한 스캠 신호 시 SCAM_RISK_HIGH 우선)
      * 2. SCAM_RISK_HIGH — scam signal or very high risk
      * 3. SALES_SPAM_SUSPECTED — spam signal or medium-high risk
      * 4. DELIVERY_LIKELY — delivery keyword cluster
      * 5. INSTITUTION_LIKELY — institution keyword cluster
      * 6. BUSINESS_LIKELY — business keyword cluster or high relationship
      * 7. INSUFFICIENT_EVIDENCE — default
+     *
+     * 저장 연락처 과신 방지:
+     * - 번호 스푸핑 시나리오 (연락처 이름 "엄마"지만 실제는 사기범)
+     * - 강한 스캠 신호(hasScamSignal + riskScore ≥ 0.6) → SCAM_RISK_HIGH 유지
+     * - 스팸 신호만 있으면 → KNOWN_CONTACT 유지 (risk 감쇄가 충분)
      */
     private fun determineCategory(
         deviceEvidence: DeviceEvidence?,
@@ -236,8 +239,13 @@ class DecisionEngineImpl @Inject constructor(
         relationshipScore: Float,
         riskScore: Float,
     ): ConclusionCategory {
-        // 1. Saved contact — highest priority
+        // 1. Saved contact — 단, 강한 스캠 신호가 있으면 SCAM이 우선
         if (deviceEvidence?.isSavedContact == true) {
+            // 스푸핑 방어: 검색에서 강한 스캠 신호가 감지된 경우
+            // risk 감쇄(×0.1) 이전의 원래 스캠 신호 존재 여부로 판단
+            if (searchEvidence?.hasScamSignal == true) {
+                return ConclusionCategory.SCAM_RISK_HIGH
+            }
             return ConclusionCategory.KNOWN_CONTACT
         }
 
@@ -271,51 +279,6 @@ class DecisionEngineImpl @Inject constructor(
 
         // 7. Default
         return ConclusionCategory.INSUFFICIENT_EVIDENCE
-    }
-
-    // ───────────────────────────────────────────────
-    // Category-Risk Consistency
-    // ───────────────────────────────────────────────
-
-    /**
-     * Enforces semantic consistency between category and risk level.
-     *
-     * RiskLevel ordinals: HIGH=0, MEDIUM=1, LOW=2, UNKNOWN=3
-     * Lower ordinal = higher risk.
-     *
-     * Rules:
-     * - SCAM_RISK_HIGH → minimum HIGH (카테고리명 자체가 HIGH를 명시)
-     * - SALES_SPAM_SUSPECTED → minimum MEDIUM (스팸 의심은 최소 주의)
-     * - KNOWN_CONTACT → maximum LOW (저장된 연락처는 위험 아님)
-     */
-    private fun enforceCategoryRiskConsistency(
-        category: ConclusionCategory,
-        rawRiskLevel: RiskLevel,
-    ): RiskLevel {
-        val floor: RiskLevel? = when (category) {
-            ConclusionCategory.SCAM_RISK_HIGH -> RiskLevel.HIGH
-            ConclusionCategory.SALES_SPAM_SUSPECTED -> RiskLevel.MEDIUM
-            else -> null
-        }
-
-        val ceiling: RiskLevel? = when (category) {
-            ConclusionCategory.KNOWN_CONTACT -> RiskLevel.LOW
-            else -> null
-        }
-
-        var result = rawRiskLevel
-
-        // Raise to floor if current risk is too low for the category
-        if (floor != null && result.ordinal > floor.ordinal) {
-            result = floor
-        }
-
-        // Lower to ceiling if current risk is too high for the category
-        if (ceiling != null && result.ordinal < ceiling.ordinal) {
-            result = ceiling
-        }
-
-        return result
     }
 
     // ───────────────────────────────────────────────

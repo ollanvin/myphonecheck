@@ -21,6 +21,22 @@ import java.util.Locale
  * 3. System locale
  * 4. Fallback to US
  */
+/**
+ * 191개국 글로벌 서비스를 위한 CountryConfig 제공자.
+ *
+ * 전략:
+ * 1. 명시적 설정 국가 (KR, US, JP, CN): 전용 키워드 사전 + 검색 프로바이더
+ * 2. 미지원 국가: 동적 fallback config 생성
+ *    - libphonenumber에서 phonePrefix 자동 추출
+ *    - 영어 키워드 사전 (글로벌 공통)
+ *    - Google 기반 검색 프로바이더
+ *    - 영어 UI 문자열
+ *
+ * 키워드 사전 확장 전략:
+ * - V1: 영어 기본 사전으로 전 세계 커버
+ * - V2: 주요 언어권(ES, FR, DE, PT, AR, HI) 네이티브 키워드 추가
+ * - V3: 사용자 피드백 기반 키워드 확장
+ */
 class CountryConfigProviderImpl : CountryConfigProvider {
 
     private val configs = mapOf(
@@ -30,12 +46,19 @@ class CountryConfigProviderImpl : CountryConfigProvider {
         "CN" to createChinaConfig(),
     )
 
+    /**
+     * 국가 코드에 해당하는 설정 반환.
+     *
+     * 명시적 설정이 없는 국가는 동적 fallback config를 생성합니다.
+     * 절대 하드코딩된 US config를 반환하지 않습니다.
+     */
     override fun getConfig(countryCode: String): CountryConfig {
-        return configs[countryCode.uppercase()] ?: getDefaultConfig()
+        val upper = countryCode.uppercase()
+        return configs[upper] ?: createFallbackConfig(upper)
     }
 
     override fun getDefaultConfig(): CountryConfig {
-        return createDefaultConfig()
+        return createFallbackConfig("ZZ")
     }
 
     override fun detectCountry(context: Context): String {
@@ -89,7 +112,7 @@ class CountryConfigProviderImpl : CountryConfigProvider {
             countryCode = "KR",
             language = "ko",
             phonePrefix = "+82",
-            searchProviderPriority = listOf("naver", "google", "duckduckgo"),
+            searchProviderPriority = listOf("naver", "nate", "daum"),
             keywordDictionary = KeywordDictionary(
                 delivery = setOf(
                     "배송",
@@ -193,7 +216,7 @@ class CountryConfigProviderImpl : CountryConfigProvider {
             countryCode = "US",
             language = "en",
             phonePrefix = "+1",
-            searchProviderPriority = listOf("google", "duckduckgo"),
+            searchProviderPriority = listOf("google", "truecaller", "whitepages"),
             keywordDictionary = KeywordDictionary(
                 delivery = setOf(
                     "delivery",
@@ -289,7 +312,7 @@ class CountryConfigProviderImpl : CountryConfigProvider {
             countryCode = "JP",
             language = "ja",
             phonePrefix = "+81",
-            searchProviderPriority = listOf("yahoojapan", "google", "duckduckgo"),
+            searchProviderPriority = listOf("yahoo", "google", "line"),
             keywordDictionary = KeywordDictionary(
                 delivery = setOf(
                     "配送",
@@ -361,7 +384,7 @@ class CountryConfigProviderImpl : CountryConfigProvider {
             countryCode = "CN",
             language = "zh",
             phonePrefix = "+86",
-            searchProviderPriority = listOf("baidu", "duckduckgo"),
+            searchProviderPriority = listOf("baidu", "qq", "sina"),
             keywordDictionary = KeywordDictionary(
                 delivery = setOf(
                     "快递",
@@ -426,8 +449,29 @@ class CountryConfigProviderImpl : CountryConfigProvider {
         )
     }
 
-    private fun createDefaultConfig(): CountryConfig {
-        return createUSConfig()
+    /**
+     * 미지원 국가를 위한 동적 fallback config 생성.
+     *
+     * - phonePrefix: libphonenumber에서 국가 코드 → 전화 접두사 자동 추출
+     * - keywordDictionary: 영어 기본 사전 (글로벌 공통)
+     * - searchProviderPriority: Google 기반 (전 세계 접근 가능)
+     * - uiStrings: 영어
+     *
+     * @param countryCode ISO 3166-1 alpha-2 국가 코드
+     */
+    private fun createFallbackConfig(countryCode: String): CountryConfig {
+        val phonePrefix = app.callcheck.mobile.core.util.PhoneNumberNormalizer
+            .getPhonePrefix(countryCode) ?: "+1"
+
+        val usConfig = createUSConfig()
+        return CountryConfig(
+            countryCode = countryCode,
+            language = "en",
+            phonePrefix = phonePrefix,
+            searchProviderPriority = listOf("google", "truecaller"),
+            keywordDictionary = usConfig.keywordDictionary,
+            uiStrings = createEnglishUiStrings(),
+        )
     }
 
     private fun createKoreanUiStrings(): UiStrings {

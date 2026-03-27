@@ -10,36 +10,51 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import app.callcheck.mobile.core.model.DecisionResult
-import app.callcheck.mobile.core.model.RiskLevel
-import app.callcheck.mobile.feature.countryconfig.SignalSummaryLocalizer
-import app.callcheck.mobile.feature.countryconfig.SupportedLanguage
+import app.callcheck.mobile.core.model.RingSystem
 import javax.inject.Inject
 
 private const val TAG = "DecisionNotification"
 private const val CHANNEL_ID = "callcheck_decisions"
-private const val CHANNEL_NAME = "CallCheck Decisions"
+private const val CHANNEL_NAME = "CallCheck 판정"
 private const val NOTIFICATION_ID_PREFIX = 1000
-private const val ACTION_DETAIL = "action_detail"
 private const val ACTION_REJECT = "action_reject"
 private const val ACTION_BLOCK = "action_block"
+private const val ACTION_DETAIL = "action_detail"
 private const val EXTRA_PHONE_NUMBER = "extra_phone_number"
 
+/**
+ * 판단 재료 Notification 매니저.
+ *
+ * 제품 철학: 행동 대행이 아니라 판단 재료 노출.
+ *
+ * 색상 체계: [RingSystem] 단일 소스 참조.
+ * - SAFE_LIKELY → 초록 (#4CAF50)
+ * - CAUTION    → 노랑 (#FFC107)
+ * - RISK_HIGH  → 빨강 (#F44336)
+ * - UNKNOWN    → 회색 (#808080)
+ *
+ * Notification 구성:
+ * - 제목: 이모지 + 판단 상태 + 전화번호
+ * - 내용: 카테고리 요약 (한 줄 결론)
+ * - 확장: 근거 최대 3개
+ * - 액션: 거절 / 차단 / 자세히 보기
+ * - 면책: RingSystem.DISCLAIMER_KO
+ *
+ * "수신(Answer)" 버튼은 의도적으로 제외.
+ * 수신 행동은 시스템 콜 UI가 담당합니다.
+ */
 class DecisionNotificationManager @Inject constructor() {
 
     fun showDecisionNotification(
         context: Context,
         result: DecisionResult,
         phoneNumber: String,
-        language: SupportedLanguage = SupportedLanguage.EN,
-        localizer: SignalSummaryLocalizer = SignalSummaryLocalizer(),
     ) {
         try {
             ensureChannel(context)
 
             val notificationId = generateId(phoneNumber)
-            val notification = buildDecisionNotification(
-                context, result, phoneNumber, notificationId, language, localizer
-            )
+            val notification = buildDecisionNotification(context, result, phoneNumber, notificationId)
 
             val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             nm.notify(notificationId, notification)
@@ -48,19 +63,12 @@ class DecisionNotificationManager @Inject constructor() {
         }
     }
 
-    fun showTimeoutNotification(
-        context: Context,
-        phoneNumber: String,
-        language: SupportedLanguage = SupportedLanguage.EN,
-        localizer: SignalSummaryLocalizer = SignalSummaryLocalizer(),
-    ) {
+    fun showTimeoutNotification(context: Context, phoneNumber: String) {
         try {
             ensureChannel(context)
 
             val notificationId = generateId(phoneNumber)
-            val notification = buildTimeoutNotification(
-                context, phoneNumber, notificationId, language
-            )
+            val notification = buildTimeoutNotification(context, phoneNumber, notificationId)
 
             val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             nm.notify(notificationId, notification)
@@ -83,50 +91,51 @@ class DecisionNotificationManager @Inject constructor() {
         result: DecisionResult,
         phoneNumber: String,
         notificationId: Int,
-        language: SupportedLanguage,
-        localizer: SignalSummaryLocalizer,
     ): Notification {
-        val uiText = NotificationUiText.forLanguage(language)
+        // RingSystem 단일 소스에서 색상·라벨·이모지 조회 (action 기반 통일)
+        val stateColor = RingSystem.color(result.action)
+        val stateEmoji = RingSystem.emoji(result.action)
+        val stateLabel = RingSystem.labelKo(result.action)
 
-        // Title: 로컬라이즈된 카테고리
-        val title = localizer.localizeCategory(result.category.name, language)
+        // 제목: 이모지 + 상태 + 번호
+        val title = "$stateEmoji $stateLabel — $phoneNumber"
 
-        // Subtitle: 로컬라이즈된 위험도
-        val riskDisplay = when (language) {
-            SupportedLanguage.KO -> result.riskLevel.displayNameKo
-            else -> result.riskLevel.displayNameEn
-        }
+        // 내용: 한 줄 요약
+        val contentText = result.summary
 
-        // Build content with reasons
-        val reasonsText = result.reasons.joinToString("\n")
+        // 확장 텍스트: 요약 + 근거 + 면책
         val bigText = buildString {
             append(result.summary)
-            if (reasonsText.isNotEmpty()) {
-                append("\n")
-                append(reasonsText)
+            if (result.reasons.isNotEmpty()) {
+                result.reasons.forEachIndexed { index, reason ->
+                    append("\n${index + 1}. $reason")
+                }
             }
-            append("\n${uiText.confidence}: ${(result.confidence * 100).toInt()}%")
+            append("\n\n")
+            append(RingSystem.DISCLAIMER_KO)
         }
 
-        val detailPI = createActionPI(context, ACTION_DETAIL, phoneNumber, notificationId + 1)
-        val rejectPI = createActionPI(context, ACTION_REJECT, phoneNumber, notificationId + 2)
-        val blockPI = createActionPI(context, ACTION_BLOCK, phoneNumber, notificationId + 3)
+        // 액션: 거절 / 차단 / 자세히
+        val rejectPI = createActionPI(context, ACTION_REJECT, phoneNumber, notificationId + 1)
+        val blockPI = createActionPI(context, ACTION_BLOCK, phoneNumber, notificationId + 2)
+        val detailPI = createActionPI(context, ACTION_DETAIL, phoneNumber, notificationId + 3)
 
         return NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle(title)
-            .setContentText(riskDisplay)
-            .setSubText(phoneNumber)
+            .setContentText(contentText)
+            .setSubText("CallCheck")
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_CALL)
-            .setAutoCancel(true)
-            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setAutoCancel(false)
+            .setOngoing(true)
+            .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
             .setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
-            .addAction(android.R.drawable.ic_menu_call, uiText.actionDetail, detailPI)
-            .addAction(android.R.drawable.ic_menu_close_clear_cancel, uiText.actionReject, rejectPI)
-            .addAction(android.R.drawable.ic_dialog_dialer, uiText.actionBlock, blockPI)
+            .addAction(android.R.drawable.ic_menu_close_clear_cancel, "거절", rejectPI)
+            .addAction(android.R.drawable.ic_delete, "차단", blockPI)
+            .addAction(android.R.drawable.ic_menu_info_details, "자세히", detailPI)
             .setColorized(true)
-            .setColor(colorForRisk(result.riskLevel))
+            .setColor(stateColor)
             .build()
     }
 
@@ -134,26 +143,24 @@ class DecisionNotificationManager @Inject constructor() {
         context: Context,
         phoneNumber: String,
         notificationId: Int,
-        language: SupportedLanguage,
     ): Notification {
-        val uiText = NotificationUiText.forLanguage(language)
-
-        val detailPI = createActionPI(context, ACTION_DETAIL, phoneNumber, notificationId + 1)
-        val rejectPI = createActionPI(context, ACTION_REJECT, phoneNumber, notificationId + 2)
+        val rejectPI = createActionPI(context, ACTION_REJECT, phoneNumber, notificationId + 1)
+        val blockPI = createActionPI(context, ACTION_BLOCK, phoneNumber, notificationId + 2)
 
         return NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle(uiText.timeoutTitle)
-            .setContentText(uiText.timeoutContent)
-            .setSubText(phoneNumber)
+            .setContentTitle("${RingSystem.emoji(app.callcheck.mobile.core.model.RiskLevel.UNKNOWN)} 판단 불가 — $phoneNumber")
+            .setContentText("판정 시간 초과 — 직접 확인하세요")
+            .setSubText("CallCheck")
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_CALL)
-            .setAutoCancel(true)
-            .setDefaults(NotificationCompat.DEFAULT_ALL)
-            .addAction(android.R.drawable.ic_menu_call, uiText.actionDetail, detailPI)
-            .addAction(android.R.drawable.ic_menu_close_clear_cancel, uiText.actionReject, rejectPI)
+            .setAutoCancel(false)
+            .setOngoing(true)
+            .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
+            .addAction(android.R.drawable.ic_menu_close_clear_cancel, "거절", rejectPI)
+            .addAction(android.R.drawable.ic_delete, "차단", blockPI)
             .setColorized(true)
-            .setColor(android.graphics.Color.YELLOW)
+            .setColor(RingSystem.COLOR_UNKNOWN)
             .build()
     }
 
@@ -185,7 +192,7 @@ class DecisionNotificationManager @Inject constructor() {
                 CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_HIGH,
             ).apply {
-                description = "Incoming call screening decisions"
+                description = "수신 전화 판정 결과"
                 enableVibration(true)
                 enableLights(true)
                 setShowBadge(true)
@@ -194,108 +201,10 @@ class DecisionNotificationManager @Inject constructor() {
         }
     }
 
-    private fun colorForRisk(riskLevel: RiskLevel): Int {
-        return when (riskLevel) {
-            RiskLevel.LOW -> android.graphics.Color.GREEN
-            RiskLevel.MEDIUM -> android.graphics.Color.YELLOW
-            RiskLevel.HIGH -> android.graphics.Color.RED
-            RiskLevel.UNKNOWN -> android.graphics.Color.GRAY
-        }
-    }
-
     private fun generateId(phoneNumber: String): Int {
         return (NOTIFICATION_ID_PREFIX + phoneNumber.hashCode()).coerceIn(
             NOTIFICATION_ID_PREFIX,
             NOTIFICATION_ID_PREFIX + 10000,
-        )
-    }
-}
-
-/**
- * Notification UI 텍스트 — 언어별 템플릿.
- */
-internal data class NotificationUiText(
-    val actionDetail: String,
-    val actionReject: String,
-    val actionBlock: String,
-    val timeoutTitle: String,
-    val timeoutContent: String,
-    val confidence: String,
-) {
-    companion object {
-        fun forLanguage(language: SupportedLanguage): NotificationUiText {
-            return when (language) {
-                SupportedLanguage.KO -> KO
-                SupportedLanguage.JA -> JA
-                SupportedLanguage.ZH -> ZH
-                SupportedLanguage.RU -> RU
-                SupportedLanguage.ES -> ES
-                SupportedLanguage.AR -> AR
-                else -> EN
-            }
-        }
-
-        private val KO = NotificationUiText(
-            actionDetail = "자세히",
-            actionReject = "거절",
-            actionBlock = "차단",
-            timeoutTitle = "판단 보류",
-            timeoutContent = "검증 시간 초과 — 통화 허용됨",
-            confidence = "신뢰도",
-        )
-
-        private val EN = NotificationUiText(
-            actionDetail = "Details",
-            actionReject = "Reject",
-            actionBlock = "Block",
-            timeoutTitle = "Assessment Pending",
-            timeoutContent = "Verification timeout — call allowed",
-            confidence = "Confidence",
-        )
-
-        private val JA = NotificationUiText(
-            actionDetail = "詳細",
-            actionReject = "拒否",
-            actionBlock = "ブロック",
-            timeoutTitle = "判定保留",
-            timeoutContent = "検証タイムアウト — 通話許可",
-            confidence = "信頼度",
-        )
-
-        private val ZH = NotificationUiText(
-            actionDetail = "详情",
-            actionReject = "拒接",
-            actionBlock = "拉黑",
-            timeoutTitle = "判断待定",
-            timeoutContent = "验证超时 — 已允许通话",
-            confidence = "置信度",
-        )
-
-        private val RU = NotificationUiText(
-            actionDetail = "Детали",
-            actionReject = "Откл.",
-            actionBlock = "Блок",
-            timeoutTitle = "Оценка ожидает",
-            timeoutContent = "Тайм-аут проверки — звонок разрешён",
-            confidence = "Достоверность",
-        )
-
-        private val ES = NotificationUiText(
-            actionDetail = "Detalles",
-            actionReject = "Rechazar",
-            actionBlock = "Bloquear",
-            timeoutTitle = "Evaluación pendiente",
-            timeoutContent = "Tiempo de verificación agotado — llamada permitida",
-            confidence = "Confianza",
-        )
-
-        private val AR = NotificationUiText(
-            actionDetail = "تفاصيل",
-            actionReject = "رفض",
-            actionBlock = "حظر",
-            timeoutTitle = "التقييم معلق",
-            timeoutContent = "انتهت مهلة التحقق — المكالمة مسموح بها",
-            confidence = "الثقة",
         )
     }
 }

@@ -9,22 +9,29 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.callcheck.mobile.core.model.RingSystem
 import app.callcheck.mobile.feature.decisionui.theme.CallCheckTheme
 
 /**
- * Disclaimer text about the accuracy and limitations of the decision.
+ * 면책 문구.
+ *
+ * RingSystem.DISCLAIMER_DETAIL_KO를 단일 소스로 참조.
+ * 앱 내부, 오버레이, 위젯 모든 접점에서 동일 문구.
+ *
+ * "CallCheck는 판단 보조 도구이며, 최종 결정은 사용자에게 있습니다."
  */
 @Composable
 fun DisclaimerText(
     modifier: Modifier = Modifier,
+    compact: Boolean = false,
 ) {
     Text(
-        text = "이 결과는 디바이스 이력 및 웹 검색 기반 요약이며 정확성을 보장하지 않습니다.",
+        text = if (compact) RingSystem.DISCLAIMER_KO else RingSystem.DISCLAIMER_DETAIL_KO,
         modifier = modifier.padding(top = 4.dp),
         color = CallCheckTheme.colors.textTertiary,
-        fontSize = 10.sp,
+        fontSize = if (compact) 9.sp else 10.sp,
         textAlign = TextAlign.Center,
-        lineHeight = 14.sp,
+        lineHeight = if (compact) 12.sp else 14.sp,
     )
 }
 
@@ -34,6 +41,16 @@ private fun DisclaimerTextPreview() {
     CallCheckTheme {
         Box(modifier = Modifier.padding(16.dp)) {
             DisclaimerText()
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DisclaimerTextCompactPreview() {
+    CallCheckTheme {
+        Box(modifier = Modifier.padding(16.dp)) {
+            DisclaimerText(compact = true)
         }
     }
 }
