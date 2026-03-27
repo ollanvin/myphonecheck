@@ -84,10 +84,11 @@ object RingSystem {
      * 모든 UI 접점의 주 색상 소스.
      */
     fun color(action: ActionRecommendation): Int = when (action) {
-        ActionRecommendation.SAFE_LIKELY -> COLOR_SAFE
-        ActionRecommendation.CAUTION -> COLOR_CAUTION
-        ActionRecommendation.RISK_HIGH -> COLOR_DANGER
-        ActionRecommendation.UNKNOWN -> COLOR_UNKNOWN
+        ActionRecommendation.ANSWER -> COLOR_SAFE
+        ActionRecommendation.ANSWER_WITH_CAUTION -> COLOR_CAUTION
+        ActionRecommendation.REJECT -> COLOR_DANGER
+        ActionRecommendation.BLOCK_REVIEW -> COLOR_DANGER
+        ActionRecommendation.HOLD -> COLOR_UNKNOWN
     }
 
     // ============================================================
@@ -99,20 +100,22 @@ object RingSystem {
      * 모든 UI 접점에서 동일하게 사용.
      */
     fun labelKo(action: ActionRecommendation): String = when (action) {
-        ActionRecommendation.SAFE_LIKELY -> "안전 추정"
-        ActionRecommendation.CAUTION -> "주의"
-        ActionRecommendation.RISK_HIGH -> "위험 높음"
-        ActionRecommendation.UNKNOWN -> "판단 불가"
+        ActionRecommendation.ANSWER -> "안전 추정"
+        ActionRecommendation.ANSWER_WITH_CAUTION -> "주의 권고"
+        ActionRecommendation.REJECT -> "위험 의심"
+        ActionRecommendation.BLOCK_REVIEW -> "고위험 감지"
+        ActionRecommendation.HOLD -> "판단 보류"
     }
 
     /**
      * ActionRecommendation에 대응하는 영어 라벨.
      */
     fun labelEn(action: ActionRecommendation): String = when (action) {
-        ActionRecommendation.SAFE_LIKELY -> "Likely Safe"
-        ActionRecommendation.CAUTION -> "Caution"
-        ActionRecommendation.RISK_HIGH -> "High Risk"
-        ActionRecommendation.UNKNOWN -> "Unknown"
+        ActionRecommendation.ANSWER -> "Likely Safe"
+        ActionRecommendation.ANSWER_WITH_CAUTION -> "Caution Advised"
+        ActionRecommendation.REJECT -> "Risk Suspected"
+        ActionRecommendation.BLOCK_REVIEW -> "High Risk Detected"
+        ActionRecommendation.HOLD -> "Pending Review"
     }
 
     // ============================================================
@@ -124,10 +127,11 @@ object RingSystem {
      * 알림 제목, 위젯 텍스트에서 사용.
      */
     fun emoji(action: ActionRecommendation): String = when (action) {
-        ActionRecommendation.SAFE_LIKELY -> "\uD83D\uDFE2"    // 🟢
-        ActionRecommendation.CAUTION -> "\uD83D\uDFE1"        // 🟡
-        ActionRecommendation.RISK_HIGH -> "\uD83D\uDD34"       // 🔴
-        ActionRecommendation.UNKNOWN -> "\u26AA"                // ⚪
+        ActionRecommendation.ANSWER -> "\uD83D\uDFE2"                // 🟢
+        ActionRecommendation.ANSWER_WITH_CAUTION -> "\uD83D\uDFE1"  // 🟡
+        ActionRecommendation.REJECT -> "\uD83D\uDD34"                // 🔴
+        ActionRecommendation.BLOCK_REVIEW -> "\uD83D\uDD34"          // 🔴
+        ActionRecommendation.HOLD -> "\u26AA"                         // ⚪
     }
 
     // ============================================================

@@ -4,6 +4,7 @@ import app.callcheck.mobile.core.model.ActionRecommendation
 import app.callcheck.mobile.core.model.ConclusionCategory
 import app.callcheck.mobile.core.model.DecisionResult
 import app.callcheck.mobile.core.model.DeviceEvidence
+import app.callcheck.mobile.core.model.LocalLearningSignal
 import app.callcheck.mobile.core.model.RiskLevel
 import app.callcheck.mobile.core.model.SearchEvidence
 import app.callcheck.mobile.core.model.SearchTrend
@@ -34,16 +35,20 @@ class DecisionEngineImpl @Inject constructor(
     override fun evaluate(
         deviceEvidence: DeviceEvidence?,
         searchEvidence: SearchEvidence?,
+        localLearning: LocalLearningSignal?,
     ): DecisionResult {
         val hasAnyEvidence = (deviceEvidence != null && deviceEvidence.hasAnyHistory) ||
                 (searchEvidence != null && !searchEvidence.isEmpty) ||
-                (deviceEvidence?.isSavedContact == true)
+                (deviceEvidence?.isSavedContact == true) ||
+                (localLearning != null && localLearning.callCount > 0)
 
         // Step 1: Relationship score from device evidence
         val relationshipScore = calculateRelationshipScore(deviceEvidence)
 
-        // Step 2: Risk score from search + device patterns
-        val riskScore = calculateRiskScore(deviceEvidence, searchEvidence)
+        // Step 2: Risk score from search + device patterns + local learning
+        val rawRiskScore = calculateRiskScore(deviceEvidence, searchEvidence)
+        val localAdj = localLearning?.riskAdjustment() ?: 0f
+        val riskScore = (rawRiskScore + localAdj).coerceIn(0f, 1f)
 
         // Step 3: Conclusion category
         val category = determineCategory(

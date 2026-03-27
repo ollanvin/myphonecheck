@@ -73,11 +73,13 @@ class CallCheckScreeningService : CallScreeningService() {
     interface ScreeningServiceEntryPoint {
         fun callInterceptRepository(): CallInterceptRepository
         fun decisionNotificationManager(): DecisionNotificationManager
+        fun callerIdOverlayManager(): CallerIdOverlayManager
         fun countryConfigProvider(): CountryConfigProvider
     }
 
     private lateinit var callInterceptRepository: CallInterceptRepository
     private lateinit var decisionNotificationManager: DecisionNotificationManager
+    private lateinit var callerIdOverlayManager: CallerIdOverlayManager
     private lateinit var countryConfigProvider: CountryConfigProvider
     private val serviceScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
@@ -98,6 +100,7 @@ class CallCheckScreeningService : CallScreeningService() {
             )
             callInterceptRepository = entryPoint.callInterceptRepository()
             decisionNotificationManager = entryPoint.decisionNotificationManager()
+            callerIdOverlayManager = entryPoint.callerIdOverlayManager()
             countryConfigProvider = entryPoint.countryConfigProvider()
 
             // 디바이스 국가 감지 (SIM → Network → Locale)
@@ -190,7 +193,7 @@ class CallCheckScreeningService : CallScreeningService() {
                     ?: rawNumber
 
                 val result = withTimeout(SCREENING_TIMEOUT_MS) {
-                    callInterceptRepository.processIncomingCall(normalizedNumber)
+                    callInterceptRepository.processIncomingCall(normalizedNumber, effectiveCountry)
                 }
 
                 Log.i(TAG, "Assessment: ${result.category} / ${result.action} / risk=${result.riskLevel}")
@@ -203,6 +206,20 @@ class CallCheckScreeningService : CallScreeningService() {
                         phoneNumber = normalizedNumber,
                     )
                     Log.i(TAG, "Decision notification shown for: $normalizedNumber")
+                }
+
+                // Overlay 표시 (SYSTEM_ALERT_WINDOW 권한 있을 때만)
+                if (::callerIdOverlayManager.isInitialized) {
+                    try {
+                        callerIdOverlayManager.showOverlay(
+                            context = applicationContext,
+                            result = result,
+                            phoneNumber = normalizedNumber,
+                        )
+                        Log.i(TAG, "Overlay shown for: $normalizedNumber")
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Overlay failed (non-fatal): ${e.message}")
+                    }
                 }
 
                 // ALLOW 응답 (전화 울림)

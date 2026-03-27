@@ -49,6 +49,7 @@ dependencies {
     implementation(project(":feature:decision-engine"))
     implementation(project(":feature:country-config"))
     implementation(project(":data:search"))
+    implementation(project(":data:local-cache"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

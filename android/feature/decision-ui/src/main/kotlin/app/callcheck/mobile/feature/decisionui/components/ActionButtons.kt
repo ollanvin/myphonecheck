@@ -125,6 +125,6 @@ private fun ActionButton(
 @Composable
 private fun ActionButtonRowPreview() {
     CallCheckTheme {
-        ActionButtonRow(recommendation = ActionRecommendation.RISK_HIGH)
+        ActionButtonRow(recommendation = ActionRecommendation.REJECT)
     }
 }

@@ -75,10 +75,11 @@ enum class RingState {
          * 모든 UI 접점(Ring, Overlay, Widget, Notification)은 이 함수를 사용해야 합니다.
          */
         fun fromAction(action: ActionRecommendation): RingState = when (action) {
-            ActionRecommendation.SAFE_LIKELY -> SAFE
-            ActionRecommendation.CAUTION -> CAUTION
-            ActionRecommendation.RISK_HIGH -> DANGER
-            ActionRecommendation.UNKNOWN -> UNKNOWN
+            ActionRecommendation.ANSWER -> SAFE
+            ActionRecommendation.ANSWER_WITH_CAUTION -> CAUTION
+            ActionRecommendation.REJECT -> DANGER
+            ActionRecommendation.BLOCK_REVIEW -> DANGER
+            ActionRecommendation.HOLD -> UNKNOWN
         }
     }
 }

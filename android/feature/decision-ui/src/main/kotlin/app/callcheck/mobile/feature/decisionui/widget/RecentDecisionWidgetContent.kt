@@ -183,10 +183,10 @@ private fun RecentDecisionWidgetPreview() {
     CallCheckTheme {
         RecentDecisionWidgetContent(
             items = listOf(
-                WidgetDecisionItem("02-555-0199", RiskLevel.HIGH, ActionRecommendation.RISK_HIGH, "보이스피싱 의심", 0L),
-                WidgetDecisionItem("010-1234-5678", RiskLevel.LOW, ActionRecommendation.SAFE_LIKELY, "저장된 연락처", 0L),
-                WidgetDecisionItem("1588-1234", RiskLevel.MEDIUM, ActionRecommendation.CAUTION, "광고/영업 의심", 0L),
-                WidgetDecisionItem("070-8888-9999", RiskLevel.UNKNOWN, ActionRecommendation.UNKNOWN, "판단 근거 부족", 0L),
+                WidgetDecisionItem("02-555-0199", RiskLevel.HIGH, ActionRecommendation.REJECT, "보이스피싱 의심", 0L),
+                WidgetDecisionItem("010-1234-5678", RiskLevel.LOW, ActionRecommendation.ANSWER, "저장된 연락처", 0L),
+                WidgetDecisionItem("1588-1234", RiskLevel.MEDIUM, ActionRecommendation.ANSWER_WITH_CAUTION, "광고/영업 의심", 0L),
+                WidgetDecisionItem("070-8888-9999", RiskLevel.UNKNOWN, ActionRecommendation.HOLD, "판단 근거 부족", 0L),
             ),
         )
     }

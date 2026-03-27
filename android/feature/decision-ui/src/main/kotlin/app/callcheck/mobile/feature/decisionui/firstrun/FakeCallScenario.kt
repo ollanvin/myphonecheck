@@ -40,7 +40,7 @@ object FakeCallScenario {
     val dangerResult = DecisionResult(
         riskLevel = RiskLevel.HIGH,
         category = ConclusionCategory.SCAM_RISK_HIGH,
-        action = ActionRecommendation.RISK_HIGH,
+        action = ActionRecommendation.REJECT,
         confidence = 0.91f,
         summary = "보이스피싱 의심",
         reasons = listOf(

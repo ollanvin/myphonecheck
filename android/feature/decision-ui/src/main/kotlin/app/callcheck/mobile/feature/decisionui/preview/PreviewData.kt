@@ -44,7 +44,7 @@ object PreviewData {
     val knownResult = DecisionResult(
         riskLevel = RiskLevel.LOW,
         category = ConclusionCategory.KNOWN_CONTACT,
-        action = ActionRecommendation.SAFE_LIKELY,
+        action = ActionRecommendation.ANSWER,
         confidence = 0.95f,
         summary = "저장된 연락처",
         reasons = listOf("저장된 연락처: CJ 대한통운", "발신 3회, 수신 12회, 평균통화 60초", "최근 1일 내 통화 이력"),
@@ -91,7 +91,7 @@ object PreviewData {
     val deliveryResult = DecisionResult(
         riskLevel = RiskLevel.LOW,
         category = ConclusionCategory.DELIVERY_LIKELY,
-        action = ActionRecommendation.CAUTION,
+        action = ActionRecommendation.ANSWER_WITH_CAUTION,
         confidence = 0.82f,
         summary = "택배/배송 가능성 높음",
         reasons = listOf("수신 2회, 평균통화 45초", "검색 결과: 택배/배송 관련 키워드 발견", "최근 5일 내 통화 이력"),
@@ -138,7 +138,7 @@ object PreviewData {
     val spamResult = DecisionResult(
         riskLevel = RiskLevel.MEDIUM,
         category = ConclusionCategory.SALES_SPAM_SUSPECTED,
-        action = ActionRecommendation.CAUTION,
+        action = ActionRecommendation.ANSWER_WITH_CAUTION,
         confidence = 0.78f,
         summary = "광고/영업 의심",
         reasons = listOf("수신 5회, 평균통화 8초", "검색 결과: 광고/영업 관련 키워드 다수", "짧은 통화(10초 미만)만 1회"),
@@ -185,7 +185,7 @@ object PreviewData {
     val scamResult = DecisionResult(
         riskLevel = RiskLevel.HIGH,
         category = ConclusionCategory.SCAM_RISK_HIGH,
-        action = ActionRecommendation.RISK_HIGH,
+        action = ActionRecommendation.REJECT,
         confidence = 0.89f,
         summary = "스팸/사기 위험 높음",
         reasons = listOf("저장되지 않은 번호, 기기 기록 없음", "검색 결과: 사기/피싱 관련 키워드 다수"),
@@ -197,7 +197,7 @@ object PreviewData {
     val unknownResult = DecisionResult(
         riskLevel = RiskLevel.UNKNOWN,
         category = ConclusionCategory.INSUFFICIENT_EVIDENCE,
-        action = ActionRecommendation.UNKNOWN,
+        action = ActionRecommendation.HOLD,
         confidence = 0.30f,
         summary = "판단 근거 부족",
         reasons = listOf("기기 기록 없음"),

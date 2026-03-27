@@ -203,7 +203,7 @@ private fun CallOverlayDangerPreview() {
             result = DecisionResult(
                 riskLevel = RiskLevel.HIGH,
                 category = app.callcheck.mobile.core.model.ConclusionCategory.SCAM_RISK_HIGH,
-                action = app.callcheck.mobile.core.model.ActionRecommendation.RISK_HIGH,
+                action = app.callcheck.mobile.core.model.ActionRecommendation.REJECT,
                 confidence = 0.89f,
                 summary = "보이스피싱 의심",
                 reasons = listOf("사기 신고 이력 다수"),
@@ -248,7 +248,7 @@ private fun CallOverlaySafePreview() {
             result = DecisionResult(
                 riskLevel = RiskLevel.LOW,
                 category = app.callcheck.mobile.core.model.ConclusionCategory.KNOWN_CONTACT,
-                action = app.callcheck.mobile.core.model.ActionRecommendation.SAFE_LIKELY,
+                action = app.callcheck.mobile.core.model.ActionRecommendation.ANSWER,
                 confidence = 0.95f,
                 summary = "저장된 연락처",
                 reasons = listOf("연락처에 등록된 번호"),
