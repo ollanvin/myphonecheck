@@ -4,11 +4,18 @@ import android.util.Log
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import app.callcheck.mobile.core.model.ActionRecommendation
 import app.callcheck.mobile.core.model.BehaviorPatternSignal
+import app.callcheck.mobile.core.model.ConclusionCategory
 import app.callcheck.mobile.core.model.DecisionResult
-import app.callcheck.mobile.core.model.DeviceEvidence
+import app.callcheck.mobile.core.model.InterceptRoute
+import app.callcheck.mobile.core.model.PhaseMeta
+import app.callcheck.mobile.core.model.PhaseResult
+import app.callcheck.mobile.core.model.PhaseSource
 import app.callcheck.mobile.core.model.PreJudgeResult
-import app.callcheck.mobile.core.model.SearchEvidence
+import app.callcheck.mobile.core.model.RiskLevel
+import app.callcheck.mobile.core.model.TwoPhaseDecision
+import app.callcheck.mobile.core.model.UserCallAction
 import app.callcheck.mobile.data.localcache.repository.PreJudgeCacheRepository
 import app.callcheck.mobile.data.search.CachedEntry
 import app.callcheck.mobile.data.search.SearchResultCachePolicy
@@ -26,13 +33,18 @@ private const val DEVICE_EVIDENCE_TIMEOUT_MS = 1000L
 private const val SEARCH_TIMEOUT_MS = 3000L
 
 /**
- * 3-Tier 인터셉트 파이프라인.
+ * Stage 9: 완전체 인터셉트 파이프라인.
  *
- * Tier 0: PreJudge 영속 캐시 — Room DB lookup, 0ms, 엔진 실행 없음
- * Tier 1: 인메모리 캐시 — ConcurrentHashMap, TTL 1h, 네트워크 0
- * Tier 2: 풀 파이프라인 — Device + Search + LocalLearning + BehaviorPattern
+ * 4대 신규 모듈 통합:
+ * 1. InterceptPriorityRouter — 분기 우선순위 (SKIP/INSTANT/LIGHT/FULL)
+ * 2. CountryInterceptPolicyProvider — 국가별 인터셉트 정책
+ * 3. 2-Phase Scoring — Phase 1 즉시 + Phase 2 확정
+ * 4. InterceptOutcomeLearner — 사용자 행동 기반 학습 루프
  *
- * "전화가 울리기 전에 판단" — Tier 0이 핵심.
+ * 파이프라인 흐름:
+ * ┌─────────────────────────────────────────────────────────────┐
+ * │ 수신 → Router(분기) → Phase1(즉시) → Phase2(풀) → 학습루프  │
+ * └─────────────────────────────────────────────────────────────┘
  */
 class CallInterceptRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -41,6 +53,8 @@ class CallInterceptRepositoryImpl @Inject constructor(
     private val localLearningProvider: LocalLearningProvider,
     private val preJudgeCacheRepository: PreJudgeCacheRepository,
     private val decisionEngine: DecisionEngine,
+    private val priorityRouter: InterceptPriorityRouter,
+    private val countryPolicyProvider: CountryInterceptPolicyProvider,
 ) : CallInterceptRepository {
 
     /** Tier 1: 인메모리 캐시 (TTL 1h, 최대 50건) */
@@ -58,58 +72,232 @@ class CallInterceptRepositoryImpl @Inject constructor(
                 caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
     }
 
+    // ══════════════════════════════════════════
+    // 기존 호환: DecisionResult 반환
+    // ══════════════════════════════════════════
+
     override suspend fun processIncomingCall(
         normalizedNumber: String,
         deviceCountryCode: String?,
     ): DecisionResult {
+        return processIncomingCallTwoPhase(normalizedNumber, deviceCountryCode).finalResult()
+    }
+
+    // ══════════════════════════════════════════
+    // Stage 9: 2-Phase 파이프라인
+    // ══════════════════════════════════════════
+
+    override suspend fun processIncomingCallTwoPhase(
+        normalizedNumber: String,
+        deviceCountryCode: String?,
+    ): TwoPhaseDecision {
         val pipelineStartMs = System.currentTimeMillis()
+        val countryCode = deviceCountryCode ?: "ZZ"
 
-        // ══════════════════════════════════════════════
-        // Tier 0: 0ms PreJudge — Room 영속 캐시 lookup
-        // 전화 울리기 전 판단. 엔진 실행 없음.
-        // ══════════════════════════════════════════════
-        try {
-            val preJudge = preJudgeCacheRepository.lookup(normalizedNumber)
-            if (preJudge != null && preJudge.isUsable()) {
-                Log.i(TAG, "Tier0 HIT: $normalizedNumber (conf=${preJudge.effectiveConfidence()}, hits=${preJudge.hitCount})")
-                trackRecentCall(normalizedNumber, pipelineStartMs)
-                return DecisionResult(
-                    riskLevel = decisionEngine.riskLevelFromScore(preJudge.riskScore),
-                    category = preJudge.category,
-                    action = preJudge.action,
-                    confidence = preJudge.effectiveConfidence(),
-                    summary = preJudge.summary,
-                    reasons = emptyList(),
-                    deviceEvidence = null,
-                    searchEvidence = null,
-                )
-            }
+        // ── Step 1: PreJudge 캐시 lookup ──
+        val preJudge = try {
+            preJudgeCacheRepository.lookup(normalizedNumber)
         } catch (e: Exception) {
-            Log.w(TAG, "Tier0 lookup error (non-fatal): ${e.message}")
+            Log.w(TAG, "PreJudge lookup error: ${e.message}")
+            null
         }
 
-        // ══════════════════════════════════════════════
-        // Tier 1: 인메모리 캐시 (TTL 1시간)
-        // ══════════════════════════════════════════════
-        val cached = decisionCache[normalizedNumber]
-        if (cached != null && cached.isValid(SearchResultCachePolicy.DECISION_CACHE_TTL_MS)) {
-            Log.i(TAG, "Tier1 HIT: $normalizedNumber (age=${pipelineStartMs - cached.cachedAtMs}ms)")
-            trackRecentCall(normalizedNumber, pipelineStartMs)
-            return cached.data
+        // ── Step 2: 로컬 학습 데이터에서 사용자 행동 이력 조회 ──
+        val localLearning = try {
+            localLearningProvider.getSignal(normalizedNumber)
+        } catch (e: Exception) {
+            null
         }
 
-        // ══════════════════════════════════════════════
-        // Tier 2: 풀 파이프라인
-        // Device + Search + LocalLearning + BehaviorPattern
-        // ══════════════════════════════════════════════
-        return coroutineScope {
+        // ── Step 3: Priority Router 분기 ──
+        val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        val isInternational = isInternationalNumber(normalizedNumber, countryCode)
+        val recentCount = recentCallLog[normalizedNumber]?.count {
+            it > System.currentTimeMillis() - 3_600_000L
+        } ?: 0
+
+        val route = priorityRouter.route(
+            normalizedNumber = normalizedNumber,
+            preJudge = preJudge,
+            isSavedContact = false, // DeviceEvidence 없이는 알 수 없음 — LIGHT/FULL에서 보완
+            isInternational = isInternational,
+            isVoip = false, // TODO: TelephonyManager 기반
+            currentHour = currentHour,
+            recentCallCount = recentCount,
+            lastUserAction = localLearning?.lastAction,
+            totalAnsweredCount = localLearning?.answeredCount ?: 0,
+            countryRiskElevated = countryPolicyProvider.isElevatedRiskCountry(countryCode),
+        )
+
+        Log.i(TAG, "Route: ${route.name} for $normalizedNumber (country=$countryCode)")
+
+        // ── Step 4: Route별 파이프라인 실행 ──
+        return when (route) {
+            InterceptRoute.SKIP -> {
+                // 도달하면 안 됨 (CallCheckScreeningService에서 이미 스킵)
+                // 안전망으로 fallback 반환
+                buildSkipDecision(pipelineStartMs, route)
+            }
+            InterceptRoute.INSTANT -> {
+                buildInstantDecision(normalizedNumber, preJudge, pipelineStartMs, route)
+            }
+            InterceptRoute.LIGHT -> {
+                buildLightDecision(normalizedNumber, countryCode, preJudge, pipelineStartMs, route)
+            }
+            InterceptRoute.FULL -> {
+                buildFullDecision(normalizedNumber, countryCode, preJudge, pipelineStartMs, route)
+            }
+        }
+    }
+
+    // ══════════════════════════════════════════
+    // INSTANT: Phase 1만 (0~5ms)
+    // ══════════════════════════════════════════
+
+    private fun buildInstantDecision(
+        normalizedNumber: String,
+        preJudge: PreJudgeResult?,
+        startMs: Long,
+        route: InterceptRoute,
+    ): TwoPhaseDecision {
+        val now = System.currentTimeMillis()
+        trackRecentCall(normalizedNumber, now)
+
+        val phase1 = if (preJudge != null && preJudge.isUsable()) {
+            PhaseResult(
+                action = preJudge.action,
+                riskScore = preJudge.riskScore,
+                category = preJudge.category,
+                confidence = preJudge.effectiveConfidence(),
+                summary = preJudge.summary,
+                riskLevel = decisionEngine.riskLevelFromScore(preJudge.riskScore),
+                source = PhaseSource.PRE_JUDGE_CACHE,
+                completedAtMs = now,
+            )
+        } else {
+            // 저장 연락처 등 PreJudge 없는 INSTANT → 안전 기본값
+            PhaseResult(
+                action = ActionRecommendation.ANSWER,
+                riskScore = 0f,
+                category = ConclusionCategory.KNOWN_CONTACT,
+                confidence = 0.90f,
+                summary = "저장된 연락처",
+                riskLevel = RiskLevel.LOW,
+                source = PhaseSource.PRE_JUDGE_CACHE,
+                completedAtMs = now,
+            )
+        }
+
+        Log.i(TAG, "INSTANT: ${phase1.action} (${now - startMs}ms)")
+
+        return TwoPhaseDecision(
+            phase1 = phase1,
+            phase2 = null,
+            phaseMeta = PhaseMeta(
+                pipelineStartMs = startMs,
+                phase1LatencyMs = now - startMs,
+                route = route,
+            ),
+        )
+    }
+
+    // ══════════════════════════════════════════
+    // LIGHT: Phase 1 (캐시) + Phase 2 (Device only, ~200ms)
+    // ══════════════════════════════════════════
+
+    private suspend fun buildLightDecision(
+        normalizedNumber: String,
+        countryCode: String,
+        preJudge: PreJudgeResult?,
+        startMs: Long,
+        route: InterceptRoute,
+    ): TwoPhaseDecision {
+        val now = System.currentTimeMillis()
+        trackRecentCall(normalizedNumber, now)
+
+        // Phase 1: 캐시 기반 즉시 판단 (또는 국가 정책 기반 기본값)
+        val phase1 = buildPhase1FromCacheOrPolicy(normalizedNumber, preJudge, countryCode, now)
+        val phase1LatencyMs = System.currentTimeMillis() - startMs
+
+        // Phase 2: Device evidence만 수집
+        val phase2 = try {
+            val deviceEvidence = withTimeoutOrNull(DEVICE_EVIDENCE_TIMEOUT_MS) {
+                deviceEvidenceProvider.gather(normalizedNumber)
+            }
+
+            val localLearning = localLearningProvider.getSignal(normalizedNumber)
+            val behaviorSignal = buildBehaviorSignal(normalizedNumber, countryCode)
+
+            val result = decisionEngine.evaluate(
+                deviceEvidence = deviceEvidence,
+                searchEvidence = null,
+                localLearning = localLearning,
+                behaviorPattern = behaviorSignal,
+            )
+
+            // 국가별 위험 가중 적용
+            val countryRiskBoost = countryPolicyProvider.getRiskBoost(normalizedNumber, countryCode)
+            val adjustedRiskScore = (result.confidence + countryRiskBoost).coerceIn(0f, 1f)
+
+            // 캐시 저장
+            cacheResult(normalizedNumber, result)
+            storePreJudge(normalizedNumber, result)
+
+            val phase2Time = System.currentTimeMillis()
+            PhaseResult(
+                action = result.action,
+                riskScore = adjustedRiskScore,
+                category = result.category,
+                confidence = result.confidence,
+                summary = result.summary,
+                riskLevel = result.riskLevel,
+                source = PhaseSource.DEVICE_ONLY,
+                completedAtMs = phase2Time,
+            )
+        } catch (e: Exception) {
+            Log.w(TAG, "LIGHT Phase2 error: ${e.message}")
+            null
+        }
+
+        val phase2LatencyMs = System.currentTimeMillis() - startMs
+        Log.i(TAG, "LIGHT: phase1=${phase1.action}(${phase1LatencyMs}ms), phase2=${phase2?.action}(${phase2LatencyMs}ms)")
+
+        return TwoPhaseDecision(
+            phase1 = phase1,
+            phase2 = phase2,
+            phaseMeta = PhaseMeta(
+                pipelineStartMs = startMs,
+                phase1LatencyMs = phase1LatencyMs,
+                phase2LatencyMs = phase2LatencyMs,
+                route = route,
+                conflictDetected = phase2 != null && phase1.action != phase2.action,
+            ),
+        )
+    }
+
+    // ══════════════════════════════════════════
+    // FULL: Phase 1 (캐시) + Phase 2 (4축 병렬, ~4500ms)
+    // ══════════════════════════════════════════
+
+    private suspend fun buildFullDecision(
+        normalizedNumber: String,
+        countryCode: String,
+        preJudge: PreJudgeResult?,
+        startMs: Long,
+        route: InterceptRoute,
+    ): TwoPhaseDecision {
+        val now = System.currentTimeMillis()
+        trackRecentCall(normalizedNumber, now)
+
+        // Phase 1: 캐시 기반 즉시 판단
+        val phase1 = buildPhase1FromCacheOrPolicy(normalizedNumber, preJudge, countryCode, now)
+        val phase1LatencyMs = System.currentTimeMillis() - startMs
+
+        // Phase 2: 풀 파이프라인
+        val phase2 = coroutineScope {
             try {
-                Log.d(TAG, "Tier2 start: $normalizedNumber (country=$deviceCountryCode)")
-
                 val online = isNetworkAvailable()
-                Log.d(TAG, "Network: ${if (online) "ONLINE" else "OFFLINE"}")
 
-                // Parallel: device + local learning (항상) + search (온라인만)
                 val deviceJob = async {
                     withTimeoutOrNull(DEVICE_EVIDENCE_TIMEOUT_MS) {
                         try {
@@ -125,22 +313,19 @@ class CallInterceptRepositoryImpl @Inject constructor(
                     async {
                         withTimeoutOrNull(SEARCH_TIMEOUT_MS) {
                             try {
-                                searchEvidenceProvider.gather(normalizedNumber, deviceCountryCode)
+                                searchEvidenceProvider.gather(normalizedNumber, countryCode)
                             } catch (e: Exception) {
                                 Log.w(TAG, "Search evidence error", e)
                                 null
                             }
                         }
                     }
-                } else {
-                    null
-                }
+                } else null
 
                 val localLearningJob = async {
                     try {
                         localLearningProvider.getSignal(normalizedNumber)
                     } catch (e: Exception) {
-                        Log.w(TAG, "Local learning error (non-fatal)", e)
                         null
                     }
                 }
@@ -148,13 +333,8 @@ class CallInterceptRepositoryImpl @Inject constructor(
                 val deviceEvidence = deviceJob.await()
                 val searchEvidence = searchJob?.await()
                 val localLearning = localLearningJob.await()
+                val behaviorSignal = buildBehaviorSignal(normalizedNumber, countryCode)
 
-                // BehaviorPattern: 시간대 + 반복 + VoIP (동기, <1ms)
-                val behaviorSignal = buildBehaviorSignal(normalizedNumber, deviceCountryCode)
-
-                Log.d(TAG, "Evidence: device=${deviceEvidence != null}, search=${searchEvidence != null}, local=${localLearning != null}, behavior=${behaviorSignal.recentHourCallCount}calls/1h, offline=${!online}")
-
-                // Decision engine — 4축 판단, < 50ms
                 val result = decisionEngine.evaluate(
                     deviceEvidence = deviceEvidence,
                     searchEvidence = searchEvidence,
@@ -162,40 +342,144 @@ class CallInterceptRepositoryImpl @Inject constructor(
                     behaviorPattern = behaviorSignal,
                 )
 
-                Log.d(TAG, "Decision: ${result.category} / ${result.riskLevel} / ${result.action}")
+                // 국가별 위험 가중 적용
+                val countryRiskBoost = countryPolicyProvider.getRiskBoost(normalizedNumber, countryCode)
+                val spamPeakBoost = if (countryPolicyProvider.isSpamPeakHour(
+                        Calendar.getInstance().get(Calendar.HOUR_OF_DAY), countryCode
+                    )) 0.03f else 0f
+                val totalBoost = countryRiskBoost + spamPeakBoost
 
-                // Tier 1 인메모리 캐시 저장
+                // 캐시 저장
                 cacheResult(normalizedNumber, result)
+                storePreJudge(normalizedNumber, result)
 
-                // Tier 0 영속 캐시 저장 (판단 반환 안 막음)
-                try {
-                    preJudgeCacheRepository.store(normalizedNumber, result)
-                    Log.d(TAG, "Tier0 STORE: $normalizedNumber")
-                } catch (e: Exception) {
-                    Log.w(TAG, "Tier0 store error (non-fatal): ${e.message}")
-                }
-
-                // 반복 수신 추적
-                trackRecentCall(normalizedNumber, pipelineStartMs)
-
-                result
-
+                val phase2Time = System.currentTimeMillis()
+                PhaseResult(
+                    action = result.action,
+                    riskScore = (result.riskLevel.ordinal / 3f + totalBoost).coerceIn(0f, 1f),
+                    category = result.category,
+                    confidence = result.confidence,
+                    summary = result.summary,
+                    riskLevel = result.riskLevel,
+                    source = PhaseSource.FULL_PIPELINE,
+                    completedAtMs = phase2Time,
+                )
             } catch (e: Exception) {
-                Log.e(TAG, "Pipeline error", e)
-                DecisionResult.fallback()
+                Log.e(TAG, "FULL Phase2 error", e)
+                null
             }
         }
+
+        val phase2LatencyMs = System.currentTimeMillis() - startMs
+        Log.i(TAG, "FULL: phase1=${phase1.action}(${phase1LatencyMs}ms), phase2=${phase2?.action}(${phase2LatencyMs}ms)")
+
+        return TwoPhaseDecision(
+            phase1 = phase1,
+            phase2 = phase2,
+            phaseMeta = PhaseMeta(
+                pipelineStartMs = startMs,
+                phase1LatencyMs = phase1LatencyMs,
+                phase2LatencyMs = phase2LatencyMs,
+                route = route,
+                conflictDetected = phase2 != null && phase1.action != phase2.action,
+            ),
+        )
     }
 
-    // ── 반복 수신 추적 ──
+    // ══════════════════════════════════════════
+    // Phase 1 빌더 (캐시 or 국가 정책 기반)
+    // ══════════════════════════════════════════
+
+    private fun buildPhase1FromCacheOrPolicy(
+        normalizedNumber: String,
+        preJudge: PreJudgeResult?,
+        countryCode: String,
+        now: Long,
+    ): PhaseResult {
+        // Tier 0: PreJudge 캐시
+        if (preJudge != null && preJudge.isUsable()) {
+            return PhaseResult(
+                action = preJudge.action,
+                riskScore = preJudge.riskScore,
+                category = preJudge.category,
+                confidence = preJudge.effectiveConfidence(),
+                summary = preJudge.summary,
+                riskLevel = decisionEngine.riskLevelFromScore(preJudge.riskScore),
+                source = PhaseSource.PRE_JUDGE_CACHE,
+                completedAtMs = now,
+            )
+        }
+
+        // Tier 1: 인메모리 캐시
+        val cached = decisionCache[normalizedNumber]
+        if (cached != null && cached.isValid(SearchResultCachePolicy.DECISION_CACHE_TTL_MS)) {
+            val result = cached.data
+            return PhaseResult(
+                action = result.action,
+                riskScore = result.riskLevel.ordinal / 3f,
+                category = result.category,
+                confidence = result.confidence,
+                summary = result.summary,
+                riskLevel = result.riskLevel,
+                source = PhaseSource.MEMORY_CACHE,
+                completedAtMs = now,
+            )
+        }
+
+        // 캐시 미스: 국가 정책 기반 기본 판단
+        val countryRisk = countryPolicyProvider.getRiskBoost(normalizedNumber, countryCode)
+        val baseAction = if (countryRisk >= 0.10f) {
+            ActionRecommendation.ANSWER_WITH_CAUTION
+        } else {
+            ActionRecommendation.HOLD
+        }
+
+        return PhaseResult(
+            action = baseAction,
+            riskScore = countryRisk,
+            category = ConclusionCategory.INSUFFICIENT_EVIDENCE,
+            confidence = 0.20f,
+            summary = if (baseAction == ActionRecommendation.HOLD) "판단 중..." else "주의 필요",
+            riskLevel = if (countryRisk >= 0.10f) RiskLevel.MEDIUM else RiskLevel.UNKNOWN,
+            source = PhaseSource.COUNTRY_POLICY,
+            completedAtMs = now,
+        )
+    }
+
+    // ══════════════════════════════════════════
+    // SKIP (안전망)
+    // ══════════════════════════════════════════
+
+    private fun buildSkipDecision(startMs: Long, route: InterceptRoute): TwoPhaseDecision {
+        val now = System.currentTimeMillis()
+        return TwoPhaseDecision(
+            phase1 = PhaseResult(
+                action = ActionRecommendation.ANSWER,
+                riskScore = 0f,
+                category = ConclusionCategory.KNOWN_CONTACT,
+                confidence = 1.0f,
+                summary = "안전",
+                riskLevel = RiskLevel.LOW,
+                source = PhaseSource.FALLBACK,
+                completedAtMs = now,
+            ),
+            phaseMeta = PhaseMeta(
+                pipelineStartMs = startMs,
+                phase1LatencyMs = now - startMs,
+                route = route,
+            ),
+        )
+    }
+
+    // ══════════════════════════════════════════
+    // 공통 유틸
+    // ══════════════════════════════════════════
 
     private fun trackRecentCall(normalizedNumber: String, timestampMs: Long) {
         val timestamps = recentCallLog.getOrPut(normalizedNumber) { mutableListOf() }
         timestamps.add(timestampMs)
         while (timestamps.size > 10) timestamps.removeAt(0)
     }
-
-    // ── BehaviorPatternSignal 생성 ──
 
     private fun buildBehaviorSignal(
         normalizedNumber: String,
@@ -221,20 +505,18 @@ class CallInterceptRepositoryImpl @Inject constructor(
     private fun isInternationalNumber(normalizedNumber: String, deviceCountryCode: String?): Boolean {
         if (deviceCountryCode == null || !normalizedNumber.startsWith("+")) return false
         val numberCountry = normalizedNumber.removePrefix("+")
-        val dialCode = countryToDialCode(deviceCountryCode) ?: return false
-        return !numberCountry.startsWith(dialCode)
+        val policy = countryPolicyProvider.getPolicy(deviceCountryCode)
+        if (policy.dialCode.isEmpty()) return false
+        return !numberCountry.startsWith(policy.dialCode)
     }
 
-    private fun countryToDialCode(countryCode: String): String? = when (countryCode.uppercase()) {
-        "KR" -> "82"; "US", "CA" -> "1"; "JP" -> "81"; "CN" -> "86"
-        "GB" -> "44"; "DE" -> "49"; "FR" -> "33"; "AU" -> "61"
-        "IN" -> "91"; "BR" -> "55"; "TW" -> "886"; "HK" -> "852"
-        "SG" -> "65"; "TH" -> "66"; "VN" -> "84"; "PH" -> "63"
-        "ID" -> "62"; "MY" -> "60"; "MX" -> "52"; "RU" -> "7"
-        else -> null
+    private suspend fun storePreJudge(normalizedNumber: String, result: DecisionResult) {
+        try {
+            preJudgeCacheRepository.store(normalizedNumber, result)
+        } catch (e: Exception) {
+            Log.w(TAG, "PreJudge store error: ${e.message}")
+        }
     }
-
-    // ── Tier 1 인메모리 캐시 관리 ──
 
     private fun cacheResult(normalizedNumber: String, result: DecisionResult) {
         if (decisionCache.size >= SearchResultCachePolicy.MEMORY_CACHE_MAX_ENTRIES) {
@@ -244,7 +526,6 @@ class CallInterceptRepositoryImpl @Inject constructor(
             evictOldestEntry()
         }
         decisionCache[normalizedNumber] = CachedEntry(data = result, phoneNumber = normalizedNumber)
-        Log.d(TAG, "Tier1 STORE: $normalizedNumber (size=${decisionCache.size})")
     }
 
     private fun evictExpiredEntries() {
@@ -253,14 +534,12 @@ class CallInterceptRepositoryImpl @Inject constructor(
             !it.value.isValid(SearchResultCachePolicy.DECISION_CACHE_TTL_MS, now)
         }
         expired.forEach { decisionCache.remove(it.key) }
-        if (expired.isNotEmpty()) Log.d(TAG, "Tier1 EVICT expired: ${expired.size}")
     }
 
     private fun evictOldestEntry() {
         val oldest = decisionCache.entries.minByOrNull { it.value.cachedAtMs }
         if (oldest != null) {
             decisionCache.remove(oldest.key)
-            Log.d(TAG, "Tier1 EVICT LRU: ${oldest.key}")
         }
     }
 }
