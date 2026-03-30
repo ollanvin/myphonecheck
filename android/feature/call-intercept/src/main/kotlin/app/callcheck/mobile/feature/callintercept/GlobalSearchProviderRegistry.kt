@@ -345,17 +345,18 @@ class GlobalSearchProviderRegistry @Inject constructor() {
     private fun buildFullRegistry(): Map<String, CountrySearchConfig> {
         val map = mutableMapOf<String, CountrySearchConfig>()
 
-        // ── Tier A: 현지 검색엔진 강국 (8국) ──
+        // ── Tier A: 현지 검색엔진 강국 (8국) — 최우선 ──
         buildTierA().forEach { map[it.countryCode] = it }
 
         // ── Tier B: Google + 현지 디렉토리 병행 (22국) ──
-        buildTierB().forEach { map[it.countryCode] = it }
+        // putIfAbsent: Tier A에서 이미 등록된 국가는 덮어쓰지 않음
+        buildTierB().forEach { map.putIfAbsent(it.countryCode, it) }
 
         // ── Tier C: Google 중심 (40국) ──
-        buildTierC().forEach { map[it.countryCode] = it }
+        buildTierC().forEach { map.putIfAbsent(it.countryCode, it) }
 
         // ── Tier D: Google fallback (120국) ──
-        buildTierD().forEach { map[it.countryCode] = it }
+        buildTierD().forEach { map.putIfAbsent(it.countryCode, it) }
 
         return map
     }
@@ -696,7 +697,7 @@ class GlobalSearchProviderRegistry @Inject constructor() {
             Triple("UA", "uk", listOf("\"{number}\" спам", "\"{number}\" шахрайство")),
             // 아시아
             Triple("SG", "en", listOf("\"{number}\" spam", "\"{number}\" scam")),
-            Triple("KR", "ko", listOf()),  // 이미 Tier A에 있으므로 무시됨
+            // KR은 Tier A에서 처리 — 여기 포함 금지
             Triple("PK", "ur", listOf("\"{number}\" spam", "\"{number}\" fraud")),
             Triple("BD", "bn", listOf("\"{number}\" spam", "\"{number}\" প্রতারণা")),
             Triple("LK", "si", listOf("\"{number}\" spam", "\"{number}\" scam")),
