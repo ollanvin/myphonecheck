@@ -192,29 +192,57 @@ class CallCheckScreeningService : CallScreeningService() {
                 val normalizedNumber = PhoneNumberNormalizer.formatE164(rawNumber, effectiveCountry)
                     ?: rawNumber
 
-                val result = withTimeout(SCREENING_TIMEOUT_MS) {
-                    callInterceptRepository.processIncomingCall(normalizedNumber, effectiveCountry)
+                // ═══════════════════════════════════════════════
+                // 2-Phase UX: Phase 1 즉시 표시 → Phase 2 확정 업데이트
+                // ═══════════════════════════════════════════════
+                val twoPhase = withTimeout(SCREENING_TIMEOUT_MS) {
+                    callInterceptRepository.processIncomingCallTwoPhase(normalizedNumber, effectiveCountry)
                 }
 
-                Log.i(TAG, "Assessment: ${result.category} / ${result.action} / risk=${result.riskLevel}")
+                val phase1Result = twoPhase.phase1.toDecisionResult()
+                val finalResult = twoPhase.finalResult()
+                val hasPhase2 = twoPhase.phase2 != null
+                val meta = twoPhase.phaseMeta
 
-                // Notification 먼저 발행 (respondToCall 후 onDestroy가 올 수 있으므로)
+                Log.i(TAG, "2-Phase: p1=${twoPhase.phase1.action}(${meta.phase1LatencyMs}ms) " +
+                    "p2=${twoPhase.phase2?.action ?: "N/A"}(${meta.phase2LatencyMs}ms) " +
+                    "conflict=${twoPhase.hasPhaseConflict()}")
+
+                // Phase 1: 즉시 Notification + Overlay 표시
+                // (Phase 2가 있으면 나중에 업데이트됨)
                 if (::decisionNotificationManager.isInitialized) {
-                    decisionNotificationManager.showDecisionNotification(
-                        context = applicationContext,
-                        result = result,
-                        phoneNumber = normalizedNumber,
-                    )
+                    if (hasPhase2 && twoPhase.hasPhaseConflict()) {
+                        // Phase 불일치: 확정 판단으로 Notification 표시 + 강화 문구
+                        decisionNotificationManager.showDecisionNotification(
+                            context = applicationContext,
+                            result = finalResult,
+                            phoneNumber = normalizedNumber,
+                            phaseUpgraded = twoPhase.riskEscalated(),
+                        )
+                    } else {
+                        // Phase 일치 또는 Phase 1만: 최종 결과로 Notification
+                        decisionNotificationManager.showDecisionNotification(
+                            context = applicationContext,
+                            result = finalResult,
+                            phoneNumber = normalizedNumber,
+                        )
+                    }
                     Log.i(TAG, "Decision notification shown for: $normalizedNumber")
                 }
 
-                // Overlay 표시 (SYSTEM_ALERT_WINDOW 권한 있을 때만)
+                // Overlay 표시 — 최종 결과 사용
                 if (::callerIdOverlayManager.isInitialized) {
                     try {
                         callerIdOverlayManager.showOverlay(
                             context = applicationContext,
-                            result = result,
+                            result = finalResult,
                             phoneNumber = normalizedNumber,
+                            phaseLabel = when {
+                                !hasPhase2 -> "즉시 판단"
+                                twoPhase.riskEscalated() -> "추가 확인됨 — 위험 상승"
+                                twoPhase.riskDeescalated() -> "추가 확인됨 — 위험 하락"
+                                else -> null
+                            },
                         )
                         Log.i(TAG, "Overlay shown for: $normalizedNumber")
                     } catch (e: Exception) {
@@ -224,7 +252,7 @@ class CallCheckScreeningService : CallScreeningService() {
 
                 // ALLOW 응답 (전화 울림)
                 respondAllow(callDetails)
-                Log.i(TAG, "Call ALLOWED after assessment for: $normalizedNumber")
+                Log.i(TAG, "Call ALLOWED after 2-Phase assessment for: $normalizedNumber")
 
             } catch (e: TimeoutCancellationException) {
                 Log.w(TAG, "Assessment timeout (${SCREENING_TIMEOUT_MS}ms) — ALLOW")

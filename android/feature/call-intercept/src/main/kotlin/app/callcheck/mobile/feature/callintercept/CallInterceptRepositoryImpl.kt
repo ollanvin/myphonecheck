@@ -55,6 +55,7 @@ class CallInterceptRepositoryImpl @Inject constructor(
     private val decisionEngine: DecisionEngine,
     private val priorityRouter: InterceptPriorityRouter,
     private val countryPolicyProvider: CountryInterceptPolicyProvider,
+    private val performanceTracker: InterceptPerformanceTracker,
 ) : CallInterceptRepository {
 
     /** Tier 1: 인메모리 캐시 (TTL 1h, 최대 50건) */
@@ -132,10 +133,11 @@ class CallInterceptRepositoryImpl @Inject constructor(
         Log.i(TAG, "Route: ${route.name} for $normalizedNumber (country=$countryCode)")
 
         // ── Step 4: Route별 파이프라인 실행 ──
-        return when (route) {
+        val networkOn = isNetworkAvailable()
+        val countryBoost = countryPolicyProvider.getRiskBoost(normalizedNumber, countryCode)
+
+        val decision = when (route) {
             InterceptRoute.SKIP -> {
-                // 도달하면 안 됨 (CallCheckScreeningService에서 이미 스킵)
-                // 안전망으로 fallback 반환
                 buildSkipDecision(pipelineStartMs, route)
             }
             InterceptRoute.INSTANT -> {
@@ -148,6 +150,16 @@ class CallInterceptRepositoryImpl @Inject constructor(
                 buildFullDecision(normalizedNumber, countryCode, preJudge, pipelineStartMs, route)
             }
         }
+
+        // ── Step 5: 성능 계측 기록 ──
+        performanceTracker.record(
+            decision = decision,
+            numberHash = normalizedNumber.hashCode().toString(),
+            countryRiskBoost = countryBoost,
+            networkAvailable = networkOn,
+        )
+
+        return decision
     }
 
     // ══════════════════════════════════════════

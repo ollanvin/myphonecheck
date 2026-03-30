@@ -437,6 +437,212 @@ class CountryInterceptPolicyProvider @Inject constructor() {
                 dialCode = "7",
                 emergencyNumbers = setOf("112", "101", "102", "103", "104"),
                 spamPeakHours = 10..18,
+                riskPatterns = listOf(
+                    RiskPattern(
+                        pattern = Regex("^\\+7(809)"),
+                        riskBoost = 0.12f,
+                        description = "RU premium rate (809)"
+                    ),
+                ),
+            ),
+
+            // ════════════════════════════════════════
+            // Phase 2: 고수익 + 고트래픽 10개국
+            // ════════════════════════════════════════
+
+            // 이탈리아 (IT)
+            "IT" to CountryInterceptPolicy(
+                countryCode = "IT",
+                dialCode = "39",
+                emergencyNumbers = setOf("112", "113", "115", "118"),
+                serviceShortNumbers = setOf("1500", "1515", "1530"),
+                skipPatterns = listOf(
+                    Regex("^800\\d{6}$"),  // 수신자 부담
+                ),
+                spamPeakHours = 10..17,
+                riskPatterns = listOf(
+                    RiskPattern(
+                        pattern = Regex("^\\+39(89[2-9])"),
+                        riskBoost = 0.15f,
+                        description = "IT premium rate (89x)"
+                    ),
+                    RiskPattern(
+                        pattern = Regex("^\\+39(178|179)"),
+                        riskBoost = 0.08f,
+                        description = "IT VoIP/mobile (178/179)"
+                    ),
+                ),
+            ),
+
+            // 스페인 (ES)
+            "ES" to CountryInterceptPolicy(
+                countryCode = "ES",
+                dialCode = "34",
+                emergencyNumbers = setOf("112", "091", "092", "061", "080"),
+                serviceShortNumbers = setOf("010", "060", "062"),
+                skipPatterns = listOf(
+                    Regex("^900\\d{6}$"),  // 수신자 부담
+                ),
+                spamPeakHours = 10..17,
+                riskPatterns = listOf(
+                    RiskPattern(
+                        pattern = Regex("^\\+34(80[2-7])"),
+                        riskBoost = 0.15f,
+                        description = "ES premium rate (80x)"
+                    ),
+                    RiskPattern(
+                        pattern = Regex("^\\+34(905)"),
+                        riskBoost = 0.12f,
+                        description = "ES premium rate (905)"
+                    ),
+                ),
+            ),
+
+            // 네덜란드 (NL)
+            "NL" to CountryInterceptPolicy(
+                countryCode = "NL",
+                dialCode = "31",
+                emergencyNumbers = setOf("112"),
+                serviceShortNumbers = setOf("1400", "1455"),
+                skipPatterns = listOf(
+                    Regex("^0800\\d{7}$"),
+                ),
+                spamPeakHours = 10..17,
+                riskPatterns = listOf(
+                    RiskPattern(
+                        pattern = Regex("^\\+31(90[069])"),
+                        riskBoost = 0.15f,
+                        description = "NL premium rate (090x)"
+                    ),
+                ),
+            ),
+
+            // 스웨덴 (SE)
+            "SE" to CountryInterceptPolicy(
+                countryCode = "SE",
+                dialCode = "46",
+                emergencyNumbers = setOf("112"),
+                serviceShortNumbers = setOf("113", "114", "116", "1177"),
+                skipPatterns = listOf(
+                    Regex("^020\\d{6}$"),
+                ),
+                spamPeakHours = 10..17,
+                riskPatterns = listOf(
+                    RiskPattern(
+                        pattern = Regex("^\\+46(900)"),
+                        riskBoost = 0.15f,
+                        description = "SE premium rate (0900)"
+                    ),
+                    RiskPattern(
+                        pattern = Regex("^\\+46(939)"),
+                        riskBoost = 0.10f,
+                        description = "SE premium rate (0939)"
+                    ),
+                ),
+            ),
+
+            // 폴란드 (PL)
+            "PL" to CountryInterceptPolicy(
+                countryCode = "PL",
+                dialCode = "48",
+                emergencyNumbers = setOf("112", "997", "998", "999"),
+                serviceShortNumbers = setOf("116", "118", "19"),
+                skipPatterns = listOf(
+                    Regex("^800\\d{6}$"),
+                ),
+                spamPeakHours = 10..17,
+                riskPatterns = listOf(
+                    RiskPattern(
+                        pattern = Regex("^\\+48(70[0-9])"),
+                        riskBoost = 0.10f,
+                        description = "PL premium/telemarketing (70x)"
+                    ),
+                ),
+            ),
+
+            // 스위스 (CH)
+            "CH" to CountryInterceptPolicy(
+                countryCode = "CH",
+                dialCode = "41",
+                emergencyNumbers = setOf("112", "117", "118", "143", "144", "147"),
+                skipPatterns = listOf(
+                    Regex("^0800\\d{6}$"),
+                ),
+                spamPeakHours = 10..17,
+                internationalCallCommon = true,
+                riskPatterns = listOf(
+                    RiskPattern(
+                        pattern = Regex("^\\+41(900)"),
+                        riskBoost = 0.15f,
+                        description = "CH premium rate (0900)"
+                    ),
+                    RiskPattern(
+                        pattern = Regex("^\\+41(906)"),
+                        riskBoost = 0.15f,
+                        description = "CH adult premium (0906)"
+                    ),
+                ),
+            ),
+
+            // 뉴질랜드 (NZ)
+            "NZ" to CountryInterceptPolicy(
+                countryCode = "NZ",
+                dialCode = "64",
+                emergencyNumbers = setOf("111"),
+                skipPatterns = listOf(
+                    Regex("^0800\\d{6}$"),
+                    Regex("^0508\\d{6}$"),
+                ),
+                spamPeakHours = 10..17,
+            ),
+
+            // 사우디아라비아 (SA)
+            "SA" to CountryInterceptPolicy(
+                countryCode = "SA",
+                dialCode = "966",
+                emergencyNumbers = setOf("911", "997", "998", "999"),
+                serviceShortNumbers = setOf("900", "902"),
+                spamPeakHours = 10..18,
+                riskPatterns = listOf(
+                    RiskPattern(
+                        pattern = Regex("^\\+966(700)"),
+                        riskBoost = 0.08f,
+                        description = "SA premium SMS/voice (700)"
+                    ),
+                ),
+            ),
+
+            // UAE (AE)
+            "AE" to CountryInterceptPolicy(
+                countryCode = "AE",
+                dialCode = "971",
+                emergencyNumbers = setOf("999", "998", "997", "112"),
+                serviceShortNumbers = setOf("600", "800"),
+                internationalCallCommon = true,
+                spamPeakHours = 10..18,
+                riskPatterns = listOf(
+                    RiskPattern(
+                        pattern = Regex("^\\+971(900)"),
+                        riskBoost = 0.12f,
+                        description = "AE premium rate (900)"
+                    ),
+                ),
+            ),
+
+            // 이스라엘 (IL)
+            "IL" to CountryInterceptPolicy(
+                countryCode = "IL",
+                dialCode = "972",
+                emergencyNumbers = setOf("100", "101", "102", "112"),
+                serviceShortNumbers = setOf("144", "166", "199"),
+                spamPeakHours = 9..17,
+                riskPatterns = listOf(
+                    RiskPattern(
+                        pattern = Regex("^\\+972(1900)"),
+                        riskBoost = 0.15f,
+                        description = "IL premium rate (1-900)"
+                    ),
+                ),
             ),
         )
     }

@@ -53,6 +53,8 @@ class CallerIdOverlayManager @Inject constructor() {
      * @param phoneNumber raw 번호 (기기 원본 그대로)
      * @param language 현재 기기 언어
      * @param localizer SignalSummary 로컬라이저
+     * @param phaseLabel 2-Phase UX 라벨. null이면 표시 안 함.
+     *        예: "즉시 판단", "추가 확인됨 — 위험 상승", "추가 확인됨 — 위험 하락"
      */
     fun showOverlay(
         context: Context,
@@ -60,6 +62,7 @@ class CallerIdOverlayManager @Inject constructor() {
         phoneNumber: String,
         language: SupportedLanguage = SupportedLanguage.EN,
         localizer: SignalSummaryLocalizer = SignalSummaryLocalizer(),
+        phaseLabel: String? = null,
     ): Boolean {
         if (!canDrawOverlays(context)) {
             Log.w(TAG, "SYSTEM_ALERT_WINDOW not granted, cannot show overlay")
@@ -87,7 +90,7 @@ class CallerIdOverlayManager @Inject constructor() {
                     y = dpToPx(context, 200)
                 }
 
-                overlayView = buildOverlayView(context, result, phoneNumber, language, localizer)
+                overlayView = buildOverlayView(context, result, phoneNumber, language, localizer, phaseLabel)
                 wm.addView(overlayView, params)
                 Log.i(TAG, "Overlay shown for $phoneNumber: ${result.riskLevel} (lang=${language.code})")
             } catch (e: Exception) {
@@ -155,6 +158,7 @@ class CallerIdOverlayManager @Inject constructor() {
         phoneNumber: String,
         language: SupportedLanguage,
         localizer: SignalSummaryLocalizer,
+        phaseLabel: String? = null,
     ): View {
         val bgColor = backgroundColorForRisk(result.riskLevel)
         val textColor = Color.WHITE
@@ -195,6 +199,33 @@ class CallerIdOverlayManager @Inject constructor() {
                 gravity = Gravity.CENTER_HORIZONTAL
                 layoutParams = marginTop(context, 2)
             })
+
+            // ── 2-Phase UX: Phase 상태 태그 ──
+            // phaseLabel이 null이면 표시하지 않음 (즉시 판단 = 단일 Phase)
+            if (phaseLabel != null) {
+                addView(TextView(context).apply {
+                    text = phaseLabel
+                    setTextColor(Color.WHITE)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+                    setTypeface(null, Typeface.BOLD)
+                    gravity = Gravity.CENTER_HORIZONTAL
+                    background = GradientDrawable().apply {
+                        setColor(adjustAlpha(Color.BLACK, 0.35f))
+                        cornerRadius = dpToPx(context, 10).toFloat()
+                    }
+                    val tagPadH = dpToPx(context, 10)
+                    val tagPadV = dpToPx(context, 3)
+                    setPadding(tagPadH, tagPadV, tagPadH, tagPadV)
+                    val lp = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                    ).apply {
+                        gravity = Gravity.CENTER_HORIZONTAL
+                        topMargin = dpToPx(context, 4)
+                    }
+                    layoutParams = lp
+                })
+            }
 
             // ── Divider ──
             addDivider(context, textColor)

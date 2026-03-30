@@ -45,16 +45,23 @@ private const val EXTRA_PHONE_NUMBER = "extra_phone_number"
  */
 class DecisionNotificationManager @Inject constructor() {
 
+    /**
+     * 판단 결과 Notification 표시.
+     *
+     * @param phaseUpgraded Phase 2에서 위험도가 상승한 경우 true.
+     *        true이면 "추가 확인됨" 강화 문구를 Notification에 추가.
+     */
     fun showDecisionNotification(
         context: Context,
         result: DecisionResult,
         phoneNumber: String,
+        phaseUpgraded: Boolean = false,
     ) {
         try {
             ensureChannel(context)
 
             val notificationId = generateId(phoneNumber)
-            val notification = buildDecisionNotification(context, result, phoneNumber, notificationId)
+            val notification = buildDecisionNotification(context, result, phoneNumber, notificationId, phaseUpgraded)
 
             val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             nm.notify(notificationId, notification)
@@ -91,21 +98,32 @@ class DecisionNotificationManager @Inject constructor() {
         result: DecisionResult,
         phoneNumber: String,
         notificationId: Int,
+        phaseUpgraded: Boolean = false,
     ): Notification {
         // RingSystem 단일 소스에서 색상·라벨·이모지 조회 (action 기반 통일)
         val stateColor = RingSystem.color(result.action)
         val stateEmoji = RingSystem.emoji(result.action)
         val stateLabel = RingSystem.labelKo(result.action)
 
-        // 제목: 이모지 + 상태 + 번호
-        val title = "$stateEmoji $stateLabel — $phoneNumber"
+        // 2-Phase UX: 위험 상승 시 강화 문구
+        val phaseTag = if (phaseUpgraded) " [추가 확인됨]" else ""
+
+        // 제목: 이모지 + 상태 + Phase 태그 + 번호
+        val title = "$stateEmoji $stateLabel$phaseTag — $phoneNumber"
 
         // 내용: 한 줄 요약
-        val contentText = result.summary
+        val contentText = if (phaseUpgraded) {
+            "${result.summary} (심층 분석 완료)"
+        } else {
+            result.summary
+        }
 
-        // 확장 텍스트: 요약 + 근거 + 면책
+        // 확장 텍스트: 요약 + Phase 정보 + 근거 + 면책
         val bigText = buildString {
             append(result.summary)
+            if (phaseUpgraded) {
+                append("\n※ 추가 분석에서 위험도가 상승했습니다")
+            }
             if (result.reasons.isNotEmpty()) {
                 result.reasons.forEachIndexed { index, reason ->
                     append("\n${index + 1}. $reason")
