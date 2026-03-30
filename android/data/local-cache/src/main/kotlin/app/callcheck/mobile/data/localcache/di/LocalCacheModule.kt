@@ -2,8 +2,10 @@ package app.callcheck.mobile.data.localcache.di
 
 import android.content.Context
 import androidx.room.Room
+import app.callcheck.mobile.data.localcache.dao.PreJudgeCacheDao
 import app.callcheck.mobile.data.localcache.dao.UserCallRecordDao
 import app.callcheck.mobile.data.localcache.db.CallCheckDatabase
+import app.callcheck.mobile.data.localcache.repository.PreJudgeCacheRepository
 import app.callcheck.mobile.data.localcache.repository.UserCallRecordRepository
 import dagger.Module
 import dagger.Provides
@@ -31,7 +33,25 @@ object LocalCacheModule {
             context,
             CallCheckDatabase::class.java,
             CallCheckDatabase.DATABASE_NAME,
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun providePreJudgeCacheDao(
+        database: CallCheckDatabase,
+    ): PreJudgeCacheDao {
+        return database.preJudgeCacheDao()
+    }
+
+    @Provides
+    @Singleton
+    fun providePreJudgeCacheRepository(
+        dao: PreJudgeCacheDao,
+    ): PreJudgeCacheRepository {
+        return PreJudgeCacheRepository(dao)
     }
 
     @Provides

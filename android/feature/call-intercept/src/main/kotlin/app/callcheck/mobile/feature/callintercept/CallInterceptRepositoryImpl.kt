@@ -4,9 +4,12 @@ import android.util.Log
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import app.callcheck.mobile.core.model.BehaviorPatternSignal
 import app.callcheck.mobile.core.model.DecisionResult
 import app.callcheck.mobile.core.model.DeviceEvidence
+import app.callcheck.mobile.core.model.PreJudgeResult
 import app.callcheck.mobile.core.model.SearchEvidence
+import app.callcheck.mobile.data.localcache.repository.PreJudgeCacheRepository
 import app.callcheck.mobile.data.search.CachedEntry
 import app.callcheck.mobile.data.search.SearchResultCachePolicy
 import app.callcheck.mobile.feature.decisionengine.DecisionEngine
@@ -14,6 +17,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withTimeoutOrNull
+import java.util.Calendar
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
@@ -22,43 +26,29 @@ private const val DEVICE_EVIDENCE_TIMEOUT_MS = 1000L
 private const val SEARCH_TIMEOUT_MS = 3000L
 
 /**
- * Production implementation of the call intercept pipeline.
+ * 3-Tier 인터셉트 파이프라인.
  *
- * Gathers device evidence and search evidence in parallel,
- * then feeds both to DecisionEngine for final scoring.
+ * Tier 0: PreJudge 영속 캐시 — Room DB lookup, 0ms, 엔진 실행 없음
+ * Tier 1: 인메모리 캐시 — ConcurrentHashMap, TTL 1h, 네트워크 0
+ * Tier 2: 풀 파이프라인 — Device + Search + LocalLearning + BehaviorPattern
  *
- * 성능 최적화:
- * - Decision 캐시: 동일 번호 반복 수신 시 TTL(1시간) 이내 캐시 반환
- * - 네트워크 호출 0, CPU 0 — 배터리 절약 핵심
- * - LRU 방식: 캐시 크기 50 초과 시 가장 오래된 항목 제거
+ * "전화가 울리기 전에 판단" — Tier 0이 핵심.
  */
 class CallInterceptRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val deviceEvidenceProvider: DeviceEvidenceProvider,
     private val searchEvidenceProvider: SearchEvidenceProvider,
     private val localLearningProvider: LocalLearningProvider,
+    private val preJudgeCacheRepository: PreJudgeCacheRepository,
     private val decisionEngine: DecisionEngine,
 ) : CallInterceptRepository {
 
-    /**
-     * 인메모리 Decision 캐시.
-     * Key: normalizedNumber (E.164)
-     * Value: CachedEntry<DecisionResult>
-     *
-     * TTL: DECISION_CACHE_TTL_MS (1시간)
-     * 용량: MEMORY_CACHE_MAX_ENTRIES (50)
-     *
-     * 앱 종료 시 자동 소멸 — 프라이버시 보호.
-     */
+    /** Tier 1: 인메모리 캐시 (TTL 1h, 최대 50건) */
     private val decisionCache = ConcurrentHashMap<String, CachedEntry<DecisionResult>>()
 
-    /**
-     * 네트워크 연결 상태 확인.
-     *
-     * Android ConnectivityManager API 사용 (API 23+).
-     * 오프라인 시 search 단계를 건너뛰고 device + localLearning만으로 판단.
-     * 이 함수 자체는 < 1ms (시스템 콜 1회).
-     */
+    /** 반복 수신 추적: 번호별 최근 수신 시각 (최대 10개) */
+    private val recentCallLog = ConcurrentHashMap<String, MutableList<Long>>()
+
     private fun isNetworkAvailable(): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
             ?: return false
@@ -72,22 +62,54 @@ class CallInterceptRepositoryImpl @Inject constructor(
         normalizedNumber: String,
         deviceCountryCode: String?,
     ): DecisionResult {
-        // ── 캐시 히트 확인 ──
+        val pipelineStartMs = System.currentTimeMillis()
+
+        // ══════════════════════════════════════════════
+        // Tier 0: 0ms PreJudge — Room 영속 캐시 lookup
+        // 전화 울리기 전 판단. 엔진 실행 없음.
+        // ══════════════════════════════════════════════
+        try {
+            val preJudge = preJudgeCacheRepository.lookup(normalizedNumber)
+            if (preJudge != null && preJudge.isUsable()) {
+                Log.i(TAG, "Tier0 HIT: $normalizedNumber (conf=${preJudge.effectiveConfidence()}, hits=${preJudge.hitCount})")
+                trackRecentCall(normalizedNumber, pipelineStartMs)
+                return DecisionResult(
+                    riskLevel = decisionEngine.riskLevelFromScore(preJudge.riskScore),
+                    category = preJudge.category,
+                    action = preJudge.action,
+                    confidence = preJudge.effectiveConfidence(),
+                    summary = preJudge.summary,
+                    reasons = emptyList(),
+                    deviceEvidence = null,
+                    searchEvidence = null,
+                )
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Tier0 lookup error (non-fatal): ${e.message}")
+        }
+
+        // ══════════════════════════════════════════════
+        // Tier 1: 인메모리 캐시 (TTL 1시간)
+        // ══════════════════════════════════════════════
         val cached = decisionCache[normalizedNumber]
         if (cached != null && cached.isValid(SearchResultCachePolicy.DECISION_CACHE_TTL_MS)) {
-            Log.i(TAG, "Cache HIT: $normalizedNumber (age=${System.currentTimeMillis() - cached.cachedAtMs}ms)")
+            Log.i(TAG, "Tier1 HIT: $normalizedNumber (age=${pipelineStartMs - cached.cachedAtMs}ms)")
+            trackRecentCall(normalizedNumber, pipelineStartMs)
             return cached.data
         }
 
+        // ══════════════════════════════════════════════
+        // Tier 2: 풀 파이프라인
+        // Device + Search + LocalLearning + BehaviorPattern
+        // ══════════════════════════════════════════════
         return coroutineScope {
             try {
-                Log.d(TAG, "Pipeline start: $normalizedNumber (country=$deviceCountryCode)")
+                Log.d(TAG, "Tier2 start: $normalizedNumber (country=$deviceCountryCode)")
 
                 val online = isNetworkAvailable()
                 Log.d(TAG, "Network: ${if (online) "ONLINE" else "OFFLINE"}")
 
-                // Parallel: device evidence + local learning (항상 실행)
-                // + search enrichment (온라인일 때만)
+                // Parallel: device + local learning (항상) + search (온라인만)
                 val deviceJob = async {
                     withTimeoutOrNull(DEVICE_EVIDENCE_TIMEOUT_MS) {
                         try {
@@ -99,7 +121,6 @@ class CallInterceptRepositoryImpl @Inject constructor(
                     }
                 }
 
-                // 오프라인 fallback: search 생략 → 네트워크 호출 0, <20ms 판단
                 val searchJob = if (online) {
                     async {
                         withTimeoutOrNull(SEARCH_TIMEOUT_MS) {
@@ -115,7 +136,6 @@ class CallInterceptRepositoryImpl @Inject constructor(
                     null
                 }
 
-                // Local learning: Room 조회 (<5ms, 인덱스 기반)
                 val localLearningJob = async {
                     try {
                         localLearningProvider.getSignal(normalizedNumber)
@@ -129,19 +149,34 @@ class CallInterceptRepositoryImpl @Inject constructor(
                 val searchEvidence = searchJob?.await()
                 val localLearning = localLearningJob.await()
 
-                Log.d(TAG, "Evidence gathered - device: ${deviceEvidence != null}, search: ${searchEvidence != null}, local: ${localLearning != null}, offline: ${!online}")
+                // BehaviorPattern: 시간대 + 반복 + VoIP (동기, <1ms)
+                val behaviorSignal = buildBehaviorSignal(normalizedNumber, deviceCountryCode)
 
-                // Decision engine — synchronous, < 50ms
+                Log.d(TAG, "Evidence: device=${deviceEvidence != null}, search=${searchEvidence != null}, local=${localLearning != null}, behavior=${behaviorSignal.recentHourCallCount}calls/1h, offline=${!online}")
+
+                // Decision engine — 4축 판단, < 50ms
                 val result = decisionEngine.evaluate(
                     deviceEvidence = deviceEvidence,
                     searchEvidence = searchEvidence,
                     localLearning = localLearning,
+                    behaviorPattern = behaviorSignal,
                 )
 
                 Log.d(TAG, "Decision: ${result.category} / ${result.riskLevel} / ${result.action}")
 
-                // ── 캐시 저장 ──
+                // Tier 1 인메모리 캐시 저장
                 cacheResult(normalizedNumber, result)
+
+                // Tier 0 영속 캐시 저장 (판단 반환 안 막음)
+                try {
+                    preJudgeCacheRepository.store(normalizedNumber, result)
+                    Log.d(TAG, "Tier0 STORE: $normalizedNumber")
+                } catch (e: Exception) {
+                    Log.w(TAG, "Tier0 store error (non-fatal): ${e.message}")
+                }
+
+                // 반복 수신 추적
+                trackRecentCall(normalizedNumber, pipelineStartMs)
 
                 result
 
@@ -152,23 +187,64 @@ class CallInterceptRepositoryImpl @Inject constructor(
         }
     }
 
-    /**
-     * 결과를 캐시에 저장. LRU 방식으로 용량 관리.
-     */
+    // ── 반복 수신 추적 ──
+
+    private fun trackRecentCall(normalizedNumber: String, timestampMs: Long) {
+        val timestamps = recentCallLog.getOrPut(normalizedNumber) { mutableListOf() }
+        timestamps.add(timestampMs)
+        while (timestamps.size > 10) timestamps.removeAt(0)
+    }
+
+    // ── BehaviorPatternSignal 생성 ──
+
+    private fun buildBehaviorSignal(
+        normalizedNumber: String,
+        deviceCountryCode: String?,
+    ): BehaviorPatternSignal {
+        val now = System.currentTimeMillis()
+        val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        val timestamps = recentCallLog[normalizedNumber] ?: emptyList()
+        val oneHourAgo = now - 3_600_000L
+        val oneDayAgo = now - 86_400_000L
+
+        return BehaviorPatternSignal(
+            currentHour = currentHour,
+            recentCallTimestamps = timestamps,
+            recentHourCallCount = timestamps.count { it > oneHourAgo },
+            recent24hCallCount = timestamps.count { it > oneDayAgo },
+            isVoipCall = false, // TODO: TelephonyManager 기반 VoIP 감지
+            isInternationalCall = isInternationalNumber(normalizedNumber, deviceCountryCode),
+            isRoaming = false, // TODO: TelephonyManager.isNetworkRoaming()
+        )
+    }
+
+    private fun isInternationalNumber(normalizedNumber: String, deviceCountryCode: String?): Boolean {
+        if (deviceCountryCode == null || !normalizedNumber.startsWith("+")) return false
+        val numberCountry = normalizedNumber.removePrefix("+")
+        val dialCode = countryToDialCode(deviceCountryCode) ?: return false
+        return !numberCountry.startsWith(dialCode)
+    }
+
+    private fun countryToDialCode(countryCode: String): String? = when (countryCode.uppercase()) {
+        "KR" -> "82"; "US", "CA" -> "1"; "JP" -> "81"; "CN" -> "86"
+        "GB" -> "44"; "DE" -> "49"; "FR" -> "33"; "AU" -> "61"
+        "IN" -> "91"; "BR" -> "55"; "TW" -> "886"; "HK" -> "852"
+        "SG" -> "65"; "TH" -> "66"; "VN" -> "84"; "PH" -> "63"
+        "ID" -> "62"; "MY" -> "60"; "MX" -> "52"; "RU" -> "7"
+        else -> null
+    }
+
+    // ── Tier 1 인메모리 캐시 관리 ──
+
     private fun cacheResult(normalizedNumber: String, result: DecisionResult) {
-        // 용량 초과 시 만료된 항목 먼저 제거, 그래도 넘치면 가장 오래된 항목 제거
         if (decisionCache.size >= SearchResultCachePolicy.MEMORY_CACHE_MAX_ENTRIES) {
             evictExpiredEntries()
         }
         if (decisionCache.size >= SearchResultCachePolicy.MEMORY_CACHE_MAX_ENTRIES) {
             evictOldestEntry()
         }
-
-        decisionCache[normalizedNumber] = CachedEntry(
-            data = result,
-            phoneNumber = normalizedNumber,
-        )
-        Log.d(TAG, "Cache STORE: $normalizedNumber (size=${decisionCache.size})")
+        decisionCache[normalizedNumber] = CachedEntry(data = result, phoneNumber = normalizedNumber)
+        Log.d(TAG, "Tier1 STORE: $normalizedNumber (size=${decisionCache.size})")
     }
 
     private fun evictExpiredEntries() {
@@ -177,16 +253,14 @@ class CallInterceptRepositoryImpl @Inject constructor(
             !it.value.isValid(SearchResultCachePolicy.DECISION_CACHE_TTL_MS, now)
         }
         expired.forEach { decisionCache.remove(it.key) }
-        if (expired.isNotEmpty()) {
-            Log.d(TAG, "Cache EVICT expired: ${expired.size} entries")
-        }
+        if (expired.isNotEmpty()) Log.d(TAG, "Tier1 EVICT expired: ${expired.size}")
     }
 
     private fun evictOldestEntry() {
         val oldest = decisionCache.entries.minByOrNull { it.value.cachedAtMs }
         if (oldest != null) {
             decisionCache.remove(oldest.key)
-            Log.d(TAG, "Cache EVICT LRU: ${oldest.key}")
+            Log.d(TAG, "Tier1 EVICT LRU: ${oldest.key}")
         }
     }
 }

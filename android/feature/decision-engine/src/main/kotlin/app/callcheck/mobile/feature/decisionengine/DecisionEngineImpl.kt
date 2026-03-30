@@ -1,6 +1,7 @@
 package app.callcheck.mobile.feature.decisionengine
 
 import app.callcheck.mobile.core.model.ActionRecommendation
+import app.callcheck.mobile.core.model.BehaviorPatternSignal
 import app.callcheck.mobile.core.model.ConclusionCategory
 import app.callcheck.mobile.core.model.DecisionResult
 import app.callcheck.mobile.core.model.DeviceEvidence
@@ -36,6 +37,7 @@ class DecisionEngineImpl @Inject constructor(
         deviceEvidence: DeviceEvidence?,
         searchEvidence: SearchEvidence?,
         localLearning: LocalLearningSignal?,
+        behaviorPattern: BehaviorPatternSignal?,
     ): DecisionResult {
         val hasAnyEvidence = (deviceEvidence != null && deviceEvidence.hasAnyHistory) ||
                 (searchEvidence != null && !searchEvidence.isEmpty) ||
@@ -45,10 +47,11 @@ class DecisionEngineImpl @Inject constructor(
         // Step 1: Relationship score from device evidence
         val relationshipScore = calculateRelationshipScore(deviceEvidence)
 
-        // Step 2: Risk score from search + device patterns + local learning
+        // Step 2: Risk score from search + device patterns + local learning + behavior pattern
         val rawRiskScore = calculateRiskScore(deviceEvidence, searchEvidence)
         val localAdj = localLearning?.riskAdjustment() ?: 0f
-        val riskScore = (rawRiskScore + localAdj).coerceIn(0f, 1f)
+        val behaviorAdj = behaviorPattern?.riskAdjustment() ?: 0f
+        val riskScore = (rawRiskScore + localAdj + behaviorAdj).coerceIn(0f, 1f)
 
         // Step 3: Conclusion category
         val category = determineCategory(
@@ -344,5 +347,16 @@ class DecisionEngineImpl @Inject constructor(
         }
 
         return confidence.coerceIn(0f, 1f)
+    }
+
+    // ───────────────────────────────────────────────
+    // Risk Level from Score (Tier 0 PreJudge용)
+    // ───────────────────────────────────────────────
+
+    override fun riskLevelFromScore(score: Float): RiskLevel = when {
+        score >= 0.6f -> RiskLevel.HIGH
+        score >= 0.3f -> RiskLevel.MEDIUM
+        score > 0f -> RiskLevel.LOW
+        else -> RiskLevel.UNKNOWN
     }
 }
