@@ -177,24 +177,24 @@ class RuntimeConnectionEvidenceCountryConfigTest {
         println("┌──────────┬─────────┬──────────┬──────────┬──────────────────────────────┐")
         println("│ Tier     │ Monthly │ Yearly   │ Trial    │ Play Offer ID                │")
         println("├──────────┼─────────┼──────────┼──────────┼──────────────────────────────┤")
-        println("│ Tier 1   │ \$9.99   │ \$99.99   │ 7 days   │ free-trial-t1                │")
-        println("│ Tier 2   │ \$6.99   │ \$69.99   │ 5 days   │ free-trial-t2                │")
-        println("│ Tier 3   │ \$3.99   │ \$39.99   │ 3 days   │ free-trial-t3                │")
-        println("└──────────┴─────────┴──────────┴──────────┴──────────────────────────────┘")
+        println("│ Tier 1   │ \$9.9    │ 30 days  │ free-trial-1month            │")
+        println("│ Tier 2   │ \$6.9    │ 30 days  │ free-trial-1month            │")
+        println("│ Tier 3   │ \$3.9    │ 30 days  │ free-trial-1month            │")
+        println("└──────────┴─────────┴──────────┴──────────────────────────────┘")
 
         // 앱 내 가격 설명 문구 (7개 언어)
         println("\n[앱 내 가격 설명 문구]")
         for (lang in SupportedLanguage.values()) {
             val msg = PricingUiMessages.forLanguage(lang)
-            val trialMsg = msg.formatFreeTrial(7)
+            val trialMsg = msg.formatFreeTrial(30)
             println("[${lang.code}] trial='$trialMsg', subscribe='${msg.subscribeButton}'")
-            println("[${lang.code}] savings='${msg.yearlySavingsMessage}'")
-            assertTrue("${lang.code} trial message must contain 7", trialMsg.contains("7"))
+            println("[${lang.code}] cancel='${msg.cancelSubscriptionButton}', refund='${msg.noRefundNotice}'")
+            assertTrue("${lang.code} trial message must contain 30", trialMsg.contains("30"))
         }
 
-        // 연간 구독 가격 확인
-        assertEquals("Tier 1 yearly", "\$99.99", PricingTier.TIER_1.yearlyPriceUsd)
-        assertEquals("Tier 2 yearly", "\$69.99", PricingTier.TIER_2.yearlyPriceUsd)
-        assertEquals("Tier 3 yearly", "\$39.99", PricingTier.TIER_3.yearlyPriceUsd)
+        // 월간 단일 구독 가격 확인
+        assertEquals("Tier 1 monthly", "\$9.9", PricingTier.TIER_1.monthlyPriceUsd)
+        assertEquals("Tier 2 monthly", "\$6.9", PricingTier.TIER_2.monthlyPriceUsd)
+        assertEquals("Tier 3 monthly", "\$3.9", PricingTier.TIER_3.monthlyPriceUsd)
     }
 }

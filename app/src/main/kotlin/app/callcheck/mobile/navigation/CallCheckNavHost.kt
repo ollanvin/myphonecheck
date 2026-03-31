@@ -1716,37 +1716,40 @@ private fun PurchaseScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Pricing cards
-            // Monthly
-            PricingCard(
-                title = "Monthly",
-                price = tier.monthlyPriceUsd + "/mo",
-                isSelected = false,
-            )
+            // ── Free trial banner ──
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1B3548)),
+                shape = RoundedCornerShape(16.dp),
+                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF4FC3F7)),
+            ) {
+                Column(
+                    modifier = Modifier.padding(24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = pricingMsg.formatFreeTrial(tier.freeTrialDays),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF4FC3F7),
+                        textAlign = TextAlign.Center,
+                    )
 
-            Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-            // Yearly
-            PricingCard(
-                title = "Yearly",
-                price = tier.yearlyPriceUsd + "/yr",
-                isSelected = true,
-                badge = pricingMsg.yearlySavingsMessage,
-            )
+                    // Monthly price — single plan
+                    Text(
+                        text = pricingMsg.formatMonthlyPrice(tier.monthlyPriceUsd),
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = Color.White,
+                    )
+                }
+            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-            // Free trial message
-            Text(
-                text = pricingMsg.formatFreeTrial(tier.freeTrialDays),
-                fontSize = 14.sp,
-                color = Color(0xFFB0BEC5),
-                textAlign = TextAlign.Center,
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Subscribe button
+            // ── Subscribe button ──
             Button(
                 onClick = { /* billing flow */ },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
@@ -1761,9 +1764,44 @@ private fun PurchaseScreen(
                 )
             }
 
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // ── Cancel subscription button — large, always visible ──
+            OutlinedButton(
+                onClick = { /* cancel subscription flow via Play Billing */ },
+                modifier = Modifier.fillMaxWidth().height(52.dp),
+                shape = RoundedCornerShape(12.dp),
+                border = androidx.compose.foundation.BorderStroke(2.dp, Color(0xFFEF5350)),
+            ) {
+                Text(
+                    text = pricingMsg.cancelSubscriptionButton,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFFEF5350),
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // ── No-refund + service continuation notice ──
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1B2838)),
+                shape = RoundedCornerShape(12.dp),
+            ) {
+                Text(
+                    text = pricingMsg.noRefundNotice,
+                    fontSize = 13.sp,
+                    color = Color(0xFFB0BEC5),
+                    textAlign = TextAlign.Center,
+                    lineHeight = 18.sp,
+                    modifier = Modifier.padding(16.dp),
+                )
+            }
+
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Cancellation note
+            // Cancellation route note
             Text(
                 text = pricingMsg.cancellationNote,
                 fontSize = 12.sp,
@@ -1783,55 +1821,7 @@ private fun PurchaseScreen(
     }
 }
 
-@Composable
-private fun PricingCard(
-    title: String,
-    price: String,
-    isSelected: Boolean,
-    badge: String? = null,
-) {
-    val borderColor = if (isSelected) Color(0xFF4FC3F7) else Color(0xFF37474F)
-    val bgColor = if (isSelected) Color(0xFF1B3548) else Color(0xFF1B2838)
-
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = bgColor),
-        shape = RoundedCornerShape(12.dp),
-        border = androidx.compose.foundation.BorderStroke(
-            width = if (isSelected) 2.dp else 1.dp,
-            color = borderColor,
-        ),
-    ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = title,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White,
-                )
-                Text(
-                    text = price,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = if (isSelected) Color(0xFF4FC3F7) else Color.White,
-                )
-            }
-            if (badge != null) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = badge,
-                    fontSize = 12.sp,
-                    color = Color(0xFF81C784),
-                )
-            }
-        }
-    }
-}
+// PricingCard 제거됨 — 단일 월간 구독 전환 (2026-03-31)
 
 // ═══════════════════════════════════════════════════════════
 // 통화 기록 화면 — 사용자 기록 레이어

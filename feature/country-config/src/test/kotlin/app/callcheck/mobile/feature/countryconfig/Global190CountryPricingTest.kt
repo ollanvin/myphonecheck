@@ -113,9 +113,9 @@ class Global190CountryPricingTest {
         }
 
         println("[PRICING-190] Tier distribution:")
-        println("  Tier 1 (\$9.99): $tier1Count countries")
-        println("  Tier 2 (\$6.99): $tier2Count countries")
-        println("  Tier 3 (\$3.99): $tier3Count countries")
+        println("  Tier 1 (\$9.9): $tier1Count countries")
+        println("  Tier 2 (\$6.9): $tier2Count countries")
+        println("  Tier 3 (\$3.9): $tier3Count countries")
         println("  Total: ${tier1Count + tier2Count + tier3Count}")
 
         // Tier 1은 약 35개국
@@ -142,9 +142,8 @@ class Global190CountryPricingTest {
         for (cc in tier1Sample) {
             val tier = CountryPricingMapper.getTier(cc)
             assertEquals("$cc must be Tier 1", 1, tier.tierId)
-            assertEquals("$cc monthly must be \$9.99", "\$9.99", tier.monthlyPriceUsd)
-            assertEquals("$cc yearly must be \$99.99", "\$99.99", tier.yearlyPriceUsd)
-            assertEquals("$cc trial must be 7 days", 7, tier.freeTrialDays)
+            assertEquals("$cc monthly must be \$9.9", "\$9.9", tier.monthlyPriceUsd)
+            assertEquals("$cc trial must be 30 days", 30, tier.freeTrialDays)
         }
     }
 
@@ -159,9 +158,8 @@ class Global190CountryPricingTest {
         for (cc in tier2Sample) {
             val tier = CountryPricingMapper.getTier(cc)
             assertEquals("$cc must be Tier 2", 2, tier.tierId)
-            assertEquals("$cc monthly must be \$6.99", "\$6.99", tier.monthlyPriceUsd)
-            assertEquals("$cc yearly must be \$69.99", "\$69.99", tier.yearlyPriceUsd)
-            assertEquals("$cc trial must be 5 days", 5, tier.freeTrialDays)
+            assertEquals("$cc monthly must be \$6.9", "\$6.9", tier.monthlyPriceUsd)
+            assertEquals("$cc trial must be 30 days", 30, tier.freeTrialDays)
         }
     }
 
@@ -174,9 +172,8 @@ class Global190CountryPricingTest {
         for (cc in tier3Sample) {
             val tier = CountryPricingMapper.getTier(cc)
             assertEquals("$cc must be Tier 3", 3, tier.tierId)
-            assertEquals("$cc monthly must be \$3.99", "\$3.99", tier.monthlyPriceUsd)
-            assertEquals("$cc yearly must be \$39.99", "\$39.99", tier.yearlyPriceUsd)
-            assertEquals("$cc trial must be 3 days", 3, tier.freeTrialDays)
+            assertEquals("$cc monthly must be \$3.9", "\$3.9", tier.monthlyPriceUsd)
+            assertEquals("$cc trial must be 30 days", 30, tier.freeTrialDays)
         }
     }
 
@@ -188,7 +185,7 @@ class Global190CountryPricingTest {
     fun `PRICING-190 null country defaults to Tier 1`() {
         val tier = CountryPricingMapper.getTier(null)
         assertEquals("null must default to Tier 1", 1, tier.tierId)
-        assertEquals("\$9.99", tier.monthlyPriceUsd)
+        assertEquals("\$9.9", tier.monthlyPriceUsd)
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -204,17 +201,18 @@ class Global190CountryPricingTest {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // 5. 연간 가격 = 월간 × 10 (2개월 무료 할인)
+    // 5. 단일 월간 구독 — 연간 플랜 없음 확인
     // ═══════════════════════════════════════════════════════════
 
     @Test
-    fun `PRICING-190 yearly price is approximately monthly times 10`() {
-        // Tier 1: $9.99 × 10 = $99.90 ≈ $99.99
-        assertEquals("\$99.99", PricingTier.TIER_1.yearlyPriceUsd)
-        // Tier 2: $6.99 × 10 = $69.90 ≈ $69.99
-        assertEquals("\$69.99", PricingTier.TIER_2.yearlyPriceUsd)
-        // Tier 3: $3.99 × 10 = $39.90 ≈ $39.99
-        assertEquals("\$39.99", PricingTier.TIER_3.yearlyPriceUsd)
+    fun `PRICING-190 single monthly plan with 30-day free trial`() {
+        assertEquals(30, PricingTier.TIER_1.freeTrialDays)
+        assertEquals(30, PricingTier.TIER_2.freeTrialDays)
+        assertEquals(30, PricingTier.TIER_3.freeTrialDays)
+        // 모든 tier에 동일한 offer ID
+        assertEquals("free-trial-1month", PricingTier.TIER_1.playOfferIdTrial)
+        assertEquals("free-trial-1month", PricingTier.TIER_2.playOfferIdTrial)
+        assertEquals("free-trial-1month", PricingTier.TIER_3.playOfferIdTrial)
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -222,10 +220,11 @@ class Global190CountryPricingTest {
     // ═══════════════════════════════════════════════════════════
 
     @Test
-    fun `PRICING-190 Play Console offer IDs are tier-specific`() {
-        assertEquals("free-trial-t1", PricingTier.TIER_1.playOfferIdTrial)
-        assertEquals("free-trial-t2", PricingTier.TIER_2.playOfferIdTrial)
-        assertEquals("free-trial-t3", PricingTier.TIER_3.playOfferIdTrial)
+    fun `PRICING-190 Play Console offer IDs are unified`() {
+        // 단일 월간 구독: 모든 tier 동일 offer ID
+        assertEquals("free-trial-1month", PricingTier.TIER_1.playOfferIdTrial)
+        assertEquals("free-trial-1month", PricingTier.TIER_2.playOfferIdTrial)
+        assertEquals("free-trial-1month", PricingTier.TIER_3.playOfferIdTrial)
         // Base plan은 모든 Tier에서 동일
         assertEquals(PricingTier.TIER_1.playBasePlanMonthly, PricingTier.TIER_2.playBasePlanMonthly)
         assertEquals(PricingTier.TIER_2.playBasePlanMonthly, PricingTier.TIER_3.playBasePlanMonthly)
@@ -241,13 +240,20 @@ class Global190CountryPricingTest {
             val msg = PricingUiMessages.forLanguage(lang)
             assertTrue("${lang.code} freeTrialMessage", msg.freeTrialMessage.isNotBlank())
             assertTrue("${lang.code} subscribeButton", msg.subscribeButton.isNotBlank())
-            assertTrue("${lang.code} yearlySavingsMessage", msg.yearlySavingsMessage.isNotBlank())
+            assertTrue("${lang.code} cancelSubscriptionButton", msg.cancelSubscriptionButton.isNotBlank())
             assertTrue("${lang.code} cancellationNote", msg.cancellationNote.isNotBlank())
+            assertTrue("${lang.code} noRefundNotice", msg.noRefundNotice.isNotBlank())
+            assertTrue("${lang.code} monthlyPriceLabel", msg.monthlyPriceLabel.isNotBlank())
 
             // {days} 플레이스홀더 치환 검증
-            val formatted = msg.formatFreeTrial(7)
-            assertTrue("${lang.code} formatted must contain '7'", formatted.contains("7"))
+            val formatted = msg.formatFreeTrial(30)
+            assertTrue("${lang.code} formatted must contain '30'", formatted.contains("30"))
             assertTrue("${lang.code} formatted must not contain '{days}'", !formatted.contains("{days}"))
+
+            // {price} 플레이스홀더 치환 검증
+            val priceFormatted = msg.formatMonthlyPrice("\$9.9")
+            assertTrue("${lang.code} price must contain '\$9.9'", priceFormatted.contains("\$9.9"))
+            assertTrue("${lang.code} price must not contain '{price}'", !priceFormatted.contains("{price}"))
         }
     }
 
@@ -264,8 +270,8 @@ class Global190CountryPricingTest {
         assertTrue("Tier 1 > Tier 2", t1 > t2)
         assertTrue("Tier 2 > Tier 3", t2 > t3)
 
-        // 무료 체험 일수도 Tier 1 > Tier 2 > Tier 3
-        assertTrue("Trial: Tier 1 > Tier 2", PricingTier.TIER_1.freeTrialDays > PricingTier.TIER_2.freeTrialDays)
-        assertTrue("Trial: Tier 2 > Tier 3", PricingTier.TIER_2.freeTrialDays > PricingTier.TIER_3.freeTrialDays)
+        // 무료 체험 일수는 전 Tier 동일 30일
+        assertEquals("Trial: all tiers 30 days", PricingTier.TIER_1.freeTrialDays, PricingTier.TIER_2.freeTrialDays)
+        assertEquals("Trial: all tiers 30 days", PricingTier.TIER_2.freeTrialDays, PricingTier.TIER_3.freeTrialDays)
     }
 }
