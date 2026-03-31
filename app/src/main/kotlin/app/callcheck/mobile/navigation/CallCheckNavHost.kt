@@ -330,149 +330,182 @@ private fun OnboardingScreen(
     }
 }
 
-/** 온보딩 1장: 이 앱은 무엇을 지키는가 */
+/** 온보딩 1장: 질문 + 위협 인식 */
 @Composable
 private fun OnboardingPage1() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.verticalScroll(rememberScrollState()),
     ) {
-        Icon(
-            imageVector = Icons.Filled.Shield,
-            contentDescription = null,
-            tint = Color(0xFF4FC3F7),
-            modifier = Modifier.size(80.dp),
-        )
         Spacer(modifier = Modifier.height(24.dp))
+
+        // 위협 질문 — 큰 글씨
         Text(
-            text = "내 폰을 지키는\n실시간 인터셉트 가드",
-            fontSize = 24.sp,
+            text = "모르는 번호,\n그냥 받으시겠습니까?",
+            fontSize = 26.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,
             textAlign = TextAlign.Center,
+            lineHeight = 36.sp,
         )
-        Spacer(modifier = Modifier.height(16.dp))
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // 위협 상황 묘사
         Text(
-            text = "전화, 문자, 알림, 프라이버시까지\n모든 위험과 소음을 실시간으로 알려주고\n당신이 바로 결정합니다.",
+            text = "사기 전화, 피싱 문자, 쓸데없는 알림\n이미 당신을 계속 노리고 있습니다.",
             fontSize = 16.sp,
-            color = Color(0xFFB0BEC5),
+            color = Color(0xFFE57373),
             textAlign = TextAlign.Center,
             lineHeight = 24.sp,
+            fontWeight = FontWeight.Medium,
         )
-        Spacer(modifier = Modifier.height(24.dp))
-        // 온디바이스 선언
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // 해결 제시
         Card(
             modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF1A3A2A)),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF1A2A3A)),
             shape = RoundedCornerShape(12.dp),
         ) {
-            Row(
-                modifier = Modifier.padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(Icons.Filled.Check, null, tint = Color(0xFF81C784), modifier = Modifier.size(20.dp))
-                Spacer(modifier = Modifier.width(12.dp))
+            Column(modifier = Modifier.padding(20.dp)) {
                 Text(
-                    text = "100% 온디바이스 · 서버 전송 없음 · 데이터 수집 없음",
+                    text = "받기 전에 끝냅니다.",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF4FC3F7),
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "실시간 인터셉트로\n위험 여부를 즉시 판단합니다.",
                     fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFF81C784),
+                    color = Color(0xFFB0BEC5),
+                    lineHeight = 20.sp,
                 )
             }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // 온디바이스 신뢰
+        Text(
+            text = "100% 온디바이스 · 서버 전송 없음",
+            fontSize = 12.sp,
+            color = Color(0xFF455A64),
+        )
     }
 }
 
-/** 온보딩 2장: 4가지 보호 영역 */
+/** 온보딩 2장: 4곳 공격 포인트 */
 @Composable
 private fun OnboardingPage2() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.verticalScroll(rememberScrollState()),
     ) {
+        Spacer(modifier = Modifier.height(8.dp))
+
         Text(
-            text = "4가지 보호 영역",
-            fontSize = 24.sp,
+            text = "당신의 폰은 이미\n4곳에서 공격받고 있습니다",
+            fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.White,
+            color = Color(0xFFE57373),
+            textAlign = TextAlign.Center,
+            lineHeight = 32.sp,
         )
+
         Spacer(modifier = Modifier.height(24.dp))
 
-        data class EngineInfo(
+        data class ThreatInfo(
             val icon: ImageVector,
-            val question: String,
-            val desc: String,
+            val threat: String,
+            val attack: String,
             val color: Color,
         )
-        val engines = listOf(
-            EngineInfo(Icons.Filled.Phone, "이 전화, 받아도 되는가", "사기/스팸 실시간 판단", Color(0xFF4FC3F7)),
-            EngineInfo(Icons.Filled.Notifications, "이 알림, 무시해도 되는가", "소음/프로모션 즉시 분류", Color(0xFFFFB74D)),
-            EngineInfo(Icons.Filled.Message, "이 메시지, 믿어도 되는가", "피싱/사칭 열기 전 감지", Color(0xFF81C784)),
-            EngineInfo(Icons.Filled.Security, "지금 내 폰, 안전한가", "카메라/마이크 몰래 접근 감시", Color(0xFFE57373)),
+        val threats = listOf(
+            ThreatInfo(Icons.Filled.Phone, "전화", "사기 전화 · 보이스피싱", Color(0xFF4FC3F7)),
+            ThreatInfo(Icons.Filled.Notifications, "알림", "광고 폭탄 · 유도 클릭", Color(0xFFFFB74D)),
+            ThreatInfo(Icons.Filled.Message, "문자", "피싱 링크 · 기관 사칭", Color(0xFF81C784)),
+            ThreatInfo(Icons.Filled.Security, "프라이버시", "몰래 카메라 · 마이크 접근", Color(0xFFE57373)),
         )
 
-        for (engine in engines) {
+        for (threat in threats) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 6.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF1A2A3A)),
+                    .padding(vertical = 5.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF2A1A1A)),
                 shape = RoundedCornerShape(12.dp),
             ) {
                 Row(
                     modifier = Modifier.padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Icon(engine.icon, null, tint = engine.color, modifier = Modifier.size(28.dp))
+                    Icon(threat.icon, null, tint = threat.color, modifier = Modifier.size(28.dp))
                     Spacer(modifier = Modifier.width(16.dp))
                     Column {
-                        Text(engine.question, fontSize = 15.sp, color = Color.White, fontWeight = FontWeight.Bold)
-                        Text(engine.desc, fontSize = 12.sp, color = Color(0xFF78909C))
+                        Text(
+                            text = threat.threat,
+                            fontSize = 16.sp,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Text(
+                            text = threat.attack,
+                            fontSize = 13.sp,
+                            color = Color(0xFFEF9A9A),
+                        )
                     }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(20.dp))
+
         Text(
-            text = "자동 차단 없음 · 판단은 항상 당신이",
-            fontSize = 14.sp,
-            color = Color(0xFF607D8B),
+            text = "CallCheck이 4곳 전부 실시간으로 잡습니다.",
+            fontSize = 15.sp,
+            color = Color(0xFF4FC3F7),
+            fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
         )
     }
 }
 
-/** 온보딩 3장: 필요한 권한 안내 */
+/** 온보딩 3장: 접근 필요 이유 + 신뢰 확정 */
 @Composable
 private fun OnboardingPage3() {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.verticalScroll(rememberScrollState()),
     ) {
+        Spacer(modifier = Modifier.height(8.dp))
+
         Text(
-            text = "필요한 권한 안내",
-            fontSize = 24.sp,
+            text = "이걸 막으려면,\n접근이 필요합니다",
+            fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "각 보호 영역이 동작하려면\n아래 권한이 필요합니다.",
-            fontSize = 14.sp,
-            color = Color(0xFFB0BEC5),
             textAlign = TextAlign.Center,
+            lineHeight = 32.sp,
         )
+
         Spacer(modifier = Modifier.height(24.dp))
 
-        val permissions = listOf(
-            Triple("전화 상태 읽기", "수신 전화를 실시간 분석", Icons.Filled.Phone),
-            Triple("알림 접근", "푸시 알림 소음/프로모션 감지", Icons.Filled.Notifications),
-            Triple("SMS 수신", "문자 사기/피싱 분석", Icons.Filled.Message),
-            Triple("앱 사용 통계", "카메라/마이크 접근 감시", Icons.Filled.Security),
+        data class AccessInfo(
+            val target: String,
+            val why: String,
+            val icon: ImageVector,
+        )
+        val accesses = listOf(
+            AccessInfo("전화 상태", "사기 전화를 받기 전에 잡으려면", Icons.Filled.Phone),
+            AccessInfo("알림 읽기", "광고/소음 알림을 걸러내려면", Icons.Filled.Notifications),
+            AccessInfo("문자 수신", "피싱 링크를 열기 전에 잡으려면", Icons.Filled.Message),
+            AccessInfo("앱 사용 통계", "몰래 카메라 접근을 감지하려면", Icons.Filled.Security),
         )
 
-        for ((title, reason, icon) in permissions) {
+        for (access in accesses) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -481,27 +514,50 @@ private fun OnboardingPage3() {
                 shape = RoundedCornerShape(12.dp),
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Icon(icon, null, tint = Color(0xFF4FC3F7), modifier = Modifier.size(24.dp))
+                    Icon(access.icon, null, tint = Color(0xFF4FC3F7), modifier = Modifier.size(24.dp))
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
-                        Text(title, fontSize = 15.sp, color = Color.White, fontWeight = FontWeight.SemiBold)
-                        Text(reason, fontSize = 12.sp, color = Color(0xFF607D8B))
+                        Text(
+                            text = access.why,
+                            fontSize = 14.sp,
+                            color = Color(0xFFB0BEC5),
+                        )
+                        Text(
+                            text = access.target,
+                            fontSize = 13.sp,
+                            color = Color(0xFF607D8B),
+                        )
                     }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "모든 분석은 기기 내에서만 처리됩니다.\n외부 서버로 데이터가 전송되지 않습니다.",
-            fontSize = 12.sp,
-            color = Color(0xFF455A64),
-            textAlign = TextAlign.Center,
-            lineHeight = 18.sp,
-        )
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // 신뢰 확정 — 강한 톤
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF1A3A2A)),
+            shape = RoundedCornerShape(12.dp),
+        ) {
+            Column(modifier = Modifier.padding(20.dp)) {
+                Text(
+                    text = "당신의 데이터는 밖으로 나가지 않습니다.",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF81C784),
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "모든 분석은 이 기기 안에서만 처리됩니다.",
+                    fontSize = 13.sp,
+                    color = Color(0xFF81C784).copy(alpha = 0.7f),
+                )
+            }
+        }
     }
 }
 
