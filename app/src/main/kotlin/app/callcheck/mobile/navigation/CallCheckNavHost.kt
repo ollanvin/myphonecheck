@@ -398,14 +398,20 @@ private fun OnboardingPage2() {
         )
         Spacer(modifier = Modifier.height(24.dp))
 
+        data class EngineInfo(
+            val icon: ImageVector,
+            val question: String,
+            val desc: String,
+            val color: Color,
+        )
         val engines = listOf(
-            Triple(Icons.Filled.Phone, "CallCheck — 전화 보호", Color(0xFF4FC3F7)),
-            Triple(Icons.Filled.Notifications, "PushCheck — 알림 감시", Color(0xFFFFB74D)),
-            Triple(Icons.Filled.Message, "MessageCheck — 메시지 방어", Color(0xFF81C784)),
-            Triple(Icons.Filled.Security, "PrivacyCheck — 프라이버시 감시", Color(0xFFE57373)),
+            EngineInfo(Icons.Filled.Phone, "이 전화, 받아도 되는가", "사기/스팸 실시간 판단", Color(0xFF4FC3F7)),
+            EngineInfo(Icons.Filled.Notifications, "이 알림, 무시해도 되는가", "소음/프로모션 즉시 분류", Color(0xFFFFB74D)),
+            EngineInfo(Icons.Filled.Message, "이 메시지, 믿어도 되는가", "피싱/사칭 열기 전 감지", Color(0xFF81C784)),
+            EngineInfo(Icons.Filled.Security, "지금 내 폰, 안전한가", "카메라/마이크 몰래 접근 감시", Color(0xFFE57373)),
         )
 
-        for ((icon, label, color) in engines) {
+        for (engine in engines) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -417,9 +423,12 @@ private fun OnboardingPage2() {
                     modifier = Modifier.padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Icon(icon, null, tint = color, modifier = Modifier.size(28.dp))
+                    Icon(engine.icon, null, tint = engine.color, modifier = Modifier.size(28.dp))
                     Spacer(modifier = Modifier.width(16.dp))
-                    Text(label, fontSize = 16.sp, color = Color.White, fontWeight = FontWeight.Medium)
+                    Column {
+                        Text(engine.question, fontSize = 15.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(engine.desc, fontSize = 12.sp, color = Color(0xFF78909C))
+                    }
                 }
             }
         }
@@ -547,16 +556,16 @@ private fun HomeScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 EngineCard(
-                    name = "CallCheck",
-                    nameKo = "전화 보호",
+                    question = "이 전화,\n받아도 되는가",
+                    description = "사기/스팸 여부를 실시간 판단",
                     icon = Icons.Filled.Phone,
                     color = Color(0xFF4FC3F7),
                     modifier = Modifier.weight(1f),
                     onClick = { onEngineClick("engine/call") },
                 )
                 EngineCard(
-                    name = "PushCheck",
-                    nameKo = "알림 감시",
+                    question = "이 알림,\n무시해도 되는가",
+                    description = "소음/프로모션 알림을 즉시 분류",
                     icon = Icons.Filled.Notifications,
                     color = Color(0xFFFFB74D),
                     modifier = Modifier.weight(1f),
@@ -570,16 +579,16 @@ private fun HomeScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 EngineCard(
-                    name = "MessageCheck",
-                    nameKo = "메시지 방어",
+                    question = "이 메시지,\n믿어도 되는가",
+                    description = "피싱/사칭 문자를 열기 전에 감지",
                     icon = Icons.Filled.Message,
                     color = Color(0xFF81C784),
                     modifier = Modifier.weight(1f),
                     onClick = { onEngineClick("engine/message") },
                 )
                 EngineCard(
-                    name = "PrivacyCheck",
-                    nameKo = "프라이버시 감시",
+                    question = "지금 내 폰,\n안전한가",
+                    description = "카메라/마이크 몰래 접근 감시",
                     icon = Icons.Filled.Security,
                     color = Color(0xFFE57373),
                     modifier = Modifier.weight(1f),
@@ -613,8 +622,8 @@ private fun HomeScreen(
 
 @Composable
 private fun EngineCard(
-    name: String,
-    nameKo: String,
+    question: String,
+    description: String,
     icon: ImageVector,
     color: Color,
     modifier: Modifier = Modifier,
@@ -622,7 +631,7 @@ private fun EngineCard(
 ) {
     Card(
         modifier = modifier
-            .height(160.dp)
+            .height(180.dp)
             .clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1A2A3A)),
         shape = RoundedCornerShape(16.dp),
@@ -631,45 +640,47 @@ private fun EngineCard(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
+            // 상단: 아이콘
             Icon(
                 imageVector = icon,
                 contentDescription = null,
                 tint = color,
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.size(32.dp),
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
-
+            // 중앙: 질문형 문장 (메인)
             Text(
-                text = nameKo,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
+                text = question,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
                 color = Color.White,
-                textAlign = TextAlign.Center,
+                lineHeight = 22.sp,
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Status indicator
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(8.dp)
-                        .background(color, shape = RoundedCornerShape(4.dp)),
-                )
-                Spacer(modifier = Modifier.width(6.dp))
+            // 하단: 1줄 설명 + 상태
+            Column {
                 Text(
-                    text = "Active",
-                    fontSize = 12.sp,
-                    color = color,
-                    fontWeight = FontWeight.Medium,
+                    text = description,
+                    fontSize = 11.sp,
+                    color = Color(0xFF78909C),
+                    lineHeight = 14.sp,
                 )
+                Spacer(modifier = Modifier.height(6.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(6.dp)
+                            .background(color, shape = RoundedCornerShape(3.dp)),
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "Active",
+                        fontSize = 10.sp,
+                        color = color.copy(alpha = 0.7f),
+                    )
+                }
             }
         }
     }
