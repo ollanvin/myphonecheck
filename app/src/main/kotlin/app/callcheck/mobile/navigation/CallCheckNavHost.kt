@@ -253,7 +253,7 @@ fun CallCheckNavHost(
 }
 
 // ═══════════════════════════════════════════════════════════
-// 온보딩 화면 — 증거 5: PrivacyTrustMessages 실제 삽입
+// 온보딩 3장 — 보호영역 / 4엔진 / 권한안내
 // ═══════════════════════════════════════════════════════════
 
 @Composable
@@ -261,126 +261,238 @@ private fun OnboardingScreen(
     languageProvider: LanguageContextProvider,
     onContinue: () -> Unit,
 ) {
-    val language = languageProvider.resolveLanguage()
-    val msg = PrivacyTrustMessages.forLanguage(language)
+    var currentPage by remember { mutableIntStateOf(0) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF0D1B2A))
-            .padding(24.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .background(Color(0xFF0D1B2A)),
     ) {
-        Spacer(modifier = Modifier.height(48.dp))
-
-        // Shield icon
-        Icon(
-            imageVector = Icons.Filled.Shield,
-            contentDescription = null,
-            tint = Color(0xFF4FC3F7),
-            modifier = Modifier.size(72.dp)
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // App tagline
-        Text(
-            text = msg.onboardingTagline,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            textAlign = TextAlign.Center,
-        )
-
-        Spacer(modifier = Modifier.height(28.dp))
-
-        // HERO headline — 신뢰 확정 핵심 한 문장
-        Text(
-            text = msg.onboardingPrivacyCore,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF4FC3F7),
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        Spacer(modifier = Modifier.height(28.dp))
-
-        // 3줄 확정 선언 — ✓ 체크 아이콘 + 정보 카드 (클릭 불가)
-        val pledgeLines = msg.onboardingNoServerPledge.split("\n")
-        for (line in pledgeLines) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF1A3A2A)),
-                shape = RoundedCornerShape(8.dp),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Check,
-                        contentDescription = null,
-                        tint = Color(0xFF81C784),
-                        modifier = Modifier.size(20.dp),
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = line,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF81C784),
-                    )
-                }
+        // Content area
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(24.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            when (currentPage) {
+                0 -> OnboardingPage1()
+                1 -> OnboardingPage2()
+                2 -> OnboardingPage3()
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // 보조 설명 — 작게
-        Text(
-            text = msg.onboardingPrivacyDetail,
-            fontSize = 12.sp,
-            color = Color(0xFF607D8B),
-            lineHeight = 18.sp,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Language indicator
-        Text(
-            text = "Language: ${language.code.uppercase()} (auto-detected)",
-            fontSize = 11.sp,
-            color = Color(0xFF455A64),
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        // Continue button
-        Button(
-            onClick = onContinue,
+        // Page indicator dots
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            repeat(3) { index ->
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 4.dp)
+                        .size(if (index == currentPage) 10.dp else 8.dp)
+                        .background(
+                            color = if (index == currentPage) Color(0xFF4FC3F7) else Color(0xFF455A64),
+                            shape = RoundedCornerShape(50),
+                        ),
+                )
+            }
+        }
+
+        // Navigation button
+        Button(
+            onClick = {
+                if (currentPage < 2) {
+                    currentPage++
+                } else {
+                    onContinue()
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .padding(bottom = 32.dp)
                 .height(56.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4FC3F7)),
             shape = RoundedCornerShape(12.dp),
         ) {
             Text(
-                text = "Continue",
+                text = if (currentPage < 2) "Next" else "Start",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF0D1B2A),
             )
         }
+    }
+}
 
-        Spacer(modifier = Modifier.height(32.dp))
+/** 온보딩 1장: 이 앱은 무엇을 지키는가 */
+@Composable
+private fun OnboardingPage1() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.verticalScroll(rememberScrollState()),
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Shield,
+            contentDescription = null,
+            tint = Color(0xFF4FC3F7),
+            modifier = Modifier.size(80.dp),
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            text = "내 폰을 지키는\n실시간 인터셉트 가드",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "전화, 문자, 알림, 프라이버시까지\n모든 위험과 소음을 실시간으로 알려주고\n당신이 바로 결정합니다.",
+            fontSize = 16.sp,
+            color = Color(0xFFB0BEC5),
+            textAlign = TextAlign.Center,
+            lineHeight = 24.sp,
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        // 온디바이스 선언
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF1A3A2A)),
+            shape = RoundedCornerShape(12.dp),
+        ) {
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(Icons.Filled.Check, null, tint = Color(0xFF81C784), modifier = Modifier.size(20.dp))
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = "100% 온디바이스 · 서버 전송 없음 · 데이터 수집 없음",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFF81C784),
+                )
+            }
+        }
+    }
+}
+
+/** 온보딩 2장: 4가지 보호 영역 */
+@Composable
+private fun OnboardingPage2() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.verticalScroll(rememberScrollState()),
+    ) {
+        Text(
+            text = "4가지 보호 영역",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+
+        val engines = listOf(
+            Triple(Icons.Filled.Phone, "CallCheck — 전화 보호", Color(0xFF4FC3F7)),
+            Triple(Icons.Filled.Notifications, "PushCheck — 알림 감시", Color(0xFFFFB74D)),
+            Triple(Icons.Filled.Message, "MessageCheck — 메시지 방어", Color(0xFF81C784)),
+            Triple(Icons.Filled.Security, "PrivacyCheck — 프라이버시 감시", Color(0xFFE57373)),
+        )
+
+        for ((icon, label, color) in engines) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1A2A3A)),
+                shape = RoundedCornerShape(12.dp),
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(icon, null, tint = color, modifier = Modifier.size(28.dp))
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(label, fontSize = 16.sp, color = Color.White, fontWeight = FontWeight.Medium)
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "자동 차단 없음 · 판단은 항상 당신이",
+            fontSize = 14.sp,
+            color = Color(0xFF607D8B),
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+/** 온보딩 3장: 필요한 권한 안내 */
+@Composable
+private fun OnboardingPage3() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.verticalScroll(rememberScrollState()),
+    ) {
+        Text(
+            text = "필요한 권한 안내",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "각 보호 영역이 동작하려면\n아래 권한이 필요합니다.",
+            fontSize = 14.sp,
+            color = Color(0xFFB0BEC5),
+            textAlign = TextAlign.Center,
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+
+        val permissions = listOf(
+            Triple("전화 상태 읽기", "수신 전화를 실시간 분석", Icons.Filled.Phone),
+            Triple("알림 접근", "푸시 알림 소음/프로모션 감지", Icons.Filled.Notifications),
+            Triple("SMS 수신", "문자 사기/피싱 분석", Icons.Filled.Message),
+            Triple("앱 사용 통계", "카메라/마이크 접근 감시", Icons.Filled.Security),
+        )
+
+        for ((title, reason, icon) in permissions) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1A2A3A)),
+                shape = RoundedCornerShape(12.dp),
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(icon, null, tint = Color(0xFF4FC3F7), modifier = Modifier.size(24.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column {
+                        Text(title, fontSize = 15.sp, color = Color.White, fontWeight = FontWeight.SemiBold)
+                        Text(reason, fontSize = 12.sp, color = Color(0xFF607D8B))
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "모든 분석은 기기 내에서만 처리됩니다.\n외부 서버로 데이터가 전송되지 않습니다.",
+            fontSize = 12.sp,
+            color = Color(0xFF455A64),
+            textAlign = TextAlign.Center,
+            lineHeight = 18.sp,
+        )
     }
 }
 
