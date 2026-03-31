@@ -33,6 +33,9 @@ include(":feature:decision-ui")
 include(":feature:settings")
 include(":feature:billing")
 include(":feature:country-config")
+include(":feature:push-intercept")
+include(":feature:message-intercept")
+include(":feature:privacy-check")
 
 // Data modules
 include(":data:contacts")
