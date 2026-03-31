@@ -17,6 +17,39 @@ data class SignalSummary(
 )
 
 /**
+ * 인접 번호 참고 힌트.
+ *
+ * 수신된 번호의 정확 검색 결과가 없을 때,
+ * 끝자리가 유사한 인접 번호의 검색 결과를 참고 정보로 제공합니다.
+ *
+ * UI 표시 예시:
+ * "유사 번호 02-1234-5670이 '서울시청'으로 검색됩니다 (결과 3건)"
+ * "이 번호와 같은 대역(끝 1자리)의 번호가 검색된 결과입니다"
+ *
+ * 주의: 이 정보는 "참고"이며, 확정 판단이 아닙니다.
+ * 사용자가 최종 판단을 내릴 수 있도록 보조 정보로만 사용합니다.
+ */
+data class AdjacentNumberHint(
+    /** 검색된 인접 번호의 대표 엔티티 (예: "서울시청", "KT 고객센터") */
+    val matchedEntity: String?,
+
+    /** 인접 번호 검색 결과 건수 */
+    val resultCount: Int,
+
+    /** 인접 범위 설명 (예: "끝 1자리 대역 (10번호)") */
+    val rangeDescription: String,
+
+    /** 인접 번호 검색에서 추출된 키워드 클러스터 */
+    val keywordClusters: List<String>,
+
+    /** 인접 번호 검색 대표 스니펫 (최대 3개) */
+    val topSnippets: List<String>,
+
+    /** 인접 번호 검색의 신호 요약 */
+    val signalSummaries: List<SignalSummary>,
+)
+
+/**
  * Evidence gathered from on-device web scan enrichment.
  *
  * This model normalizes raw search results into decision-ready signals:
@@ -45,6 +78,9 @@ data class SearchEvidence(
 
     // Per-provider result summaries for transparent display
     val signalSummaries: List<SignalSummary> = emptyList(),
+
+    // 인접 번호 참고 힌트 (정확 검색 결과 0건 시 제공)
+    val adjacentNumberHint: AdjacentNumberHint? = null,
 ) {
     companion object {
         fun empty() = SearchEvidence(
@@ -56,13 +92,14 @@ data class SearchEvidence(
             sourceTypes = emptyList(),
             topSnippets = emptyList(),
             signalSummaries = emptyList(),
+            adjacentNumberHint = null,
         )
     }
 
     val isEmpty: Boolean
         get() = keywordClusters.isEmpty() && repeatedEntities.isEmpty() &&
                 topSnippets.isEmpty() && recent30dSearchIntensity == null &&
-                signalSummaries.isEmpty()
+                signalSummaries.isEmpty() && adjacentNumberHint == null
 
     val hasDeliverySignal: Boolean
         get() = keywordClusters.any { it in DELIVERY_KEYWORDS }
