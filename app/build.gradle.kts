@@ -111,6 +111,9 @@ dependencies {
     implementation(project(":feature:settings"))
     implementation(project(":feature:billing"))
     implementation(project(":feature:country-config"))
+    implementation(project(":feature:push-intercept"))
+    implementation(project(":feature:message-intercept"))
+    implementation(project(":feature:privacy-check"))
 
     // Data modules
     implementation(project(":data:contacts"))
