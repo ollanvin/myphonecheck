@@ -244,6 +244,9 @@ class Global190CountryPricingTest {
             assertTrue("${lang.code} cancellationNote", msg.cancellationNote.isNotBlank())
             assertTrue("${lang.code} noRefundNotice", msg.noRefundNotice.isNotBlank())
             assertTrue("${lang.code} monthlyPriceLabel", msg.monthlyPriceLabel.isNotBlank())
+            assertTrue("${lang.code} regionalPricingNote", msg.regionalPricingNote.isNotBlank())
+            assertTrue("${lang.code} trialCancelNote", msg.trialCancelNote.isNotBlank())
+            assertTrue("${lang.code} valueProposition", msg.valueProposition.isNotBlank())
 
             // {days} 플레이스홀더 치환 검증
             val formatted = msg.formatFreeTrial(30)

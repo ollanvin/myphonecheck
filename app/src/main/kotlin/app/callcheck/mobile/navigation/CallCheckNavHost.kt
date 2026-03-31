@@ -1673,50 +1673,31 @@ private fun PurchaseScreen(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            // Privacy guarantee — THE KEY MESSAGE
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF1A3A2A)),
-                shape = RoundedCornerShape(16.dp),
-            ) {
-                Column(
-                    modifier = Modifier.padding(20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Icon(
-                        Icons.Filled.Shield,
-                        contentDescription = null,
-                        tint = Color(0xFF81C784),
-                        modifier = Modifier.size(32.dp),
-                    )
+            // ═══════════════════════════════════════════════════════
+            // VISUAL HIERARCHY (자비스 Stage 19):
+            //   1. 가치 제안 — 왜 돈을 내야 하는가 (불안 제거)
+            //   2. 가격 + 무료 체험 — 핵심 정보
+            //   3. 체험 해지 안내 — 경계심 해소
+            //   4. 구매 CTA — 최강 시각 우선순위
+            //   5. 지역 가격 설명 — "왜 이 가격?" 해소
+            //   6. 프라이버시 보장 — 신뢰 연출
+            //   7. 해지 버튼 — 보이되 CTA보다 약하게
+            //   8. 리펀드/해지 정책 — 맨 아래 투명 공개
+            // ═══════════════════════════════════════════════════════
 
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Text(
-                        text = msg.purchasePrivacyGuarantee,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = Color(0xFF81C784),
-                        textAlign = TextAlign.Center,
-                        lineHeight = 20.sp,
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Value proposition
+            // ── 1. 핵심 가치 제안 (불안 제거 결제) ──
             Text(
-                text = msg.purchaseValueProposition,
+                text = pricingMsg.valueProposition,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = Color(0xFF4FC3F7),
+                color = Color.White,
                 textAlign = TextAlign.Center,
+                lineHeight = 24.sp,
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
-            // ── Free trial banner ──
+            // ── 2. 가격 + 무료 체험 카드 ──
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF1B3548)),
@@ -1727,6 +1708,7 @@ private fun PurchaseScreen(
                     modifier = Modifier.padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
+                    // 무료 체험
                     Text(
                         text = pricingMsg.formatFreeTrial(tier.freeTrialDays),
                         fontSize = 20.sp,
@@ -1737,7 +1719,7 @@ private fun PurchaseScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Monthly price — single plan
+                    // 월간 가격 — 단일 플랜
                     Text(
                         text = pricingMsg.formatMonthlyPrice(tier.monthlyPriceUsd),
                         fontSize = 32.sp,
@@ -1747,9 +1729,20 @@ private fun PurchaseScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            // ── Subscribe button ──
+            // ── 3. 체험 중 해지 가능 안내 — 경계심 해소 ──
+            Text(
+                text = pricingMsg.trialCancelNote,
+                fontSize = 13.sp,
+                color = Color(0xFF81C784),
+                textAlign = TextAlign.Center,
+                lineHeight = 18.sp,
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // ── 4. 구매 CTA — 최강 시각 우선순위 ──
             Button(
                 onClick = { /* billing flow */ },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
@@ -1764,58 +1757,91 @@ private fun PurchaseScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-            // ── Cancel subscription button — large, always visible ──
+            // ── 5. 지역별 가격 차이 설명 ──
+            Text(
+                text = pricingMsg.regionalPricingNote,
+                fontSize = 12.sp,
+                color = Color(0xFF78909C),
+                textAlign = TextAlign.Center,
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // ── 6. 프라이버시 보장 ──
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1A3A2A)),
+                shape = RoundedCornerShape(12.dp),
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        Icons.Filled.Shield,
+                        contentDescription = null,
+                        tint = Color(0xFF81C784),
+                        modifier = Modifier.size(24.dp),
+                    )
+
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    Text(
+                        text = msg.purchasePrivacyGuarantee,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xFF81C784),
+                        lineHeight = 18.sp,
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            // ── 7. 해지 버튼 — 보이되 CTA보다 약하게 ──
             OutlinedButton(
                 onClick = { /* cancel subscription flow via Play Billing */ },
-                modifier = Modifier.fillMaxWidth().height(52.dp),
-                shape = RoundedCornerShape(12.dp),
-                border = androidx.compose.foundation.BorderStroke(2.dp, Color(0xFFEF5350)),
+                modifier = Modifier.fillMaxWidth().height(44.dp),
+                shape = RoundedCornerShape(8.dp),
+                border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF546E7A)),
             ) {
                 Text(
                     text = pricingMsg.cancelSubscriptionButton,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFFEF5350),
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // ── No-refund + service continuation notice ──
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF1B2838)),
-                shape = RoundedCornerShape(12.dp),
-            ) {
-                Text(
-                    text = pricingMsg.noRefundNotice,
-                    fontSize = 13.sp,
-                    color = Color(0xFFB0BEC5),
-                    textAlign = TextAlign.Center,
-                    lineHeight = 18.sp,
-                    modifier = Modifier.padding(16.dp),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color(0xFF90A4AE),
                 )
             }
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Cancellation route note
+            // ── 8. 리펀드 불가 + 서비스 유지 안내 ──
             Text(
-                text = pricingMsg.cancellationNote,
+                text = pricingMsg.noRefundNotice,
                 fontSize = 12.sp,
                 color = Color(0xFF607D8B),
+                textAlign = TextAlign.Center,
+                lineHeight = 16.sp,
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = pricingMsg.cancellationNote,
+                fontSize = 11.sp,
+                color = Color(0xFF546E7A),
                 textAlign = TextAlign.Center,
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Tier & country info
+            // Tier & country info (디버그용)
             Text(
                 text = "Country: ${countryCode ?: "unknown"} · Tier ${tier.tierId} · ${language.code.uppercase()}",
                 fontSize = 11.sp,
-                color = Color(0xFF455A64),
+                color = Color(0xFF37474F),
             )
         }
     }

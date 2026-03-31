@@ -135,6 +135,12 @@ data class PricingUiMessages(
     val noRefundNotice: String,
     /** 월간 가격 표시 ({price} 플레이스홀더) */
     val monthlyPriceLabel: String,
+    /** 지역별 가격 차이 설명 — 사용자가 "왜 이 가격?" 의문 해소 */
+    val regionalPricingNote: String,
+    /** 무료 체험 중 해지 가능 안내 — 경계심 해소 */
+    val trialCancelNote: String,
+    /** 핵심 가치 제안 — 왜 결제해야 하는지 (불안 제거 결제) */
+    val valueProposition: String,
 ) {
     fun formatFreeTrial(days: Int): String = freeTrialMessage.replace("{days}", days.toString())
     fun formatMonthlyPrice(price: String): String = monthlyPriceLabel.replace("{price}", price)
@@ -159,6 +165,9 @@ data class PricingUiMessages(
             cancellationNote = "언제든 Google Play에서 구독을 취소할 수 있습니다.",
             noRefundNotice = "구독 취소 시 환불은 제공되지 않으며, 남은 결제 기간까지 서비스가 유지됩니다.",
             monthlyPriceLabel = "월 {price}",
+            regionalPricingNote = "모든 플랜의 기능은 동일하며, 지역에 따라 가격만 다릅니다.",
+            trialCancelNote = "체험 기간 중 언제든 해지 가능. 해지해도 남은 기간까지 사용 가능.",
+            valueProposition = "전화·알림·문자·프라이버시, 4가지 위협을 하나의 앱이 판단합니다. 데이터는 기기 밖으로 나가지 않습니다.",
         )
 
         private val EN = PricingUiMessages(
@@ -168,6 +177,9 @@ data class PricingUiMessages(
             cancellationNote = "You can cancel your subscription anytime on Google Play.",
             noRefundNotice = "No refunds on cancellation. Your service remains active until the end of the current billing period.",
             monthlyPriceLabel = "{price}/mo",
+            regionalPricingNote = "All plans include the same features. Pricing varies by region.",
+            trialCancelNote = "Cancel anytime during your trial. Service continues until the end of the period.",
+            valueProposition = "Calls, notifications, messages, and privacy — one app judges all four threats. Your data never leaves the device.",
         )
 
         private val JA = PricingUiMessages(
@@ -177,6 +189,9 @@ data class PricingUiMessages(
             cancellationNote = "いつでもGoogle Playでサブスクリプションをキャンセルできます。",
             noRefundNotice = "キャンセル時の返金はありません。現在の請求期間の終了までサービスは継続されます。",
             monthlyPriceLabel = "月額 {price}",
+            regionalPricingNote = "すべてのプランは同じ機能を提供します。価格は地域によって異なります。",
+            trialCancelNote = "体験期間中いつでも解約可能。解約後も期間終了まで利用できます。",
+            valueProposition = "通話・通知・メッセージ・プライバシー、4つの脅威を1つのアプリが判断。データは端末の外に出ません。",
         )
 
         private val ZH = PricingUiMessages(
@@ -186,6 +201,9 @@ data class PricingUiMessages(
             cancellationNote = "您可以随时在Google Play取消订阅。",
             noRefundNotice = "取消订阅不予退款。服务将持续到当前计费周期结束。",
             monthlyPriceLabel = "每月 {price}",
+            regionalPricingNote = "所有计划功能相同，价格因地区而异。",
+            trialCancelNote = "试用期间随时可取消。取消后服务持续到期末。",
+            valueProposition = "电话、通知、短信、隐私——一个应用判断四种威胁。数据绝不离开设备。",
         )
 
         private val RU = PricingUiMessages(
@@ -195,6 +213,9 @@ data class PricingUiMessages(
             cancellationNote = "Вы можете отменить подписку в любое время через Google Play.",
             noRefundNotice = "Возврат средств при отмене не предусмотрен. Сервис будет доступен до конца текущего расчётного периода.",
             monthlyPriceLabel = "{price}/мес",
+            regionalPricingNote = "Все тарифы включают одинаковые функции. Цена зависит от региона.",
+            trialCancelNote = "Отмена возможна в любой момент пробного периода. Сервис доступен до конца периода.",
+            valueProposition = "Звонки, уведомления, сообщения и конфиденциальность — одно приложение оценивает все 4 угрозы. Данные не покидают устройство.",
         )
 
         private val ES = PricingUiMessages(
@@ -204,6 +225,9 @@ data class PricingUiMessages(
             cancellationNote = "Puedes cancelar tu suscripción en cualquier momento desde Google Play.",
             noRefundNotice = "No se realizan reembolsos al cancelar. El servicio se mantiene activo hasta el final del período de facturación actual.",
             monthlyPriceLabel = "{price}/mes",
+            regionalPricingNote = "Todos los planes incluyen las mismas funciones. El precio varía según la región.",
+            trialCancelNote = "Cancela en cualquier momento durante la prueba. El servicio continúa hasta el final del período.",
+            valueProposition = "Llamadas, notificaciones, mensajes y privacidad: una app evalúa las 4 amenazas. Tus datos nunca salen del dispositivo.",
         )
 
         private val AR = PricingUiMessages(
@@ -213,6 +237,9 @@ data class PricingUiMessages(
             cancellationNote = "يمكنك إلغاء اشتراكك في أي وقت من Google Play.",
             noRefundNotice = "لا يتم استرداد المبلغ عند الإلغاء. تستمر الخدمة حتى نهاية فترة الفوترة الحالية.",
             monthlyPriceLabel = "{price}/شهر",
+            regionalPricingNote = "جميع الخطط تتضمن نفس الميزات. تختلف الأسعار حسب المنطقة.",
+            trialCancelNote = "يمكنك الإلغاء في أي وقت خلال الفترة التجريبية. تستمر الخدمة حتى نهاية الفترة.",
+            valueProposition = "المكالمات والإشعارات والرسائل والخصوصية — تطبيق واحد يقيّم التهديدات الأربعة. بياناتك لا تغادر الجهاز أبداً.",
         )
     }
 }
