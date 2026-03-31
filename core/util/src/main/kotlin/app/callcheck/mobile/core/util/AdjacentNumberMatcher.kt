@@ -14,9 +14,16 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil
  *
  * 원리:
  * 통신사/기관은 전화번호를 연속 대역(consecutive block)으로 할당받는다.
- * - 끝 1자리 대역: 10번호 (같은 부서/기관)
- * - 끝 2자리 대역: 100번호 (같은 기관의 다른 부서)
- * - 끝 3자리 대역: 1000번호 (대기업/관공서 대표번호 대역)
+ * 조직 규모에 따라 할당 대역이 다르다:
+ *
+ * - 끝 1자리 대역: 10번호 (같은 부서/직통)
+ * - 끝 2자리 대역: 100번호 (같은 부서/층)
+ * - 끝 3자리 대역: 1,000번호 (같은 건물/사업부)
+ * - 끝 4자리 대역: 10,000번호 (국번 전유 — 삼성, 구글, 정부기관급)
+ *
+ * 삼성전자: 02-2255-0000 ~ 02-2255-9999 (국번 2255 전유)
+ * 서울시청: 02-120-XXXX (대표번호 대역)
+ * Google: +1-650-253-0000 ~ +1-650-253-9999
  *
  * 검색 전략:
  * 개별 번호를 하나씩 검색하지 않는다 (10개 → 10배 타임아웃).
@@ -24,6 +31,10 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil
  * - 0212345678 → 트렁크 "021234567" (끝 1자리 제거)
  * - "021234567" 쌍따옴표 검색 → 0212345670~9 전부 매칭
  * - 단일 쿼리로 10개 인접 번호를 커버
+ *
+ * 좁은 대역부터 넓은 대역으로 순차 확장:
+ * 10번호 → 100번호 → 1,000번호 → 10,000번호
+ * 첫 번째 히트에서 중단 → 최소 쿼리로 최대 커버
  * ═══════════════════════════════════════════════════════════
  */
 object AdjacentNumberMatcher {
@@ -49,15 +60,21 @@ object AdjacentNumberMatcher {
     /**
      * 인접 번호 트렁크 쿼리를 생성합니다.
      *
-     * 우선순위:
-     * 1. 끝 1자리 대역 (10번호) — 가장 정확, 같은 부서/기관
-     * 2. 끝 2자리 대역 (100번호) — 1차 결과 0건 시 확장
+     * 4단계 대역 확장 (좁은 → 넓은 순서):
+     * 1. 끝 1자리 대역 (10번호) — 같은 부서/직통 번호
+     * 2. 끝 2자리 대역 (100번호) — 같은 부서/층
+     * 3. 끝 3자리 대역 (1,000번호) — 같은 건물/사업부
+     * 4. 끝 4자리 대역 (10,000번호) — 국번 전유 (삼성/구글/정부기관급)
      *
-     * 끝 3자리(1000번호)는 오탐 위험이 높아 생성하지 않습니다.
+     * 검색 엔진에 보내는 쿼리 수가 아닌 트렁크 길이만 달라지므로
+     * 각 단계는 프로바이더당 1개 쿼리. 타임아웃 부담 최소화.
+     *
+     * SearchEnrichmentRepositoryImpl에서 좁은 대역부터 시도하고,
+     * 첫 번째 히트에서 중단합니다.
      *
      * @param phoneNumber 정규화된 전화번호 (E.164 권장)
      * @param countryCode ISO 3166-1 alpha-2 국가 코드
-     * @return 트렁크 쿼리 리스트 (1차: 끝1자리, 2차: 끝2자리)
+     * @return 트렁크 쿼리 리스트 (좁은 대역 → 넓은 대역 순서)
      */
     fun generateTrunkQueries(
         phoneNumber: String,
@@ -78,26 +95,27 @@ object AdjacentNumberMatcher {
             // 최소 길이 검증: 국내번호 4자리 이상이어야 트렁크 의미가 있음
             if (nationalNumber.length < 4) return emptyList()
 
-            // === 1차: 끝 1자리 제거 (10번호 대역) ===
-            val trunk1 = nationalNumber.dropLast(1)
-            val trunk1Variants = buildTrunkVariants(trunk1, countryCodeNum, regionCode)
-            queries.add(
-                TrunkQuery(
-                    trunkVariants = trunk1Variants,
-                    rangeDescription = "끝 1자리 대역 (10번호)",
-                    truncatedDigits = 1,
-                ),
+            // 대역 정의: (제거할 자릿수, 최소 필요 국내번호 길이, 설명)
+            val trunkLevels = listOf(
+                Triple(1, 4, "끝 1자리 대역 (10번호)"),
+                Triple(2, 6, "끝 2자리 대역 (100번호)"),
+                Triple(3, 7, "끝 3자리 대역 (1,000번호)"),
+                Triple(4, 8, "끝 4자리 대역 (10,000번호 — 국번 전유)"),
             )
 
-            // === 2차: 끝 2자리 제거 (100번호 대역) ===
-            if (nationalNumber.length >= 6) {
-                val trunk2 = nationalNumber.dropLast(2)
-                val trunk2Variants = buildTrunkVariants(trunk2, countryCodeNum, regionCode)
+            for ((dropDigits, minLength, description) in trunkLevels) {
+                if (nationalNumber.length < minLength) continue
+
+                val trunk = nationalNumber.dropLast(dropDigits)
+                // 트렁크가 너무 짧으면 오탐 위험 → 최소 3자리 이상
+                if (trunk.length < 3) continue
+
+                val trunkVariants = buildTrunkVariants(trunk, countryCodeNum, regionCode)
                 queries.add(
                     TrunkQuery(
-                        trunkVariants = trunk2Variants,
-                        rangeDescription = "끝 2자리 대역 (100번호)",
-                        truncatedDigits = 2,
+                        trunkVariants = trunkVariants,
+                        rangeDescription = description,
+                        truncatedDigits = dropDigits,
                     ),
                 )
             }
@@ -329,24 +347,24 @@ object AdjacentNumberMatcher {
 
         val queries = mutableListOf<TrunkQuery>()
 
-        // 끝 1자리 제거
-        val trunk1 = digits.dropLast(1)
-        queries.add(
-            TrunkQuery(
-                trunkVariants = listOf(trunk1),
-                rangeDescription = "끝 1자리 대역 (10번호)",
-                truncatedDigits = 1,
-            ),
+        val trunkLevels = listOf(
+            Triple(1, 4, "끝 1자리 대역 (10번호)"),
+            Triple(2, 6, "끝 2자리 대역 (100번호)"),
+            Triple(3, 7, "끝 3자리 대역 (1,000번호)"),
+            Triple(4, 8, "끝 4자리 대역 (10,000번호 — 국번 전유)"),
         )
 
-        // 끝 2자리 제거
-        if (digits.length >= 6) {
-            val trunk2 = digits.dropLast(2)
+        for ((dropDigits, minLength, description) in trunkLevels) {
+            if (digits.length < minLength) continue
+
+            val trunk = digits.dropLast(dropDigits)
+            if (trunk.length < 3) continue
+
             queries.add(
                 TrunkQuery(
-                    trunkVariants = listOf(trunk2),
-                    rangeDescription = "끝 2자리 대역 (100번호)",
-                    truncatedDigits = 2,
+                    trunkVariants = listOf(trunk),
+                    rangeDescription = description,
+                    truncatedDigits = dropDigits,
                 ),
             )
         }
