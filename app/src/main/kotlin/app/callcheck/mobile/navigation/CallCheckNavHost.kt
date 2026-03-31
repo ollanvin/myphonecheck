@@ -9,6 +9,7 @@ import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.FlowRow
@@ -20,13 +21,17 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Message
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -47,6 +52,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import app.callcheck.mobile.core.model.InterceptEventType
 import app.callcheck.mobile.core.model.RiskLevel
 import app.callcheck.mobile.core.model.UserCallAction
 import app.callcheck.mobile.core.model.UserCallTag
@@ -66,7 +72,7 @@ private enum class BottomTab(
     val label: String,
 ) {
     HOME("home", Icons.Filled.Home, "홈"),
-    HISTORY("call-history", Icons.Filled.History, "기록"),
+    TIMELINE("timeline", Icons.Filled.Timeline, "타임라인"),
     SETTINGS("settings", Icons.Filled.Settings, "설정"),
 }
 
@@ -159,10 +165,55 @@ fun CallCheckNavHost(
                     onPurchaseClick = { navController.navigate("purchase") },
                     context = context,
                     viewModel = historyViewModel,
+                    onEngineClick = { route -> navController.navigate(route) },
                 )
             }
-            composable("call-history") {
-                CallHistoryScreen(
+            composable("engine/call") {
+                EngineDetailScreen(
+                    engineName = "CallCheck",
+                    engineNameKo = "전화 보호",
+                    eventType = InterceptEventType.CALL,
+                    color = Color(0xFF4FC3F7),
+                    icon = Icons.Filled.Phone,
+                    languageProvider = languageProvider,
+                    onBack = { navController.popBackStack() },
+                )
+            }
+            composable("engine/push") {
+                EngineDetailScreen(
+                    engineName = "PushCheck",
+                    engineNameKo = "알림 감시",
+                    eventType = InterceptEventType.PUSH,
+                    color = Color(0xFFFFB74D),
+                    icon = Icons.Filled.Notifications,
+                    languageProvider = languageProvider,
+                    onBack = { navController.popBackStack() },
+                )
+            }
+            composable("engine/message") {
+                EngineDetailScreen(
+                    engineName = "MessageCheck",
+                    engineNameKo = "메시지 방어",
+                    eventType = InterceptEventType.MESSAGE,
+                    color = Color(0xFF81C784),
+                    icon = Icons.Filled.Message,
+                    languageProvider = languageProvider,
+                    onBack = { navController.popBackStack() },
+                )
+            }
+            composable("engine/privacy") {
+                EngineDetailScreen(
+                    engineName = "PrivacyCheck",
+                    engineNameKo = "프라이버시 감시",
+                    eventType = InterceptEventType.PRIVACY,
+                    color = Color(0xFFE57373),
+                    icon = Icons.Filled.Security,
+                    languageProvider = languageProvider,
+                    onBack = { navController.popBackStack() },
+                )
+            }
+            composable("timeline") {
+                TimelineScreen(
                     languageProvider = languageProvider,
                     viewModel = historyViewModel,
                     onBack = { navController.popBackStack() },
@@ -343,6 +394,7 @@ private fun HomeScreen(
     onPurchaseClick: () -> Unit,
     context: Context,
     viewModel: CallHistoryViewModel,
+    onEngineClick: (String) -> Unit = {},
 ) {
     val language = languageProvider.resolveLanguage()
 
@@ -354,8 +406,9 @@ private fun HomeScreen(
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
+        // Title
         Text(
             text = "CallCheck",
             fontSize = 28.sp,
@@ -364,83 +417,506 @@ private fun HomeScreen(
         )
 
         Text(
-            text = "v1.0.0 · ${language.code.uppercase()}",
+            text = "v1.0.0",
             fontSize = 14.sp,
             color = Color(0xFF607D8B),
         )
 
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
-        // 오버레이 액션 → 기록 자동 저장 콜백
-        val overlayActionHandler: (String, UserCallAction) -> Unit = { number, action ->
-            // 번호를 E.164로 정규화하지 않고 표시번호 그대로 사용 (데모)
-            viewModel.recordCallAction(
-                canonicalNumber = number.replace(Regex("[^+0-9]"), ""),
-                displayNumber = number,
-                action = action,
-                aiRiskLevel = null,
-                aiCategory = null,
-            )
+        // 2x2 Grid of Engine Cards
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            // Row 1: CallCheck + PushCheck
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                EngineCard(
+                    name = "CallCheck",
+                    nameKo = "전화 보호",
+                    icon = Icons.Filled.Phone,
+                    color = Color(0xFF4FC3F7),
+                    modifier = Modifier.weight(1f),
+                    onClick = { onEngineClick("engine/call") },
+                )
+                EngineCard(
+                    name = "PushCheck",
+                    nameKo = "알림 감시",
+                    icon = Icons.Filled.Notifications,
+                    color = Color(0xFFFFB74D),
+                    modifier = Modifier.weight(1f),
+                    onClick = { onEngineClick("engine/push") },
+                )
+            }
+
+            // Row 2: MessageCheck + PrivacyCheck
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                EngineCard(
+                    name = "MessageCheck",
+                    nameKo = "메시지 방어",
+                    icon = Icons.Filled.Message,
+                    color = Color(0xFF81C784),
+                    modifier = Modifier.weight(1f),
+                    onClick = { onEngineClick("engine/message") },
+                )
+                EngineCard(
+                    name = "PrivacyCheck",
+                    nameKo = "프라이버시 감시",
+                    icon = Icons.Filled.Security,
+                    color = Color(0xFFE57373),
+                    modifier = Modifier.weight(1f),
+                    onClick = { onEngineClick("engine/privacy") },
+                )
+            }
         }
 
-        // Verdict buttons — 행동 유도형 subtitle
-
-        // HIGH risk
-        VerdictDemoButton(
-            verdict = getOneWordVerdict(RiskLevel.HIGH, language),
-            subtitle = getActionSubtitle(RiskLevel.HIGH, language),
-            riskLevel = RiskLevel.HIGH,
-            phoneNumber = "010-1234-5678",
-            category = "SCAM_RISK_HIGH",
-            confidence = 92,
-            language = language,
-            context = context,
-            onAction = overlayActionHandler,
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // MEDIUM risk
-        VerdictDemoButton(
-            verdict = getOneWordVerdict(RiskLevel.MEDIUM, language),
-            subtitle = getActionSubtitle(RiskLevel.MEDIUM, language),
-            riskLevel = RiskLevel.MEDIUM,
-            phoneNumber = "(202) 800-3000",
-            category = "SALES_SPAM_SUSPECTED",
-            confidence = 67,
-            language = language,
-            context = context,
-            onAction = overlayActionHandler,
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // LOW risk
-        VerdictDemoButton(
-            verdict = getOneWordVerdict(RiskLevel.LOW, language),
-            subtitle = getActionSubtitle(RiskLevel.LOW, language),
-            riskLevel = RiskLevel.LOW,
-            phoneNumber = "0120-444-113",
-            category = "BUSINESS_LIKELY",
-            confidence = 85,
-            language = language,
-            context = context,
-            onAction = overlayActionHandler,
-        )
-
         Spacer(modifier = Modifier.height(40.dp))
 
-        // Subscribe 버튼
+        // Subscribe button
         Button(
             onClick = onPurchaseClick,
-            modifier = Modifier.fillMaxWidth().height(52.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4FC3F7)),
             shape = RoundedCornerShape(12.dp),
         ) {
-            Text("Subscribe", color = Color(0xFF0D1B2A), fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(
+                "Subscribe",
+                color = Color(0xFF0D1B2A),
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+            )
         }
 
         Spacer(modifier = Modifier.height(32.dp))
+    }
+}
+
+@Composable
+private fun EngineCard(
+    name: String,
+    nameKo: String,
+    icon: ImageVector,
+    color: Color,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+) {
+    Card(
+        modifier = modifier
+            .height(160.dp)
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A2A3A)),
+        shape = RoundedCornerShape(16.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = color,
+                modifier = Modifier.size(40.dp),
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = nameKo,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.White,
+                textAlign = TextAlign.Center,
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Status indicator
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .background(color, shape = RoundedCornerShape(4.dp)),
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = "Active",
+                    fontSize = 12.sp,
+                    color = color,
+                    fontWeight = FontWeight.Medium,
+                )
+            }
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 엔진 상세 화면 — 4개 엔진 공통 레이아웃
+// ═══════════════════════════════════════════════════════════
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun EngineDetailScreen(
+    engineName: String,
+    engineNameKo: String,
+    eventType: InterceptEventType,
+    color: Color,
+    icon: ImageVector,
+    languageProvider: LanguageContextProvider,
+    onBack: () -> Unit,
+) {
+    val language = languageProvider.resolveLanguage()
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(engineNameKo, color = Color.White) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF0D1B2A)),
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF0D1B2A))
+                .padding(padding)
+                .padding(24.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Ring UI — 원형 상태 표시기
+            Box(
+                modifier = Modifier.size(160.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                // 배경 원
+                Box(
+                    modifier = Modifier
+                        .size(120.dp)
+                        .background(
+                            color = Color(0xFF1A2A3A),
+                            shape = RoundedCornerShape(60.dp),
+                        )
+                        .border(
+                            width = 3.dp,
+                            color = color,
+                            shape = RoundedCornerShape(60.dp),
+                        ),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = color,
+                        modifier = Modifier.size(48.dp),
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Status text
+            Text(
+                text = "Running",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = color,
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Recent events header
+            Text(
+                text = "최근 이벤트",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start,
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Sample events
+            val sampleEvents = getSampleEventsForEngine(eventType)
+            for (event in sampleEvents) {
+                EventListItem(
+                    time = event.time,
+                    status = event.status,
+                    reason = event.reason,
+                    statusColor = event.statusColor,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+    }
+}
+
+@Composable
+private fun EventListItem(
+    time: String,
+    status: String,
+    reason: String,
+    statusColor: Color,
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { },
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A2A3A)),
+        shape = RoundedCornerShape(12.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = time,
+                    fontSize = 13.sp,
+                    color = Color(0xFF607D8B),
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = reason,
+                    fontSize = 14.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Medium,
+                )
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = statusColor.copy(alpha = 0.2f)),
+                    shape = RoundedCornerShape(4.dp),
+                ) {
+                    Text(
+                        text = status,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = statusColor,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                    )
+                }
+
+                Icon(
+                    imageVector = Icons.Filled.ChevronRight,
+                    contentDescription = null,
+                    tint = Color(0xFF455A64),
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+        }
+    }
+}
+
+private data class SampleEvent(
+    val time: String,
+    val status: String,
+    val reason: String,
+    val statusColor: Color,
+)
+
+private fun getSampleEventsForEngine(eventType: InterceptEventType): List<SampleEvent> {
+    return when (eventType) {
+        InterceptEventType.CALL -> listOf(
+            SampleEvent("2:15 PM", "Blocked", "Spam - Known phishing number", Color(0xFFD32F2F)),
+            SampleEvent("1:42 PM", "Allowed", "Contact in phone", Color(0xFF2E7D32)),
+            SampleEvent("12:08 PM", "Blocked", "Scam pattern detected", Color(0xFFD32F2F)),
+        )
+        InterceptEventType.PUSH -> listOf(
+            SampleEvent("3:45 PM", "Blocked", "Suspicious notification", Color(0xFFD32F2F)),
+            SampleEvent("2:30 PM", "Allowed", "Trusted app notification", Color(0xFF2E7D32)),
+            SampleEvent("1:15 PM", "Blocked", "Malware signature match", Color(0xFFD32F2F)),
+        )
+        InterceptEventType.MESSAGE -> listOf(
+            SampleEvent("4:20 PM", "Blocked", "Phishing SMS detected", Color(0xFFD32F2F)),
+            SampleEvent("3:00 PM", "Allowed", "Normal message", Color(0xFF2E7D32)),
+            SampleEvent("1:50 PM", "Blocked", "Suspicious link detected", Color(0xFFD32F2F)),
+        )
+        InterceptEventType.PRIVACY -> listOf(
+            SampleEvent("5:10 PM", "Blocked", "Location access denied", Color(0xFFD32F2F)),
+            SampleEvent("4:00 PM", "Allowed", "Camera access - TrustApp", Color(0xFF2E7D32)),
+            SampleEvent("2:45 PM", "Blocked", "Microphone access denied", Color(0xFFD32F2F)),
+        )
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+// 통합 타임라인 화면 — 4개 엔진 통합 뷰
+// ═══════════════════════════════════════════════════════════
+
+private fun getTimelineLabel(lang: SupportedLanguage): String {
+    return when (lang) {
+        SupportedLanguage.KO -> "통합 타임라인"
+        SupportedLanguage.JA -> "統合タイムライン"
+        SupportedLanguage.ZH -> "统一时间线"
+        SupportedLanguage.RU -> "Объединённая шкала времени"
+        SupportedLanguage.ES -> "Cronología unificada"
+        SupportedLanguage.AR -> "الخط الزمني الموحد"
+        else -> "Unified Timeline"
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TimelineScreen(
+    languageProvider: LanguageContextProvider,
+    viewModel: CallHistoryViewModel,
+    onBack: () -> Unit,
+    onRecordClick: (String) -> Unit,
+) {
+    val language = languageProvider.resolveLanguage()
+    val records by viewModel.allRecords.collectAsState()
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(getTimelineLabel(language), color = Color.White) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF0D1B2A)),
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF0D1B2A))
+                .padding(padding)
+                .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState()),
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (records.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 48.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = "No events yet",
+                        fontSize = 14.sp,
+                        color = Color(0xFF607D8B),
+                    )
+                }
+            } else {
+                // Display records as timeline
+                for (record in records.sortedByDescending { it.id }) {
+                    TimelineRecordItem(
+                        record = record,
+                        language = language,
+                        onClick = { onRecordClick(record.canonicalNumber) },
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+    }
+}
+
+@Composable
+private fun TimelineRecordItem(
+    record: UserCallRecord,
+    language: SupportedLanguage,
+    onClick: () -> Unit,
+) {
+    val engineColor = Color(0xFF4FC3F7) // Default to CallCheck color
+    val engineIcon = Icons.Filled.Phone // Default to Phone icon
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1B2838)),
+        shape = RoundedCornerShape(12.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Icon(
+                    imageVector = engineIcon,
+                    contentDescription = null,
+                    tint = engineColor,
+                    modifier = Modifier.size(24.dp),
+                )
+
+                Column {
+                    Text(
+                        text = record.displayNumber,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White,
+                    )
+                    Text(
+                        text = "${record.callCount}x calls",
+                        fontSize = 12.sp,
+                        color = Color(0xFF607D8B),
+                    )
+                }
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .background(engineColor, shape = RoundedCornerShape(4.dp)),
+                )
+                Icon(
+                    imageVector = Icons.Filled.ChevronRight,
+                    contentDescription = null,
+                    tint = Color(0xFF455A64),
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+        }
     }
 }
 
