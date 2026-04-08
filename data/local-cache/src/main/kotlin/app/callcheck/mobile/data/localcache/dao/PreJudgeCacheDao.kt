@@ -27,6 +27,14 @@ interface PreJudgeCacheDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(entry: PreJudgeCacheEntry): Long
 
+    /** 일괄 삽입 (백업 복원용) */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(entries: List<PreJudgeCacheEntry>)
+
+    /** 전체 캐시 일괄 조회 (백업용) */
+    @Query("SELECT * FROM pre_judge_cache ORDER BY last_judged_at DESC")
+    suspend fun getAllOnce(): List<PreJudgeCacheEntry>
+
     @Query("SELECT COUNT(*) FROM pre_judge_cache")
     suspend fun getCount(): Int
 

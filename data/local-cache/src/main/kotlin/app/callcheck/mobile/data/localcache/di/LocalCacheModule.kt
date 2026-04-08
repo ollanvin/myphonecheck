@@ -2,6 +2,7 @@ package app.callcheck.mobile.data.localcache.di
 
 import android.content.Context
 import androidx.room.Room
+import app.callcheck.mobile.data.localcache.dao.BackupMetadataDao
 import app.callcheck.mobile.data.localcache.dao.PreJudgeCacheDao
 import app.callcheck.mobile.data.localcache.dao.UserCallRecordDao
 import app.callcheck.mobile.data.localcache.db.CallCheckDatabase
@@ -52,6 +53,14 @@ object LocalCacheModule {
         dao: PreJudgeCacheDao,
     ): PreJudgeCacheRepository {
         return PreJudgeCacheRepository(dao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBackupMetadataDao(
+        database: CallCheckDatabase,
+    ): BackupMetadataDao {
+        return database.backupMetadataDao()
     }
 
     @Provides

@@ -42,6 +42,10 @@ interface UserCallRecordDao {
     @Query("SELECT COUNT(*) FROM user_call_records")
     suspend fun getRecordCount(): Int
 
+    /** 전체 기록 일괄 조회 (백업용) */
+    @Query("SELECT * FROM user_call_records ORDER BY updated_at DESC")
+    suspend fun getAllOnce(): List<UserCallRecord>
+
     /** 메모가 있는 기록만 */
     @Query("SELECT * FROM user_call_records WHERE memo IS NOT NULL AND memo != '' ORDER BY updated_at DESC")
     fun observeWithMemos(): Flow<List<UserCallRecord>>
@@ -51,6 +55,10 @@ interface UserCallRecordDao {
     /** 새 기록 삽입 (충돌 시 교체) */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(record: UserCallRecord): Long
+
+    /** 일괄 삽입 (백업 복원용) */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(records: List<UserCallRecord>)
 
     /** 기존 기록 업데이트 */
     @Update

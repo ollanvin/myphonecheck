@@ -58,6 +58,7 @@ import app.callcheck.mobile.core.model.UserCallAction
 import app.callcheck.mobile.core.model.UserCallTag
 import app.callcheck.mobile.data.localcache.entity.UserCallRecord
 import app.callcheck.mobile.feature.countryconfig.*
+import app.callcheck.mobile.ui.backup.BackupScreen
 import app.callcheck.mobile.viewmodel.CallHistoryViewModel
 import java.net.URLDecoder
 import java.net.URLEncoder
@@ -239,13 +240,19 @@ fun CallCheckNavHost(
             composable("settings") {
                 SettingsScreen(
                     languageProvider = languageProvider,
-                    onBack = { navController.popBackStack() }
+                    onBack = { navController.popBackStack() },
+                    onNavigateToBackup = { navController.navigate("backup") },
                 )
             }
             composable("purchase") {
                 PurchaseScreen(
                     languageProvider = languageProvider,
                     onBack = { navController.popBackStack() }
+                )
+            }
+            composable("backup") {
+                BackupScreen(
+                    onNavigateBack = { navController.popBackStack() }
                 )
             }
         }
@@ -1482,6 +1489,7 @@ private fun getActionSubtitle(risk: RiskLevel, lang: SupportedLanguage): String 
 private fun SettingsScreen(
     languageProvider: LanguageContextProvider,
     onBack: () -> Unit,
+    onNavigateToBackup: () -> Unit = {},
 ) {
     val language = languageProvider.resolveLanguage()
     val msg = PrivacyTrustMessages.forLanguage(language)
@@ -1628,6 +1636,57 @@ private fun SettingsScreen(
                         text = "Current: ${language.code.uppercase()} (auto-detected from device)",
                         fontSize = 14.sp,
                         color = Color(0xFFB0BEC5),
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 백업 및 복원 카드
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onNavigateToBackup() },
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1B2838)),
+                shape = RoundedCornerShape(16.dp),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            Icons.Filled.Security,
+                            contentDescription = null,
+                            tint = Color(0xFF4FC3F7),
+                            modifier = Modifier.size(24.dp),
+                        )
+                        Column {
+                            Text(
+                                text = "백업 및 복원",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = "AES-256 암호화 백업 · 클라우드 동시 저장",
+                                fontSize = 12.sp,
+                                color = Color(0xFFB0BEC5),
+                            )
+                        }
+                    }
+                    Icon(
+                        Icons.Filled.ChevronRight,
+                        contentDescription = null,
+                        tint = Color(0xFFB0BEC5),
+                        modifier = Modifier.size(24.dp),
                     )
                 }
             }

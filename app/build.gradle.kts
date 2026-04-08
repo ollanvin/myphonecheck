@@ -93,6 +93,15 @@ dependencies {
     implementation(libs.room.ktx)
     kapt(libs.room.compiler)
 
+    // Gson
+    implementation(libs.gson)
+
+    // DataStore
+    implementation(libs.datastore.preferences)
+
+    // DocumentFile (SAF)
+    implementation(libs.documentfile)
+
     // Phone number utilities
     implementation(libs.libphonenumber)
 
