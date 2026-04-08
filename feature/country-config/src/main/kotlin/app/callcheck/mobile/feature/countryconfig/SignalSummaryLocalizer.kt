@@ -1,7 +1,7 @@
 package app.callcheck.mobile.feature.countryconfig
 
 import android.content.Context
-import app.callcheck.mobile.R
+import app.callcheck.mobile.feature.countryconfig.R
 
 /**
  * SignalSummary 로컬라이저 — Android 리소스 기반 다국어 지원.

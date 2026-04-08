@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="overlay_device_history">История устройства</string>
+    <string name="overlay_web_scan_result">Результаты поиска</string>
+    <string name="overlay_no_history">Нет записей (первый звонок)</string>
+    <string name="overlay_no_search_result">Нет результатов</string>
+    <string name="overlay_action_answer">Ответ</string>
+    <string name="overlay_action_reject">Откл.</string>
+    <string name="overlay_action_block">Блок</string>
+    <string name="overlay_sms_exists">Есть SMS</string>
+    <string name="overlay_incoming_fmt">Входящих: %d</string>
+    <string name="overlay_outgoing_fmt">Исходящих: %d</string>
+    <string name="overlay_long_call_fmt">Долгих: %d</string>
+    <string name="overlay_short_call_fmt">Коротких: %d</string>
+    <string name="overlay_rejected_fmt">Отклонено: %d</string>
+    <string name="overlay_today">Сегодня</string>
+    <string name="overlay_yesterday">Вчера</string>
+    <string name="overlay_days_ago_fmt">%d дн. назад</string>
+    <string name="overlay_weeks_ago_fmt">%d нед. назад</string>
+    <string name="overlay_months_ago_fmt">%d мес. назад</string>
+    <string name="overlay_cluster_delivery">Доставка</string>
+    <string name="overlay_cluster_institution">Учреждение</string>
+    <string name="overlay_cluster_business">Бизнес</string>
+    <string name="overlay_cluster_spam">Спам</string>
+    <string name="overlay_cluster_scam">Мошенничество</string>
+    <string name="overlay_verdict_high">Опасно</string>
+    <string name="overlay_verdict_medium">Внимание</string>
+    <string name="overlay_verdict_low">Безопасно</string>
+    <string name="overlay_verdict_unknown">Проверка</string>
+</resources>

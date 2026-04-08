@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- SignalSummaryLocalizer — Intensity -->
+    <string name="signal_intensity_safe">수신 안전</string>
+    <string name="signal_intensity_reference">참고 필요</string>
+    <string name="signal_intensity_caution_light">주의 필요</string>
+    <string name="signal_intensity_caution">수신 주의</string>
+    <string name="signal_intensity_danger">수신 위험</string>
+    <string name="signal_intensity_reject">거절 권장</string>
+    <string name="signal_intensity_verify">배송 확인 권장</string>
+
+    <!-- SignalSummaryLocalizer — Category -->
+    <string name="signal_category_known_contact">저장된 연락처</string>
+    <string name="signal_category_business_likely">{entity} 거래처/업무 번호</string>
+    <string name="signal_category_delivery_likely">{entity} 택배/배송 전화</string>
+    <string name="signal_category_institution_likely">{entity} 공공기관/병원 전화</string>
+    <string name="signal_category_sales_spam_suspected">광고/영업 전화 의심</string>
+    <string name="signal_category_scam_risk_high">사기/피싱 위험</string>
+    <string name="signal_category_insufficient_evidence">판단 근거 부족</string>
+
+    <!-- PrivacyTrustMessages -->
+    <string name="privacy_onboarding_tagline">당신만의 통화 판단 비서</string>
+    <string name="privacy_onboarding_core">당신의 데이터는 절대 이 기기를 벗어나지 않습니다</string>
+    <string name="privacy_onboarding_detail">CallCheck는 통화 기록, 검색 결과, 판단 데이터를 외부 서버로 일절 전송하지 않습니다. 모든 분석은 이 기기 안에서 완결됩니다.</string>
+    <string name="privacy_onboarding_no_server_pledge">서버 없음\n추적 없음\n유출 리스크 없음</string>
+    <string name="privacy_settings_title">프라이버시 보호</string>
+    <string name="privacy_settings_description">CallCheck는 온디바이스 통신 보안 앱입니다. 통화 분석, 위험도 판정, 검색 스캔 모두 이 기기 안에서만 수행됩니다.</string>
+    <string name="privacy_settings_data_handling">검색 데이터는 자동으로 사라집니다\n완전히 삭제됩니다</string>
+    <string name="privacy_purchase_guarantee">구독 결제는 Google Play를 통해 안전하게 처리됩니다. CallCheck는 결제 정보를 수집하거나 저장하지 않습니다.</string>
+    <string name="privacy_purchase_value_proposition">프리미엄 온디바이스 통화 보안 — 서버 없이, 당신의 기기만으로.</string>
+</resources>

@@ -18,7 +18,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
-import app.callcheck.mobile.R
+import app.callcheck.mobile.feature.callintercept.R
 import app.callcheck.mobile.core.model.DecisionResult
 import app.callcheck.mobile.core.model.DeviceEvidence
 import app.callcheck.mobile.core.model.RiskLevel
@@ -191,7 +191,7 @@ class CallerIdOverlayManager @Inject constructor() {
             })
 
             // ── INFO LINE: 카테고리 · 번호 · 신뢰도 ──
-            val categoryText = localizer.localizeCategory(result.category.name, language)
+            val categoryText = localizer.localizeCategory(result.category.name, context)
             val confidencePercent = (result.confidence * 100).toInt()
             addView(TextView(context).apply {
                 text = "$categoryText  \u00B7  $phoneNumber  \u00B7  ${confidencePercent}%"

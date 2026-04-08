@@ -1,7 +1,7 @@
 package app.callcheck.mobile.feature.countryconfig
 
 import android.content.Context
-import app.callcheck.mobile.R
+import app.callcheck.mobile.feature.countryconfig.R
 
 /**
  * 프라이버시 신뢰 메시지 — Android 리소스 기반.

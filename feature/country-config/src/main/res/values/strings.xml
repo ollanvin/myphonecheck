@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ══════════════════════════════════════════ -->
+    <!-- SignalSummaryLocalizer — Intensity         -->
+    <!-- ══════════════════════════════════════════ -->
+    <string name="signal_intensity_safe">Safe to Answer</string>
+    <string name="signal_intensity_reference">For Reference</string>
+    <string name="signal_intensity_caution_light">Use Caution</string>
+    <string name="signal_intensity_caution">Be Cautious</string>
+    <string name="signal_intensity_danger">High Risk</string>
+    <string name="signal_intensity_reject">Reject Recommended</string>
+    <string name="signal_intensity_verify">Verify Delivery</string>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- SignalSummaryLocalizer — Category          -->
+    <!-- ══════════════════════════════════════════ -->
+    <string name="signal_category_known_contact">Known Contact</string>
+    <string name="signal_category_business_likely">{entity} Business Call</string>
+    <string name="signal_category_delivery_likely">{entity} Delivery Call</string>
+    <string name="signal_category_institution_likely">{entity} Institution Call</string>
+    <string name="signal_category_sales_spam_suspected">Suspected Spam/Sales</string>
+    <string name="signal_category_scam_risk_high">Scam/Phishing Risk</string>
+    <string name="signal_category_insufficient_evidence">Insufficient Evidence</string>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- PrivacyTrustMessages                      -->
+    <!-- ══════════════════════════════════════════ -->
+    <string name="privacy_onboarding_tagline">Your Private Call Decision Assistant</string>
+    <string name="privacy_onboarding_core">Your data never leaves this device</string>
+    <string name="privacy_onboarding_detail">CallCheck never sends your call history, search results, or decision data to any external server. Everything stays on your device.</string>
+    <string name="privacy_onboarding_no_server_pledge">No servers\nNo tracking\nZero leak risk</string>
+    <string name="privacy_settings_title">Privacy Protection</string>
+    <string name="privacy_settings_description">CallCheck is an on-device communication security app. Call analysis, risk assessment, and web scanning all happen entirely on this device.</string>
+    <string name="privacy_settings_data_handling">Search data disappears automatically\nCompletely deleted</string>
+    <string name="privacy_purchase_guarantee">Subscription payments are securely processed through Google Play. CallCheck does not collect or store any payment information.</string>
+    <string name="privacy_purchase_value_proposition">Premium on-device call security — no servers, just your device.</string>
+</resources>

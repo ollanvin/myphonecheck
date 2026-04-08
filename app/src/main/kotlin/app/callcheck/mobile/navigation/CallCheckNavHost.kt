@@ -1191,7 +1191,7 @@ private fun showDemoOverlay(
     val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
     val localizer = SignalSummaryLocalizer()
-    val categoryText = localizer.localizeCategory(category, language)
+    val categoryText = localizer.localizeCategory(category, context)
 
     // Verdict word from OverlayUiText
     val verdictWord = getOneWordVerdict(riskLevel, language)
@@ -1491,8 +1491,8 @@ private fun SettingsScreen(
     onBack: () -> Unit,
     onNavigateToBackup: () -> Unit = {},
 ) {
-    val language = languageProvider.resolveLanguage()
-    val msg = PrivacyTrustMessages.forLanguage(language)
+    val context = LocalContext.current
+    val msg = PrivacyTrustMessages(context)
 
     Scaffold(
         topBar = {
@@ -1704,9 +1704,9 @@ private fun PurchaseScreen(
     languageProvider: LanguageContextProvider,
     onBack: () -> Unit,
 ) {
-    val language = languageProvider.resolveLanguage()
-    val msg = PrivacyTrustMessages.forLanguage(language)
-    val countryCode = CountryConfigProviderImpl().detectCountry(LocalContext.current)
+    val context = LocalContext.current
+    val msg = PrivacyTrustMessages(context)
+    val countryCode = CountryConfigProviderImpl().detectCountry(context)
     val tier = CountryPricingMapper.getTier(countryCode)
     val pricingMsg = PricingUiMessages.forLanguage(language)
 
