@@ -2,10 +2,11 @@
 <resources>
     <string name="privacy_channel_name">프라이버시 알림</string>
     <string name="privacy_channel_description">카메라/마이크 접근 이상 감지 알림</string>
-    <string name="privacy_anomaly_title">\uD83D\uDD34 카메라/마이크 접근 감지</string>
+    <string name="privacy_notification_title_camera">카메라 접근 감지</string>
+    <string name="privacy_notification_title_mic">마이크 접근 감지</string>
     <string name="privacy_anomaly_content">%1$s이(가) %2$s을(를) 사용했습니다</string>
-    <string name="privacy_action_confirm">내 활동 맞음</string>
-    <string name="privacy_action_deny">아님</string>
+    <string name="privacy_action_confirmed">내 활동 맞음</string>
+    <string name="privacy_action_denied">아님 — 설정 확인</string>
     <string name="privacy_sensor_camera">카메라</string>
     <string name="privacy_sensor_microphone">마이크</string>
 </resources>

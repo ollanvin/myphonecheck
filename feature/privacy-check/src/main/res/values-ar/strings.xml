@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="privacy_channel_name">تنبيهات الخصوصية</string>
+    <string name="privacy_channel_description">تنبيهات الوصول غير الطبيعي إلى الكاميرا والميكروفون</string>
+    <string name="privacy_notification_title_camera">تم اكتشاف وصول إلى الكاميرا</string>
+    <string name="privacy_notification_title_mic">تم اكتشاف وصول إلى الميكروفون</string>
+    <string name="privacy_anomaly_content">%1$s استخدم %2$s</string>
+    <string name="privacy_action_confirmed">كان أنا</string>
+    <string name="privacy_action_denied">لم يكن أنا — تحقق من الإعدادات</string>
+    <string name="privacy_sensor_camera">الكاميرا</string>
+    <string name="privacy_sensor_microphone">الميكروفون</string>
+</resources>

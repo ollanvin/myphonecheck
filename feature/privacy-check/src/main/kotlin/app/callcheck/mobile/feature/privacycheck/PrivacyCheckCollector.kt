@@ -219,7 +219,11 @@ class PrivacyCheckCollector @Inject constructor(
             else -> permissionType
         }
 
-        val title = context.getString(R.string.privacy_anomaly_title)
+        val title = when (permissionType) {
+            "CAMERA" -> context.getString(R.string.privacy_notification_title_camera)
+            "MICROPHONE" -> context.getString(R.string.privacy_notification_title_mic)
+            else -> context.getString(R.string.privacy_notification_title_camera)
+        }
         val content = context.getString(R.string.privacy_anomaly_content, appLabel, sensorName)
 
         // 액션1: 내 활동 맞음 → BroadcastReceiver로 CONFIRMED 처리
@@ -256,12 +260,12 @@ class PrivacyCheckCollector @Inject constructor(
             .setColor(0xFFF44336.toInt()) // RingSystem.COLOR_DANGER
             .addAction(
                 android.R.drawable.ic_menu_save,
-                context.getString(R.string.privacy_action_confirm),
+                context.getString(R.string.privacy_action_confirmed),
                 confirmPending,
             )
             .addAction(
                 android.R.drawable.ic_menu_manage,
-                context.getString(R.string.privacy_action_deny),
+                context.getString(R.string.privacy_action_denied),
                 settingsPending,
             )
             .build()
