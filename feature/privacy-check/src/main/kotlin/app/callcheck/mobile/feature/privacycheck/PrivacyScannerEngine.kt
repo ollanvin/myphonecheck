@@ -9,7 +9,7 @@ import app.callcheck.mobile.core.model.PrivacyEvidence
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * PrivacyCheck 센서 스캐너 서비스.
+ * PrivacyCheck 센서 스캐너 엔진 (순수 로직).
  *
  * AppOpsManager를 사용하여 카메라/마이크 접근을 온디바이스로 감시합니다.
  *
@@ -31,11 +31,11 @@ import java.util.concurrent.ConcurrentHashMap
  * - 외부 네트워크로 접근 이력을 전송하지 않음
  * - 사용자에게 판단 보조 정보만 제공
  */
-class PrivacyScannerService(
+class PrivacyScannerEngine(
     private val context: Context,
 ) {
     private companion object {
-        private const val TAG = "PrivacyScannerService"
+        private const val TAG = "PrivacyScannerEngine"
 
         /** 자체 앱 무시 */
         private const val SELF_PACKAGE = "app.callcheck.mobile"

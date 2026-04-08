@@ -9,4 +9,8 @@
     <string name="privacy_action_denied">違います — 設定を確認</string>
     <string name="privacy_sensor_camera">カメラ</string>
     <string name="privacy_sensor_microphone">マイク</string>
+    <string name="privacy_foreground_channel_name">プライバシーセンサー監視</string>
+    <string name="privacy_foreground_channel_desc">オンデバイスのカメラ・マイクセッション記録</string>
+    <string name="privacy_foreground_notification_title">プライバシー監視</string>
+    <string name="privacy_foreground_notification_text">CallCheckがこの端末内でのみセンサーアクセスを監視しています。</string>
 </resources>

@@ -9,4 +9,8 @@
     <string name="privacy_action_denied">No fui yo — Verificar ajustes</string>
     <string name="privacy_sensor_camera">la camara</string>
     <string name="privacy_sensor_microphone">el microfono</string>
+    <string name="privacy_foreground_channel_name">Monitor de sensores de privacidad</string>
+    <string name="privacy_foreground_channel_desc">Registro local de sesiones de cámara y micrófono</string>
+    <string name="privacy_foreground_notification_title">Monitoreo de privacidad</string>
+    <string name="privacy_foreground_notification_text">CallCheck supervisa el acceso a sensores solo en este dispositivo.</string>
 </resources>

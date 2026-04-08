@@ -9,4 +9,8 @@
     <string name="privacy_action_denied">Не я — Проверить настройки</string>
     <string name="privacy_sensor_camera">камеру</string>
     <string name="privacy_sensor_microphone">микрофон</string>
+    <string name="privacy_foreground_channel_name">Мониторинг датчиков</string>
+    <string name="privacy_foreground_channel_desc">Локальная запись сессий камеры и микрофона</string>
+    <string name="privacy_foreground_notification_title">Мониторинг конфиденциальности</string>
+    <string name="privacy_foreground_notification_text">CallCheck отслеживает доступ к датчикам только на этом устройстве.</string>
 </resources>
