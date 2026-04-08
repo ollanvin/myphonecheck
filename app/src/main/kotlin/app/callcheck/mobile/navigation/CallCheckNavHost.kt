@@ -1491,6 +1491,7 @@ private fun SettingsScreen(
     onBack: () -> Unit,
     onNavigateToBackup: () -> Unit = {},
 ) {
+    val language = languageProvider.resolveLanguage()
     val context = LocalContext.current
     val msg = PrivacyTrustMessages(context)
 
@@ -1704,6 +1705,7 @@ private fun PurchaseScreen(
     languageProvider: LanguageContextProvider,
     onBack: () -> Unit,
 ) {
+    val language = languageProvider.resolveLanguage()
     val context = LocalContext.current
     val msg = PrivacyTrustMessages(context)
     val countryCode = CountryConfigProviderImpl().detectCountry(context)
