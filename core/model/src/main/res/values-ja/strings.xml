@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ══════════════════════════════════════════ -->
+    <!-- RingSystem — Labels & Disclaimers         -->
+    <!-- ══════════════════════════════════════════ -->
+    <string name="ring_risk_low">安全推定</string>
+    <string name="ring_risk_medium">注意</string>
+    <string name="ring_risk_high">危険度高</string>
+    <string name="ring_risk_unknown">判定不可</string>
+    <string name="ring_action_answer">安全推定</string>
+    <string name="ring_action_answer_caution">注意勧告</string>
+    <string name="ring_action_reject">危険疑い</string>
+    <string name="ring_action_block_review">高危険検知</string>
+    <string name="ring_action_hold">判定保留</string>
+    <string name="ring_disclaimer">このアプリは判断を助けます。最終決定はユーザーにあります。</string>
+    <string name="ring_disclaimer_detail">この結果はデバイス履歴およびWeb検索に基づく要約であり、正確性を保証するものではありません。CallCheckは判断支援ツールであり、通話の応答・拒否・ブロックの最終判断はユーザーにあります。</string>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ══════════════════════════════════════════ -->
+    <!-- RingSystem — Labels & Disclaimers         -->
+    <!-- ══════════════════════════════════════════ -->
+    <string name="ring_risk_low">آمن على الأرجح</string>
+    <string name="ring_risk_medium">تنبيه</string>
+    <string name="ring_risk_high">خطر عالي</string>
+    <string name="ring_risk_unknown">غير معروف</string>
+    <string name="ring_action_answer">آمن على الأرجح</string>
+    <string name="ring_action_answer_caution">يُنصح بالحذر</string>
+    <string name="ring_action_reject">اشتباه بخطر</string>
+    <string name="ring_action_block_review">تم اكتشاف خطر عالي</string>
+    <string name="ring_action_hold">قيد المراجعة</string>
+    <string name="ring_disclaimer">هذا التطبيق يساعد في اتخاذ القرار. القرار النهائي لك.</string>
+    <string name="ring_disclaimer_detail">هذه النتيجة مبنية على سجل الجهاز وتحليل البحث على الويب. الدقة غير مضمونة. CallCheck أداة دعم القرار. القرار النهائي بالرد أو الرفض أو الحظر يعود لك.</string>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ══════════════════════════════════════════ -->
+    <!-- RingSystem — Labels & Disclaimers         -->
+    <!-- ══════════════════════════════════════════ -->
+    <string name="ring_risk_low">Likely Safe</string>
+    <string name="ring_risk_medium">Caution</string>
+    <string name="ring_risk_high">High Risk</string>
+    <string name="ring_risk_unknown">Unknown</string>
+    <string name="ring_action_answer">Likely Safe</string>
+    <string name="ring_action_answer_caution">Caution Advised</string>
+    <string name="ring_action_reject">Risk Suspected</string>
+    <string name="ring_action_block_review">High Risk Detected</string>
+    <string name="ring_action_hold">Pending Review</string>
+    <string name="ring_disclaimer">This app assists your judgment. The final decision is yours.</string>
+    <string name="ring_disclaimer_detail">This result is based on device history and web search analysis. Accuracy is not guaranteed. CallCheck is a decision-support tool. The final decision to answer, reject, or block is yours.</string>
+</resources>

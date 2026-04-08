@@ -1,5 +1,8 @@
 package app.callcheck.mobile.core.model
 
+import android.content.Context
+import app.callcheck.mobile.core.model.R
+
 /**
  * RingSystem — CallCheck 전체 제품의 단일 상태 소스 (Single Source of Truth).
  *
@@ -37,13 +40,28 @@ object RingSystem {
     const val COLOR_LOADING: Int = 0xFF00BCD4.toInt()
 
     // ============================================================
-    // 상태별 라벨 (한국어/영어)
+    // 상태별 라벨 (Context 기반 다국어)
     // ============================================================
 
     /**
-     * 상태별 한국어 라벨.
+     * 현재 언어 설정에 따른 RiskLevel 라벨.
      * 알림, 위젯, 오버레이에서 동일하게 사용.
+     * Android 문자열 리소스에서 로드됨.
      */
+    fun label(context: Context, riskLevel: RiskLevel): String = when (riskLevel) {
+        RiskLevel.LOW -> context.getString(R.string.ring_risk_low)
+        RiskLevel.MEDIUM -> context.getString(R.string.ring_risk_medium)
+        RiskLevel.HIGH -> context.getString(R.string.ring_risk_high)
+        RiskLevel.UNKNOWN -> context.getString(R.string.ring_risk_unknown)
+    }
+
+    /**
+     * 상태별 한국어 라벨 (레거시).
+     * labelKo는 더 이상 사용되지 않습니다. label(context, riskLevel)을 사용하세요.
+     *
+     * @deprecated label(Context, RiskLevel)을 사용하세요
+     */
+    @Deprecated("Use label(context, riskLevel) instead", replaceWith = ReplaceWith("label(context, riskLevel)"))
     fun labelKo(riskLevel: RiskLevel): String = when (riskLevel) {
         RiskLevel.LOW -> "안전 추정"
         RiskLevel.MEDIUM -> "주의"
@@ -52,9 +70,12 @@ object RingSystem {
     }
 
     /**
-     * 상태별 영어 라벨.
-     * 글로벌 190개국 대응.
+     * 상태별 영어 라벨 (레거시).
+     * labelEn은 더 이상 사용되지 않습니다. label(context, riskLevel)을 사용하세요.
+     *
+     * @deprecated label(Context, RiskLevel)을 사용하세요
      */
+    @Deprecated("Use label(context, riskLevel) instead", replaceWith = ReplaceWith("label(context, riskLevel)"))
     fun labelEn(riskLevel: RiskLevel): String = when (riskLevel) {
         RiskLevel.LOW -> "Likely Safe"
         RiskLevel.MEDIUM -> "Caution"
@@ -92,13 +113,29 @@ object RingSystem {
     }
 
     // ============================================================
-    // ActionRecommendation 기반 라벨 (전 접점 통일)
+    // ActionRecommendation 기반 라벨 (Context 기반 다국어)
     // ============================================================
 
     /**
-     * ActionRecommendation에 대응하는 한국어 라벨.
+     * ActionRecommendation에 대응하는 현재 언어 라벨.
      * 모든 UI 접점에서 동일하게 사용.
+     * Android 문자열 리소스에서 로드됨.
      */
+    fun label(context: Context, action: ActionRecommendation): String = when (action) {
+        ActionRecommendation.ANSWER -> context.getString(R.string.ring_action_answer)
+        ActionRecommendation.ANSWER_WITH_CAUTION -> context.getString(R.string.ring_action_answer_caution)
+        ActionRecommendation.REJECT -> context.getString(R.string.ring_action_reject)
+        ActionRecommendation.BLOCK_REVIEW -> context.getString(R.string.ring_action_block_review)
+        ActionRecommendation.HOLD -> context.getString(R.string.ring_action_hold)
+    }
+
+    /**
+     * ActionRecommendation에 대응하는 한국어 라벨 (레거시).
+     * labelKo는 더 이상 사용되지 않습니다. label(context, action)을 사용하세요.
+     *
+     * @deprecated label(Context, ActionRecommendation)을 사용하세요
+     */
+    @Deprecated("Use label(context, action) instead", replaceWith = ReplaceWith("label(context, action)"))
     fun labelKo(action: ActionRecommendation): String = when (action) {
         ActionRecommendation.ANSWER -> "안전 추정"
         ActionRecommendation.ANSWER_WITH_CAUTION -> "주의 권고"
@@ -108,8 +145,12 @@ object RingSystem {
     }
 
     /**
-     * ActionRecommendation에 대응하는 영어 라벨.
+     * ActionRecommendation에 대응하는 영어 라벨 (레거시).
+     * labelEn은 더 이상 사용되지 않습니다. label(context, action)을 사용하세요.
+     *
+     * @deprecated label(Context, ActionRecommendation)을 사용하세요
      */
+    @Deprecated("Use label(context, action) instead", replaceWith = ReplaceWith("label(context, action)"))
     fun labelEn(action: ActionRecommendation): String = when (action) {
         ActionRecommendation.ANSWER -> "Likely Safe"
         ActionRecommendation.ANSWER_WITH_CAUTION -> "Caution Advised"
@@ -135,23 +176,63 @@ object RingSystem {
     }
 
     // ============================================================
-    // 면책 문구 (전 접점 공통)
+    // 면책 문구 (Context 기반 다국어)
     // ============================================================
 
-    /** 면책 문구 (한국어). 모든 UI 접점에서 동일하게 노출. */
+    /**
+     * 현재 언어 설정에 따른 면책 문구.
+     * 모든 UI 접점에서 동일하게 노출.
+     * Android 문자열 리소스에서 로드됨.
+     */
+    fun disclaimer(context: Context): String =
+        context.getString(R.string.ring_disclaimer)
+
+    /**
+     * 현재 언어 설정에 따른 상세 면책 문구.
+     * 앱 내부 상세 화면용.
+     * Android 문자열 리소스에서 로드됨.
+     */
+    fun disclaimerDetail(context: Context): String =
+        context.getString(R.string.ring_disclaimer_detail)
+
+    /**
+     * 면책 문구 (한국어, 레거시).
+     * DISCLAIMER_KO는 더 이상 사용되지 않습니다. disclaimer(context)를 사용하세요.
+     *
+     * @deprecated disclaimer(Context)를 사용하세요
+     */
+    @Deprecated("Use disclaimer(context) instead", replaceWith = ReplaceWith("disclaimer(context)"))
     const val DISCLAIMER_KO: String =
         "이 앱은 판단을 돕습니다. 최종 선택은 사용자에게 있습니다."
 
-    /** 면책 문구 (영어). 글로벌 대응. */
+    /**
+     * 면책 문구 (영어, 레거시).
+     * DISCLAIMER_EN은 더 이상 사용되지 않습니다. disclaimer(context)를 사용하세요.
+     *
+     * @deprecated disclaimer(Context)를 사용하세요
+     */
+    @Deprecated("Use disclaimer(context) instead", replaceWith = ReplaceWith("disclaimer(context)"))
     const val DISCLAIMER_EN: String =
         "This app assists your judgment. The final decision is yours."
 
-    /** 상세 면책 문구 (한국어). 앱 내부 상세 화면용. */
+    /**
+     * 상세 면책 문구 (한국어, 레거시).
+     * DISCLAIMER_DETAIL_KO는 더 이상 사용되지 않습니다. disclaimerDetail(context)를 사용하세요.
+     *
+     * @deprecated disclaimerDetail(Context)를 사용하세요
+     */
+    @Deprecated("Use disclaimerDetail(context) instead", replaceWith = ReplaceWith("disclaimerDetail(context)"))
     const val DISCLAIMER_DETAIL_KO: String =
         "이 결과는 디바이스 이력 및 웹 검색 기반 요약이며 정확성을 보장하지 않습니다. " +
         "CallCheck는 판단 보조 도구이며, 통화 수신·거절·차단의 최종 결정은 사용자에게 있습니다."
 
-    /** 상세 면책 문구 (영어). */
+    /**
+     * 상세 면책 문구 (영어, 레거시).
+     * DISCLAIMER_DETAIL_EN은 더 이상 사용되지 않습니다. disclaimerDetail(context)를 사용하세요.
+     *
+     * @deprecated disclaimerDetail(Context)를 사용하세요
+     */
+    @Deprecated("Use disclaimerDetail(context) instead", replaceWith = ReplaceWith("disclaimerDetail(context)"))
     const val DISCLAIMER_DETAIL_EN: String =
         "This result is based on device history and web search analysis. Accuracy is not guaranteed. " +
         "CallCheck is a decision-support tool. The final decision to answer, reject, or block is yours."

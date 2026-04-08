@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ══════════════════════════════════════════ -->
+    <!-- RingSystem — Labels & Disclaimers         -->
+    <!-- ══════════════════════════════════════════ -->
+    <string name="ring_risk_low">Вероятно безопасно</string>
+    <string name="ring_risk_medium">Внимание</string>
+    <string name="ring_risk_high">Высокий риск</string>
+    <string name="ring_risk_unknown">Неизвестно</string>
+    <string name="ring_action_answer">Вероятно безопасно</string>
+    <string name="ring_action_answer_caution">Рекомендуется осторожность</string>
+    <string name="ring_action_reject">Подозрение на риск</string>
+    <string name="ring_action_block_review">Обнаружен высокий риск</string>
+    <string name="ring_action_hold">Ожидание проверки</string>
+    <string name="ring_disclaimer">Это приложение помогает в принятии решений. Окончательный выбор за вами.</string>
+    <string name="ring_disclaimer_detail">Этот результат основан на истории устройства и анализе веб-поиска. Точность не гарантируется. CallCheck — инструмент поддержки решений. Окончательное решение о принятии, отклонении или блокировке звонка принадлежит вам.</string>
+</resources>
