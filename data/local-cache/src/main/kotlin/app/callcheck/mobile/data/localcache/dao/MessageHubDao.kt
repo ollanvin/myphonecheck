@@ -1,0 +1,97 @@
+package app.callcheck.mobile.data.localcache.dao
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import app.callcheck.mobile.data.localcache.entity.MessageHubEntity
+import kotlinx.coroutines.flow.Flow
+
+/**
+ * MessageCheck Hub DAO.
+ *
+ * 모든 쿼리는 로컬 전용. 서버 동기화 없음.
+ */
+@Dao
+interface MessageHubDao {
+
+    // ── 조회 ──
+
+    /** 전체 메시지 (최신순) */
+    @Query("SELECT * FROM message_hub ORDER BY received_at DESC")
+    fun observeAll(): Flow<List<MessageHubEntity>>
+
+    /** 앱별 메시지 (최신순) */
+    @Query("SELECT * FROM message_hub WHERE package_name = :packageName ORDER BY received_at DESC")
+    fun observeByPackage(packageName: String): Flow<List<MessageHubEntity>>
+
+    /** 위험도별 메시지 (최신순) */
+    @Query("SELECT * FROM message_hub WHERE risk_level = :riskLevel ORDER BY received_at DESC")
+    fun observeByRiskLevel(riskLevel: String): Flow<List<MessageHubEntity>>
+
+    /** 차단된 발신자의 메시지 */
+    @Query("SELECT * FROM message_hub WHERE is_blocked = 1 ORDER BY received_at DESC")
+    fun observeBlocked(): Flow<List<MessageHubEntity>>
+
+    /** 링크가 포함된 메시지 */
+    @Query("SELECT * FROM message_hub WHERE link_count > 0 ORDER BY received_at DESC")
+    fun observeWithLinks(): Flow<List<MessageHubEntity>>
+
+    /** 단건 조회 */
+    @Query("SELECT * FROM message_hub WHERE id = :id LIMIT 1")
+    suspend fun findById(id: Long): MessageHubEntity?
+
+    /** 전체 레코드 수 */
+    @Query("SELECT COUNT(*) FROM message_hub")
+    suspend fun getCount(): Int
+
+    /** 전체 기록 일괄 조회 (백업용) */
+    @Query("SELECT * FROM message_hub ORDER BY received_at DESC")
+    suspend fun getAllOnce(): List<MessageHubEntity>
+
+    /** 특정 앱의 차단 여부 확인 */
+    @Query("SELECT EXISTS(SELECT 1 FROM message_hub WHERE package_name = :packageName AND is_blocked = 1 LIMIT 1)")
+    suspend fun isBlockedSender(packageName: String): Boolean
+
+    // ── 삽입 ──
+
+    /** 새 메시지 삽입 */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(entity: MessageHubEntity): Long
+
+    /** 일괄 삽입 (백업 복원용) */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(entities: List<MessageHubEntity>)
+
+    // ── 업데이트 ──
+
+    /** 차단 상태 변경 (특정 메시지) */
+    @Query("UPDATE message_hub SET is_blocked = :blocked WHERE id = :id")
+    suspend fun updateBlocked(id: Long, blocked: Boolean)
+
+    /** 특정 앱 전체 차단/해제 */
+    @Query("UPDATE message_hub SET is_blocked = :blocked WHERE package_name = :packageName")
+    suspend fun updateBlockedByPackage(packageName: String, blocked: Boolean)
+
+    /** 사용자 메모 업데이트 */
+    @Query("UPDATE message_hub SET user_memo = :memo WHERE id = :id")
+    suspend fun updateMemo(id: Long, memo: String?)
+
+    // ── 삭제 ──
+
+    /** 단건 삭제 */
+    @Query("DELETE FROM message_hub WHERE id = :id")
+    suspend fun deleteById(id: Long)
+
+    /** 앱별 전체 삭제 */
+    @Query("DELETE FROM message_hub WHERE package_name = :packageName")
+    suspend fun deleteByPackage(packageName: String)
+
+    /** 전체 삭제 (사용자 명시적 요청 시에만) */
+    @Query("DELETE FROM message_hub")
+    suspend fun deleteAll()
+
+    /** 오래된 기록 정리 (retention 기간 초과) */
+    @Query("DELETE FROM message_hub WHERE received_at < :cutoffMillis")
+    suspend fun deleteOlderThan(cutoffMillis: Long)
+}

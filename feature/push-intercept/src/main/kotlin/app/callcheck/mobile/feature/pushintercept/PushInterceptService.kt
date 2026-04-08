@@ -7,6 +7,17 @@ import android.os.Build
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
+import app.callcheck.mobile.data.localcache.dao.MessageHubDao
+import app.callcheck.mobile.data.localcache.entity.MessageHubEntity
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.concurrent.ConcurrentHashMap
 
@@ -21,8 +32,10 @@ import java.util.concurrent.ConcurrentHashMap
  * 1. onNotificationPosted() — 알림 수신 시 호출
  * 2. 앱/채널 정보 수집
  * 3. 빈도/패턴 통계 업데이트
- * 4. PushCheckEngine.evaluate() 호출
- * 5. 결과를 로컬 저장소에 기록
+ * 4. URL 링크 탐지 (정규식)
+ * 5. PushCheckEngine.evaluate() 호출
+ * 6. 결과를 Room DB(message_hub)에 저장
+ * 7. 차단된 발신자의 알림 자동 캔슬
  * ═══════════════════════════════════════════════
  *
  * 권한 요구사항:
@@ -31,10 +44,22 @@ import java.util.concurrent.ConcurrentHashMap
  *
  * 원칙:
  * - 알림 내용은 디바이스 외부로 절대 전송하지 않음
- * - 알림을 자동으로 차단/삭제하지 않음
- * - 사용자에게 판단 보조 정보만 제공
+ * - 차단된 발신자 알림만 자동 캔슬 (사용자 명시 차단)
+ * - 사용자에게 판단 보조 정보 제공
+ *
+ * DI 방식:
+ * - NotificationListenerService는 시스템이 인스턴스를 생성하므로
+ *   @AndroidEntryPoint 사용 불가.
+ * - EntryPointAccessors로 Hilt 그래프에서 직접 주입.
  */
 class PushInterceptService : NotificationListenerService() {
+
+    /** Hilt EntryPoint — NotificationListenerService용 DI 접근점 */
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface PushInterceptEntryPoint {
+        fun messageHubDao(): MessageHubDao
+    }
 
     private companion object {
         private const val TAG = "PushInterceptService"
@@ -60,6 +85,18 @@ class PushInterceptService : NotificationListenerService() {
             // 일본어
             "セール", "割引", "クーポン", "無料", "限定", "ポイント",
         )
+
+        /**
+         * URL 탐지 정규식.
+         *
+         * RFC 3986 기반 — http(s) 스키마 URL + 스키마 없는 도메인 패턴 모두 탐지.
+         * 피싱/스미싱 링크 식별의 기반.
+         */
+        private val URL_REGEX = Regex(
+            """(?:https?://[^\s<>"{}|\\^`\[\]]+)|""" +
+                """(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}(?:/[^\s<>"{}|\\^`\[\]]*)?)""",
+            RegexOption.IGNORE_CASE,
+        )
     }
 
     /**
@@ -67,6 +104,23 @@ class PushInterceptService : NotificationListenerService() {
      * key = packageName
      */
     private val appStats = ConcurrentHashMap<String, AppNotificationStats>()
+
+    /** 서비스 전용 코루틴 스코프 (IO 디스패처) */
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    /** Room DAO (lazy — 서비스 연결 후 Hilt 그래프 접근) */
+    private val messageHubDao: MessageHubDao by lazy {
+        val entryPoint = EntryPointAccessors.fromApplication(
+            applicationContext,
+            PushInterceptEntryPoint::class.java,
+        )
+        entryPoint.messageHubDao()
+    }
+
+    override fun onListenerDisconnected() {
+        super.onListenerDisconnected()
+        serviceScope.cancel()
+    }
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         sbn ?: return
@@ -104,9 +158,14 @@ class PushInterceptService : NotificationListenerService() {
         val title = extras?.getCharSequence(Notification.EXTRA_TITLE)?.toString()
         val text = extras?.getCharSequence(Notification.EXTRA_TEXT)?.toString()
 
+        // URL 링크 탐지
+        val combinedText = listOfNotNull(title, text).joinToString(" ")
+        val detectedLinks = detectLinks(combinedText)
+        val linkCount = detectedLinks.size
+
         // 프로모션 키워드 매칭
-        val combinedText = listOfNotNull(title, text).joinToString(" ").lowercase()
-        val promotionHits = PROMOTION_KEYWORDS.count { combinedText.contains(it) }
+        val lowered = combinedText.lowercase()
+        val promotionHits = PROMOTION_KEYWORDS.count { lowered.contains(it) }
 
         // 통계 업데이트
         val stats = appStats.getOrPut(packageName) { AppNotificationStats() }
@@ -136,9 +195,65 @@ class PushInterceptService : NotificationListenerService() {
         val result = PushCheckEngine.evaluate(evidence)
 
         Log.d(TAG, "[PushCheck] $appLabel: ${result.category.summaryKo} " +
-            "(risk=${result.riskLevel}, 24h=${evidence.countLast24h}건)")
+            "(risk=${result.riskLevel}, 24h=${evidence.countLast24h}건, links=$linkCount)")
 
-        // TODO: 결과를 로컬 DB에 저장 + 필요 시 사용자에게 로컬 알림
+        // Room DB 저장 + 차단 발신자 자동 캔슬
+        serviceScope.launch {
+            try {
+                // 차단된 발신자 확인
+                val isBlocked = messageHubDao.isBlockedSender(packageName)
+
+                // 엔티티 생성 및 저장
+                val entity = MessageHubEntity(
+                    packageName = packageName,
+                    appLabel = appLabel,
+                    channelId = channelId,
+                    title = title,
+                    text = text,
+                    detectedLinks = if (detectedLinks.isNotEmpty()) {
+                        detectedLinks.joinToString(",")
+                    } else null,
+                    linkCount = linkCount,
+                    riskLevel = result.riskLevel.name,
+                    category = result.category.name,
+                    action = result.action.name,
+                    confidence = result.confidence,
+                    summary = result.summary,
+                    reasons = if (result.reasons.isNotEmpty()) {
+                        result.reasons.joinToString("|")
+                    } else null,
+                    promotionKeywordHits = promotionHits,
+                    isNightTime = isNightTime,
+                    isBlocked = isBlocked,
+                    receivedAt = evidence.receivedAtMillis,
+                )
+
+                messageHubDao.insert(entity)
+                Log.d(TAG, "[PushCheck] DB saved: $appLabel (id=$packageName, blocked=$isBlocked)")
+
+                // 차단된 발신자의 알림 자동 캔슬
+                if (isBlocked) {
+                    cancelNotification(sbn.key)
+                    Log.d(TAG, "[PushCheck] Auto-cancelled blocked sender: $appLabel")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "[PushCheck] DB save failed for $appLabel", e)
+            }
+        }
+    }
+
+    /**
+     * 텍스트에서 URL을 탐지한다.
+     *
+     * @param text 분석 대상 텍스트
+     * @return 탐지된 URL 리스트 (중복 제거)
+     */
+    private fun detectLinks(text: String): List<String> {
+        if (text.isBlank()) return emptyList()
+        return URL_REGEX.findAll(text)
+            .map { it.value.trimEnd('.', ',', ')', ']', ';', ':') }
+            .distinct()
+            .toList()
     }
 
     private fun getAppLabel(packageName: String): String {
@@ -160,7 +275,7 @@ class PushInterceptService : NotificationListenerService() {
      * 앱별 알림 통계 (온디바이스 메모리 전용).
      *
      * 최근 7일간의 알림 타임스탬프를 유지합니다.
-     * 앱 재시작 시 초기화되며, 영구 저장은 Room DB로 이관 예정.
+     * 앱 재시작 시 초기화되며, 영구 저장은 Room DB(message_hub)로 이관 완료.
      */
     internal class AppNotificationStats {
         private val timestamps = mutableListOf<Long>()
