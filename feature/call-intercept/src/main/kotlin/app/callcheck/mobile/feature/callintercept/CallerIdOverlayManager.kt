@@ -18,6 +18,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
+import app.callcheck.mobile.R
 import app.callcheck.mobile.core.model.DecisionResult
 import app.callcheck.mobile.core.model.DeviceEvidence
 import app.callcheck.mobile.core.model.RiskLevel
@@ -163,7 +164,7 @@ class CallerIdOverlayManager @Inject constructor() {
         val bgColor = backgroundColorForRisk(result.riskLevel)
         val textColor = Color.WHITE
         val subtleColor = adjustAlpha(textColor, 0.80f)
-        val uiText = OverlayUiText.forLanguage(language)
+        val uiText = OverlayUiText(context)
 
         return LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
@@ -231,7 +232,7 @@ class CallerIdOverlayManager @Inject constructor() {
             addDivider(context, textColor)
 
             // ── REASONS: 최대 2줄 (device + search 통합) ──
-            val reasons = buildTopReasons(result, language, localizer, uiText)
+            val reasons = buildTopReasons(result, language, localizer, uiText, context)
             for (reason in reasons) {
                 addView(TextView(context).apply {
                     text = reason
@@ -264,6 +265,7 @@ class CallerIdOverlayManager @Inject constructor() {
         language: SupportedLanguage,
         localizer: SignalSummaryLocalizer,
         uiText: OverlayUiText,
+        context: Context,
     ): List<String> {
         val reasons = mutableListOf<String>()
 
@@ -302,7 +304,7 @@ class CallerIdOverlayManager @Inject constructor() {
         if (reasons.isEmpty() && searchEvidence != null) {
             val clusters = searchEvidence.keywordClusters
                 .take(2)
-                .map { mapClusterToLocalized(it, language) }
+                .map { mapClusterToLocalized(it, context) }
                 .distinct()
             if (clusters.isNotEmpty()) {
                 reasons.add("\uD83D\uDCCA ${clusters.joinToString(", ")}")
@@ -494,7 +496,7 @@ class CallerIdOverlayManager @Inject constructor() {
         }
     }
 
-    private fun mapClusterToLocalized(cluster: String, language: SupportedLanguage): String {
+    private fun mapClusterToLocalized(cluster: String, context: Context): String {
         val lower = cluster.lowercase()
         val key = when {
             lower in setOf("delivery", "courier", "shipping", "logistics", "parcel", "package",
@@ -510,7 +512,7 @@ class CallerIdOverlayManager @Inject constructor() {
                 "사기", "보이스피싱", "피싱", "대출", "투자", "리딩방") -> "SCAM"
             else -> return cluster
         }
-        return OverlayUiText.forLanguage(language).clusterLabel(key)
+        return OverlayUiText(context).clusterLabel(key)
     }
 
     // ══════════════════════════════════════════════
@@ -577,301 +579,51 @@ class CallerIdOverlayManager @Inject constructor() {
 }
 
 // ══════════════════════════════════════════════
-// Overlay UI 텍스트 — 언어별 템플릿
+// Overlay UI 텍스트 — Android String Resources
 // ══════════════════════════════════════════════
 
 /**
- * 오버레이 UI 텍스트 번들.
- * 각 언어별 정적 인스턴스를 제공한다.
+ * 오버레이 UI 텍스트 헬퍼.
+ * Android string resources를 통해 로컬라이즈된 텍스트를 제공한다.
+ * Context를 받아 locale을 자동으로 처리한다.
  */
-internal data class OverlayUiText(
-    val deviceHistory: String,
-    val webScanResult: String,
-    val noHistory: String,
-    val noSearchResult: String,
-    val actionAnswer: String,
-    val actionReject: String,
-    val actionBlock: String,
-    val smsExists: String,
-    private val incomingFmt: String,
-    private val outgoingFmt: String,
-    private val longCallFmt: String,
-    private val shortCallFmt: String,
-    private val rejectedFmt: String,
-    private val todayStr: String,
-    private val yesterdayStr: String,
-    private val daysAgoFmt: String,
-    private val weeksAgoFmt: String,
-    private val monthsAgoFmt: String,
-    private val clusters: Map<String, String>,
-    /** 1초 인지: RiskLevel → 한 단어 판정 */
-    private val verdicts: Map<RiskLevel, String>,
-) {
-    /** 한 단어 판정 반환. 0.3초 인지 핵심. */
-    fun oneWordVerdict(riskLevel: RiskLevel): String = verdicts[riskLevel] ?: riskLevel.displayNameEn
-    fun formatIncoming(count: Int) = incomingFmt.replace("{n}", count.toString())
-    fun formatOutgoing(count: Int) = outgoingFmt.replace("{n}", count.toString())
-    fun formatLongCall(count: Int) = longCallFmt.replace("{n}", count.toString())
-    fun formatShortCall(count: Int) = shortCallFmt.replace("{n}", count.toString())
-    fun formatRejected(count: Int) = rejectedFmt.replace("{n}", count.toString())
+internal class OverlayUiText(private val context: Context) {
+    val deviceHistory: String get() = context.getString(R.string.overlay_device_history)
+    val webScanResult: String get() = context.getString(R.string.overlay_web_scan_result)
+    val noHistory: String get() = context.getString(R.string.overlay_no_history)
+    val noSearchResult: String get() = context.getString(R.string.overlay_no_search_result)
+    val actionAnswer: String get() = context.getString(R.string.overlay_action_answer)
+    val actionReject: String get() = context.getString(R.string.overlay_action_reject)
+    val actionBlock: String get() = context.getString(R.string.overlay_action_block)
+    val smsExists: String get() = context.getString(R.string.overlay_sms_exists)
+
+    fun formatIncoming(count: Int) = context.getString(R.string.overlay_incoming_fmt, count)
+    fun formatOutgoing(count: Int) = context.getString(R.string.overlay_outgoing_fmt, count)
+    fun formatLongCall(count: Int) = context.getString(R.string.overlay_long_call_fmt, count)
+    fun formatShortCall(count: Int) = context.getString(R.string.overlay_short_call_fmt, count)
+    fun formatRejected(count: Int) = context.getString(R.string.overlay_rejected_fmt, count)
+
     fun formatDaysAgo(days: Int): String = when {
-        days == 0 -> todayStr
-        days == 1 -> yesterdayStr
-        days <= 7 -> daysAgoFmt.replace("{n}", days.toString())
-        days <= 30 -> weeksAgoFmt.replace("{n}", (days / 7).toString())
-        else -> monthsAgoFmt.replace("{n}", (days / 30).toString())
+        days == 0 -> context.getString(R.string.overlay_today)
+        days == 1 -> context.getString(R.string.overlay_yesterday)
+        days <= 7 -> context.getString(R.string.overlay_days_ago_fmt, days)
+        days <= 30 -> context.getString(R.string.overlay_weeks_ago_fmt, days / 7)
+        else -> context.getString(R.string.overlay_months_ago_fmt, days / 30)
     }
-    fun clusterLabel(key: String): String = clusters[key] ?: key
 
-    companion object {
-        fun forLanguage(language: SupportedLanguage): OverlayUiText {
-            return when (language) {
-                SupportedLanguage.KO -> KO
-                SupportedLanguage.JA -> JA
-                SupportedLanguage.ZH -> ZH
-                SupportedLanguage.RU -> RU
-                SupportedLanguage.ES -> ES
-                SupportedLanguage.AR -> AR
-                else -> EN
-            }
-        }
+    fun oneWordVerdict(riskLevel: RiskLevel): String = when (riskLevel) {
+        RiskLevel.HIGH -> context.getString(R.string.overlay_verdict_high)
+        RiskLevel.MEDIUM -> context.getString(R.string.overlay_verdict_medium)
+        RiskLevel.LOW -> context.getString(R.string.overlay_verdict_low)
+        RiskLevel.UNKNOWN -> context.getString(R.string.overlay_verdict_unknown)
+    }
 
-        private val KO = OverlayUiText(
-            deviceHistory = "기기 기록",
-            webScanResult = "웹 스캔 결과",
-            noHistory = "기록 없음 (첫 수신)",
-            noSearchResult = "검색 결과 없음",
-            actionAnswer = "수신",
-            actionReject = "거절",
-            actionBlock = "차단",
-            smsExists = "SMS 있음",
-            incomingFmt = "수신 {n}회",
-            outgoingFmt = "발신 {n}회",
-            longCallFmt = "장기통화 {n}회",
-            shortCallFmt = "짧은통화 {n}회",
-            rejectedFmt = "거절 {n}회",
-            todayStr = "오늘",
-            yesterdayStr = "어제",
-            daysAgoFmt = "{n}일 전",
-            weeksAgoFmt = "{n}주 전",
-            monthsAgoFmt = "{n}개월 전",
-            clusters = mapOf(
-                "DELIVERY" to "택배/배송",
-                "INSTITUTION" to "기관/공공",
-                "BUSINESS" to "기업/고객센터",
-                "SPAM" to "광고/영업",
-                "SCAM" to "사기/피싱",
-            ),
-            verdicts = mapOf(
-                RiskLevel.HIGH to "위험",
-                RiskLevel.MEDIUM to "주의",
-                RiskLevel.LOW to "안전",
-                RiskLevel.UNKNOWN to "확인중",
-            ),
-        )
-
-        private val EN = OverlayUiText(
-            deviceHistory = "Device History",
-            webScanResult = "Web Scan Results",
-            noHistory = "No history (first call)",
-            noSearchResult = "No search results",
-            actionAnswer = "Answer",
-            actionReject = "Reject",
-            actionBlock = "Block",
-            smsExists = "SMS exists",
-            incomingFmt = "{n} incoming",
-            outgoingFmt = "{n} outgoing",
-            longCallFmt = "{n} long calls",
-            shortCallFmt = "{n} short calls",
-            rejectedFmt = "{n} rejected",
-            todayStr = "Today",
-            yesterdayStr = "Yesterday",
-            daysAgoFmt = "{n} days ago",
-            weeksAgoFmt = "{n} weeks ago",
-            monthsAgoFmt = "{n} months ago",
-            clusters = mapOf(
-                "DELIVERY" to "Delivery",
-                "INSTITUTION" to "Institution",
-                "BUSINESS" to "Business",
-                "SPAM" to "Spam/Sales",
-                "SCAM" to "Scam/Phishing",
-            ),
-            verdicts = mapOf(
-                RiskLevel.HIGH to "Danger",
-                RiskLevel.MEDIUM to "Caution",
-                RiskLevel.LOW to "Safe",
-                RiskLevel.UNKNOWN to "Checking",
-            ),
-        )
-
-        private val JA = OverlayUiText(
-            deviceHistory = "端末履歴",
-            webScanResult = "Web検索結果",
-            noHistory = "履歴なし（初着信）",
-            noSearchResult = "検索結果なし",
-            actionAnswer = "応答",
-            actionReject = "拒否",
-            actionBlock = "ブロック",
-            smsExists = "SMSあり",
-            incomingFmt = "着信{n}回",
-            outgoingFmt = "発信{n}回",
-            longCallFmt = "長時間通話{n}回",
-            shortCallFmt = "短時間通話{n}回",
-            rejectedFmt = "拒否{n}回",
-            todayStr = "今日",
-            yesterdayStr = "昨日",
-            daysAgoFmt = "{n}日前",
-            weeksAgoFmt = "{n}週間前",
-            monthsAgoFmt = "{n}ヶ月前",
-            clusters = mapOf(
-                "DELIVERY" to "配送",
-                "INSTITUTION" to "公共機関",
-                "BUSINESS" to "企業",
-                "SPAM" to "広告/営業",
-                "SCAM" to "詐欺",
-            ),
-            verdicts = mapOf(
-                RiskLevel.HIGH to "危険",
-                RiskLevel.MEDIUM to "注意",
-                RiskLevel.LOW to "安全",
-                RiskLevel.UNKNOWN to "確認中",
-            ),
-        )
-
-        private val ZH = OverlayUiText(
-            deviceHistory = "设备记录",
-            webScanResult = "网络搜索结果",
-            noHistory = "无记录（首次来电）",
-            noSearchResult = "无搜索结果",
-            actionAnswer = "接听",
-            actionReject = "拒接",
-            actionBlock = "拉黑",
-            smsExists = "有短信",
-            incomingFmt = "来电{n}次",
-            outgoingFmt = "去电{n}次",
-            longCallFmt = "长通话{n}次",
-            shortCallFmt = "短通话{n}次",
-            rejectedFmt = "拒接{n}次",
-            todayStr = "今天",
-            yesterdayStr = "昨天",
-            daysAgoFmt = "{n}天前",
-            weeksAgoFmt = "{n}周前",
-            monthsAgoFmt = "{n}个月前",
-            clusters = mapOf(
-                "DELIVERY" to "快递",
-                "INSTITUTION" to "公共机构",
-                "BUSINESS" to "企业",
-                "SPAM" to "广告/推销",
-                "SCAM" to "诈骗",
-            ),
-            verdicts = mapOf(
-                RiskLevel.HIGH to "危险",
-                RiskLevel.MEDIUM to "注意",
-                RiskLevel.LOW to "安全",
-                RiskLevel.UNKNOWN to "检查中",
-            ),
-        )
-
-        private val RU = OverlayUiText(
-            deviceHistory = "История устройства",
-            webScanResult = "Результаты поиска",
-            noHistory = "Нет записей (первый звонок)",
-            noSearchResult = "Нет результатов",
-            actionAnswer = "Ответ",
-            actionReject = "Откл.",
-            actionBlock = "Блок",
-            smsExists = "Есть SMS",
-            incomingFmt = "Входящих: {n}",
-            outgoingFmt = "Исходящих: {n}",
-            longCallFmt = "Долгих: {n}",
-            shortCallFmt = "Коротких: {n}",
-            rejectedFmt = "Отклонено: {n}",
-            todayStr = "Сегодня",
-            yesterdayStr = "Вчера",
-            daysAgoFmt = "{n} дн. назад",
-            weeksAgoFmt = "{n} нед. назад",
-            monthsAgoFmt = "{n} мес. назад",
-            clusters = mapOf(
-                "DELIVERY" to "Доставка",
-                "INSTITUTION" to "Учреждение",
-                "BUSINESS" to "Бизнес",
-                "SPAM" to "Спам",
-                "SCAM" to "Мошенничество",
-            ),
-            verdicts = mapOf(
-                RiskLevel.HIGH to "Опасно",
-                RiskLevel.MEDIUM to "Внимание",
-                RiskLevel.LOW to "Безопасно",
-                RiskLevel.UNKNOWN to "Проверка",
-            ),
-        )
-
-        private val ES = OverlayUiText(
-            deviceHistory = "Historial del dispositivo",
-            webScanResult = "Resultados de búsqueda",
-            noHistory = "Sin historial (primera llamada)",
-            noSearchResult = "Sin resultados",
-            actionAnswer = "Contestar",
-            actionReject = "Rechazar",
-            actionBlock = "Bloquear",
-            smsExists = "SMS existente",
-            incomingFmt = "{n} entrantes",
-            outgoingFmt = "{n} salientes",
-            longCallFmt = "{n} llamadas largas",
-            shortCallFmt = "{n} llamadas cortas",
-            rejectedFmt = "{n} rechazadas",
-            todayStr = "Hoy",
-            yesterdayStr = "Ayer",
-            daysAgoFmt = "Hace {n} días",
-            weeksAgoFmt = "Hace {n} semanas",
-            monthsAgoFmt = "Hace {n} meses",
-            clusters = mapOf(
-                "DELIVERY" to "Entrega",
-                "INSTITUTION" to "Institución",
-                "BUSINESS" to "Empresa",
-                "SPAM" to "Spam",
-                "SCAM" to "Fraude",
-            ),
-            verdicts = mapOf(
-                RiskLevel.HIGH to "Peligro",
-                RiskLevel.MEDIUM to "Precaución",
-                RiskLevel.LOW to "Seguro",
-                RiskLevel.UNKNOWN to "Verificando",
-            ),
-        )
-
-        private val AR = OverlayUiText(
-            deviceHistory = "سجل الجهاز",
-            webScanResult = "نتائج البحث",
-            noHistory = "لا سجل (أول مكالمة)",
-            noSearchResult = "لا نتائج",
-            actionAnswer = "رد",
-            actionReject = "رفض",
-            actionBlock = "حظر",
-            smsExists = "رسالة موجودة",
-            incomingFmt = "واردة {n}",
-            outgoingFmt = "صادرة {n}",
-            longCallFmt = "مكالمات طويلة {n}",
-            shortCallFmt = "مكالمات قصيرة {n}",
-            rejectedFmt = "مرفوضة {n}",
-            todayStr = "اليوم",
-            yesterdayStr = "أمس",
-            daysAgoFmt = "منذ {n} أيام",
-            weeksAgoFmt = "منذ {n} أسابيع",
-            monthsAgoFmt = "منذ {n} أشهر",
-            clusters = mapOf(
-                "DELIVERY" to "توصيل",
-                "INSTITUTION" to "مؤسسة",
-                "BUSINESS" to "شركة",
-                "SPAM" to "إعلانات",
-                "SCAM" to "احتيال",
-            ),
-            verdicts = mapOf(
-                RiskLevel.HIGH to "خطر",
-                RiskLevel.MEDIUM to "تنبيه",
-                RiskLevel.LOW to "آمن",
-                RiskLevel.UNKNOWN to "جاري التحقق",
-            ),
-        )
+    fun clusterLabel(key: String): String = when (key) {
+        "DELIVERY" -> context.getString(R.string.overlay_cluster_delivery)
+        "INSTITUTION" -> context.getString(R.string.overlay_cluster_institution)
+        "BUSINESS" -> context.getString(R.string.overlay_cluster_business)
+        "SPAM" -> context.getString(R.string.overlay_cluster_spam)
+        "SCAM" -> context.getString(R.string.overlay_cluster_scam)
+        else -> key
     }
 }
