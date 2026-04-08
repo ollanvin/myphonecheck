@@ -5,6 +5,7 @@ import androidx.room.Room
 import app.callcheck.mobile.data.localcache.dao.BackupMetadataDao
 import app.callcheck.mobile.data.localcache.dao.MessageHubDao
 import app.callcheck.mobile.data.localcache.dao.PreJudgeCacheDao
+import app.callcheck.mobile.data.localcache.dao.PrivacyHistoryDao
 import app.callcheck.mobile.data.localcache.dao.UserCallRecordDao
 import app.callcheck.mobile.data.localcache.db.CallCheckDatabase
 import app.callcheck.mobile.data.localcache.repository.PreJudgeCacheRepository
@@ -70,6 +71,14 @@ object LocalCacheModule {
         database: CallCheckDatabase,
     ): MessageHubDao {
         return database.messageHubDao()
+    }
+
+    @Provides
+    @Singleton
+    fun providePrivacyHistoryDao(
+        database: CallCheckDatabase,
+    ): PrivacyHistoryDao {
+        return database.privacyHistoryDao()
     }
 
     @Provides

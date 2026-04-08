@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- PrivacyCheck Notification Channel -->
+    <string name="privacy_channel_name">Privacy Alerts</string>
+    <string name="privacy_channel_description">Camera and microphone access anomaly alerts</string>
+
+    <!-- PrivacyCheck Anomaly Notification -->
+    <string name="privacy_anomaly_title">\uD83D\uDD34 Camera/Microphone Access Detected</string>
+    <string name="privacy_anomaly_content">%1$s used %2$s</string>
+
+    <!-- PrivacyCheck Notification Actions -->
+    <string name="privacy_action_confirm">My activity</string>
+    <string name="privacy_action_deny">Not me</string>
+
+    <!-- Sensor Names -->
+    <string name="privacy_sensor_camera">camera</string>
+    <string name="privacy_sensor_microphone">microphone</string>
+</resources>

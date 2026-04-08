@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="privacy_channel_name">Alertes de confidentialite</string>
+    <string name="privacy_channel_description">Alertes d\'acces anormal a la camera et au microphone</string>
+    <string name="privacy_anomaly_title">\uD83D\uDD34 Acces camera/microphone detecte</string>
+    <string name="privacy_anomaly_content">%1$s a utilise %2$s</string>
+    <string name="privacy_action_confirm">C\'est moi</string>
+    <string name="privacy_action_deny">Ce n\'est pas moi</string>
+    <string name="privacy_sensor_camera">la camera</string>
+    <string name="privacy_sensor_microphone">le microphone</string>
+</resources>
