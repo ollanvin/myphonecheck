@@ -39,7 +39,11 @@ class DeviceEvidenceRepositoryImpl(
                 contactSaved = contactSaved,
                 callHistory = callHistory,
                 smsExists = smsMetadata.smsExists,
+                smsTotalCount = smsMetadata.smsCount,
+                smsIncomingCount = smsMetadata.smsIncomingCount,
+                smsOutgoingCount = smsMetadata.smsOutgoingCount,
                 smsLastAt = smsMetadata.smsLastAt,
+                smsLastContent = smsMetadata.smsLastContent,
             )
         }
     }
@@ -53,7 +57,11 @@ class DeviceEvidenceRepositoryImpl(
         contactSaved: Boolean,
         callHistory: CallHistoryDetail,
         smsExists: Boolean,
+        smsTotalCount: Int,
+        smsIncomingCount: Int,
+        smsOutgoingCount: Int,
         smsLastAt: Long?,
+        smsLastContent: String?,
     ): DeviceEvidence {
         return DeviceEvidence(
             // Contact status
@@ -95,6 +103,10 @@ class DeviceEvidenceRepositoryImpl(
             // SMS
             smsExists = smsExists,
             smsLastAt = smsLastAt,
+            smsTotalCount = smsTotalCount,
+            smsIncomingCount = smsIncomingCount,
+            smsOutgoingCount = smsOutgoingCount,
+            smsLastContent = smsLastContent,
 
             // Tags (not yet implemented in v1.0, reserved)
             localTag = null,

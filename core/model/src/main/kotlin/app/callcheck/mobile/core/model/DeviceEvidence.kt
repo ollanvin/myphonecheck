@@ -1,4 +1,4 @@
-package app.callcheck.mobile.core.model
+﻿package app.callcheck.mobile.core.model
 
 /**
  * On-device evidence gathered from contacts, call log, and SMS metadata.
@@ -48,6 +48,10 @@ data class DeviceEvidence(
     // SMS metadata
     val smsExists: Boolean,
     val smsLastAt: Long?,
+    val smsTotalCount: Int = 0,
+    val smsIncomingCount: Int = 0,
+    val smsOutgoingCount: Int = 0,
+    val smsLastContent: String? = null,
 
     // User-applied labels
     val localTag: String?,
@@ -75,6 +79,10 @@ data class DeviceEvidence(
             recentDaysContact = null,
             smsExists = false,
             smsLastAt = null,
+            smsTotalCount = 0,
+            smsIncomingCount = 0,
+            smsOutgoingCount = 0,
+            smsLastContent = null,
             localTag = null,
             localMemo = null,
         )

@@ -1,4 +1,4 @@
-package app.callcheck.mobile.data.sms
+﻿package app.callcheck.mobile.data.sms
 
 import android.content.ContentResolver
 import android.content.Context
@@ -27,49 +27,70 @@ class SmsMetadataDataSourceImpl(
     private fun querySmsMetadata(normalizedNumber: String): SmsMetadata {
         var smsCount = 0
         var lastSmsTime: Long? = null
+        var incomingCount = 0
+        var outgoingCount = 0
         var hasIncoming = false
         var hasOutgoing = false
+        var lastContent: String? = null
 
         // Query inbox
-        querySmsFromBox(normalizedNumber, SMS_TYPE_INBOX)?.let { (count, lastTime, hasInc, hasOut) ->
+        querySmsFromBox(normalizedNumber, SMS_TYPE_INBOX)?.let { result ->
+            val count = result.count
+            val lastTime = result.lastTime
+            val content = result.lastContent
             smsCount += count
+            incomingCount += count
             if (lastTime != null && (lastSmsTime == null || lastTime > lastSmsTime)) {
                 lastSmsTime = lastTime
+                lastContent = content
             }
-            hasIncoming = hasIncoming || hasInc
-            hasOutgoing = hasOutgoing || hasOut
+            hasIncoming = hasIncoming || result.hasInc
+            hasOutgoing = hasOutgoing || result.hasOut
         }
 
         // Query sent
-        querySmsFromBox(normalizedNumber, SMS_TYPE_SENT)?.let { (count, lastTime, hasInc, hasOut) ->
+        querySmsFromBox(normalizedNumber, SMS_TYPE_SENT)?.let { result ->
+            val count = result.count
+            val lastTime = result.lastTime
+            val content = result.lastContent
             smsCount += count
+            outgoingCount += count
             if (lastTime != null && (lastSmsTime == null || lastTime > lastSmsTime)) {
                 lastSmsTime = lastTime
+                lastContent = content
             }
-            hasIncoming = hasIncoming || hasInc
-            hasOutgoing = hasOutgoing || hasOut
+            hasIncoming = hasIncoming || result.hasInc
+            hasOutgoing = hasOutgoing || result.hasOut
         }
 
         // Query drafts (only if they match our number)
-        querySmsFromBox(normalizedNumber, SMS_TYPE_DRAFT)?.let { (count, lastTime, hasInc, hasOut) ->
+        querySmsFromBox(normalizedNumber, SMS_TYPE_DRAFT)?.let { result ->
+            val count = result.count
+            val lastTime = result.lastTime
+            val content = result.lastContent
             smsCount += count
+            outgoingCount += count
             if (lastTime != null && (lastSmsTime == null || lastTime > lastSmsTime)) {
                 lastSmsTime = lastTime
+                lastContent = content
             }
-            hasIncoming = hasIncoming || hasInc
-            hasOutgoing = hasOutgoing || hasOut
+            hasIncoming = hasIncoming || result.hasInc
+            hasOutgoing = hasOutgoing || result.hasOut
         }
 
         return SmsMetadata(
             smsExists = smsCount > 0,
             smsCount = smsCount,
             smsLastAt = lastSmsTime,
+            smsIncomingCount = incomingCount,
+            smsOutgoingCount = outgoingCount,
             hasIncoming = hasIncoming,
             hasOutgoing = hasOutgoing,
+            smsLastContent = lastContent?.take(50),
         )
     }
 
-    private data class SmsBoxResult(val count: Int, val lastTime: Long?, val hasInc: Boolean, val hasOut: Boolean)
+    private data class SmsBoxResult(val count: Int, val lastTime: Long?, val hasInc: Boolean, val hasOut: Boolean, val lastContent: String? = null)
 
     private fun querySmsFromBox(normalizedNumber: String, boxType: Int): SmsBoxResult? {
         return try {
@@ -87,6 +108,7 @@ class SmsMetadataDataSourceImpl(
                     Telephony.Sms.ADDRESS,
                     Telephony.Sms.DATE,
                     Telephony.Sms.TYPE,
+                    Telephony.Sms.BODY,
                 ),
                 null,
                 null,
@@ -97,23 +119,27 @@ class SmsMetadataDataSourceImpl(
             var lastTime: Long? = null
             var hasIncoming = false
             var hasOutgoing = false
+            var lastContent: String? = null
 
             cursor?.use {
                 val addressIdx = it.getColumnIndex(Telephony.Sms.ADDRESS)
                 val dateIdx = it.getColumnIndex(Telephony.Sms.DATE)
                 val typeIdx = it.getColumnIndex(Telephony.Sms.TYPE)
+                val bodyIdx = it.getColumnIndex(Telephony.Sms.BODY)
 
                 while (it.moveToNext()) {
                     try {
                         val address = addressIdx.takeIf { idx -> idx >= 0 }?.let { idx -> it.getString(idx) } ?: continue
                         val date = dateIdx.takeIf { idx -> idx >= 0 }?.let { idx -> it.getLong(idx) } ?: 0
                         val type = typeIdx.takeIf { idx -> idx >= 0 }?.let { idx -> it.getInt(idx) } ?: 0
+                        val body = bodyIdx.takeIf { idx -> idx >= 0 }?.let { idx -> it.getString(idx) }
 
                         // Match phone numbers
                         if (matchPhoneNumbers(normalizedNumber, address)) {
                             count++
                             if (lastTime == null || date > lastTime) {
                                 lastTime = date
+                                lastContent = body
                             }
 
                             // Track direction - but don't expose content
@@ -129,7 +155,7 @@ class SmsMetadataDataSourceImpl(
                 }
             }
 
-            SmsBoxResult(count, lastTime, hasIncoming, hasOutgoing)
+            SmsBoxResult(count, lastTime, hasIncoming, hasOutgoing, lastContent)
         } catch (e: Exception) {
             null
         }
