@@ -21,6 +21,10 @@ interface MessageHubDao {
     @Query("SELECT * FROM message_hub ORDER BY received_at DESC")
     fun observeAll(): Flow<List<MessageHubEntity>>
 
+    /** 전체 메시지 Flow (UI 허브용 별칭) */
+    @Query("SELECT * FROM message_hub ORDER BY received_at DESC")
+    fun getAllFlow(): Flow<List<MessageHubEntity>>
+
     /** 앱별 메시지 (최신순) */
     @Query("SELECT * FROM message_hub WHERE package_name = :packageName ORDER BY received_at DESC")
     fun observeByPackage(packageName: String): Flow<List<MessageHubEntity>>
@@ -72,6 +76,10 @@ interface MessageHubDao {
     /** 특정 앱 전체 차단/해제 */
     @Query("UPDATE message_hub SET is_blocked = :blocked WHERE package_name = :packageName")
     suspend fun updateBlockedByPackage(packageName: String, blocked: Boolean)
+
+    /** 발신 앱 패키지 기준 차단 (허브 UI) */
+    @Query("UPDATE message_hub SET is_blocked = 1 WHERE package_name = :senderIdentifier")
+    suspend fun blockSender(senderIdentifier: String)
 
     /** 사용자 메모 업데이트 */
     @Query("UPDATE message_hub SET user_memo = :memo WHERE id = :id")

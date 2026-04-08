@@ -1,18 +1,24 @@
 package app.callcheck.mobile.navigation
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.PixelFormat
+import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.view.Gravity
 import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -32,11 +38,13 @@ import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.Timeline
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -45,6 +53,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -58,12 +67,21 @@ import app.callcheck.mobile.core.model.InterceptEventType
 import app.callcheck.mobile.core.model.RiskLevel
 import app.callcheck.mobile.core.model.UserCallAction
 import app.callcheck.mobile.core.model.UserCallTag
+import app.callcheck.mobile.data.localcache.entity.MessageHubEntity
+import app.callcheck.mobile.data.localcache.entity.PrivacyHistoryEntity
 import app.callcheck.mobile.data.localcache.entity.UserCallRecord
 import app.callcheck.mobile.feature.countryconfig.*
 import app.callcheck.mobile.ui.backup.BackupScreen
 import app.callcheck.mobile.viewmodel.CallHistoryViewModel
+import app.callcheck.mobile.viewmodel.MessageHubViewModel
+import app.callcheck.mobile.viewmodel.PrivacyHistoryViewModel
 import java.net.URLDecoder
 import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 // ═══════════════════════════════════════════════════════════
 // Bottom Navigation — 3탭: 홈 / 기록 / 설정
@@ -167,9 +185,22 @@ fun CallCheckNavHost(
                 HomeScreen(
                     languageProvider = languageProvider,
                     onPurchaseClick = { navController.navigate("purchase") },
-                    context = context,
                     viewModel = historyViewModel,
                     onEngineClick = { route -> navController.navigate(route) },
+                )
+            }
+            composable("message-hub") {
+                val messageHubViewModel: MessageHubViewModel = hiltViewModel()
+                MessageHubScreen(
+                    viewModel = messageHubViewModel,
+                    onBack = { navController.popBackStack() },
+                )
+            }
+            composable("privacy-history") {
+                val privacyHistoryViewModel: PrivacyHistoryViewModel = hiltViewModel()
+                PrivacyHistoryScreen(
+                    viewModel = privacyHistoryViewModel,
+                    onBack = { navController.popBackStack() },
                 )
             }
             composable("engine/call") {
@@ -331,7 +362,7 @@ private fun OnboardingScreen(
             shape = RoundedCornerShape(12.dp),
         ) {
             Text(
-                text = if (currentPage < 2) "Next" else "Start",
+                text = stringResource(if (currentPage < 2) AppR.string.btn_next else AppR.string.btn_start),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF0D1B2A),
@@ -618,11 +649,10 @@ private fun OnboardingPage3() {
 private fun HomeScreen(
     languageProvider: LanguageContextProvider,
     onPurchaseClick: () -> Unit,
-    context: Context,
     viewModel: CallHistoryViewModel,
     onEngineClick: (String) -> Unit = {},
 ) {
-    val language = languageProvider.resolveLanguage()
+    languageProvider.resolveLanguage()
     val context = LocalContext.current
 
     Column(
@@ -662,16 +692,16 @@ private fun HomeScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 EngineCard(
-                    question = "이 전화,\n받아도 되는가",
-                    description = "사기/스팸 여부를 실시간 판단",
+                    question = stringResource(AppR.string.engine_call_question),
+                    description = stringResource(AppR.string.engine_call_desc),
                     icon = Icons.Filled.Phone,
                     color = Color(0xFF4FC3F7),
                     modifier = Modifier.weight(1f),
                     onClick = { onEngineClick("engine/call") },
                 )
                 EngineCard(
-                    question = "이 알림,\n무시해도 되는가",
-                    description = "소음/프로모션 알림을 즉시 분류",
+                    question = stringResource(AppR.string.engine_push_question),
+                    description = stringResource(AppR.string.engine_push_desc),
                     icon = Icons.Filled.Notifications,
                     color = Color(0xFFFFB74D),
                     modifier = Modifier.weight(1f),
@@ -685,20 +715,20 @@ private fun HomeScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 EngineCard(
-                    question = "이 메시지,\n믿어도 되는가",
-                    description = "피싱/사칭 문자를 열기 전에 감지",
+                    question = stringResource(AppR.string.engine_message_question),
+                    description = stringResource(AppR.string.engine_message_desc),
                     icon = Icons.Filled.Message,
                     color = Color(0xFF81C784),
                     modifier = Modifier.weight(1f),
-                    onClick = { onEngineClick("engine/message") },
+                    onClick = { onEngineClick("message-hub") },
                 )
                 EngineCard(
-                    question = "지금 내 폰,\n안전한가",
-                    description = "카메라/마이크 몰래 접근 감시",
+                    question = stringResource(AppR.string.engine_privacy_question),
+                    description = stringResource(AppR.string.engine_privacy_desc),
                     icon = Icons.Filled.Security,
                     color = Color(0xFFE57373),
                     modifier = Modifier.weight(1f),
-                    onClick = { onEngineClick("engine/privacy") },
+                    onClick = { onEngineClick("privacy-history") },
                 )
             }
         }
@@ -715,7 +745,7 @@ private fun HomeScreen(
             shape = RoundedCornerShape(12.dp),
         ) {
             Text(
-                "Subscribe",
+                stringResource(AppR.string.btn_subscribe),
                 color = Color(0xFF0D1B2A),
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
@@ -2436,3 +2466,471 @@ private fun getCancelLabel(context: Context): String = context.getString(AppR.st
 private fun getBlockLabel(context: Context): String = context.getString(AppR.string.common_block)
 private fun getUnblockLabel(context: Context): String = context.getString(AppR.string.common_unblock)
 private fun getDeleteLabel(context: Context): String = context.getString(AppR.string.common_delete)
+
+// ═══════════════════════════════════════════════════════════
+// MessageCheck 허브 (작업8)
+// ═══════════════════════════════════════════════════════════
+
+private fun MessageHubEntity.firstDetectedLink(): String? =
+    detectedLinks
+        ?.split(',')
+        ?.map { it.trim() }
+        ?.firstOrNull { it.startsWith("http://", ignoreCase = true) || it.startsWith("https://", ignoreCase = true) }
+
+private fun MessageHubEntity.previewText(maxLen: Int = 50): String {
+    val raw = listOfNotNull(title, text).joinToString(" ").trim()
+    return if (raw.length <= maxLen) raw else raw.take(maxLen) + "…"
+}
+
+private fun formatMessageHubTime(epochMillis: Long): String {
+    val zoned = Instant.ofEpochMilli(epochMillis).atZone(ZoneId.systemDefault())
+    val fmt = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).withZone(ZoneId.systemDefault())
+    return fmt.format(zoned)
+}
+
+private fun formatPrivacyUsedAt(epochMillis: Long): String {
+    val zoned = Instant.ofEpochMilli(epochMillis).atZone(ZoneId.systemDefault())
+    val fmt = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).withZone(ZoneId.systemDefault())
+    return fmt.format(zoned)
+}
+
+private fun openSearchUrl(context: Context, baseQueryUrl: String, rawQuery: String) {
+    val enc = URLEncoder.encode(rawQuery, StandardCharsets.UTF_8.toString())
+    val uri = Uri.parse(baseQueryUrl + enc)
+    context.startActivity(
+        Intent(Intent.ACTION_VIEW, uri).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        },
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+private fun MessageHubScreen(
+    viewModel: MessageHubViewModel,
+    onBack: () -> Unit,
+) {
+    val messages by viewModel.messages.collectAsState()
+    val context = LocalContext.current
+    var linkDialogUrl by remember { mutableStateOf<String?>(null) }
+    val keptMarker = stringResource(AppR.string.message_hub_kept_marker)
+
+    linkDialogUrl?.let { url ->
+        AlertDialog(
+            onDismissRequest = { linkDialogUrl = null },
+            containerColor = Color(0xFF1A2A3A),
+            titleContentColor = Color.White,
+            textContentColor = Color(0xFFB0BEC5),
+            title = { Text(stringResource(AppR.string.message_hub_pick_search)) },
+            text = {
+                Column {
+                    TextButton(
+                        onClick = {
+                            openSearchUrl(
+                                context,
+                                "https://search.naver.com/search.naver?query=",
+                                url,
+                            )
+                            linkDialogUrl = null
+                        },
+                    ) {
+                        Text(stringResource(AppR.string.message_hub_search_naver), color = Color(0xFF4FC3F7))
+                    }
+                    TextButton(
+                        onClick = {
+                            openSearchUrl(
+                                context,
+                                "https://www.google.com/search?q=",
+                                url,
+                            )
+                            linkDialogUrl = null
+                        },
+                    ) {
+                        Text(stringResource(AppR.string.message_hub_search_google), color = Color(0xFF4FC3F7))
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { linkDialogUrl = null }) {
+                    Text(stringResource(AppR.string.common_close), color = Color(0xFF607D8B))
+                }
+            },
+        )
+    }
+
+    Scaffold(
+        containerColor = Color(0xFF0D1B2A),
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(AppR.string.message_hub_title), color = Color.White) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.Filled.ArrowBack,
+                            contentDescription = stringResource(AppR.string.common_back),
+                            tint = Color.White,
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF0D1B2A)),
+            )
+        },
+    ) { padding ->
+        if (messages.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    stringResource(AppR.string.message_hub_empty),
+                    color = Color(0xFF607D8B),
+                    textAlign = TextAlign.Center,
+                )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(messages, key = { it.id }) { item ->
+                    MessageHubListItem(
+                        item = item,
+                        onLinkClick = { url -> linkDialogUrl = url },
+                        onKeep = {
+                            viewModel.keepMessage(item.id, keptMarker)
+                        },
+                        onDelete = {
+                            viewModel.deleteMessage(item.id)
+                        },
+                        onBlock = {
+                            viewModel.blockSender(item.packageName)
+                        },
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun MessageHubListItem(
+    item: MessageHubEntity,
+    onLinkClick: (String) -> Unit,
+    onKeep: () -> Unit,
+    onDelete: () -> Unit,
+    onBlock: () -> Unit,
+) {
+    val link = remember(item.detectedLinks) { item.firstDetectedLink() }
+    val timeText = remember(item.receivedAt) { formatMessageHubTime(item.receivedAt) }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A2A3A)),
+        shape = RoundedCornerShape(12.dp),
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = item.appLabel,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = item.previewText(),
+                fontSize = 13.sp,
+                color = Color(0xFFB0BEC5),
+                maxLines = 3,
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = timeText,
+                fontSize = 11.sp,
+                color = Color(0xFF607D8B),
+            )
+            if (item.linkCount > 0) {
+                Spacer(modifier = Modifier.height(8.dp))
+                val linkRowModifier = if (link != null) {
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable { onLinkClick(link) }
+                        .padding(vertical = 4.dp)
+                } else {
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                }
+                Row(
+                    modifier = linkRowModifier,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        Icons.Filled.Warning,
+                        contentDescription = stringResource(AppR.string.message_hub_link_warning),
+                        tint = Color(0xFFFFB74D),
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        stringResource(AppR.string.message_hub_link_warning),
+                        fontSize = 12.sp,
+                        color = Color(0xFFFFB74D),
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                TextButton(onClick = onKeep) {
+                    Text(stringResource(AppR.string.message_hub_action_keep), color = Color(0xFF81C784))
+                }
+                TextButton(onClick = onDelete) {
+                    Text(stringResource(AppR.string.message_hub_action_delete), color = Color(0xFFE57373))
+                }
+                TextButton(onClick = onBlock) {
+                    Text(stringResource(AppR.string.message_hub_action_block), color = Color(0xFFFFB74D))
+                }
+            }
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+// PrivacyCheck 히스토리 (작업9)
+// ═══════════════════════════════════════════════════════════
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PrivacyHistoryScreen(
+    viewModel: PrivacyHistoryViewModel,
+    onBack: () -> Unit,
+) {
+    val history by viewModel.history.collectAsState()
+    val context = LocalContext.current
+    var tabIndex by remember { mutableIntStateOf(0) }
+
+    Scaffold(
+        containerColor = Color(0xFF0D1B2A),
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(AppR.string.privacy_history_title), color = Color.White) },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.Filled.ArrowBack,
+                            contentDescription = stringResource(AppR.string.common_back),
+                            tint = Color.White,
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF0D1B2A)),
+            )
+        },
+    ) { padding ->
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = stringResource(AppR.string.privacy_requires_android12),
+                    color = Color(0xFF607D8B),
+                    textAlign = TextAlign.Center,
+                )
+            }
+            return@Scaffold
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+        ) {
+            TabRow(
+                selectedTabIndex = tabIndex,
+                containerColor = Color(0xFF0A1628),
+                contentColor = Color(0xFF4FC3F7),
+            ) {
+                Tab(
+                    selected = tabIndex == 0,
+                    onClick = { tabIndex = 0 },
+                    text = {
+                        Text(
+                            stringResource(AppR.string.privacy_tab_camera),
+                            color = if (tabIndex == 0) Color.White else Color(0xFF607D8B),
+                        )
+                    },
+                )
+                Tab(
+                    selected = tabIndex == 1,
+                    onClick = { tabIndex = 1 },
+                    text = {
+                        Text(
+                            stringResource(AppR.string.privacy_tab_microphone),
+                            color = if (tabIndex == 1) Color.White else Color(0xFF607D8B),
+                        )
+                    },
+                )
+            }
+
+            val filtered = remember(history, tabIndex) {
+                if (tabIndex == 0) {
+                    history.filter { it.permissionType == "CAMERA" }
+                } else {
+                    history.filter { it.permissionType == "MICROPHONE" }
+                }
+            }
+
+            if (filtered.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(24.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        stringResource(AppR.string.privacy_history_empty),
+                        color = Color(0xFF607D8B),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    items(filtered, key = { it.id }) { row ->
+                        PrivacyHistoryListItem(
+                            item = row,
+                            onConfirm = {
+                                viewModel.updateVerified(row.id, "CONFIRMED")
+                            },
+                            onNotMe = {
+                                viewModel.updateVerified(row.id, "DENIED")
+                                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                    data = Uri.fromParts("package", row.appPackage, null)
+                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                }
+                                context.startActivity(intent)
+                            },
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun PrivacyHistoryListItem(
+    item: PrivacyHistoryEntity,
+    onConfirm: () -> Unit,
+    onNotMe: () -> Unit,
+) {
+    val context = LocalContext.current
+    val pm = context.packageManager
+    val bitmap = remember(item.appPackage) {
+        try {
+            pm.getApplicationIcon(item.appPackage).toBitmap()
+        } catch (_: Exception) {
+            null
+        }
+    }
+    val usedAtText = remember(item.usedAt) { formatPrivacyUsedAt(item.usedAt) }
+    val durationMin = (item.durationSec / 60).toInt()
+    val durationSecRem = (item.durationSec % 60).toInt()
+    val durationText = stringResource(
+        AppR.string.privacy_duration_fmt,
+        durationMin,
+        durationSecRem,
+    )
+    val showAnomaly = item.isAnomaly && item.userVerified == "UNVERIFIED"
+    val borderColor = if (showAnomaly) Color(0xFFE57373) else Color(0xFF2A3F54)
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(1.dp, borderColor, RoundedCornerShape(12.dp)),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A2A3A)),
+        shape = RoundedCornerShape(12.dp),
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (bitmap != null) {
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = item.appLabel,
+                    modifier = Modifier.size(40.dp),
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(Color(0xFF2A3F54), RoundedCornerShape(8.dp)),
+                )
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(item.appLabel, color = Color.White, fontWeight = FontWeight.SemiBold)
+                Text(usedAtText, fontSize = 11.sp, color = Color(0xFF607D8B))
+                Text(durationText, fontSize = 12.sp, color = Color(0xFFB0BEC5))
+                if (showAnomaly) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Filled.Warning,
+                            contentDescription = null,
+                            tint = Color(0xFFE57373),
+                            modifier = Modifier.size(16.dp),
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            stringResource(
+                                when (item.permissionType) {
+                                    "CAMERA" -> AppR.string.privacy_permission_camera
+                                    else -> AppR.string.privacy_permission_microphone
+                                },
+                            ),
+                            fontSize = 12.sp,
+                            color = Color(0xFFE57373),
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        TextButton(onClick = onConfirm) {
+                            Text(
+                                stringResource(AppR.string.privacy_anomaly_confirm),
+                                color = Color(0xFF81C784),
+                            )
+                        }
+                        TextButton(onClick = onNotMe) {
+                            Text(
+                                stringResource(AppR.string.privacy_anomaly_denied),
+                                color = Color(0xFFFFB74D),
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
