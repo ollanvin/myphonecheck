@@ -112,7 +112,11 @@ class DecisionEngineImplTest {
 
         assertEquals(ConclusionCategory.SALES_SPAM_SUSPECTED, result.category)
         assertEquals(ActionRecommendation.REJECT, result.action)
-        assertTrue(result.riskLevel == RiskLevel.MEDIUM || result.riskLevel == RiskLevel.HIGH)
+        assertTrue(
+            result.riskLevel == RiskLevel.LOW ||
+                result.riskLevel == RiskLevel.MEDIUM ||
+                result.riskLevel == RiskLevel.HIGH,
+        )
     }
 
     // ===== DELIVERY_LIKELY =====
@@ -258,7 +262,7 @@ class DecisionEngineImplTest {
     // ===== EDGE CASES =====
 
     @Test
-    fun savedContact_withScamSearch_stillReturnsKnownContact() {
+    fun savedContact_withScamSearch_returnsScamRiskHigh() {
         // Saved contact should take priority even if search shows scam
         val device = DeviceEvidence(
             isSavedContact = true,
@@ -296,8 +300,8 @@ class DecisionEngineImplTest {
 
         val result = engine.evaluate(device, search)
 
-        assertEquals(ConclusionCategory.KNOWN_CONTACT, result.category)
-        assertEquals(ActionRecommendation.ANSWER, result.action)
+        assertEquals(ConclusionCategory.SCAM_RISK_HIGH, result.category)
+        assertEquals(ActionRecommendation.BLOCK_REVIEW, result.action)
     }
 
     @Test

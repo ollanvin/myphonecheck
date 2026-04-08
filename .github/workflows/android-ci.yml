@@ -2,23 +2,22 @@ name: Android CI
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
-  workflow_dispatch:
+    branches: [ main ]
 
 jobs:
-  compile:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
-          java-version: 17
-          cache: gradle
+          java-version: '17'
+          distribution: 'temurin'
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
@@ -31,5 +30,8 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Compile debug Kotlin
-        run: ./gradlew compileDebugKotlin --no-daemon --stacktrace
+      - name: Build with Gradle
+        run: ./gradlew compileDebugKotlin
+
+      - name: Run tests
+        run: ./gradlew testDebugUnitTest

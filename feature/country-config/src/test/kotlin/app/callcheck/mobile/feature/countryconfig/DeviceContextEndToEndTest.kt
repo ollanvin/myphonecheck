@@ -8,6 +8,9 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 /**
  * E2E 기기 컨텍스트 통합 테스트.
@@ -30,6 +33,8 @@ import org.junit.Test
  * │ 7. 전체 7개 언어 × SCAM 시나리오 커버리지                    │
  * └──────────────────────────────────────────────────────────────┘
  */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34])
 class DeviceContextEndToEndTest {
 
     private lateinit var phoneContextBuilder: PhoneNumberContextBuilder
@@ -68,7 +73,7 @@ class DeviceContextEndToEndTest {
         val result = localizer.localize(
             intensityKey = "DANGER",
             categoryKey = "SCAM_RISK_HIGH",
-            language = language,
+            context = contextForLanguage(language),
         )
         assertEquals("사기/피싱 위험 — 수신 위험", result)
     }
@@ -86,7 +91,7 @@ class DeviceContextEndToEndTest {
         val result = localizer.localize(
             intensityKey = "VERIFY",
             categoryKey = "DELIVERY_LIKELY",
-            language = SupportedLanguage.KO,
+            context = contextForLanguage(SupportedLanguage.KO),
             entityName = "CJ대한통운",
         )
         assertTrue(result.contains("CJ대한통운"))
@@ -110,7 +115,7 @@ class DeviceContextEndToEndTest {
         val result = localizer.localize(
             intensityKey = "DANGER",
             categoryKey = "SCAM_RISK_HIGH",
-            language = SupportedLanguage.EN,
+            context = contextForLanguage(SupportedLanguage.EN),
         )
         assertEquals("Scam/Phishing Risk — High Risk", result)
     }
@@ -127,7 +132,7 @@ class DeviceContextEndToEndTest {
         val result = localizer.localize(
             intensityKey = "SAFE",
             categoryKey = "INSTITUTION_LIKELY",
-            language = SupportedLanguage.EN,
+            context = contextForLanguage(SupportedLanguage.EN),
             entityName = "IRS",
         )
         assertEquals("IRS Institution Call — Safe to Answer", result)
@@ -149,7 +154,7 @@ class DeviceContextEndToEndTest {
         val result = localizer.localize(
             intensityKey = "SAFE",
             categoryKey = "INSTITUTION_LIKELY",
-            language = SupportedLanguage.JA,
+            context = contextForLanguage(SupportedLanguage.JA),
             entityName = "NTT",
         )
         assertTrue(result.contains("NTT"))
@@ -175,7 +180,7 @@ class DeviceContextEndToEndTest {
         val result = localizer.localize(
             intensityKey = "SAFE",
             categoryKey = "INSTITUTION_LIKELY",
-            language = SupportedLanguage.KO,
+            context = contextForLanguage(SupportedLanguage.KO),
             entityName = "KT",
         )
         assertTrue(result.contains("KT"))
@@ -201,7 +206,7 @@ class DeviceContextEndToEndTest {
         val result = localizer.localize(
             intensityKey = "CAUTION",
             categoryKey = "SALES_SPAM_SUSPECTED",
-            language = overrideLanguage,
+            context = contextForLanguage(overrideLanguage),
         )
         assertEquals("Suspected Spam/Sales — Be Cautious", result)
     }
@@ -226,7 +231,7 @@ class DeviceContextEndToEndTest {
         val result = localizer.localize(
             intensityKey = "REFERENCE",
             categoryKey = "INSUFFICIENT_EVIDENCE",
-            language = language,
+            context = contextForLanguage(language),
         )
         assertEquals("Insufficient Evidence — For Reference", result)
     }
@@ -241,7 +246,7 @@ class DeviceContextEndToEndTest {
             val result = localizer.localize(
                 intensityKey = "DANGER",
                 categoryKey = "SCAM_RISK_HIGH",
-                language = lang,
+                context = contextForLanguage(lang),
             )
             assertTrue(
                 "Language ${lang.code} should produce non-empty scam warning",

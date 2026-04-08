@@ -5,6 +5,9 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 /**
  * SignalSummaryLocalizer 단위 테스트.
@@ -20,6 +23,8 @@ import org.junit.Test
  * │ 6. localize() 조합 동작                                      │
  * └──────────────────────────────────────────────────────────────┘
  */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34])
 class SignalSummaryLocalizerTest {
 
     private lateinit var localizer: SignalSummaryLocalizer
@@ -35,52 +40,52 @@ class SignalSummaryLocalizerTest {
 
     @Test
     fun `KO intensity SAFE returns Korean text`() {
-        assertEquals("수신 안전", localizer.localizeIntensity("SAFE", SupportedLanguage.KO))
+        assertEquals("수신 안전", localizer.localizeIntensity("SAFE", contextForLanguage(SupportedLanguage.KO)))
     }
 
     @Test
     fun `KO intensity DANGER returns Korean text`() {
-        assertEquals("수신 위험", localizer.localizeIntensity("DANGER", SupportedLanguage.KO))
+        assertEquals("수신 위험", localizer.localizeIntensity("DANGER", contextForLanguage(SupportedLanguage.KO)))
     }
 
     @Test
     fun `KO intensity REJECT returns Korean text`() {
-        assertEquals("거절 권장", localizer.localizeIntensity("REJECT", SupportedLanguage.KO))
+        assertEquals("거절 권장", localizer.localizeIntensity("REJECT", contextForLanguage(SupportedLanguage.KO)))
     }
 
     @Test
     fun `EN intensity SAFE returns English text`() {
-        assertEquals("Safe to Answer", localizer.localizeIntensity("SAFE", SupportedLanguage.EN))
+        assertEquals("Safe to Answer", localizer.localizeIntensity("SAFE", contextForLanguage(SupportedLanguage.EN)))
     }
 
     @Test
     fun `EN intensity DANGER returns English text`() {
-        assertEquals("High Risk", localizer.localizeIntensity("DANGER", SupportedLanguage.EN))
+        assertEquals("High Risk", localizer.localizeIntensity("DANGER", contextForLanguage(SupportedLanguage.EN)))
     }
 
     @Test
     fun `JA intensity SAFE returns Japanese text`() {
-        assertEquals("安全", localizer.localizeIntensity("SAFE", SupportedLanguage.JA))
+        assertEquals("安全", localizer.localizeIntensity("SAFE", contextForLanguage(SupportedLanguage.JA)))
     }
 
     @Test
     fun `ZH intensity DANGER returns Chinese text`() {
-        assertEquals("高风险", localizer.localizeIntensity("DANGER", SupportedLanguage.ZH))
+        assertEquals("高风险", localizer.localizeIntensity("DANGER", contextForLanguage(SupportedLanguage.ZH)))
     }
 
     @Test
     fun `RU intensity REJECT returns Russian text`() {
-        assertEquals("Рекомендуется отклонить", localizer.localizeIntensity("REJECT", SupportedLanguage.RU))
+        assertEquals("Рекомендуется отклонить", localizer.localizeIntensity("REJECT", contextForLanguage(SupportedLanguage.RU)))
     }
 
     @Test
     fun `ES intensity CAUTION returns Spanish text`() {
-        assertEquals("Ten cuidado", localizer.localizeIntensity("CAUTION", SupportedLanguage.ES))
+        assertEquals("Ten cuidado", localizer.localizeIntensity("CAUTION", contextForLanguage(SupportedLanguage.ES)))
     }
 
     @Test
     fun `AR intensity SAFE returns Arabic text`() {
-        assertEquals("آمن للرد", localizer.localizeIntensity("SAFE", SupportedLanguage.AR))
+        assertEquals("آمن للرد", localizer.localizeIntensity("SAFE", contextForLanguage(SupportedLanguage.AR)))
     }
 
     @Test
@@ -88,7 +93,7 @@ class SignalSummaryLocalizerTest {
         val keys = listOf("SAFE", "REFERENCE", "CAUTION_LIGHT", "CAUTION", "DANGER", "REJECT", "VERIFY")
         for (lang in SupportedLanguage.entries) {
             for (key in keys) {
-                val result = localizer.localizeIntensity(key, lang)
+                val result = localizer.localizeIntensity(key, contextForLanguage(lang))
                 assertFalse(
                     "Language ${lang.code} should have intensity $key (got key back)",
                     result == key
@@ -103,12 +108,12 @@ class SignalSummaryLocalizerTest {
 
     @Test
     fun `KO category SCAM_RISK_HIGH returns Korean text`() {
-        assertEquals("사기/피싱 위험", localizer.localizeCategory("SCAM_RISK_HIGH", SupportedLanguage.KO))
+        assertEquals("사기/피싱 위험", localizer.localizeCategory("SCAM_RISK_HIGH", contextForLanguage(SupportedLanguage.KO)))
     }
 
     @Test
     fun `EN category DELIVERY_LIKELY without entity`() {
-        val result = localizer.localizeCategory("DELIVERY_LIKELY", SupportedLanguage.EN)
+        val result = localizer.localizeCategory("DELIVERY_LIKELY", contextForLanguage(SupportedLanguage.EN))
         assertEquals("Delivery Call", result)
     }
 
@@ -121,7 +126,7 @@ class SignalSummaryLocalizerTest {
         )
         for (lang in SupportedLanguage.entries) {
             for (key in keys) {
-                val result = localizer.localizeCategory(key, lang)
+                val result = localizer.localizeCategory(key, contextForLanguage(lang))
                 assertFalse(
                     "Language ${lang.code} should have category $key (got key back)",
                     result == key
@@ -136,19 +141,19 @@ class SignalSummaryLocalizerTest {
 
     @Test
     fun `KO category with entity includes entity name`() {
-        val result = localizer.localizeCategory("DELIVERY_LIKELY", SupportedLanguage.KO, "CJ대한통운")
+        val result = localizer.localizeCategory("DELIVERY_LIKELY", contextForLanguage(SupportedLanguage.KO), "CJ대한통운")
         assertTrue(result.contains("CJ대한통운"))
     }
 
     @Test
     fun `EN category with entity includes entity name`() {
-        val result = localizer.localizeCategory("INSTITUTION_LIKELY", SupportedLanguage.EN, "IRS")
+        val result = localizer.localizeCategory("INSTITUTION_LIKELY", contextForLanguage(SupportedLanguage.EN), "IRS")
         assertTrue(result.contains("IRS"))
     }
 
     @Test
     fun `JA category with entity includes entity name`() {
-        val result = localizer.localizeCategory("BUSINESS_LIKELY", SupportedLanguage.JA, "ヤマト運輸")
+        val result = localizer.localizeCategory("BUSINESS_LIKELY", contextForLanguage(SupportedLanguage.JA), "ヤマト運輸")
         assertTrue(result.contains("ヤマト運輸"))
     }
 
@@ -158,14 +163,14 @@ class SignalSummaryLocalizerTest {
 
     @Test
     fun `category without entity removes placeholder cleanly`() {
-        val result = localizer.localizeCategory("BUSINESS_LIKELY", SupportedLanguage.KO)
+        val result = localizer.localizeCategory("BUSINESS_LIKELY", contextForLanguage(SupportedLanguage.KO))
         assertFalse(result.contains("{entity}"))
         assertFalse(result.startsWith(" "))
     }
 
     @Test
     fun `EN category without entity has no extra spaces`() {
-        val result = localizer.localizeCategory("DELIVERY_LIKELY", SupportedLanguage.EN)
+        val result = localizer.localizeCategory("DELIVERY_LIKELY", contextForLanguage(SupportedLanguage.EN))
         assertFalse(result.contains("{entity}"))
         assertFalse(result.startsWith(" "))
     }
@@ -176,13 +181,13 @@ class SignalSummaryLocalizerTest {
 
     @Test
     fun `unknown intensity key returns key as-is`() {
-        val result = localizer.localizeIntensity("UNKNOWN_KEY", SupportedLanguage.KO)
+        val result = localizer.localizeIntensity("UNKNOWN_KEY", contextForLanguage(SupportedLanguage.KO))
         assertEquals("UNKNOWN_KEY", result)
     }
 
     @Test
     fun `unknown category key returns key as-is`() {
-        val result = localizer.localizeCategory("UNKNOWN_CATEGORY", SupportedLanguage.KO)
+        val result = localizer.localizeCategory("UNKNOWN_CATEGORY", contextForLanguage(SupportedLanguage.KO))
         assertEquals("UNKNOWN_CATEGORY", result)
     }
 
@@ -195,7 +200,7 @@ class SignalSummaryLocalizerTest {
         val result = localizer.localize(
             intensityKey = "DANGER",
             categoryKey = "SCAM_RISK_HIGH",
-            language = SupportedLanguage.KO,
+            context = contextForLanguage(SupportedLanguage.KO),
         )
         assertEquals("사기/피싱 위험 — 수신 위험", result)
     }
@@ -205,7 +210,7 @@ class SignalSummaryLocalizerTest {
         val result = localizer.localize(
             intensityKey = "SAFE",
             categoryKey = "INSTITUTION_LIKELY",
-            language = SupportedLanguage.EN,
+            context = contextForLanguage(SupportedLanguage.EN),
             entityName = "IRS",
         )
         assertEquals("IRS Institution Call — Safe to Answer", result)
@@ -216,7 +221,7 @@ class SignalSummaryLocalizerTest {
         val result = localizer.localize(
             intensityKey = "VERIFY",
             categoryKey = "DELIVERY_LIKELY",
-            language = SupportedLanguage.JA,
+            context = contextForLanguage(SupportedLanguage.JA),
             entityName = "ヤマト運輸",
         )
         assertTrue(result.contains("ヤマト運輸"))

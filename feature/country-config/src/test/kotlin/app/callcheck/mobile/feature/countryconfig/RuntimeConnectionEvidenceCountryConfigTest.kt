@@ -3,6 +3,9 @@ package app.callcheck.mobile.feature.countryconfig
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 /**
  * ═══════════════════════════════════════════════════════════════
@@ -19,6 +22,8 @@ import org.junit.Test
  *
  * 증거 1,3,4,7은 data:search 모듈 테스트에 위치.
  */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34])
 class RuntimeConnectionEvidenceCountryConfigTest {
 
     private lateinit var localizer: SignalSummaryLocalizer
@@ -48,18 +53,19 @@ class RuntimeConnectionEvidenceCountryConfigTest {
 
         val languages = listOf(SupportedLanguage.EN, SupportedLanguage.KO, SupportedLanguage.JA)
         for (lang in languages) {
-            val intensity = localizer.localizeIntensity(intensityKey, lang)
-            val category = localizer.localizeCategory(categoryKey, lang)
-            val combined = localizer.localize(intensityKey, categoryKey, lang)
+            val ctx = contextForLanguage(lang)
+            val intensity = localizer.localizeIntensity(intensityKey, ctx)
+            val category = localizer.localizeCategory(categoryKey, ctx)
+            val combined = localizer.localize(intensityKey, categoryKey, ctx)
 
             println("[${lang.code}] intensity='$intensity', category='$category'")
             println("[${lang.code}] combined='$combined'")
         }
 
         // EN과 KO의 출력이 달라야 함
-        val enResult = localizer.localize(intensityKey, categoryKey, SupportedLanguage.EN)
-        val koResult = localizer.localize(intensityKey, categoryKey, SupportedLanguage.KO)
-        val jaResult = localizer.localize(intensityKey, categoryKey, SupportedLanguage.JA)
+        val enResult = localizer.localize(intensityKey, categoryKey, contextForLanguage(SupportedLanguage.EN))
+        val koResult = localizer.localize(intensityKey, categoryKey, contextForLanguage(SupportedLanguage.KO))
+        val jaResult = localizer.localize(intensityKey, categoryKey, contextForLanguage(SupportedLanguage.JA))
 
         assertNotEquals("EN and KO must produce different output", enResult, koResult)
         assertNotEquals("EN and JA must produce different output", enResult, jaResult)
@@ -73,7 +79,7 @@ class RuntimeConnectionEvidenceCountryConfigTest {
 
         println("\n[Entity substitution test]")
         for (lang in languages) {
-            val result = localizer.localizeCategory("INSTITUTION_LIKELY", lang, entityName)
+            val result = localizer.localizeCategory("INSTITUTION_LIKELY", contextForLanguage(lang), entityName)
             println("[${lang.code}] INSTITUTION with entity='$entityName' → '$result'")
             assertTrue("Must contain entity name", result.contains(entityName))
         }
@@ -93,7 +99,7 @@ class RuntimeConnectionEvidenceCountryConfigTest {
         assertEquals("Must support 7 languages", 7, languages.size)
 
         for (lang in languages) {
-            val msg = PrivacyTrustMessages.forLanguage(lang)
+            val msg = PrivacyTrustMessages(contextForLanguage(lang))
 
             // 온보딩
             assertTrue("${lang.code} onboardingTagline must not be blank", msg.onboardingTagline.isNotBlank())
@@ -117,12 +123,12 @@ class RuntimeConnectionEvidenceCountryConfigTest {
         }
 
         // EN 핵심 메시지 검증 — 신뢰 확정형 헤드라인
-        val en = PrivacyTrustMessages.forLanguage(SupportedLanguage.EN)
+        val en = PrivacyTrustMessages(contextForLanguage(SupportedLanguage.EN))
         assertTrue("EN must mention 'never leaves'", en.onboardingPrivacyCore.contains("never leaves"))
         assertTrue("EN must mention 'never sends'", en.onboardingPrivacyDetail.contains("never sends"))
 
         // KO 핵심 메시지 검증 — 신뢰 확정형 헤드라인
-        val ko = PrivacyTrustMessages.forLanguage(SupportedLanguage.KO)
+        val ko = PrivacyTrustMessages(contextForLanguage(SupportedLanguage.KO))
         assertTrue("KO must mention '벗어나지 않습니다'", ko.onboardingPrivacyCore.contains("벗어나지 않습니다"))
         assertTrue("KO must mention '전송하지 않습니다'", ko.onboardingPrivacyDetail.contains("전송하지 않습니다"))
 
@@ -143,28 +149,28 @@ class RuntimeConnectionEvidenceCountryConfigTest {
             val tier = CountryPricingMapper.getTier(cc)
             println("[Tier1] $cc → ${tier.monthlyPriceUsd}/月 (trial=${tier.freeTrialDays}d)")
             assertEquals("$cc must be Tier 1", 1, tier.tierId)
-            assertEquals("$cc must be \$9.99", "\$9.99", tier.monthlyPriceUsd)
-            assertEquals("$cc must have 7-day trial", 7, tier.freeTrialDays)
+            assertEquals("$cc must be \$9.9", "\$9.9", tier.monthlyPriceUsd)
+            assertEquals("$cc must have 30-day trial", 30, tier.freeTrialDays)
         }
 
-        // Tier 2 ($6.99) 주요 국가
+        // Tier 2 ($6.9) 주요 국가
         val tier2Countries = listOf("BR", "MX", "RU", "CN", "TR", "TH", "PH")
         for (cc in tier2Countries) {
             val tier = CountryPricingMapper.getTier(cc)
             println("[Tier2] $cc → ${tier.monthlyPriceUsd}/月 (trial=${tier.freeTrialDays}d)")
             assertEquals("$cc must be Tier 2", 2, tier.tierId)
-            assertEquals("$cc must be \$6.99", "\$6.99", tier.monthlyPriceUsd)
-            assertEquals("$cc must have 5-day trial", 5, tier.freeTrialDays)
+            assertEquals("$cc must be \$6.9", "\$6.9", tier.monthlyPriceUsd)
+            assertEquals("$cc must have 30-day trial", 30, tier.freeTrialDays)
         }
 
-        // Tier 3 ($3.99) — 미매핑 국가
+        // Tier 3 ($3.9) — 미매핑 국가
         val tier3Countries = listOf("BD", "MM", "LA", "KH", "NP", "ET", "TZ")
         for (cc in tier3Countries) {
             val tier = CountryPricingMapper.getTier(cc)
             println("[Tier3] $cc → ${tier.monthlyPriceUsd}/月 (trial=${tier.freeTrialDays}d)")
             assertEquals("$cc must be Tier 3", 3, tier.tierId)
-            assertEquals("$cc must be \$3.99", "\$3.99", tier.monthlyPriceUsd)
-            assertEquals("$cc must have 3-day trial", 3, tier.freeTrialDays)
+            assertEquals("$cc must be \$3.9", "\$3.9", tier.monthlyPriceUsd)
+            assertEquals("$cc must have 30-day trial", 30, tier.freeTrialDays)
         }
 
         // null → Tier 1 (보수적)
