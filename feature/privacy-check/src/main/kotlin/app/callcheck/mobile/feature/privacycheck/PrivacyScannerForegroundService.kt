@@ -27,6 +27,8 @@ import kotlinx.coroutines.launch
  * 세션이 끝날 때 [PrivacyCheckCollector.collect]로 히스토리를 기록한다.
  *
  * API 31 미만에서는 [onCreate]에서 즉시 중지한다.
+ *
+ * Hilt: `@AndroidEntryPoint`; [collector]는 [PrivacyCheckCollector](`@ApplicationContext` + LocalCacheModule의 PrivacyHistoryDao).
  */
 @AndroidEntryPoint
 class PrivacyScannerForegroundService : Service() {
