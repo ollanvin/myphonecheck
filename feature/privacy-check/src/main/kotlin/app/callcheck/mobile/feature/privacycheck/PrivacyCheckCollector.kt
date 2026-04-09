@@ -16,6 +16,7 @@ import androidx.core.app.NotificationCompat
 import app.callcheck.mobile.core.model.PrivacyEvidence
 import app.callcheck.mobile.data.localcache.dao.PrivacyHistoryDao
 import app.callcheck.mobile.data.localcache.entity.PrivacyHistoryEntity
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -46,7 +47,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class PrivacyCheckCollector @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
     private val privacyHistoryDao: PrivacyHistoryDao,
 ) {
     companion object {
