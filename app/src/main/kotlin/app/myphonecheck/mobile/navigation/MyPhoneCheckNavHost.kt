@@ -111,6 +111,8 @@ private enum class BottomTab(
 
 /** 바텀 네비게이션이 보이는 route 목록 */
 private val BOTTOM_NAV_ROUTES = BottomTab.entries.map { it.route }.toSet()
+private const val PREFS_NAME = "myphonecheck_app_prefs"
+private const val KEY_ONBOARDING_COMPLETED = "onboarding_completed"
 
 @Composable
 fun MyPhoneCheckNavHost(
@@ -118,6 +120,12 @@ fun MyPhoneCheckNavHost(
 ) {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
+    val appPrefs = remember(context) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    }
+    val startDestination = remember(appPrefs) {
+        if (appPrefs.getBoolean(KEY_ONBOARDING_COMPLETED, false)) "home" else "onboarding"
+    }
     val languageProvider = remember(configuration) {
         LanguageContextProviderImpl(context)
     }
@@ -180,13 +188,14 @@ fun MyPhoneCheckNavHost(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "onboarding",
+            startDestination = startDestination,
             modifier = Modifier.padding(innerPadding),
         ) {
             composable("onboarding") {
                 OnboardingScreen(
                     languageProvider = languageProvider,
                     onContinue = {
+                        appPrefs.edit().putBoolean(KEY_ONBOARDING_COMPLETED, true).apply()
                         navController.navigate("home") {
                             popUpTo("onboarding") { inclusive = true }
                         }
