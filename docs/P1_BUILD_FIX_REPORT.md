@@ -23,7 +23,7 @@
 - **대상 모듈**: `app`, `feature:decision-ui`, `feature:settings`, `feature:billing`
 
 ### 3. AndroidManifest.xml 정리
-- `CallCheckContentProvider` 선언 삭제 — 구현 클래스가 존재하지 않음
+- `MyPhoneCheckContentProvider` 선언 삭제 — 구현 클래스가 존재하지 않음
 - `CallActionReceiver`에서 `exported="true"` → `exported="false"` — 내부 전용 리시버이므로 외부 노출 불필요
 - `CallActionReceiver`의 `intent-filter` 삭제 — exported=false이므로 intent-filter가 모순
 - `CallScreeningService`에서 `android.telecom.InCallService` 액션 삭제 — CallScreeningService에는 해당 액션이 부적절
@@ -55,7 +55,7 @@
 ## DI 의존성 체인 (완전성 검증)
 
 ```
-CallCheckScreeningService
+MyPhoneCheckScreeningService
   └── CallInterceptRepository (@Binds → CallInterceptRepositoryImpl)
         ├── DeviceEvidenceProvider (@Binds → DeviceEvidenceProviderImpl)
         │     └── DeviceEvidenceRepository (@Provides → DeviceEvidenceRepositoryImpl)

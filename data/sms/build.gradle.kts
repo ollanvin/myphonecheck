@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "app.callcheck.mobile.data.sms"
+    namespace = "app.myphonecheck.mobile.data.sms"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

@@ -1,15 +1,15 @@
-# CallCheck Call Interception Implementation
+# MyPhoneCheck Call Interception Implementation
 
 ## Overview
 
-This document describes the complete implementation of the CallScreeningService for CallCheck Android app. The service intercepts incoming calls and provides real-time risk assessment with user-friendly notifications and actions.
+This document describes the complete implementation of the CallScreeningService for MyPhoneCheck Android app. The service intercepts incoming calls and provides real-time risk assessment with user-friendly notifications and actions.
 
 ## Architecture
 
 ### Core Components
 
-#### 1. CallCheckScreeningService
-**File:** `CallCheckScreeningService.kt`
+#### 1. MyPhoneCheckScreeningService
+**File:** `MyPhoneCheckScreeningService.kt`
 
 The main Android system service that intercepts incoming calls. Extends `android.telecom.CallScreeningService`.
 
@@ -189,7 +189,7 @@ abstract class CallInterceptModule {
 ```xml
 <!-- Call Screening Service (Android 10+) -->
 <service
-    android:name=".feature.callintercept.CallCheckScreeningService"
+    android:name=".feature.callintercept.MyPhoneCheckScreeningService"
     android:exported="true"
     android:permission="android.permission.BIND_SCREENING_SERVICE">
     <intent-filter>
@@ -229,7 +229,7 @@ Already present in manifest:
 ```
 1. Android System detects incoming call
    ↓
-2. CallCheckScreeningService.onScreenCall() invoked
+2. MyPhoneCheckScreeningService.onScreenCall() invoked
    ↓
 3. Extract and normalize phone number
    ├─→ Emergency number? → ALLOW (safe path)
@@ -319,7 +319,7 @@ Already present in manifest:
 - Risk level to action mapping
 
 ### Integration Tests
-- Full CallCheckScreeningService flow
+- Full MyPhoneCheckScreeningService flow
 - Notification creation and actions
 - Hilt injection setup
 - Blocklist operations

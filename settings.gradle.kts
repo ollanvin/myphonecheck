@@ -16,7 +16,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "CallCheck"
+rootProject.name = "MyPhoneCheck"
 
 include(":app")
 

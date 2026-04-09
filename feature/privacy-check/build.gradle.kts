@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "app.callcheck.mobile.feature.privacycheck"
+    namespace = "app.myphonecheck.mobile.feature.privacycheck"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

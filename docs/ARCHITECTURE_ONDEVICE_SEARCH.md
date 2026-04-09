@@ -1,4 +1,4 @@
-# CallCheck 온디바이스 검색 아키텍처
+# MyPhoneCheck 온디바이스 검색 아키텍처
 
 ## 헌법 (절대 원칙)
 
@@ -15,7 +15,7 @@
 ## 확정 구조
 
 ```
-CallCheck App
+MyPhoneCheck App
  ├─ Device Evidence (로컬)
  │    ├─ 연락처 DB
  │    ├─ 통화 이력

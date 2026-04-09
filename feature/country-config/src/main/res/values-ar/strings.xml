@@ -21,11 +21,11 @@
     <!-- PrivacyTrustMessages -->
     <string name="privacy_onboarding_tagline">مساعدك الخاص لتقييم المكالمات</string>
     <string name="privacy_onboarding_core">بياناتك لا تغادر هذا الجهاز مطلقاً</string>
-    <string name="privacy_onboarding_detail">لا يرسل CallCheck سجل مكالماتك أو نتائج البحث أو بيانات التقييم إلى أي خادم خارجي مطلقاً. كل شيء يبقى على جهازك.</string>
+    <string name="privacy_onboarding_detail">لا يرسل MyPhoneCheck سجل مكالماتك أو نتائج البحث أو بيانات التقييم إلى أي خادم خارجي مطلقاً. كل شيء يبقى على جهازك.</string>
     <string name="privacy_onboarding_no_server_pledge">لا خوادم\nلا تتبع\nصفر مخاطر تسريب</string>
     <string name="privacy_settings_title">حماية الخصوصية</string>
-    <string name="privacy_settings_description">CallCheck هو تطبيق أمان اتصالات يعمل على الجهاز. يتم تحليل المكالمات وتقييم المخاطر ومسح الويب بالكامل على هذا الجهاز.</string>
+    <string name="privacy_settings_description">MyPhoneCheck هو تطبيق أمان اتصالات يعمل على الجهاز. يتم تحليل المكالمات وتقييم المخاطر ومسح الويب بالكامل على هذا الجهاز.</string>
     <string name="privacy_settings_data_handling">بيانات البحث تختفي تلقائياً\nيتم حذفها بالكامل</string>
-    <string name="privacy_purchase_guarantee">تتم معالجة مدفوعات الاشتراك بشكل آمن عبر Google Play. لا يجمع CallCheck أو يخزن أي معلومات دفع مطلقاً.</string>
+    <string name="privacy_purchase_guarantee">تتم معالجة مدفوعات الاشتراك بشكل آمن عبر Google Play. لا يجمع MyPhoneCheck أو يخزن أي معلومات دفع مطلقاً.</string>
     <string name="privacy_purchase_value_proposition">أمان مكالمات متميز على الجهاز — بدون خوادم، فقط جهازك.</string>
 </resources>

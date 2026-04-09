@@ -3,7 +3,7 @@
 ## Files Created
 
 ### Core Service
-- `CallCheckScreeningService.kt` - Main Android CallScreeningService implementation
+- `MyPhoneCheckScreeningService.kt` - Main Android CallScreeningService implementation
 
 ### Repository Pattern
 - `CallInterceptRepository.kt` - Interface defining the decision pipeline contract
@@ -31,7 +31,7 @@
 ## Integration Checklist
 
 ### 1. Manifest Updates ✓
-- [x] Updated AndroidManifest.xml with CallCheckScreeningService
+- [x] Updated AndroidManifest.xml with MyPhoneCheckScreeningService
 - [x] Updated AndroidManifest.xml with CallActionReceiver
 - [x] All required permissions already present
 
@@ -101,7 +101,7 @@ These are injected but need to be implemented elsewhere:
                      ├─ Incoming Call Event
                      │
         ┌────────────▼──────────────┐
-        │  CallCheckScreeningService │
+        │  MyPhoneCheckScreeningService │
         │   (CallScreeningService)   │
         └────────────┬───────────────┘
                      │
@@ -171,11 +171,11 @@ These are injected but need to be implemented elsewhere:
 ## Code Example: Integration in App Module
 
 ```kotlin
-// In app/src/main/kotlin/app/callcheck/mobile/CallCheckApplication.kt
+// In app/src/main/kotlin/app/callcheck/mobile/MyPhoneCheckApplication.kt
 // (Already using Hilt)
 
 @HiltAndroidApp
-class CallCheckApplication : Application() {
+class MyPhoneCheckApplication : Application() {
     // Hilt automatically provides all dependencies
     // including CallInterceptRepository via CallInterceptModule
 }
@@ -206,7 +206,7 @@ fun testRiskLevelToAction() { ... }
 ```kotlin
 // Test full service with mock providers
 @RunWith(AndroidJUnit4::class)
-class CallCheckScreeningServiceTest {
+class MyPhoneCheckScreeningServiceTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
@@ -217,7 +217,7 @@ class CallCheckScreeningServiceTest {
 ```
 
 ### Manual Testing
-1. Set CallCheck as default call screening app
+1. Set MyPhoneCheck as default call screening app
    - Settings > Apps > Default apps > Call screening
 2. Make test calls to your device
 3. Verify notifications appear
@@ -229,7 +229,7 @@ class CallCheckScreeningServiceTest {
 ## Common Issues & Solutions
 
 ### Issue: Service not receiving calls
-- Solution: Set CallCheck as default call screening app in settings
+- Solution: Set MyPhoneCheck as default call screening app in settings
 
 ### Issue: Notifications not appearing
 - Solution: Check notification channel created, check POST_NOTIFICATIONS permission granted

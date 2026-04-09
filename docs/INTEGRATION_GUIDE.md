@@ -1,11 +1,11 @@
-# CallCheck Android - Integration Guide
+# MyPhoneCheck Android - Integration Guide
 
 ## Quick Start
 
 ### 1. Add to Navigation
 
 ```kotlin
-// In CallCheckNavHost.kt
+// In MyPhoneCheckNavHost.kt
 composable("settings") {
     SettingsScreen()
 }
@@ -27,8 +27,8 @@ class MainActivity : ComponentActivity() {
         billingManager.initialize()
 
         setContent {
-            CallCheckTheme {
-                CallCheckNavHost()
+            MyPhoneCheckTheme {
+                MyPhoneCheckNavHost()
             }
         }
     }
@@ -392,15 +392,15 @@ Check:
 ### Theme Not Applied
 ```
 Check:
-1. CallCheckTheme wrapping Composable
-2. LocalCallCheckColorScheme provided
+1. MyPhoneCheckTheme wrapping Composable
+2. LocalMyPhoneCheckColorScheme provided
 3. No MaterialTheme overriding colors
-4. Text styles using CallCheckTheme.typography
+4. Text styles using MyPhoneCheckTheme.typography
 ```
 
 ## Next Steps
 
-1. **Add Google Play Product**: Configure "callcheck_monthly" in Play Console
+1. **Add Google Play Product**: Configure "myphonecheck_monthly" in Play Console
 2. **Test Billing**: Use test cards in development
 3. **Deploy Settings**: Settings screen in main navigation
 4. **Integrate Keywords**: Use CountryConfig in DecisionEngine

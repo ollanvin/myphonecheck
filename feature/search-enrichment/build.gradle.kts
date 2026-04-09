@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "app.callcheck.mobile.feature.searchenrichment"
+    namespace = "app.myphonecheck.mobile.feature.searchenrichment"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

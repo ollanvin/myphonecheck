@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "app.callcheck.mobile.feature.billing"
+    namespace = "app.myphonecheck.mobile.feature.billing"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

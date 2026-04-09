@@ -1,4 +1,4 @@
-# CallCheck Android Project
+# MyPhoneCheck Android Project
 
 A multi-module Android application for intelligent call verification and decision making using Kotlin, Jetpack Compose, and Hilt dependency injection.
 

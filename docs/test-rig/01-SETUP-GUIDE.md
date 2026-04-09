@@ -1,4 +1,4 @@
-# CallCheck 로컬 테스트 리그 셋업 가이드
+# MyPhoneCheck 로컬 테스트 리그 셋업 가이드
 
 ## 1단계: Android Studio 설치
 
@@ -28,7 +28,7 @@ Android Studio 실행 후:
 2. **Create Virtual Device**
 3. 디바이스 선택: **Pixel 7** (추천)
 4. 시스템 이미지 선택: **API 34** (x86_64) → Download 클릭
-5. AVD 이름: `CallCheck-Test`
+5. AVD 이름: `MyPhoneCheck-Test`
 6. **Finish**
 
 ## 4단계: 환경변수 설정
@@ -47,13 +47,13 @@ adb version
 emulator -list-avds
 ```
 
-`CallCheck-Test`가 목록에 나오면 셋업 완료.
+`MyPhoneCheck-Test`가 목록에 나오면 셋업 완료.
 
 ## 5단계: 확인
 
 ```powershell
 adb version          # → Android Debug Bridge version 35.x.x
-emulator -list-avds  # → CallCheck-Test
+emulator -list-avds  # → MyPhoneCheck-Test
 ```
 
 이 두 명령이 정상 출력되면 다음 단계(자동 테스트 파이프라인)로 진행 가능합니다.

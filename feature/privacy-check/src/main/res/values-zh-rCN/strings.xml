@@ -12,5 +12,5 @@
     <string name="privacy_foreground_channel_name">隐私传感器监控</string>
     <string name="privacy_foreground_channel_desc">本机摄像头与麦克风会话记录</string>
     <string name="privacy_foreground_notification_title">隐私监控</string>
-    <string name="privacy_foreground_notification_text">CallCheck 仅在本机监控传感器访问。</string>
+    <string name="privacy_foreground_notification_text">MyPhoneCheck 仅在本机监控传感器访问。</string>
 </resources>

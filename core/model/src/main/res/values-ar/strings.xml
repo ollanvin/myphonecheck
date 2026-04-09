@@ -13,5 +13,5 @@
     <string name="ring_action_block_review">تم اكتشاف خطر عالي</string>
     <string name="ring_action_hold">قيد المراجعة</string>
     <string name="ring_disclaimer">هذا التطبيق يساعد في اتخاذ القرار. القرار النهائي لك.</string>
-    <string name="ring_disclaimer_detail">هذه النتيجة مبنية على سجل الجهاز وتحليل البحث على الويب. الدقة غير مضمونة. CallCheck أداة دعم القرار. القرار النهائي بالرد أو الرفض أو الحظر يعود لك.</string>
+    <string name="ring_disclaimer_detail">هذه النتيجة مبنية على سجل الجهاز وتحليل البحث على الويب. الدقة غير مضمونة. MyPhoneCheck أداة دعم القرار. القرار النهائي بالرد أو الرفض أو الحظر يعود لك.</string>
 </resources>

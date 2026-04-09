@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "app.callcheck.mobile.data.localcache"
+    namespace = "app.myphonecheck.mobile.data.localcache"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

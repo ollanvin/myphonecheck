@@ -2,7 +2,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "app.callcheck.mobile.buildlogic"
+group = "app.myphonecheck.mobile.buildlogic"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -21,15 +21,15 @@ dependencies {
 gradlePlugin {
     plugins {
         register("androidApplication") {
-            id = "callcheck.android.application"
+            id = "myphonecheck.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
         register("androidLibrary") {
-            id = "callcheck.android.library"
+            id = "myphonecheck.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
         register("androidCompose") {
-            id = "callcheck.android.compose"
+            id = "myphonecheck.android.compose"
             implementationClass = "AndroidComposeConventionPlugin"
         }
     }

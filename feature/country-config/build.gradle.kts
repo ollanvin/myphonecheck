@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "app.callcheck.mobile.feature.countryconfig"
+    namespace = "app.myphonecheck.mobile.feature.countryconfig"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

@@ -12,5 +12,5 @@
     <string name="privacy_foreground_channel_name">مراقبة مستشعرات الخصوصية</string>
     <string name="privacy_foreground_channel_desc">تسجيل جلسات الكاميرا والميكروفون على الجهاز فقط</string>
     <string name="privacy_foreground_notification_title">مراقبة الخصوصية</string>
-    <string name="privacy_foreground_notification_text">يراقب CallCheck الوصول إلى المستشعرات على هذا الجهاز فقط.</string>
+    <string name="privacy_foreground_notification_text">يراقب MyPhoneCheck الوصول إلى المستشعرات على هذا الجهاز فقط.</string>
 </resources>

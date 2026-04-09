@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "app.callcheck.mobile.feature.settings"
+    namespace = "app.myphonecheck.mobile.feature.settings"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

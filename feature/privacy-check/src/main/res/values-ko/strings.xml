@@ -12,5 +12,5 @@
     <string name="privacy_foreground_channel_name">프라이버시 센서 모니터</string>
     <string name="privacy_foreground_channel_desc">온디바이스 카메라·마이크 세션 기록</string>
     <string name="privacy_foreground_notification_title">프라이버시 모니터링</string>
-    <string name="privacy_foreground_notification_text">CallCheck가 이 기기에서만 센서 접근을 감시합니다.</string>
+    <string name="privacy_foreground_notification_text">MyPhoneCheck가 이 기기에서만 센서 접근을 감시합니다.</string>
 </resources>

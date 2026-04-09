@@ -1,7 +1,7 @@
-# Proguard rules for CallCheck
+# Proguard rules for MyPhoneCheck
 
 # Keep all classes in model package
--keep class app.callcheck.mobile.core.model.** { *; }
+-keep class app.myphonecheck.mobile.core.model.** { *; }
 
 # Keep Hilt annotations
 -keep class dagger.hilt.** { *; }

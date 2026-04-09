@@ -19,7 +19,7 @@ Path: feature/billing/src/main/kotlin/app/callcheck/mobile/feature/billing/
 
 2. BillingManager.kt (285 lines)
    - Google Play Billing 7.x implementation
-   - Single "callcheck_monthly" subscription at USD 1/month
+   - Single "myphonecheck_monthly" subscription at USD 1/month
    - Purchase flow, acknowledgment, restore purchases
    - StateFlow for subscription state tracking
 
@@ -32,7 +32,7 @@ Path: feature/billing/src/main/kotlin/app/callcheck/mobile/feature/billing/
    - Jetpack Compose paywall UI
    - App branding, value proposition, pricing
    - Subscribe button, restore link, T&C links
-   - Dark theme (CallCheckColors)
+   - Dark theme (MyPhoneCheckColors)
 
 5. di/BillingModule.kt (23 lines)
    - Hilt dependency injection
@@ -149,7 +149,7 @@ FEATURE SUMMARY
 
 BILLING:
   ✓ Google Play Billing 7.x API (latest)
-  ✓ Single subscription: callcheck_monthly @ $1/month
+  ✓ Single subscription: myphonecheck_monthly @ $1/month
   ✓ Purchase, acknowledge, restore flows
   ✓ StateFlow subscription state
   ✓ 100% error handling + user messages
@@ -212,14 +212,14 @@ With Settings:
 With UI Components:
   - PaywallScreen integrates with navigation
   - SettingsScreen integrates with settings navigation
-  - CallCheckTheme colors used throughout
+  - MyPhoneCheckTheme colors used throughout
 
 ================================================================================
 DEPLOYMENT STEPS
 ================================================================================
 
 1. Add play.billing dependency (already in build.gradle)
-2. Configure "callcheck_monthly" in Google Play Console
+2. Configure "myphonecheck_monthly" in Google Play Console
 3. Add manifest permissions:
    - READ_CONTACTS
    - READ_CALL_LOG

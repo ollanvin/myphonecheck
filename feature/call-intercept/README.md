@@ -1,8 +1,8 @@
-# CallCheck Call Intercept Feature
+# MyPhoneCheck Call Intercept Feature
 
 ## Overview
 
-Complete, production-ready implementation of Android CallScreeningService for the CallCheck application. This feature intercepts incoming phone calls in real-time and provides risk assessment with user-friendly notifications.
+Complete, production-ready implementation of Android CallScreeningService for the MyPhoneCheck application. This feature intercepts incoming phone calls in real-time and provides risk assessment with user-friendly notifications.
 
 ## Quick Start
 
@@ -12,7 +12,7 @@ Complete, production-ready implementation of Android CallScreeningService for th
    - [Deliverables Summary](DELIVERABLES.md) - What's included
 
 2. **Understand the Code**
-   - Main service: `CallCheckScreeningService.kt`
+   - Main service: `MyPhoneCheckScreeningService.kt`
    - Decision pipeline: `CallInterceptRepositoryImpl.kt`
    - Notifications: `DecisionNotificationManager.kt` + `CallActionReceiver.kt`
 
@@ -31,7 +31,7 @@ Complete, production-ready implementation of Android CallScreeningService for th
 ## Architecture
 
 ```
-Incoming Call → CallCheckScreeningService → Decision Pipeline → Notification
+Incoming Call → MyPhoneCheckScreeningService → Decision Pipeline → Notification
                                                     ↓
                                     ┌───────────────┼───────────────┐
                                     ↓               ↓               ↓
@@ -51,7 +51,7 @@ Incoming Call → CallCheckScreeningService → Decision Pipeline → Notificati
 ### Source Code (10 Kotlin files)
 
 **Core Service**
-- `CallCheckScreeningService.kt` - Main Android service (413 lines)
+- `MyPhoneCheckScreeningService.kt` - Main Android service (413 lines)
 
 **Repository Pattern**
 - `CallInterceptRepository.kt` - Interface
@@ -221,7 +221,7 @@ A: Always passed through (911, 112, 119). Never blocked or screened.
 ```
 feature/call-intercept/
 ├── src/main/kotlin/app/callcheck/mobile/feature/callintercept/
-│   ├── CallCheckScreeningService.kt          (main service)
+│   ├── MyPhoneCheckScreeningService.kt          (main service)
 │   ├── CallInterceptRepository.kt            (interface)
 │   ├── CallInterceptRepositoryImpl.kt         (implementation)
 │   ├── DecisionNotificationManager.kt        (notifications)

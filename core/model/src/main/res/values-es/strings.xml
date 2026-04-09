@@ -13,5 +13,5 @@
     <string name="ring_action_block_review">Alto riesgo detectado</string>
     <string name="ring_action_hold">Revisión pendiente</string>
     <string name="ring_disclaimer">Esta app asiste tu juicio. La decisión final es tuya.</string>
-    <string name="ring_disclaimer_detail">Este resultado se basa en el historial del dispositivo y análisis de búsqueda web. No se garantiza la precisión. CallCheck es una herramienta de apoyo a la decisión. La decisión final de contestar, rechazar o bloquear es tuya.</string>
+    <string name="ring_disclaimer_detail">Este resultado se basa en el historial del dispositivo y análisis de búsqueda web. No se garantiza la precisión. MyPhoneCheck es una herramienta de apoyo a la decisión. La decisión final de contestar, rechazar o bloquear es tuya.</string>
 </resources>

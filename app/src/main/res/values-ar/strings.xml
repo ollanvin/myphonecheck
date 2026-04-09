@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">myPHONECHECK</string>
     <string name="nav_home">الرئيسية</string>
     <string name="nav_timeline">الخط الزمني</string>
     <string name="nav_settings">الإعدادات</string>
@@ -55,7 +56,7 @@
     <string name="action_subtitle_medium">رد بحذر</string>
     <string name="action_subtitle_low">يمكنك الرد بأمان</string>
     <string name="action_subtitle_unknown">جاري التحقق…</string>
-    <string name="engine_name_callcheck">CallCheck</string>
+    <string name="engine_name_myphonecheck">MyPhoneCheck</string>
     <string name="engine_name_pushcheck">PushCheck</string>
     <string name="engine_name_messagecheck">MessageCheck</string>
     <string name="engine_name_privacycheck">PrivacyCheck</string>
@@ -77,7 +78,7 @@
     <string name="threat_message_desc">Phishing links · impersonation</string>
     <string name="threat_privacy_title">Privacy</string>
     <string name="threat_privacy_desc">Hidden camera · microphone access</string>
-    <string name="onboarding_page2_footer">CallCheck catches all 4 areas in real time.</string>
+    <string name="onboarding_page2_footer">MyPhoneCheck catches all 4 areas in real time.</string>
     <string name="onboarding_page3_title">To block this,\naccess is required</string>
     <string name="access_phone_target">Phone state</string>
     <string name="access_phone_why">To stop scam calls before you answer</string>
@@ -144,9 +145,9 @@
     <string name="onboarding_declare_no_collection">بلا جمع — لا نخزن بيانات شخصية</string>
     <string name="onboarding_declare_no_transfer">بلا إرسال — لا شيء يخرج خارجاً</string>
     <string name="onboarding_aes_footer">تشفير مفتوح المصدر (AES-256-GCM) للنسخ الاحتياطية</string>
-    <string name="onboarding_p5_intro">امنح الأذونات أدناه ليعمل CallCheck في الحماية. يمكنك منحها لاحقاً من الإعدادات.</string>
+    <string name="onboarding_p5_intro">امنح الأذونات أدناه ليعمل MyPhoneCheck في الحماية. يمكنك منحها لاحقاً من الإعدادات.</string>
     <string name="perm_overlay_title">العرض فوق التطبيقات الأخرى</string>
-    <string name="perm_overlay_desc">إظهار طبقة CallCheck عند المكالمات</string>
+    <string name="perm_overlay_desc">إظهار طبقة MyPhoneCheck عند المكالمات</string>
     <string name="perm_notification_listener_title">الوصول إلى الإشعارات</string>
     <string name="perm_notification_listener_desc">تشغيل مركز الرسائل من الإشعارات</string>
     <string name="perm_usage_stats_title">الوصول إلى إحصاءات الاستخدام</string>

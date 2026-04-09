@@ -1,8 +1,8 @@
 # DecisionEngine Implementation Checklist
 
 ## Project Requirements
-- [x] Complete DecisionEngine implementation for CallCheck Android app
-- [x] Package: `app.callcheck.mobile.feature.decisionengine`
+- [x] Complete DecisionEngine implementation for MyPhoneCheck Android app
+- [x] Package: `app.myphonecheck.mobile.feature.decisionengine`
 - [x] Location: `/feature/decision-engine/src/main/kotlin/`
 - [x] Production-ready code (no TODOs or placeholders)
 - [x] All imports correct

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "app.callcheck.mobile.feature.decisionengine"
+    namespace = "app.myphonecheck.mobile.feature.decisionengine"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

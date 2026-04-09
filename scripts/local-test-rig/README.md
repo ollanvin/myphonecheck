@@ -1,4 +1,4 @@
-# CallCheck 테스트 3층 구조
+# MyPhoneCheck 테스트 3층 구조
 
 ## 역할 분리 원칙
 

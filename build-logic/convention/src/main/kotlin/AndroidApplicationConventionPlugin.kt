@@ -19,7 +19,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 compileSdk = 34
 
                 defaultConfig {
-                    applicationId = "app.callcheck.mobile"
+                    applicationId = "app.myphonecheck.mobile"
                     minSdk = 26
                     targetSdk = 34
                     versionCode = 1

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">myPHONECHECK</string>
     <string name="nav_home">Inicio</string>
     <string name="nav_timeline">Cronología</string>
     <string name="nav_settings">Ajustes</string>
@@ -55,7 +56,7 @@
     <string name="action_subtitle_medium">Contesta con precaución</string>
     <string name="action_subtitle_low">Puedes contestar</string>
     <string name="action_subtitle_unknown">Verificando…</string>
-    <string name="engine_name_callcheck">CallCheck</string>
+    <string name="engine_name_myphonecheck">MyPhoneCheck</string>
     <string name="engine_name_pushcheck">PushCheck</string>
     <string name="engine_name_messagecheck">MessageCheck</string>
     <string name="engine_name_privacycheck">PrivacyCheck</string>
@@ -77,7 +78,7 @@
     <string name="threat_message_desc">Phishing links · impersonation</string>
     <string name="threat_privacy_title">Privacy</string>
     <string name="threat_privacy_desc">Hidden camera · microphone access</string>
-    <string name="onboarding_page2_footer">CallCheck catches all 4 areas in real time.</string>
+    <string name="onboarding_page2_footer">MyPhoneCheck catches all 4 areas in real time.</string>
     <string name="onboarding_page3_title">To block this,\naccess is required</string>
     <string name="access_phone_target">Phone state</string>
     <string name="access_phone_why">To stop scam calls before you answer</string>
@@ -144,9 +145,9 @@
     <string name="onboarding_declare_no_collection">Sin recopilación — no guardamos datos personales</string>
     <string name="onboarding_declare_no_transfer">Sin envíos — nada sale al exterior</string>
     <string name="onboarding_aes_footer">Cifrado de código abierto (AES-256-GCM) para copias de seguridad</string>
-    <string name="onboarding_p5_intro">Concede los permisos siguientes para que CallCheck pueda protegerte. También puedes hacerlo después en Ajustes.</string>
+    <string name="onboarding_p5_intro">Concede los permisos siguientes para que MyPhoneCheck pueda protegerte. También puedes hacerlo después en Ajustes.</string>
     <string name="perm_overlay_title">Mostrar sobre otras apps</string>
-    <string name="perm_overlay_desc">Mostrar overlay de CallCheck en llamadas</string>
+    <string name="perm_overlay_desc">Mostrar overlay de MyPhoneCheck en llamadas</string>
     <string name="perm_notification_listener_title">Acceso a notificaciones</string>
     <string name="perm_notification_listener_desc">Centro de mensajes desde notificaciones</string>
     <string name="perm_usage_stats_title">Acceso a uso</string>

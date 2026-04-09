@@ -21,11 +21,11 @@
     <!-- PrivacyTrustMessages -->
     <string name="privacy_onboarding_tagline">あなたのプライベート通話判断アシスタント</string>
     <string name="privacy_onboarding_core">あなたのデータは絶対に外に出ません</string>
-    <string name="privacy_onboarding_detail">CallCheckは通話履歴・検索結果・判定データを外部サーバーには一切送信しません。すべてこの端末内で完結します。</string>
+    <string name="privacy_onboarding_detail">MyPhoneCheckは通話履歴・検索結果・判定データを外部サーバーには一切送信しません。すべてこの端末内で完結します。</string>
     <string name="privacy_onboarding_no_server_pledge">サーバーなし\n追跡なし\n漏洩リスクなし</string>
     <string name="privacy_settings_title">プライバシー保護</string>
-    <string name="privacy_settings_description">CallCheckはオンデバイス通信セキュリティアプリです。通話分析、リスク評価、Web検索すべてがこの端末内でのみ実行されます。</string>
+    <string name="privacy_settings_description">MyPhoneCheckはオンデバイス通信セキュリティアプリです。通話分析、リスク評価、Web検索すべてがこの端末内でのみ実行されます。</string>
     <string name="privacy_settings_data_handling">検索データは自動的に消えます\n完全に削除されます</string>
-    <string name="privacy_purchase_guarantee">サブスクリプションの支払いはGoogle Playを通じて安全に処理されます。CallCheckは決済情報を一切収集・保存しません。</string>
+    <string name="privacy_purchase_guarantee">サブスクリプションの支払いはGoogle Playを通じて安全に処理されます。MyPhoneCheckは決済情報を一切収集・保存しません。</string>
     <string name="privacy_purchase_value_proposition">プレミアムオンデバイス通話セキュリティ — サーバーなし、端末だけで。</string>
 </resources>

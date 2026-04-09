@@ -1,8 +1,8 @@
-# CallCheck Android - Settings, Billing, and CountryConfig Implementation
+# MyPhoneCheck Android - Settings, Billing, and CountryConfig Implementation
 
 ## Overview
 
-Complete production-ready implementation of three critical feature modules for the CallCheck Android application:
+Complete production-ready implementation of three critical feature modules for the MyPhoneCheck Android application:
 
 1. **Billing Module** - Google Play Billing integration with subscription management
 2. **Settings Module** - User preferences and permission management
@@ -18,7 +18,7 @@ Complete production-ready implementation of three critical feature modules for t
 **Path**: `feature/billing/src/main/kotlin/app/callcheck/mobile/feature/billing/BillingManager.kt`
 
 Complete Google Play Billing implementation with:
-- **Subscription Plan**: Single "callcheck_monthly" at USD 1/month
+- **Subscription Plan**: Single "myphonecheck_monthly" at USD 1/month
 - **BillingClient Connection**: Full lifecycle management with state listener
 - **Purchase Flow**: Launch billing flow for subscription purchase
 - **Purchase Acknowledgment**: Automatic acknowledgment handling
@@ -57,7 +57,7 @@ ViewModel orchestrating paywall functionality:
 **Path**: `feature/billing/src/main/kotlin/app/callcheck/mobile/feature/billing/PaywallScreen.kt`
 
 Jetpack Compose paywall UI with:
-- **App Icon & Name**: CallCheck branding
+- **App Icon & Name**: MyPhoneCheck branding
 - **Value Proposition**: 4 bullet points highlighting features:
   - Real-time spam detection
   - Intelligent filtering
@@ -68,7 +68,7 @@ Jetpack Compose paywall UI with:
 - **Restore Purchases**: Link for account recovery
 - **Links**: Privacy policy and terms of service
 - **Error/Success Messages**: Status feedback
-- **Dark Theme**: Consistent with app (CallCheckTheme colors)
+- **Dark Theme**: Consistent with app (MyPhoneCheckTheme colors)
 
 UI Components:
 - Scrollable layout (handles various screen sizes)
@@ -85,7 +85,7 @@ Hilt dependency injection module:
 - Proper scope management
 
 ### Build Configuration
-- **Namespace**: `app.callcheck.mobile.feature.billing`
+- **Namespace**: `app.myphonecheck.mobile.feature.billing`
 - **Dependencies**:
   - Google Play Billing 7.x
   - Jetpack Compose (full bundle)
@@ -189,7 +189,7 @@ Hilt dependency injection:
 - Context binding
 
 ### Build Configuration
-- **Namespace**: `app.callcheck.mobile.feature.settings`
+- **Namespace**: `app.myphonecheck.mobile.feature.settings`
 - **Dependencies**: Same as billing (Compose, Hilt, Coroutines)
 
 ## Module 3: CountryConfig Feature
@@ -307,7 +307,7 @@ Hilt dependency injection:
 - No external dependencies (pure implementation)
 
 ### Build Configuration
-- **Namespace**: `app.callcheck.mobile.feature.countryconfig`
+- **Namespace**: `app.myphonecheck.mobile.feature.countryconfig`
 - **Minimal Dependencies**: Core KTX + Hilt only (no Compose)
 - **Perfect for**: Sharing with non-UI layers
 
@@ -329,7 +329,7 @@ Hilt dependency injection:
 ✓ **Google Play Billing 7.x** - Latest API version
 ✓ **Coroutine Best Practices** - Proper scope management
 ✓ **Hilt Integration** - Full DI setup
-✓ **Dark Theme** - CallCheck theme throughout
+✓ **Dark Theme** - MyPhoneCheck theme throughout
 ✓ **Compose Best Practices** - State management, lazy layouts
 ✓ **Error Handling** - User-facing error messages in Korean + English
 ✓ **Extensibility** - Easy to add new countries/keywords
@@ -348,7 +348,7 @@ Hilt dependency injection:
 
 ### Compose Theming
 All screens use:
-- `CallCheckColors` - Consistent color palette
+- `MyPhoneCheckColors` - Consistent color palette
 - Dark background: `#0F0F0F`
 - Card background: `#1A1A1A`
 - Primary accent: `#00BCD4` (Cyan)
@@ -393,7 +393,7 @@ All screens use:
 ## Deployment Checklist
 
 - [ ] Add Google Play Billing dependency to main app build.gradle
-- [ ] Configure in-app product "callcheck_monthly" in Google Play Console
+- [ ] Configure in-app product "myphonecheck_monthly" in Google Play Console
 - [ ] Add required permissions to AndroidManifest.xml:
   - `READ_CONTACTS`
   - `READ_CALL_LOG`

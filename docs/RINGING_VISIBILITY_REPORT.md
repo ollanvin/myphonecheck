@@ -1,20 +1,20 @@
-# CallCheck 1.0 — Ringing 중 가시성 검증 리포트
+# MyPhoneCheck 1.0 — Ringing 중 가시성 검증 리포트
 
 ## 1. 검증 결과
 
 ### 테스트 환경
 - Pixel 에뮬레이터 (AOSP, Android 14)
-- CallCheck Notification: PRIORITY_HIGH, CATEGORY_CALL, colorized
+- MyPhoneCheck Notification: PRIORITY_HIGH, CATEGORY_CALL, colorized
 
 ### 화면 캡처 결과
 
 **알림 패널을 내린 상태:**
-- Incoming Call UI (상단) + CallCheck Notification (바로 아래) 동시 표시 ✅
+- Incoming Call UI (상단) + MyPhoneCheck Notification (바로 아래) 동시 표시 ✅
 - "위험 높음 / 스팸/사기 위험 높음 / 자세히·거절·차단" 모두 보임
 
 **알림 패널을 내리지 않은 상태 (일반 사용자 기본 화면):**
 - 전화 앱 전체화면 UI만 표시
-- CallCheck 결과 **전혀 안 보임** ❌
+- MyPhoneCheck 결과 **전혀 안 보임** ❌
 - 상태바에 아이콘만 표시 (인지 불가)
 
 ### 결론
@@ -44,7 +44,7 @@
 │   Android Incoming Call UI   │ ← 전화 앱 전체화면
 │                              │
 │  ┌────────────────────────┐  │
-│  │  CallCheck 오버레이     │  │ ← SYSTEM_ALERT_WINDOW
+│  │  MyPhoneCheck 오버레이     │  │ ← SYSTEM_ALERT_WINDOW
 │  │  ⚠ 위험 높음           │  │
 │  │  스팸/사기 위험 높음    │  │
 │  │  신뢰도: 85%           │  │
@@ -81,7 +81,7 @@
 ### 아키텍처
 
 ```
-CallCheckScreeningService
+MyPhoneCheckScreeningService
     │
     ├── assessThenAllow()
     │       │
@@ -193,7 +193,7 @@ telecomManager.registerTelecomCallback(executor, callback)
 
 ### 방법 3: onDestroy() 활용 (현재 가능)
 
-CallCheckScreeningService.onDestroy()에서 dismissOverlay() 호출.
+MyPhoneCheckScreeningService.onDestroy()에서 dismissOverlay() 호출.
 단, respondToCall() 후 즉시 onDestroy()가 오므로 오버레이도 즉시 사라질 수 있음.
 → 별도 dismiss 타이밍 관리 필요 (전화 종료 시까지 유지).
 

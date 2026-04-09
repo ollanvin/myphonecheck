@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "app.callcheck.mobile.data.calllog"
+    namespace = "app.myphonecheck.mobile.data.calllog"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

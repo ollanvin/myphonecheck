@@ -27,11 +27,11 @@
     <!-- ══════════════════════════════════════════ -->
     <string name="privacy_onboarding_tagline">Your Private Call Decision Assistant</string>
     <string name="privacy_onboarding_core">Your data never leaves this device</string>
-    <string name="privacy_onboarding_detail">CallCheck never sends your call history, search results, or decision data to any external server. Everything stays on your device.</string>
+    <string name="privacy_onboarding_detail">MyPhoneCheck never sends your call history, search results, or decision data to any external server. Everything stays on your device.</string>
     <string name="privacy_onboarding_no_server_pledge">No servers\nNo tracking\nZero leak risk</string>
     <string name="privacy_settings_title">Privacy Protection</string>
-    <string name="privacy_settings_description">CallCheck is an on-device communication security app. Call analysis, risk assessment, and web scanning all happen entirely on this device.</string>
+    <string name="privacy_settings_description">MyPhoneCheck is an on-device communication security app. Call analysis, risk assessment, and web scanning all happen entirely on this device.</string>
     <string name="privacy_settings_data_handling">Search data disappears automatically\nCompletely deleted</string>
-    <string name="privacy_purchase_guarantee">Subscription payments are securely processed through Google Play. CallCheck does not collect or store any payment information.</string>
+    <string name="privacy_purchase_guarantee">Subscription payments are securely processed through Google Play. MyPhoneCheck does not collect or store any payment information.</string>
     <string name="privacy_purchase_value_proposition">Premium on-device call security — no servers, just your device.</string>
 </resources>

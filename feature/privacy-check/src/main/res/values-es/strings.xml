@@ -12,5 +12,5 @@
     <string name="privacy_foreground_channel_name">Monitor de sensores de privacidad</string>
     <string name="privacy_foreground_channel_desc">Registro local de sesiones de cámara y micrófono</string>
     <string name="privacy_foreground_notification_title">Monitoreo de privacidad</string>
-    <string name="privacy_foreground_notification_text">CallCheck supervisa el acceso a sensores solo en este dispositivo.</string>
+    <string name="privacy_foreground_notification_text">MyPhoneCheck supervisa el acceso a sensores solo en este dispositivo.</string>
 </resources>

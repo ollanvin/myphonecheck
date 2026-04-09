@@ -1,8 +1,8 @@
-# CallCheck Android - Settings, Billing & CountryConfig Implementation
+# MyPhoneCheck Android - Settings, Billing & CountryConfig Implementation
 
 ## Quick Overview
 
-This implementation provides three complete, production-ready feature modules for the CallCheck Android app:
+This implementation provides three complete, production-ready feature modules for the MyPhoneCheck Android app:
 
 | Module | Purpose | Files | Lines | Status |
 |--------|---------|-------|-------|--------|
@@ -16,7 +16,7 @@ This implementation provides three complete, production-ready feature modules fo
 ### 1. Billing Module (feature/billing/)
 
 **Complete Google Play Billing integration** with:
-- Single subscription: "callcheck_monthly" at USD 1/month
+- Single subscription: "myphonecheck_monthly" at USD 1/month
 - BillingClient 7.x (latest API)
 - Purchase flow, acknowledgment, restore
 - Reactive state management (StateFlow)
@@ -66,7 +66,7 @@ This implementation provides three complete, production-ready feature modules fo
 ## Key Features
 
 ✓ **Google Play Billing 7.x** - Latest API with full purchase flow
-✓ **Dark Theme Throughout** - Consistent with app (CallCheckTheme)
+✓ **Dark Theme Throughout** - Consistent with app (MyPhoneCheckTheme)
 ✓ **Bilingual UI** - Korean + English (extensible)
 ✓ **Reactive Architecture** - StateFlow for all state
 ✓ **Proper DI** - Full Hilt integration
@@ -148,7 +148,7 @@ decisionEngine.updateConfig(countryConfig)
 
 ### 3. Configure in Google Play Console
 
-1. Add product "callcheck_monthly" (subscription)
+1. Add product "myphonecheck_monthly" (subscription)
 2. Set price to $1/month
 3. Add to your app's internal testing
 
@@ -264,7 +264,7 @@ fun testCountryDetection() {
 - **Hilt** for dependency injection
 
 ### Theme
-- All Compose screens use `CallCheckTheme`
+- All Compose screens use `MyPhoneCheckTheme`
 - Dark background: #0F0F0F
 - Card background: #1A1A1A
 - Primary accent: #00BCD4
@@ -314,7 +314,7 @@ For questions:
 ---
 
 **Created**: March 24, 2026  
-**Package**: app.callcheck.mobile  
+**Package**: app.myphonecheck.mobile  
 **Gradle**: Compatible with Android Gradle Plugin 8.0+  
 **Min SDK**: 26  
 **Target SDK**: 34+

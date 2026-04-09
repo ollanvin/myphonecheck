@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "app.callcheck.mobile.feature.deviceevidence"
+    namespace = "app.myphonecheck.mobile.feature.deviceevidence"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

@@ -1,16 +1,16 @@
-# CallCheck 1.0 — Product Requirements Document
+# MyPhoneCheck 1.0 — Product Requirements Document
 
 ## 1. Product Definition
 
-**App Name:** CallCheck
+**App Name:** MyPhoneCheck
 **Domain:** callcheck.app
-**Package:** app.callcheck.mobile
+**Package:** app.myphonecheck.mobile
 **Platform:** Android only (iOS excluded)
 **Tagline:** "Decide before you answer"
 **Price:** USD 1/month, single global plan, no ads
 **Scope:** 190 countries simultaneous launch
 
-CallCheck is an Android-only incoming-call decision app.
+MyPhoneCheck is an Android-only incoming-call decision app.
 When an incoming phone number is NOT saved on the device, the app intercepts the call,
 analyzes on-device evidence first, enriches with search-platform evidence second,
 and shows a decision card within 3 seconds so the user can choose: Answer / Reject / Block.
@@ -267,7 +267,7 @@ data class DecisionResult(
 
 ### Modules
 ```
-CallCheck/
+MyPhoneCheck/
 ├── app/
 ├── core/
 │   ├── model/
@@ -355,7 +355,7 @@ Single app, 190 countries. Country-specific behavior via configuration only.
 ## 15. Key Differentiator
 
 Existing apps: Block spam using central databases.
-CallCheck: Help users decide — not just block spam, but also rescue important unsaved numbers.
+MyPhoneCheck: Help users decide — not just block spam, but also rescue important unsaved numbers.
 
 "스팸은 막고, 거래선은 살리고, 사용자는 즉시 결정."
 
@@ -385,5 +385,5 @@ CallCheck: Help users decide — not just block spam, but also rescue important 
 
 *Document version: 1.0*
 *Created: 2026-03-24*
-*Project: CallCheck*
+*Project: MyPhoneCheck*
 *Domain: callcheck.app*

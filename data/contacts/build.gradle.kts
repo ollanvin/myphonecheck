@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "app.callcheck.mobile.data.contacts"
+    namespace = "app.myphonecheck.mobile.data.contacts"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

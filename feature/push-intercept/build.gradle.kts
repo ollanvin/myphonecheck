@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "app.callcheck.mobile.feature.pushintercept"
+    namespace = "app.myphonecheck.mobile.feature.pushintercept"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

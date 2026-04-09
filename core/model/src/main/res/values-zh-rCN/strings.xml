@@ -13,5 +13,5 @@
     <string name="ring_action_block_review">检测到高风险</string>
     <string name="ring_action_hold">判断保留</string>
     <string name="ring_disclaimer">此应用辅助您的判断。最终决定权在于您。</string>
-    <string name="ring_disclaimer_detail">此结果基于设备历史和网络搜索分析，不保证准确性。CallCheck是判断辅助工具，接听、拒接或拉黑的最终决定权在于您。</string>
+    <string name="ring_disclaimer_detail">此结果基于设备历史和网络搜索分析，不保证准确性。MyPhoneCheck是判断辅助工具，接听、拒接或拉黑的最终决定权在于您。</string>
 </resources>

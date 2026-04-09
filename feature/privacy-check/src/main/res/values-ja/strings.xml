@@ -12,5 +12,5 @@
     <string name="privacy_foreground_channel_name">プライバシーセンサー監視</string>
     <string name="privacy_foreground_channel_desc">オンデバイスのカメラ・マイクセッション記録</string>
     <string name="privacy_foreground_notification_title">プライバシー監視</string>
-    <string name="privacy_foreground_notification_text">CallCheckがこの端末内でのみセンサーアクセスを監視しています。</string>
+    <string name="privacy_foreground_notification_text">MyPhoneCheckがこの端末内でのみセンサーアクセスを監視しています。</string>
 </resources>

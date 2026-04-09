@@ -21,11 +21,11 @@
     <!-- PrivacyTrustMessages -->
     <string name="privacy_onboarding_tagline">Ваш личный помощник по оценке звонков</string>
     <string name="privacy_onboarding_core">Ваши данные абсолютно никогда не покинут это устройство</string>
-    <string name="privacy_onboarding_detail">CallCheck не отправляет историю звонков, результаты поиска или данные оценки на внешние серверы. Абсолютно ничего. Весь анализ выполняется на этом устройстве.</string>
+    <string name="privacy_onboarding_detail">MyPhoneCheck не отправляет историю звонков, результаты поиска или данные оценки на внешние серверы. Абсолютно ничего. Весь анализ выполняется на этом устройстве.</string>
     <string name="privacy_onboarding_no_server_pledge">Без серверов\nБез слежки\nНулевой риск утечки</string>
     <string name="privacy_settings_title">Защита конфиденциальности</string>
-    <string name="privacy_settings_description">CallCheck — это приложение для безопасности связи, работающее на устройстве. Анализ звонков, оценка рисков и веб-сканирование выполняются исключительно на этом устройстве.</string>
+    <string name="privacy_settings_description">MyPhoneCheck — это приложение для безопасности связи, работающее на устройстве. Анализ звонков, оценка рисков и веб-сканирование выполняются исключительно на этом устройстве.</string>
     <string name="privacy_settings_data_handling">Данные поиска исчезают автоматически\nПолностью удаляются</string>
-    <string name="privacy_purchase_guarantee">Платежи за подписку безопасно обрабатываются через Google Play. CallCheck не собирает и не хранит платёжную информацию.</string>
+    <string name="privacy_purchase_guarantee">Платежи за подписку безопасно обрабатываются через Google Play. MyPhoneCheck не собирает и не хранит платёжную информацию.</string>
     <string name="privacy_purchase_value_proposition">Премиум-безопасность звонков на устройстве — без серверов, только ваше устройство.</string>
 </resources>

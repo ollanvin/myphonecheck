@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "app.callcheck.mobile.feature.messageintercept"
+    namespace = "app.myphonecheck.mobile.feature.messageintercept"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

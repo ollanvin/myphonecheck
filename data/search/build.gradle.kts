@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "app.callcheck.mobile.data.search"
+    namespace = "app.myphonecheck.mobile.data.search"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -42,7 +42,7 @@ android {
     testOptions {
         unitTests.all {
             it.useJUnit {
-                excludeCategories("app.callcheck.mobile.data.search.LiveNetworkTest")
+                excludeCategories("app.myphonecheck.mobile.data.search.LiveNetworkTest")
             }
         }
     }

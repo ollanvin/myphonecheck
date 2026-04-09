@@ -1,4 +1,4 @@
-# CallCheck Android Project - Complete File Index
+# MyPhoneCheck Android Project - Complete File Index
 
 Total Files Created: 52
 
@@ -43,11 +43,11 @@ build-logic/
 - `app/src/main/res/xml/data_extraction_rules.xml` - Data extraction policy
 
 ### Kotlin Source (Main App)
-- `app/src/main/kotlin/app/callcheck/mobile/CallCheckApplication.kt` - Hilt Application
+- `app/src/main/kotlin/app/callcheck/mobile/MyPhoneCheckApplication.kt` - Hilt Application
 - `app/src/main/kotlin/app/callcheck/mobile/MainActivity.kt` - Single Activity with Compose
 
 ### Navigation
-- `app/src/main/kotlin/app/callcheck/mobile/navigation/CallCheckNavHost.kt` - Navigation setup
+- `app/src/main/kotlin/app/callcheck/mobile/navigation/MyPhoneCheckNavHost.kt` - Navigation setup
 
 ### Theme (Compose UI)
 - `app/src/main/kotlin/app/callcheck/mobile/ui/theme/Theme.kt` - Material 3 theme with light/dark
@@ -229,5 +229,5 @@ Each includes package directory with `.gitkeep` placeholder.
 ---
 
 Generated: 2026-03-24
-Package: app.callcheck.mobile
+Package: app.myphonecheck.mobile
 Min SDK: 26 | Target SDK: 34 | Kotlin: 2.0.0

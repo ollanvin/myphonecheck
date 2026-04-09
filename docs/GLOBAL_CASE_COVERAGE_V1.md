@@ -1,7 +1,7 @@
-# CallCheck Global Case Coverage Report V1
+# MyPhoneCheck Global Case Coverage Report V1
 
 **작성일**: 2026-03-27
-**대상 버전**: CallCheck 1.0
+**대상 버전**: MyPhoneCheck 1.0
 **범위**: 191개국 동시 출시 기준 전수 검증
 
 ---
@@ -88,7 +88,7 @@
 | extractAreaCode: 길이 3 하드코딩 → `getLengthOfGeographicalAreaCode()` | KR(02→길이1~2), JP(03→길이1), US(212→길이3) 등 국가별 상이 |
 | `extractAreaCodeFromParsed()` 파라미터에서 countryCode 제거 | libphonenumber가 parsedNumber에서 자동 판별 |
 
-### 2.2 CallCheckScreeningService (feature/call-intercept)
+### 2.2 MyPhoneCheckScreeningService (feature/call-intercept)
 
 **이전**: `formatE164(rawNumber)` — defaultCountry "US" 사용
 **이후**: `formatE164(rawNumber, deviceCountry)` — 디바이스 국가 전달
@@ -208,10 +208,10 @@ Unknown ≠ Danger 원칙에 따라, 정보 부재는 risk 가산이 아닌 conf
 - [x] PhoneNumberNormalizer: area code 길이 3 하드코딩 → getLengthOfGeographicalAreaCode()
 - [x] PhoneNumberNormalizer: inferCountryFromNumber() 추가 (ZZ fallback 보완)
 - [x] PhoneNumberNormalizer: getPhonePrefix() 추가 (국가→접두사 변환)
-- [x] CallCheckScreeningService: CountryConfigProvider 주입 + deviceCountry 감지
-- [x] CallCheckScreeningService: formatE164()에 deviceCountry 전달
-- [x] CallCheckScreeningService: ZZ fallback — 번호 prefix 기반 국가 추정 로직 추가
-- [x] CallCheckScreeningService: private/emergency UI 정책 명확화 (완전 무개입 문서화)
+- [x] MyPhoneCheckScreeningService: CountryConfigProvider 주입 + deviceCountry 감지
+- [x] MyPhoneCheckScreeningService: formatE164()에 deviceCountry 전달
+- [x] MyPhoneCheckScreeningService: ZZ fallback — 번호 prefix 기반 국가 추정 로직 추가
+- [x] MyPhoneCheckScreeningService: private/emergency UI 정책 명확화 (완전 무개입 문서화)
 - [x] DecisionEngineImpl: zero history +0.15 제거
 - [x] DecisionEngineImpl: null device +0.15 제거
 - [x] DecisionEngineImpl: KNOWN_CONTACT + hasScamSignal → SCAM_RISK_HIGH 우선 (스푸핑 방어)

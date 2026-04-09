@@ -2,7 +2,7 @@
 
 ## Overview
 
-The DecisionEngine is the core evaluation system of the CallCheck Android app. It analyzes incoming calls using device evidence (call history, contacts) and search evidence (web results, threat indicators) to provide risk assessment and actionable recommendations.
+The DecisionEngine is the core evaluation system of the MyPhoneCheck Android app. It analyzes incoming calls using device evidence (call history, contacts) and search evidence (web results, threat indicators) to provide risk assessment and actionable recommendations.
 
 ## Architecture
 
@@ -247,7 +247,7 @@ if (decision.riskLevel == RiskLevel.CRITICAL) {
 2. **Temporal patterns** - Weight recent calls higher
 3. **Network analysis** - Detect call spoofing clusters
 4. **User feedback loop** - Improve scores from user corrections
-5. **Country-specific rules** - CallCheck supports global markets
+5. **Country-specific rules** - MyPhoneCheck supports global markets
 6. **Personalization** - Per-user risk thresholds
 7. **Explainability** - Detailed score breakdown UI
 

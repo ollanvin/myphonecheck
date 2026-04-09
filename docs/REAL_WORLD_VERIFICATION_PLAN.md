@@ -1,4 +1,4 @@
-# CallCheck 1.0 — 실전 소규모 검증안
+# MyPhoneCheck 1.0 — 실전 소규모 검증안
 
 ## 목적
 
@@ -119,7 +119,7 @@ adb shell gsm call +821012345678
 
 ```bash
 # logcat에서 판정 결과 필터링
-adb logcat -s CallCheckScreening:* DecisionEngine:* SearchResultAnalyzer:*
+adb logcat -s MyPhoneCheckScreening:* DecisionEngine:* SearchResultAnalyzer:*
 ```
 
 ### 3.4 결과 기록 양식
@@ -196,4 +196,4 @@ Tier별 시나리오에 맞는 검색 결과를 정확히 반환하도록 해야
 
 ---
 
-*작성: 비전 | 2026-03-24 | CallCheck 1.0 실전 검증안 v1*
+*작성: 비전 | 2026-03-24 | MyPhoneCheck 1.0 실전 검증안 v1*

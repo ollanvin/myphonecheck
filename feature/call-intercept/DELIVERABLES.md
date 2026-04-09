@@ -1,14 +1,14 @@
 # CallScreeningService Implementation - Deliverables Summary
 
 ## Overview
-Complete production-ready implementation of the CallScreeningService for the CallCheck Android app. All code is fully functional with no TODOs or placeholders.
+Complete production-ready implementation of the CallScreeningService for the MyPhoneCheck Android app. All code is fully functional with no TODOs or placeholders.
 
 ## Delivered Files
 
 ### 1. Core Service (1 file)
 **Location:** `feature/call-intercept/src/main/kotlin/app/callcheck/mobile/feature/callintercept/`
 
-- **CallCheckScreeningService.kt** (413 lines)
+- **MyPhoneCheckScreeningService.kt** (413 lines)
   - Extends android.telecom.CallScreeningService
   - Intercepts incoming calls from Android system
   - Extracts, normalizes, and filters phone numbers
@@ -98,7 +98,7 @@ Complete production-ready implementation of the CallScreeningService for the Cal
 ### 7. Configuration (1 file modified)
 **Location:** `app/src/main/AndroidManifest.xml`
 
-- Updated with CallCheckScreeningService registration
+- Updated with MyPhoneCheckScreeningService registration
 - Updated with CallActionReceiver registration
 - All required permissions already present
 
@@ -194,7 +194,7 @@ Complete production-ready implementation of the CallScreeningService for the Cal
 
 5. **Deployment**
    - Build APK with CallScreeningService registered
-   - Users enable CallCheck as default call screening app
+   - Users enable MyPhoneCheck as default call screening app
    - Service automatically receives incoming calls
 
 ## What's NOT Included

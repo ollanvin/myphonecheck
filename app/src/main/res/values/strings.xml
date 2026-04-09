@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CallCheck</string>
+    <string name="app_name">myPHONECHECK</string>
     <string name="nav_home">Home</string>
     <string name="nav_timeline">Timeline</string>
     <string name="nav_settings">Settings</string>
@@ -56,7 +56,7 @@
     <string name="action_subtitle_medium">Answer with caution</string>
     <string name="action_subtitle_low">Safe to answer</string>
     <string name="action_subtitle_unknown">Checking…</string>
-    <string name="engine_name_callcheck">CallCheck</string>
+    <string name="engine_name_myphonecheck">MyPhoneCheck</string>
     <string name="engine_name_pushcheck">PushCheck</string>
     <string name="engine_name_messagecheck">MessageCheck</string>
     <string name="engine_name_privacycheck">PrivacyCheck</string>
@@ -78,7 +78,7 @@
     <string name="threat_message_desc">Phishing links · impersonation</string>
     <string name="threat_privacy_title">Privacy</string>
     <string name="threat_privacy_desc">Hidden camera · microphone access</string>
-    <string name="onboarding_page2_footer">CallCheck catches all 4 areas in real time.</string>
+    <string name="onboarding_page2_footer">MyPhoneCheck catches all 4 areas in real time.</string>
     <string name="onboarding_page3_title">To block this,\naccess is required</string>
     <string name="access_phone_target">Phone state</string>
     <string name="access_phone_why">To stop scam calls before you answer</string>
@@ -145,9 +145,9 @@
     <string name="onboarding_declare_no_collection">No collection — we do not store personal data</string>
     <string name="onboarding_declare_no_transfer">No transfers — nothing is sent externally</string>
     <string name="onboarding_aes_footer">Open-source encryption (AES-256-GCM) for backups</string>
-    <string name="onboarding_p5_intro">Grant the permissions below so CallCheck can protect you. You can finish setup later from Settings.</string>
+    <string name="onboarding_p5_intro">Grant the permissions below so MyPhoneCheck can protect you. You can finish setup later from Settings.</string>
     <string name="perm_overlay_title">Display over other apps</string>
-    <string name="perm_overlay_desc">Show the CallCheck overlay on incoming calls</string>
+    <string name="perm_overlay_desc">Show the MyPhoneCheck overlay on incoming calls</string>
     <string name="perm_notification_listener_title">Notification access</string>
     <string name="perm_notification_listener_desc">Power the MessageCheck hub from notifications</string>
     <string name="perm_usage_stats_title">Usage access</string>

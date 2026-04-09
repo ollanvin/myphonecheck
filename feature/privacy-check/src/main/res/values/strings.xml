@@ -22,5 +22,5 @@
     <string name="privacy_foreground_channel_name">Privacy sensor monitor</string>
     <string name="privacy_foreground_channel_desc">On-device camera and microphone session logging</string>
     <string name="privacy_foreground_notification_title">Privacy monitoring</string>
-    <string name="privacy_foreground_notification_text">CallCheck is watching sensor access on this device only.</string>
+    <string name="privacy_foreground_notification_text">MyPhoneCheck is watching sensor access on this device only.</string>
 </resources>

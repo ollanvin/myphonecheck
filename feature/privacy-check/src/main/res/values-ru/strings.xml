@@ -12,5 +12,5 @@
     <string name="privacy_foreground_channel_name">Мониторинг датчиков</string>
     <string name="privacy_foreground_channel_desc">Локальная запись сессий камеры и микрофона</string>
     <string name="privacy_foreground_notification_title">Мониторинг конфиденциальности</string>
-    <string name="privacy_foreground_notification_text">CallCheck отслеживает доступ к датчикам только на этом устройстве.</string>
+    <string name="privacy_foreground_notification_text">MyPhoneCheck отслеживает доступ к датчикам только на этом устройстве.</string>
 </resources>

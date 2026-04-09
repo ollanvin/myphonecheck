@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "app.callcheck.mobile.core.util"
+    namespace = "app.myphonecheck.mobile.core.util"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

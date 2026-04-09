@@ -1,4 +1,4 @@
-# CallCheck 1.0 — 코드 검증 보고서
+# MyPhoneCheck 1.0 — 코드 검증 보고서
 **검증일:** 2026-03-24
 **검증자:** 비전
 
@@ -114,7 +114,7 @@ PRD의 핵심인 `ANSWER_WITH_CAUTION`과 `HOLD`가 없음.
 Kotlin 2.0은 Compose Compiler 2.0+을 요구할 수 있음. 1.5.11은 Kotlin 1.9.x 대응.
 
 ### Manifest 문제
-- `CallCheckContentProvider` 선언되어 있으나 해당 클래스 파일 없음
+- `MyPhoneCheckContentProvider` 선언되어 있으나 해당 클래스 파일 없음
 - `CallActionReceiver`의 intent-filter에 custom action 사용 — exported=true는 보안 리스크
 
 ### connectedCount 계산 오류
@@ -138,7 +138,7 @@ connectedCount가 "연결된 통화"가 아니라 "총 통화 시도"로 잘못 
 - **프로젝트 구조**: 멀티모듈 깔끔함 (settings.gradle.kts 적절)
 - **Gradle 설정**: version catalog, convention plugin 구조 양호
 - **CallLogDataSourceImpl**: 발신/수신/응답/거절/부재중 세분화 쿼리 구현됨 (data 레이어까지는 정확)
-- **CallCheckScreeningService**: 기본 흐름 적절 (인터셉트 → 정규화 → 판단 → 응답)
+- **MyPhoneCheckScreeningService**: 기본 흐름 적절 (인터셉트 → 정규화 → 판단 → 응답)
 - **DecisionEngineImpl**: 3축 스코어링 구조 적절 (relationship/risk/category)
 - **GenericWebSearchProvider**: 실제 HTTP 호출 구조 있음 (단, API endpoint 미정)
 - **빌드 설정**: Hilt, Compose, Room 의존성 적절히 설정됨
