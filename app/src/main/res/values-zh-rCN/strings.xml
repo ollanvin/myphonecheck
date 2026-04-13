@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">myPHONECHECK</string>
+    <string name="app_name">MyPhoneCheck</string>
     <string name="nav_home">首页</string>
     <string name="nav_timeline">时间线</string>
     <string name="nav_settings">设置</string>
