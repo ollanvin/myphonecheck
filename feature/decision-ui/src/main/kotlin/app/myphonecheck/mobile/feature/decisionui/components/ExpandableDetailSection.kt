@@ -191,6 +191,27 @@ private fun SearchEvidenceDetail(search: SearchEvidence) {
     }
     DetailRow("검색 추세", search.searchTrend.name)
 
+    if (search.signalSummaries.isNotEmpty()) {
+        Text(
+            text = "의미 신호 (검색·커뮤니티)",
+            color = MyPhoneCheckTheme.colors.textPrimary,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
+        )
+        search.signalSummaries.forEach { s ->
+            val tail = buildString {
+                if (s.resultCount > 0) append("${s.resultCount}건")
+                val t = s.signalType
+                if (!t.isNullOrBlank()) {
+                    if (isNotEmpty()) append(" · ")
+                    append(t)
+                }
+            }
+            DetailRow(s.signalDescription, tail.ifEmpty { "—" })
+        }
+    }
+
     if (search.keywordClusters.isNotEmpty()) {
         DetailRow("키워드", search.keywordClusters.take(5).joinToString(", "))
     }

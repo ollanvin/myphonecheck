@@ -27,4 +27,16 @@
     <string name="overlay_verdict_medium">Caution</string>
     <string name="overlay_verdict_low">Safe</string>
     <string name="overlay_verdict_unknown">Checking</string>
+
+    <string name="overlay_risk_confidence_line">%1$s · confidence %2$d%%</string>
+    <string name="overlay_section_report">Report / complaint signals</string>
+    <string name="overlay_section_pattern">Pattern analysis</string>
+    <string name="overlay_section_behavior">User behavior on device</string>
+    <string name="overlay_section_search">Search summary</string>
+    <string name="overlay_section_judgment_basis">Judgment basis</string>
+    <string name="overlay_global_data_banner">Analysis uses global web/community signals</string>
+    <string name="overlay_phase1_line">Immediate: %1$s · %2$s (%3$d%%)</string>
+    <string name="overlay_phase2_done_line">Final: %1$s · %2$s (%3$d%%)</string>
+    <string name="overlay_phase2_absent">Final: not run (immediate only)</string>
+    <string name="overlay_phase_conflict_note">Note: immediate and final judgments differed.</string>
 </resources>

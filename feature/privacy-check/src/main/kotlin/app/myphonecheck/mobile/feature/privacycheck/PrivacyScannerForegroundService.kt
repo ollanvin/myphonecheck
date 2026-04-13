@@ -1,5 +1,6 @@
 package app.myphonecheck.mobile.feature.privacycheck
 
+import android.app.ActivityManager
 import android.app.AppOpsManager
 import android.app.Notification
 import android.app.NotificationChannel
@@ -55,8 +56,9 @@ class PrivacyScannerForegroundService : Service() {
         } else {
             val start = activeSince.remove(key) ?: return@OnOpActiveChangedListener
             val durationSec = ((System.currentTimeMillis() - start) / 1000L).coerceAtLeast(1L)
+            val accessedInBackground = !isPackageForeground(packageName)
             scope.launch {
-                collector.collect(packageName, permType, durationSec)
+                collector.collect(packageName, permType, durationSec, accessedInBackground)
             }
         }
     }
@@ -81,6 +83,15 @@ class PrivacyScannerForegroundService : Service() {
     }
 
     override fun onBind(intent: Intent?) = null
+
+    private fun isPackageForeground(packageName: String): Boolean {
+        val am = getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager ?: return false
+        val procs = am.runningAppProcesses ?: return false
+        return procs.any { proc ->
+            packageName in proc.pkgList &&
+                proc.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
+        }
+    }
 
     override fun onDestroy() {
         unregisterWatcher()

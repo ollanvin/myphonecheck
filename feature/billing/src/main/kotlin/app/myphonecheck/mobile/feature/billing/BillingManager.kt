@@ -2,6 +2,10 @@ package app.myphonecheck.mobile.feature.billing
 
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
+import app.myphonecheck.mobile.core.security.tamper.TamperChecker
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -24,19 +28,39 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 /**
  * Manages Google Play Billing for MyPhoneCheck.
  *
- * Handles:
- * - BillingClient connection and lifecycle
- * - Querying subscription status
- * - Launching purchase flow
- * - Acknowledging purchases
- * - Restoring purchases
- * - Emitting subscription state via StateFlow
+ * Security Hardened:
+ * - Entitlement cache stored in EncryptedSharedPreferences
+ * - Purchase token deduplication (anti-replay)
+ * - TamperChecker integration (blocks billing on compromised devices)
+ * - Graceful degradation with cached state + expiry
  */
 class BillingManager(
     context: Context,
+    private val tamperChecker: TamperChecker? = null,
 ) {
     private val applicationContext = context.applicationContext
     private val billingScope = CoroutineScope(Dispatchers.Default)
+
+    /** 암호화된 entitlement 캐시 */
+    private val securePrefs: SharedPreferences by lazy {
+        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        EncryptedSharedPreferences.create(
+            "ollanvin_billing_secure",
+            masterKeyAlias,
+            applicationContext,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
+        )
+    }
+
+    companion object {
+        private const val SUBSCRIPTION_PRODUCT_ID = "myphonecheck_monthly"
+        private const val PREF_LAST_KNOWN_STATE = "last_known_subscription_state"
+        private const val PREF_STATE_TIMESTAMP = "subscription_state_timestamp"
+        private const val PREF_ACKNOWLEDGED_TOKENS = "acknowledged_purchase_tokens"
+        /** 캐시 만료 시간: 24시간 */
+        private const val CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000L
+    }
 
     private val _subscriptionState = MutableStateFlow<SubscriptionState>(
         SubscriptionState.Loading
@@ -150,6 +174,7 @@ class BillingManager(
 
             if (subscriptionPurchase == null) {
                 _subscriptionState.value = SubscriptionState.NotPurchased
+                cacheSubscriptionState(false)
                 return
             }
 
@@ -164,9 +189,11 @@ class BillingManager(
                     // Check if subscription is still valid (not cancelled)
                     if (subscriptionPurchase.isAutoRenewing) {
                         _subscriptionState.value = SubscriptionState.Active
+                        cacheSubscriptionState(true)
                     } else {
                         // Subscription was cancelled but may still be valid until expiration
                         _subscriptionState.value = SubscriptionState.Expired
+                        cacheSubscriptionState(false)
                     }
                 }
                 com.android.billingclient.api.Purchase.PurchaseState.PENDING -> {
@@ -174,6 +201,7 @@ class BillingManager(
                 }
                 else -> {
                     _subscriptionState.value = SubscriptionState.Expired
+                    cacheSubscriptionState(false)
                 }
             }
         } catch (e: Exception) {
@@ -186,9 +214,23 @@ class BillingManager(
     /**
      * Launch the purchase flow for the MyPhoneCheck monthly subscription.
      *
+     * Security: TamperChecker 검증 후 결제 흐름 시작.
+     * 고위험 기기에서는 결제 차단.
+     *
      * @param activity The activity to launch the purchase flow from
      */
     suspend fun launchPurchaseFlow(activity: Activity) {
+        // 탬퍼 체크 — 후킹/루팅 기기에서 결제 차단
+        tamperChecker?.let { checker ->
+            val signal = checker.check()
+            if (signal.shouldBlockBilling) {
+                _subscriptionState.value = SubscriptionState.Error(
+                    "This device does not meet security requirements for purchases."
+                )
+                return
+            }
+        }
+
         if (!isConnected || billingClient == null) {
             _subscriptionState.value = SubscriptionState.Error(
                 "청구 서비스에 연결되지 않았습니다"
@@ -277,10 +319,20 @@ class BillingManager(
 
     /**
      * Acknowledge a purchase (required for subscription management).
+     *
+     * Security: 토큰 중복 차단 — 이미 처리된 토큰은 재처리 안 함.
      */
     private suspend fun acknowledgePurchase(purchase: com.android.billingclient.api.Purchase) {
         if (purchase.isAcknowledged) {
             return
+        }
+
+        // 토큰 중복 차단 (anti-replay)
+        val token = purchase.purchaseToken
+        val acknowledgedTokens = securePrefs.getStringSet(PREF_ACKNOWLEDGED_TOKENS, emptySet())
+            ?: emptySet()
+        if (acknowledgedTokens.contains(token)) {
+            return // 이미 처리된 토큰
         }
 
         val client = billingClient ?: return
@@ -289,18 +341,46 @@ class BillingManager(
             suspendCancellableCoroutine { continuation ->
                 client.acknowledgePurchase(
                     com.android.billingclient.api.AcknowledgePurchaseParams.newBuilder()
-                        .setPurchaseToken(purchase.purchaseToken)
+                        .setPurchaseToken(token)
                         .build()
                 ) { billingResult ->
                     continuation.resume(Unit)
                 }
             }
+
+            // 토큰 기록 (최대 50개 유지)
+            val updatedTokens = acknowledgedTokens.toMutableSet()
+            updatedTokens.add(token)
+            // LRU: 50개 초과 시 오래된 것 제거
+            while (updatedTokens.size > 50) {
+                updatedTokens.remove(updatedTokens.first())
+            }
+            securePrefs.edit().putStringSet(PREF_ACKNOWLEDGED_TOKENS, updatedTokens).apply()
         } catch (e: Exception) {
             // Log error but don't fail - purchase is still valid
         }
     }
 
-    companion object {
-        private const val SUBSCRIPTION_PRODUCT_ID = "myphonecheck_monthly"
+    /**
+     * 마지막 알려진 구독 상태를 암호화 캐시에 저장.
+     */
+    private fun cacheSubscriptionState(isActive: Boolean) {
+        securePrefs.edit()
+            .putBoolean(PREF_LAST_KNOWN_STATE, isActive)
+            .putLong(PREF_STATE_TIMESTAMP, System.currentTimeMillis())
+            .apply()
+    }
+
+    /**
+     * BillingClient 사용 불가 시 캐시된 구독 상태 반환.
+     * 만료 시간 초과 시 NotPurchased로 fallback.
+     */
+    fun getCachedSubscriptionState(): SubscriptionState {
+        val timestamp = securePrefs.getLong(PREF_STATE_TIMESTAMP, 0L)
+        if (System.currentTimeMillis() - timestamp > CACHE_EXPIRY_MS) {
+            return SubscriptionState.NotPurchased
+        }
+        val isActive = securePrefs.getBoolean(PREF_LAST_KNOWN_STATE, false)
+        return if (isActive) SubscriptionState.Active else SubscriptionState.NotPurchased
     }
 }

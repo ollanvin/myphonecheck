@@ -5,6 +5,7 @@ import android.telecom.CallScreeningService
 import android.util.Log
 import app.myphonecheck.mobile.core.util.PhoneNumberNormalizer
 import app.myphonecheck.mobile.feature.countryconfig.CountryConfigProvider
+import app.myphonecheck.mobile.feature.countryconfig.SupportedLanguage
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -199,7 +200,6 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
                     callInterceptRepository.processIncomingCallTwoPhase(normalizedNumber, effectiveCountry)
                 }
 
-                val phase1Result = twoPhase.phase1.toDecisionResult()
                 val finalResult = twoPhase.finalResult()
                 val hasPhase2 = twoPhase.phase2 != null
                 val meta = twoPhase.phaseMeta
@@ -230,19 +230,21 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
                     Log.i(TAG, "Decision notification shown for: $normalizedNumber")
                 }
 
-                // Overlay 표시 — 최종 결과 사용
+                // Overlay 표시 — 최종 결과 + 2-Phase 메타(즉시/확정) 전부 노출
                 if (::callerIdOverlayManager.isInitialized) {
                     try {
+                        val overlayLang = when (
+                            applicationContext.resources.configuration.locales[0]?.language
+                        ) {
+                            "ko" -> SupportedLanguage.KO
+                            else -> SupportedLanguage.EN
+                        }
                         callerIdOverlayManager.showOverlay(
                             context = applicationContext,
                             result = finalResult,
                             phoneNumber = normalizedNumber,
-                            phaseLabel = when {
-                                !hasPhase2 -> "즉시 판단"
-                                twoPhase.riskEscalated() -> "추가 확인됨 — 위험 상승"
-                                twoPhase.riskDeescalated() -> "추가 확인됨 — 위험 하락"
-                                else -> null
-                            },
+                            language = overlayLang,
+                            twoPhaseDecision = twoPhase,
                         )
                         Log.i(TAG, "Overlay shown for: $normalizedNumber")
                     } catch (e: Exception) {

@@ -134,6 +134,7 @@ dependencies {
     // Core modules
     implementation(project(":core:model"))
     implementation(project(":core:util"))
+    implementation(project(":core:security"))
 
     // Testing
     testImplementation(libs.junit)

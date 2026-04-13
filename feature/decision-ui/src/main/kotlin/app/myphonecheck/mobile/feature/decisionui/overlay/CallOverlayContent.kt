@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -30,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import app.myphonecheck.mobile.core.model.DecisionResult
 import app.myphonecheck.mobile.core.model.RingSystem
 import app.myphonecheck.mobile.core.model.RiskLevel
+import app.myphonecheck.mobile.feature.decisionui.components.FullEngineReasoningSection
 import app.myphonecheck.mobile.feature.decisionui.ring.DecisionRing
 import app.myphonecheck.mobile.feature.decisionui.ring.DecisionRingDefaults
 import app.myphonecheck.mobile.feature.decisionui.ring.RingState
@@ -94,9 +97,11 @@ private fun OverlayCard(
     val ringState = result?.let { RingState.fromAction(it.action) } ?: RingState.LOADING
     val stateColor = result?.let { Color(RingSystem.color(it.action)) } ?: MyPhoneCheckTheme.colors.primary
 
+    val scroll = rememberScrollState()
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .verticalScroll(scroll)
             .background(
                 color = MyPhoneCheckTheme.colors.cardBackground,
                 shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
@@ -131,7 +136,7 @@ private fun OverlayCard(
                         color = stateColor,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
-                        maxLines = 1,
+                        maxLines = 3,
                     )
                 } else {
                     Text(
@@ -145,6 +150,14 @@ private fun OverlayCard(
 
         // 면책 + 확인 버튼
         if (result != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+
+            FullEngineReasoningSection(
+                result = result,
+                searchPending = false,
+                modifier = Modifier.fillMaxWidth(),
+            )
+
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(

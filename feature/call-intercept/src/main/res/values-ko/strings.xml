@@ -1,30 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="overlay_device_history">기기 기록</string>
+    <string name="overlay_device_history">기기 이력</string>
     <string name="overlay_web_scan_result">웹 스캔 결과</string>
-    <string name="overlay_no_history">기록 없음 (첫 수신)</string>
+    <string name="overlay_no_history">이력 없음 (첫 통화)</string>
     <string name="overlay_no_search_result">검색 결과 없음</string>
     <string name="overlay_action_answer">수신</string>
     <string name="overlay_action_reject">거절</string>
     <string name="overlay_action_block">차단</string>
-    <string name="overlay_sms_exists">SMS 있음</string>
+    <string name="overlay_sms_exists">문자 있음</string>
     <string name="overlay_incoming_fmt">수신 %d회</string>
     <string name="overlay_outgoing_fmt">발신 %d회</string>
-    <string name="overlay_long_call_fmt">장기통화 %d회</string>
-    <string name="overlay_short_call_fmt">짧은통화 %d회</string>
+    <string name="overlay_long_call_fmt">긴 통화 %d회</string>
+    <string name="overlay_short_call_fmt">짧은 통화 %d회</string>
     <string name="overlay_rejected_fmt">거절 %d회</string>
     <string name="overlay_today">오늘</string>
     <string name="overlay_yesterday">어제</string>
     <string name="overlay_days_ago_fmt">%d일 전</string>
-    <string name="overlay_weeks_ago_fmt">%d주 전</string>
-    <string name="overlay_months_ago_fmt">%d개월 전</string>
+    <string name="overlay_weeks_ago_fmt">약 %d주 전</string>
+    <string name="overlay_months_ago_fmt">약 %d개월 전</string>
     <string name="overlay_cluster_delivery">택배/배송</string>
-    <string name="overlay_cluster_institution">기관/공공</string>
-    <string name="overlay_cluster_business">기업/고객센터</string>
-    <string name="overlay_cluster_spam">광고/영업</string>
+    <string name="overlay_cluster_institution">기관</string>
+    <string name="overlay_cluster_business">기업/업무</string>
+    <string name="overlay_cluster_spam">스팸/영업</string>
     <string name="overlay_cluster_scam">사기/피싱</string>
     <string name="overlay_verdict_high">위험</string>
     <string name="overlay_verdict_medium">주의</string>
     <string name="overlay_verdict_low">안전</string>
-    <string name="overlay_verdict_unknown">확인중</string>
+    <string name="overlay_verdict_unknown">확인 중</string>
+
+    <string name="overlay_risk_confidence_line">%1$s · 신뢰도 %2$d%%</string>
+    <string name="overlay_section_report">신고 이력</string>
+    <string name="overlay_section_pattern">패턴 분석 결과</string>
+    <string name="overlay_section_behavior">사용자 행동 이력</string>
+    <string name="overlay_section_search">검색 결과 요약</string>
+    <string name="overlay_section_judgment_basis">판단 근거</string>
+    <string name="overlay_global_data_banner">글로벌 데이터 기반 분석</string>
+    <string name="overlay_phase1_line">즉시 판단: %1$s · %2$s (%3$d%%)</string>
+    <string name="overlay_phase2_done_line">확정 완료: %1$s · %2$s (%3$d%%)</string>
+    <string name="overlay_phase2_absent">확정 단계: 없음 (즉시 판단만 적용)</string>
+    <string name="overlay_phase_conflict_note">참고: 즉시 판단과 확정 판단이 달랐습니다.</string>
 </resources>

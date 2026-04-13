@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    올랑방 앱팩토리 네트워크 보안 설정.
+
+    - 모든 cleartext (HTTP) 트래픽 차단
+    - TLS 1.2+ 강제 (시스템 기본)
+    - 시스템 CA만 신뢰
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

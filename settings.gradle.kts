@@ -23,6 +23,7 @@ include(":app")
 // Core modules
 include(":core:model")
 include(":core:util")
+include(":core:security")
 
 // Feature modules
 include(":feature:call-intercept")

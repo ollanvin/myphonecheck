@@ -2,6 +2,7 @@ package app.myphonecheck.mobile.data.localcache.di
 
 import android.content.Context
 import androidx.room.Room
+import app.myphonecheck.mobile.core.security.DatabaseKeyProvider
 import app.myphonecheck.mobile.data.localcache.dao.BackupMetadataDao
 import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
 import app.myphonecheck.mobile.data.localcache.dao.PreJudgeCacheDao
@@ -15,12 +16,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import net.sqlcipher.database.SupportFactory
 import javax.inject.Singleton
 
 /**
  * 로컬 캐시 Hilt 모듈.
  *
  * Room Database + DAO + Repository 제공.
+ * SQLCipher로 DB 전체 암호화 — Android Keystore 기반 키 관리.
  * 앱 전체 수명 동안 단일 인스턴스 보장 (Singleton).
  */
 @Module
@@ -31,12 +34,17 @@ object LocalCacheModule {
     @Singleton
     fun provideDatabase(
         @ApplicationContext context: Context,
+        databaseKeyProvider: DatabaseKeyProvider,
     ): MyPhoneCheckDatabase {
+        val passphrase = databaseKeyProvider.getOrCreateDatabaseKey()
+        val factory = SupportFactory(passphrase)
+
         return Room.databaseBuilder(
             context,
             MyPhoneCheckDatabase::class.java,
             MyPhoneCheckDatabase.DATABASE_NAME,
         )
+            .openHelperFactory(factory)
             .fallbackToDestructiveMigration()
             .build()
     }

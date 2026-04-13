@@ -59,6 +59,13 @@ data class PrivacyHistoryEntity(
     @ColumnInfo(name = "is_anomaly")
     val isAnomaly: Boolean,
 
+    /**
+     * 이상 감지 시 사람이 읽을 수 있는 이유(복수는 줄바꿈 구분).
+     * UI의 "이상 감지 이유"에 그대로 표시.
+     */
+    @ColumnInfo(name = "anomaly_reasons")
+    val anomalyReasons: String? = null,
+
     /** 사용자 확인 상태: "CONFIRMED" / "DENIED" / "UNVERIFIED" */
     @ColumnInfo(name = "user_verified")
     val userVerified: String = "UNVERIFIED",

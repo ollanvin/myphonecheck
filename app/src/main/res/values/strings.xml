@@ -130,6 +130,15 @@
     <string name="message_hub_pick_search">Open search</string>
     <string name="message_hub_empty">No captured messages yet</string>
     <string name="message_hub_kept_marker">Kept in hub</string>
+    <string name="message_hub_push_warnings">PushCheck warnings</string>
+    <string name="message_hub_text_analysis">On-device text analysis (MessageCheck patterns)</string>
+    <string name="message_hub_extracted_urls">Extracted URLs</string>
+    <string name="message_hub_no_urls">None detected</string>
+    <string name="message_hub_short_url_detected">Shortened URL detected</string>
+    <string name="message_hub_keyword_counts">Keyword hits — impersonation %1$d · phishing %2$d · financial %3$d · urgency %4$d</string>
+    <string name="message_hub_promo_hits">Promotion-style keyword hits: %1$d</string>
+    <string name="message_hub_night_receive">Received during night window (notification time)</string>
+    <string name="message_hub_risk_fmt">Risk: %1$s · confidence %2$d%%</string>
     <string name="privacy_requires_android12">Privacy access history requires Android 12 or later.</string>
     <string name="privacy_history_title">Privacy history</string>
     <string name="privacy_tab_camera">Camera</string>

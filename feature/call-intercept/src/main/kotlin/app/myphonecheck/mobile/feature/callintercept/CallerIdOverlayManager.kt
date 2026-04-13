@@ -17,12 +17,14 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import app.myphonecheck.mobile.feature.callintercept.R
 import app.myphonecheck.mobile.core.model.DecisionResult
-import app.myphonecheck.mobile.core.model.DeviceEvidence
 import app.myphonecheck.mobile.core.model.RiskLevel
-import app.myphonecheck.mobile.core.model.SearchEvidence
+import app.myphonecheck.mobile.core.model.TwoPhaseDecision
+import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter
+import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter.Lang
 import app.myphonecheck.mobile.feature.countryconfig.SignalSummaryLocalizer
 import app.myphonecheck.mobile.feature.countryconfig.SupportedLanguage
 import javax.inject.Inject
@@ -54,8 +56,7 @@ class CallerIdOverlayManager @Inject constructor() {
      * @param phoneNumber raw 번호 (기기 원본 그대로)
      * @param language 현재 기기 언어
      * @param localizer SignalSummary 로컬라이저
-     * @param phaseLabel 2-Phase UX 라벨. null이면 표시 안 함.
-     *        예: "즉시 판단", "추가 확인됨 — 위험 상승", "추가 확인됨 — 위험 하락"
+     * @param twoPhaseDecision 2-Phase 메타(즉시/확정). null이면 Phase UI 생략.
      */
     fun showOverlay(
         context: Context,
@@ -63,7 +64,7 @@ class CallerIdOverlayManager @Inject constructor() {
         phoneNumber: String,
         language: SupportedLanguage = SupportedLanguage.EN,
         localizer: SignalSummaryLocalizer = SignalSummaryLocalizer(),
-        phaseLabel: String? = null,
+        twoPhaseDecision: TwoPhaseDecision? = null,
     ): Boolean {
         if (!canDrawOverlays(context)) {
             Log.w(TAG, "SYSTEM_ALERT_WINDOW not granted, cannot show overlay")
@@ -91,7 +92,7 @@ class CallerIdOverlayManager @Inject constructor() {
                     y = dpToPx(context, 200)
                 }
 
-                overlayView = buildOverlayView(context, result, phoneNumber, language, localizer, phaseLabel)
+                overlayView = buildOverlayView(context, result, phoneNumber, language, localizer, twoPhaseDecision)
                 wm.addView(overlayView, params)
                 Log.i(TAG, "Overlay shown for $phoneNumber: ${result.riskLevel} (lang=${language.code})")
             } catch (e: Exception) {
@@ -136,22 +137,8 @@ class CallerIdOverlayManager @Inject constructor() {
     // ══════════════════════════════════════════════
 
     /**
-     * 1초 인지 오버레이 — 프리미엄 설계.
-     *
-     * 구조:
-     * ┌────────────────────────────────┐
-     * │ [색상 배경]                       │
-     * │   ██ 한 단어 판정 (24sp Bold)     │
-     * │   카테고리 · 번호 · 신뢰도%       │
-     * │   ── 구분선 ──                   │
-     * │   • 근거 1 (최대 2줄)            │
-     * │   • 근거 2                       │
-     * │   ── 구분선 ──                   │
-     * │   [수신] [거절] [차단]            │
-     * └────────────────────────────────┘
-     *
-     * 1초 인지의 핵심: 색상(배경) + 한 단어(HERO) → 0.3초 판단.
-     * 나머지 정보는 보조. 근거는 최대 2줄로 제한.
+     * 전화 판단 오버레이 — 엔진 출력 전부 노출(요약 숨김 없음).
+     * 스크롤 + 하단 고정 액션 버튼.
      */
     private fun buildOverlayView(
         context: Context,
@@ -159,12 +146,127 @@ class CallerIdOverlayManager @Inject constructor() {
         phoneNumber: String,
         language: SupportedLanguage,
         localizer: SignalSummaryLocalizer,
-        phaseLabel: String? = null,
+        twoPhaseDecision: TwoPhaseDecision? = null,
     ): View {
         val bgColor = backgroundColorForRisk(result.riskLevel)
         val textColor = Color.WHITE
         val subtleColor = adjustAlpha(textColor, 0.80f)
         val uiText = OverlayUiText(context)
+        val lang = if (language == SupportedLanguage.KO) Lang.KO else Lang.EN
+        val categoryText = localizer.localizeCategory(result.category.name, context)
+        val confidencePercent = DecisionReasoningFormatter.confidencePercent(result.confidence)
+        val riskTri = DecisionReasoningFormatter.riskTriLabel(result.riskLevel, lang)
+
+        val scrollContent = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+
+            val verdict = uiText.oneWordVerdict(result.riskLevel)
+            addView(TextView(context).apply {
+                text = verdict
+                setTextColor(textColor)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f)
+                setTypeface(null, Typeface.BOLD)
+                gravity = Gravity.CENTER_HORIZONTAL
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                )
+            })
+
+            addView(TextView(context).apply {
+                text = context.getString(R.string.overlay_risk_confidence_line, riskTri, confidencePercent)
+                setTextColor(textColor)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+                setTypeface(null, Typeface.BOLD)
+                gravity = Gravity.CENTER_HORIZONTAL
+                layoutParams = marginTop(context, 4)
+            })
+
+            addView(TextView(context).apply {
+                text = "$categoryText  \u00B7  $phoneNumber"
+                setTextColor(subtleColor)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
+                gravity = Gravity.CENTER_HORIZONTAL
+                layoutParams = marginTop(context, 2)
+            })
+
+            twoPhaseDecision?.let { tp ->
+                addDivider(context, textColor)
+                for (line in buildPhaseDescriptionLines(context, tp, lang)) {
+                    addView(TextView(context).apply {
+                        text = line
+                        setTextColor(subtleColor)
+                        setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
+                        layoutParams = marginTop(context, 2)
+                    })
+                }
+                tp.takeIf { it.hasPhaseConflict() }?.let {
+                    addView(TextView(context).apply {
+                        text = context.getString(R.string.overlay_phase_conflict_note)
+                        setTextColor(Color.WHITE)
+                        setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+                        setTypeface(null, Typeface.BOLD)
+                        layoutParams = marginTop(context, 4)
+                    })
+                }
+            }
+
+            addDivider(context, textColor)
+
+            val titleIds = listOf(
+                R.string.overlay_section_report,
+                R.string.overlay_section_pattern,
+                R.string.overlay_section_behavior,
+                R.string.overlay_section_search,
+            )
+            val bodies = DecisionReasoningFormatter.sectionBodiesInOrder(result, lang)
+            for (i in titleIds.indices) {
+                addView(TextView(context).apply {
+                    text = context.getString(titleIds[i])
+                    setTextColor(textColor)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
+                    setTypeface(null, Typeface.BOLD)
+                    layoutParams = marginTop(context, 6)
+                })
+                addView(TextView(context).apply {
+                    text = bodies[i]
+                    setTextColor(subtleColor)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
+                    layoutParams = marginTop(context, 1)
+                })
+            }
+
+            addView(TextView(context).apply {
+                text = context.getString(R.string.overlay_section_judgment_basis)
+                setTextColor(textColor)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
+                setTypeface(null, Typeface.BOLD)
+                layoutParams = marginTop(context, 10)
+            })
+            addView(TextView(context).apply {
+                text = DecisionReasoningFormatter.judgmentBasisMultiline(result, lang)
+                setTextColor(subtleColor)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+                layoutParams = marginTop(context, 2)
+            })
+
+            if (DecisionReasoningFormatter.useGlobalDataBanner(result)) {
+                addView(TextView(context).apply {
+                    text = context.getString(R.string.overlay_global_data_banner)
+                    setTextColor(adjustAlpha(textColor, 0.9f))
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+                    setTypeface(null, Typeface.ITALIC)
+                    gravity = Gravity.CENTER_HORIZONTAL
+                    layoutParams = marginTop(context, 8)
+                })
+            }
+        }
+
+        val maxScrollH = (context.resources.displayMetrics.heightPixels * 0.5f).toInt()
+        val scroll = MaxHeightScrollView(context, maxScrollH).apply {
+            isFillViewport = false
+            addView(scrollContent)
+        }
 
         return LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
@@ -176,209 +278,48 @@ class CallerIdOverlayManager @Inject constructor() {
             setPadding(padH, dpToPx(context, 16), padH, dpToPx(context, 12))
             elevation = dpToPx(context, 8).toFloat()
 
-            // ── HERO: 한 단어 판정 (1초 인지의 핵심) ──
-            val verdict = uiText.oneWordVerdict(result.riskLevel)
-            addView(TextView(context).apply {
-                text = verdict
-                setTextColor(textColor)
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 24f)
-                setTypeface(null, Typeface.BOLD)
-                gravity = Gravity.CENTER_HORIZONTAL
-                layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                )
-            })
-
-            // ── INFO LINE: 카테고리 · 번호 · 신뢰도 ──
-            val categoryText = localizer.localizeCategory(result.category.name, context)
-            val confidencePercent = (result.confidence * 100).toInt()
-            addView(TextView(context).apply {
-                text = "$categoryText  \u00B7  $phoneNumber  \u00B7  ${confidencePercent}%"
-                setTextColor(subtleColor)
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-                gravity = Gravity.CENTER_HORIZONTAL
-                layoutParams = marginTop(context, 2)
-            })
-
-            // ── 2-Phase UX: Phase 상태 태그 ──
-            // phaseLabel이 null이면 표시하지 않음 (즉시 판단 = 단일 Phase)
-            if (phaseLabel != null) {
-                addView(TextView(context).apply {
-                    text = phaseLabel
-                    setTextColor(Color.WHITE)
-                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
-                    setTypeface(null, Typeface.BOLD)
-                    gravity = Gravity.CENTER_HORIZONTAL
-                    background = GradientDrawable().apply {
-                        setColor(adjustAlpha(Color.BLACK, 0.35f))
-                        cornerRadius = dpToPx(context, 10).toFloat()
-                    }
-                    val tagPadH = dpToPx(context, 10)
-                    val tagPadV = dpToPx(context, 3)
-                    setPadding(tagPadH, tagPadV, tagPadH, tagPadV)
-                    val lp = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                    ).apply {
-                        gravity = Gravity.CENTER_HORIZONTAL
-                        topMargin = dpToPx(context, 4)
-                    }
-                    layoutParams = lp
-                })
-            }
-
-            // ── Divider ──
+            addView(scroll, LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+            ))
             addDivider(context, textColor)
-
-            // ── REASONS: 최대 2줄 (device + search 통합) ──
-            val reasons = buildTopReasons(result, language, localizer, uiText, context)
-            for (reason in reasons) {
-                addView(TextView(context).apply {
-                    text = reason
-                    setTextColor(subtleColor)
-                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-                    layoutParams = marginTop(context, 1)
-                })
-            }
-
-            // ── Divider ──
-            if (reasons.isNotEmpty()) {
-                addDivider(context, textColor)
-            }
-
-            // ── Action Buttons ──
             addView(buildActionButtons(context, phoneNumber, uiText))
         }
     }
 
-    /**
-     * 1초 인지를 위한 핵심 근거 추출 — 최대 2줄.
-     *
-     * 우선순위:
-     * 1. 웹 스캔 signal summary (가장 의미 있는 근거)
-     * 2. 기기 기록 요약 (통화 이력 기반)
-     * 3. 카테고리 기반 fallback
-     */
-    private fun buildTopReasons(
-        result: DecisionResult,
-        language: SupportedLanguage,
-        localizer: SignalSummaryLocalizer,
-        uiText: OverlayUiText,
+    private fun buildPhaseDescriptionLines(
         context: Context,
+        two: TwoPhaseDecision,
+        lang: Lang,
     ): List<String> {
-        val reasons = mutableListOf<String>()
-
-        // 1. Search signal — 최우선 근거
-        val searchEvidence = result.searchEvidence
-        if (searchEvidence != null && !searchEvidence.isEmpty) {
-            val signals = searchEvidence.signalSummaries
-            if (signals.isNotEmpty()) {
-                // 가장 의미 있는 signal description 1개
-                reasons.add("\uD83D\uDD0D ${signals.first().signalDescription}")
-            }
-
-            // 발신처 특정 (entity) — 2번째 근거
-            if (reasons.size < 2) {
-                val entity = extractIdentifiedEntity(searchEvidence)
-                if (entity != null) {
-                    reasons.add("\uD83C\uDFE2 $entity")
-                } else if (signals.size > 1) {
-                    reasons.add("\uD83D\uDD0D ${signals[1].signalDescription}")
-                }
-            }
+        val p1 = two.phase1
+        val c1 = DecisionReasoningFormatter.confidencePercent(p1.confidence)
+        val r1 = DecisionReasoningFormatter.riskTriLabel(p1.riskLevel, lang)
+        val line1 = when (lang) {
+            Lang.KO -> context.getString(R.string.overlay_phase1_line, r1, p1.summary, c1)
+            Lang.EN -> "Immediate: $r1 · ${p1.summary} ($c1%)"
         }
-
-        // 2. Device evidence — search 근거가 부족하면 보충
-        if (reasons.size < 2) {
-            val deviceEvidence = result.deviceEvidence
-            if (deviceEvidence != null && deviceEvidence.hasAnyHistory) {
-                val deviceSummary = buildDeviceOneLiner(deviceEvidence, uiText)
-                if (deviceSummary.isNotEmpty()) {
-                    reasons.add("\uD83D\uDCF1 $deviceSummary")
-                }
+        val line2 = two.phase2?.let { p2 ->
+            val c2 = DecisionReasoningFormatter.confidencePercent(p2.confidence)
+            val r2 = DecisionReasoningFormatter.riskTriLabel(p2.riskLevel, lang)
+            when (lang) {
+                Lang.KO -> context.getString(R.string.overlay_phase2_done_line, r2, p2.summary, c2)
+                Lang.EN -> "Final: $r2 · ${p2.summary} ($c2%)"
             }
+        } ?: when (lang) {
+            Lang.KO -> context.getString(R.string.overlay_phase2_absent)
+            Lang.EN -> "Final: not run (immediate judgment only)"
         }
-
-        // 3. Cluster fallback — 아무 근거도 없으면
-        if (reasons.isEmpty() && searchEvidence != null) {
-            val clusters = searchEvidence.keywordClusters
-                .take(2)
-                .map { mapClusterToLocalized(it, context) }
-                .distinct()
-            if (clusters.isNotEmpty()) {
-                reasons.add("\uD83D\uDCCA ${clusters.joinToString(", ")}")
-            }
-        }
-
-        return reasons.take(2) // 절대 2줄 초과 금지
+        return listOf(line1, line2)
     }
 
-    /**
-     * 기기 기록 한 줄 요약.
-     */
-    private fun buildDeviceOneLiner(evidence: DeviceEvidence, uiText: OverlayUiText): String {
-        val parts = mutableListOf<String>()
-        val totalIn = evidence.incomingCount + evidence.missedCount
-        if (totalIn > 0) parts.add(uiText.formatIncoming(totalIn))
-        if (evidence.outgoingCount > 0) parts.add(uiText.formatOutgoing(evidence.outgoingCount))
-        if (evidence.rejectedCount >= 2) parts.add(uiText.formatRejected(evidence.rejectedCount))
-        val days = evidence.recentDaysContact
-        if (days != null) parts.add(uiText.formatDaysAgo(days))
-        return parts.joinToString(" \u00B7 ")
-    }
-
-    // buildDeviceDetail, buildSignalLines — 제거됨.
-    // 1초 인지 설계에서 buildTopReasons()로 통합.
-
-    private fun extractIdentifiedEntity(evidence: SearchEvidence): String? {
-        val signals = evidence.signalSummaries
-        for (signal in signals) {
-            val snippet = signal.topSnippet ?: continue
-            val entity = extractEntityFromSnippet(snippet)
-            if (entity != null) return entity
-        }
-
-        for (snippet in evidence.topSnippets.take(3)) {
-            val entity = extractEntityFromSnippet(snippet)
-            if (entity != null) return entity
-        }
-
-        val repeated = evidence.repeatedEntities.firstOrNull()
-        if (repeated != null && repeated.length >= 2 && !repeated.matches(Regex("\\d+"))) {
-            return repeated
-        }
-
-        return null
-    }
-
-    private fun extractEntityFromSnippet(snippet: String): String? {
-        if (snippet.isBlank()) return null
-
-        val parts = snippet.split(":", limit = 2)
-        val titlePart = parts[0].trim()
-        val descPart = if (parts.size > 1) parts[1].trim() else ""
-
-        val cleanTitle = titlePart
-            .replace(Regex("[0-9\\-+()\\s]{5,}"), " ")
-            .replace(Regex("\\s*[-/|·]\\s*"), " ")
-            .trim()
-
-        val excludePatterns = listOf("더콜", "whoscall", "truecaller", "스팸 전화번호부", "전화번호부")
-        val filteredTitle = excludePatterns.fold(cleanTitle) { acc, pattern ->
-            acc.replace(pattern, "", ignoreCase = true).trim()
-        }
-
-        val meaningfulDesc = descPart
-            .replace(Regex("[0-9\\-+()]{5,}"), "")
-            .replace(Regex("더콜에서.*조회된.*"), "")
-            .replace(Regex("에 대한 자세한.*"), "")
-            .trim()
-
-        return when {
-            meaningfulDesc.length >= 4 -> meaningfulDesc.take(60)
-            filteredTitle.length >= 2 -> filteredTitle.take(60)
-            else -> null
+    private class MaxHeightScrollView(
+        context: Context,
+        private val maxHeightPx: Int,
+    ) : ScrollView(context) {
+        override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+            val h = View.MeasureSpec.makeMeasureSpec(maxHeightPx, View.MeasureSpec.AT_MOST)
+            super.onMeasure(widthMeasureSpec, h)
         }
     }
 
@@ -486,36 +427,6 @@ class CallerIdOverlayManager @Inject constructor() {
     }
 
     // ══════════════════════════════════════════════
-    // Localization Helpers
-    // ══════════════════════════════════════════════
-
-    private fun localizeRiskLevel(riskLevel: RiskLevel, language: SupportedLanguage): String {
-        return when (language) {
-            SupportedLanguage.KO -> riskLevel.displayNameKo
-            else -> riskLevel.displayNameEn
-        }
-    }
-
-    private fun mapClusterToLocalized(cluster: String, context: Context): String {
-        val lower = cluster.lowercase()
-        val key = when {
-            lower in setOf("delivery", "courier", "shipping", "logistics", "parcel", "package",
-                "택배", "배송", "배달", "물류", "송장") -> "DELIVERY"
-            lower in setOf("hospital", "clinic", "school", "university", "government", "office",
-                "administration", "reservation", "병원", "학교", "학원", "기관", "관공서",
-                "예약", "진료", "접수") -> "INSTITUTION"
-            lower in setOf("company", "corporation", "representative", "branch", "customer service",
-                "회사", "기업", "대표번호", "고객센터", "지점") -> "BUSINESS"
-            lower in setOf("spam", "telemarketing", "advertisement", "ad", "sales",
-                "광고", "영업", "텔레마케팅", "홍보") -> "SPAM"
-            lower in setOf("scam", "phishing", "fraud", "loan", "investment",
-                "사기", "보이스피싱", "피싱", "대출", "투자", "리딩방") -> "SCAM"
-            else -> return cluster
-        }
-        return OverlayUiText(context).clusterLabel(key)
-    }
-
-    // ══════════════════════════════════════════════
     // View Helpers
     // ══════════════════════════════════════════════
 
@@ -538,16 +449,6 @@ class CallerIdOverlayManager @Inject constructor() {
             LinearLayout.LayoutParams.WRAP_CONTENT,
         ).apply {
             topMargin = dpToPx(context, dp)
-        }
-    }
-
-    private fun marginStart(context: Context, startDp: Int, topDp: Int): LinearLayout.LayoutParams {
-        return LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-        ).apply {
-            marginStart = dpToPx(context, startDp)
-            topMargin = dpToPx(context, topDp)
         }
     }
 
@@ -616,14 +517,5 @@ internal class OverlayUiText(private val context: Context) {
         RiskLevel.MEDIUM -> context.getString(R.string.overlay_verdict_medium)
         RiskLevel.LOW -> context.getString(R.string.overlay_verdict_low)
         RiskLevel.UNKNOWN -> context.getString(R.string.overlay_verdict_unknown)
-    }
-
-    fun clusterLabel(key: String): String = when (key) {
-        "DELIVERY" -> context.getString(R.string.overlay_cluster_delivery)
-        "INSTITUTION" -> context.getString(R.string.overlay_cluster_institution)
-        "BUSINESS" -> context.getString(R.string.overlay_cluster_business)
-        "SPAM" -> context.getString(R.string.overlay_cluster_spam)
-        "SCAM" -> context.getString(R.string.overlay_cluster_scam)
-        else -> key
     }
 }

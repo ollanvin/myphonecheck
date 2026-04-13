@@ -130,6 +130,15 @@
     <string name="message_hub_pick_search">검색 열기</string>
     <string name="message_hub_empty">저장된 메시지가 없습니다</string>
     <string name="message_hub_kept_marker">허브에 보관됨</string>
+    <string name="message_hub_push_warnings">PushCheck 경고 사유</string>
+    <string name="message_hub_text_analysis">온디바이스 본문 분석 (MessageCheck 패턴)</string>
+    <string name="message_hub_extracted_urls">추출된 URL</string>
+    <string name="message_hub_no_urls">탐지된 URL 없음</string>
+    <string name="message_hub_short_url_detected">단축 URL 포함</string>
+    <string name="message_hub_keyword_counts">키워드 — 사칭 %1$d · 피싱 %2$d · 금융 %3$d · 긴급 %4$d</string>
+    <string name="message_hub_promo_hits">프로모션성 키워드 %1$d건</string>
+    <string name="message_hub_night_receive">야간 시간대 수신(알림 시각 기준)</string>
+    <string name="message_hub_risk_fmt">위험: %1$s · 신뢰도 %2$d%%</string>
     <string name="privacy_requires_android12">프라이버시 접근 기록은 Android 12 이상에서만 제공됩니다.</string>
     <string name="privacy_history_title">프라이버시 기록</string>
     <string name="privacy_tab_camera">카메라</string>

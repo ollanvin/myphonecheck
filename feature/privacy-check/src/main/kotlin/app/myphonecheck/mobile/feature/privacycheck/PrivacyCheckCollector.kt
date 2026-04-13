@@ -1,6 +1,5 @@
 package app.myphonecheck.mobile.feature.privacycheck
 
-import android.app.AppOpsManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -13,7 +12,7 @@ import android.provider.Settings
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import app.myphonecheck.mobile.core.model.PrivacyEvidence
+import app.myphonecheck.mobile.feature.privacycheck.R
 import app.myphonecheck.mobile.data.localcache.dao.PrivacyHistoryDao
 import app.myphonecheck.mobile.data.localcache.entity.PrivacyHistoryEntity
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -105,6 +104,7 @@ class PrivacyCheckCollector @Inject constructor(
         packageName: String,
         permissionType: String,
         durationSec: Long,
+        accessedInBackground: Boolean = false,
     ) {
         // Android 12 誘몃쭔 ???곗씠???섏쭛 ????
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return
@@ -114,7 +114,7 @@ class PrivacyCheckCollector @Inject constructor(
         if (packageName in SYSTEM_IGNORE) return
 
         try {
-            processAccess(packageName, permissionType, durationSec)
+            processAccess(packageName, permissionType, durationSec, accessedInBackground)
         } catch (e: Exception) {
             Log.e(TAG, "Error collecting privacy history for $packageName", e)
         }
@@ -125,18 +125,24 @@ class PrivacyCheckCollector @Inject constructor(
         packageName: String,
         permissionType: String,
         durationSec: Long,
+        accessedInBackground: Boolean,
     ) {
         val now = System.currentTimeMillis()
         val appLabel = getAppLabel(packageName)
         val daysSinceInstall = getDaysSinceInstall(packageName)
         val isKnownSafe = packageName in KNOWN_SAFE_APPS
 
-        // ?댁긽 ?먯? ?먮퀎
-        val isAnomaly = !isKnownSafe && detectAnomaly(
-            packageName = packageName,
-            permissionType = permissionType,
-            daysSinceInstall = daysSinceInstall,
-        )
+        val anomalyReasonList = if (isKnownSafe) {
+            emptyList()
+        } else {
+            collectAnomalyReasons(
+                packageName = packageName,
+                permissionType = permissionType,
+                daysSinceInstall = daysSinceInstall,
+                accessedInBackground = accessedInBackground,
+            )
+        }
+        val isAnomaly = anomalyReasonList.isNotEmpty()
 
         // Room DB ???
         val entity = PrivacyHistoryEntity(
@@ -146,6 +152,7 @@ class PrivacyCheckCollector @Inject constructor(
             usedAt = now,
             durationSec = durationSec,
             isAnomaly = isAnomaly,
+            anomalyReasons = if (isAnomaly) anomalyReasonList.joinToString("\n") else null,
         )
 
         val insertedId = privacyHistoryDao.insert(entity)
@@ -164,39 +171,45 @@ class PrivacyCheckCollector @Inject constructor(
     }
 
     /**
-     * ?댁긽 ?먯? 濡쒖쭅.
-     *
-     * 議곌굔 (?섎굹?쇰룄 ?대떦?섎㈃ ?댁긽):
-     * 1. 鍮꾪솢???쒓컙? ?묎렐 (?붾컮?댁뒪 TimeZone 湲곗? 00:00~06:00)
-     * 2. ?ㅼ튂 30??誘몃쭔 ??
-     * 3. ?대떦 ?깆씠 ??沅뚰븳??怨쇨굅???ъ슜???대젰 ?놁쓬
+     * 이상 감지에 해당하는 **모든** 이유를 수집 (UI "이상 감지 이유"에 저장).
+     * 기존 [detectAnomaly]와 동일한 조건이며, 복수 조건이면 줄바꿈으로 모두 보존한다.
      */
-    private suspend fun detectAnomaly(
+    private suspend fun collectAnomalyReasons(
         packageName: String,
         permissionType: String,
         daysSinceInstall: Int,
-    ): Boolean {
-        // 議곌굔1: 鍮꾪솢???쒓컙? (?붾컮?댁뒪 TimeZone ?먮룞 諛섏쁺)
+        accessedInBackground: Boolean,
+    ): List<String> {
+        val reasons = mutableListOf<String>()
+        if (accessedInBackground) {
+            reasons.add(context.getString(R.string.privacy_anomaly_reason_background))
+        }
         val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         if (currentHour in INACTIVE_HOUR_START until INACTIVE_HOUR_END) {
             Log.d(TAG, "[Anomaly] Inactive hour access: $packageName at $currentHour:00")
-            return true
+            reasons.add(
+                context.getString(R.string.privacy_anomaly_reason_night_window),
+            )
         }
-
-        // 議곌굔2: ?좉퇋 ??(?ㅼ튂 30??誘몃쭔)
         if (daysSinceInstall in 0 until NEW_APP_THRESHOLD_DAYS) {
             Log.d(TAG, "[Anomaly] New app access: $packageName (installed $daysSinceInstall days ago)")
-            return true
+            reasons.add(
+                context.getString(R.string.privacy_anomaly_reason_new_app, daysSinceInstall),
+            )
         }
-
-        // 議곌굔3: 理쒖큹 ?ъ슜 (怨쇨굅 ?대젰 ?놁쓬)
         val hasHistory = privacyHistoryDao.hasHistory(packageName, permissionType)
         if (!hasHistory) {
             Log.d(TAG, "[Anomaly] First-time access: $packageName/$permissionType")
-            return true
+            reasons.add(context.getString(R.string.privacy_anomaly_reason_first_access))
         }
-
-        return false
+        val dayAgo = System.currentTimeMillis() - 86_400_000L
+        val prior24h = privacyHistoryDao.countAccessSince(packageName, permissionType, dayAgo)
+        if (prior24h >= 9) {
+            reasons.add(
+                context.getString(R.string.privacy_anomaly_reason_frequency, prior24h + 1),
+            )
+        }
+        return reasons
     }
 
     /**

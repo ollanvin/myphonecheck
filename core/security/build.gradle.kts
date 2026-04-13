@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "app.myphonecheck.mobile.data.localcache"
+    namespace = "app.myphonecheck.mobile.core.security"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -35,33 +35,21 @@ android {
     }
 }
 
-kapt {
-    arguments {
-        arg("room.schemaLocation", "$projectDir/schemas")
-    }
-}
-
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    kapt(libs.room.compiler)
-
-    // SQLCipher for encrypted Room DB
+    // SQLCipher for DB encryption
     implementation(libs.sqlcipher.android)
     implementation(libs.sqlite.ktx)
 
+    // Security Crypto for EncryptedSharedPreferences
+    implementation(libs.security.crypto)
+
+    // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
-    implementation(project(":core:model"))
-    implementation(project(":core:util"))
-    implementation(project(":core:security"))
-
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
 }

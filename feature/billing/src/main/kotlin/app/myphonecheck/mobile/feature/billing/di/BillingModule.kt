@@ -1,6 +1,7 @@
 package app.myphonecheck.mobile.feature.billing.di
 
 import android.content.Context
+import app.myphonecheck.mobile.core.security.tamper.TamperChecker
 import app.myphonecheck.mobile.feature.billing.BillingManager
 import dagger.Module
 import dagger.Provides
@@ -17,7 +18,8 @@ object BillingModule {
     @Singleton
     fun provideBillingManager(
         @ApplicationContext context: Context,
+        tamperChecker: TamperChecker,
     ): BillingManager {
-        return BillingManager(context)
+        return BillingManager(context, tamperChecker)
     }
 }

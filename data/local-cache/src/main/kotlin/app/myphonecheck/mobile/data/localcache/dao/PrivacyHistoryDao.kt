@@ -37,6 +37,12 @@ interface PrivacyHistoryDao {
     @Query("SELECT EXISTS(SELECT 1 FROM privacy_history WHERE app_package = :packageName AND permission_type = :type LIMIT 1)")
     suspend fun hasHistory(packageName: String, type: String): Boolean
 
+    /** 최근 구간 내 동일 앱·권한 접근 횟수 (비정상 빈도 판단용) */
+    @Query(
+        "SELECT COUNT(*) FROM privacy_history WHERE app_package = :packageName AND permission_type = :type AND used_at >= :sinceMillis",
+    )
+    suspend fun countAccessSince(packageName: String, type: String, sinceMillis: Long): Int
+
     /** 전체 레코드 수 */
     @Query("SELECT COUNT(*) FROM privacy_history")
     suspend fun getCount(): Int

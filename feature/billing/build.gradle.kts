@@ -62,7 +62,11 @@ dependencies {
 
     implementation(project(":core:model"))
     implementation(project(":core:util"))
+    implementation(project(":core:security"))
     implementation(project(":data:local-cache"))
+
+    // Security — EncryptedSharedPreferences for entitlement cache
+    implementation(libs.security.crypto)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

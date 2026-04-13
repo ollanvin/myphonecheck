@@ -13,16 +13,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.myphonecheck.mobile.core.model.DecisionResult
-import app.myphonecheck.mobile.core.model.RiskLevel
+import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter
+import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter.Lang
 import app.myphonecheck.mobile.feature.decisionui.components.ActionButtonRow
 import app.myphonecheck.mobile.feature.decisionui.components.DisclaimerText
 import app.myphonecheck.mobile.feature.decisionui.components.ExpandableDetailSection
+import app.myphonecheck.mobile.feature.decisionui.components.FullEngineReasoningSection
 import app.myphonecheck.mobile.feature.decisionui.components.PhoneNumberHeader
 import app.myphonecheck.mobile.feature.decisionui.preview.PreviewData
 import app.myphonecheck.mobile.feature.decisionui.ring.DecisionRing
@@ -216,15 +219,21 @@ private fun RingDecisionContent(
             state = ringState,
             size = DecisionRingDefaults.DECISION_CARD_SIZE,
         ) {
-            // 링 내부 컨텐츠
             RingInnerContent(
-                summary = result.summary,
-                reasons = result.reasons,
+                result = result,
                 ringColor = ringColor,
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+
+        FullEngineReasoningSection(
+            result = result,
+            searchPending = searchPending,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         // ── 3. 하단: 액션 버튼 [거절] [차단] [상세] ──
         ActionButtonRow(
@@ -259,23 +268,23 @@ private fun RingDecisionContent(
 // ============================================================
 
 /**
- * Ring 내부에 표시되는 컨텐츠.
- * - 판단 요약 (큰 텍스트, 상태색)
- * - 이유 최대 3개 (작은 텍스트)
+ * Ring 내부: 요약 + SAFE/WARNING/DANGER + 신뢰도 + 엔진 근거(전부, 최대 3줄은 엔진 계약).
  */
 @Composable
 private fun RingInnerContent(
-    summary: String,
-    reasons: List<String>,
+    result: DecisionResult,
     ringColor: androidx.compose.ui.graphics.Color,
 ) {
+    val lang = when (LocalConfiguration.current.locales[0]?.language) {
+        "ko" -> Lang.KO
+        else -> Lang.EN
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(horizontal = 12.dp),
     ) {
-        // 판단 요약 — Ring의 핵심 메시지
         Text(
-            text = summary,
+            text = result.summary,
             color = ringColor,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
@@ -283,19 +292,27 @@ private fun RingInnerContent(
             lineHeight = 26.sp,
             maxLines = 2,
         )
-
-        // 이유 리스트 (최대 3개, 링 내부에 적합한 컴팩트 사이즈)
-        if (reasons.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(12.dp))
-
-            reasons.take(3).forEach { reason ->
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = when (lang) {
+                Lang.KO -> "${DecisionReasoningFormatter.riskTriLabel(result.riskLevel, lang)} · 신뢰도 ${DecisionReasoningFormatter.confidencePercent(result.confidence)}%"
+                Lang.EN -> "${DecisionReasoningFormatter.riskTriLabel(result.riskLevel, lang)} · ${DecisionReasoningFormatter.confidencePercent(result.confidence)}% confidence"
+            },
+            color = ringColor,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold,
+            textAlign = TextAlign.Center,
+        )
+        if (result.reasons.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(10.dp))
+            result.reasons.forEach { reason ->
                 Text(
                     text = "· $reason",
                     color = MyPhoneCheckTheme.colors.textSecondary,
                     fontSize = 11.sp,
                     lineHeight = 15.sp,
                     textAlign = TextAlign.Center,
-                    maxLines = 2,
+                    maxLines = 4,
                     modifier = Modifier.padding(vertical = 2.dp),
                 )
             }

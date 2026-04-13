@@ -82,6 +82,10 @@ import app.myphonecheck.mobile.data.localcache.entity.MessageHubEntity
 import app.myphonecheck.mobile.data.localcache.entity.PrivacyHistoryEntity
 import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
 import app.myphonecheck.mobile.feature.countryconfig.*
+import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter
+import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter.Lang
+import app.myphonecheck.mobile.feature.decisionui.components.FullEngineReasoningSection
+import app.myphonecheck.mobile.feature.privacycheck.R as PrivacyR
 import app.myphonecheck.mobile.feature.pushintercept.PushInterceptService
 import app.myphonecheck.mobile.ui.backup.BackupScreen
 import app.myphonecheck.mobile.viewmodel.CallHistoryViewModel
@@ -2845,6 +2849,9 @@ private fun MessageHubEntity.firstDetectedLink(): String? =
         ?.map { it.trim() }
         ?.firstOrNull { it.startsWith("http://", ignoreCase = true) || it.startsWith("https://", ignoreCase = true) }
 
+private fun MessageHubEntity.allLinkTokens(): List<String> =
+    detectedLinks?.split(',')?.map { it.trim() }?.filter { it.isNotEmpty() } ?: emptyList()
+
 private fun MessageHubEntity.previewText(maxLen: Int = 50): String {
     val raw = listOfNotNull(title, text).joinToString(" ").trim()
     return if (raw.length <= maxLen) raw else raw.take(maxLen) + "…"
@@ -2997,6 +3004,29 @@ private fun MessageHubListItem(
 ) {
     val link = remember(item.detectedLinks) { item.firstDetectedLink() }
     val timeText = remember(item.receivedAt) { formatMessageHubTime(item.receivedAt) }
+    val urlTokens = remember(item.detectedLinks) { item.allLinkTokens() }
+    val lang = when (LocalConfiguration.current.locales[0]?.language) {
+        "ko" -> Lang.KO
+        else -> Lang.EN
+    }
+    val hubDecision = remember(
+        item.id,
+        item.riskLevel,
+        item.category,
+        item.action,
+        item.confidence,
+        item.summary,
+        item.reasons,
+    ) {
+        DecisionReasoningFormatter.parseDecisionResultFromHubSnapshot(
+            riskLevelName = item.riskLevel,
+            categoryName = item.category,
+            actionName = item.action,
+            confidence = item.confidence,
+            summary = item.summary,
+            reasonsPipeSeparated = item.reasons,
+        )
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -3011,11 +3041,40 @@ private fun MessageHubListItem(
                 color = Color.White,
             )
             Spacer(modifier = Modifier.height(4.dp))
+            if (hubDecision != null) {
+                Text(
+                    text = stringResource(
+                        AppR.string.message_hub_risk_fmt,
+                        DecisionReasoningFormatter.riskTriLabel(hubDecision.riskLevel, lang),
+                        DecisionReasoningFormatter.confidencePercent(hubDecision.confidence),
+                    ),
+                    fontSize = 12.sp,
+                    color = Color(0xFF90CAF9),
+                )
+            } else {
+                Text(
+                    text = stringResource(
+                        AppR.string.message_hub_risk_fmt,
+                        item.riskLevel,
+                        (item.confidence * 100f).toInt().coerceIn(0, 100),
+                    ),
+                    fontSize = 12.sp,
+                    color = Color(0xFF90CAF9),
+                )
+            }
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = item.previewText(),
+                text = hubDecision?.summary ?: item.summary,
+                fontSize = 13.sp,
+                color = Color(0xFFFFCC80),
+                maxLines = 4,
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = item.previewText(200),
                 fontSize = 13.sp,
                 color = Color(0xFFB0BEC5),
-                maxLines = 3,
+                maxLines = 6,
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
@@ -3023,20 +3082,71 @@ private fun MessageHubListItem(
                 fontSize = 11.sp,
                 color = Color(0xFF607D8B),
             )
-            if (item.linkCount > 0) {
-                Spacer(modifier = Modifier.height(8.dp))
-                val linkRowModifier = if (link != null) {
-                    Modifier
+            if (item.isNightTime) {
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    stringResource(AppR.string.message_hub_night_receive),
+                    fontSize = 11.sp,
+                    color = Color(0xFFFFB74D),
+                )
+            }
+            if (item.promotionKeywordHits > 0) {
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    stringResource(AppR.string.message_hub_promo_hits, item.promotionKeywordHits),
+                    fontSize = 11.sp,
+                    color = Color(0xFFB0BEC5),
+                )
+            }
+            hubDecision?.let { dr ->
+                Spacer(modifier = Modifier.height(10.dp))
+                FullEngineReasoningSection(
+                    result = dr,
+                    searchPending = false,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                stringResource(AppR.string.message_hub_extracted_urls),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.White,
+            )
+            if (urlTokens.isEmpty()) {
+                Text(
+                    stringResource(AppR.string.message_hub_no_urls),
+                    fontSize = 11.sp,
+                    color = Color(0xFF78909C),
+                    modifier = Modifier.padding(top = 4.dp),
+                )
+            } else {
+                urlTokens.forEach { u ->
+                    val openable = u.startsWith("http://", ignoreCase = true) ||
+                        u.startsWith("https://", ignoreCase = true)
+                    Text(
+                        text = u,
+                        fontSize = 11.sp,
+                        color = Color(0xFF4FC3F7),
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .then(
+                                if (openable) {
+                                    Modifier.clickable { onLinkClick(u) }
+                                } else {
+                                    Modifier
+                                },
+                            ),
+                    )
+                }
+            }
+            if (item.linkCount > 0 && link != null) {
+                Spacer(modifier = Modifier.height(6.dp))
+                Row(
+                    modifier = Modifier
                         .fillMaxWidth()
                         .clickable { onLinkClick(link) }
-                        .padding(vertical = 4.dp)
-                } else {
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp)
-                }
-                Row(
-                    modifier = linkRowModifier,
+                        .padding(vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Icon(
@@ -3259,6 +3369,26 @@ private fun PrivacyHistoryListItem(
                 Text(item.appLabel, color = Color.White, fontWeight = FontWeight.SemiBold)
                 Text(usedAtText, fontSize = 11.sp, color = Color(0xFF607D8B))
                 Text(durationText, fontSize = 12.sp, color = Color(0xFFB0BEC5))
+                if (item.isAnomaly) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        stringResource(PrivacyR.string.privacy_anomaly_reason_label),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFFFCC80),
+                    )
+                    val legacyText = stringResource(PrivacyR.string.privacy_anomaly_reason_legacy)
+                    val anomalyBody = remember(item.anomalyReasons, legacyText) {
+                        DecisionReasoningFormatter.privacyAnomalyDisplayText(item.anomalyReasons, legacyText)
+                    }
+                    Text(
+                        text = anomalyBody,
+                        fontSize = 11.sp,
+                        color = Color(0xFFE0E0E0),
+                        lineHeight = 16.sp,
+                        modifier = Modifier.padding(top = 4.dp),
+                    )
+                }
                 if (showAnomaly) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
