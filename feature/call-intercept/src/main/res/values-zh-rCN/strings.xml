@@ -25,6 +25,16 @@
     <string name="overlay_cluster_scam">诈骗</string>
     <string name="overlay_verdict_high">危险</string>
     <string name="overlay_verdict_medium">注意</string>
-    <string name="overlay_verdict_low">安全</string>
+    <string name="overlay_verdict_low">低风险</string>
     <string name="overlay_verdict_unknown">检查中</string>
+
+    <string name="overlay_trust_danger">危险</string>
+    <string name="overlay_trust_caution">注意</string>
+    <string name="overlay_trust_low_risk">风险信号较少</string>
+    <string name="overlay_unverified_note">未验证 — 无搜索结果</string>
+    <string name="overlay_section_similar_numbers">相似号码搜索结果</string>
+    <string name="overlay_tag_section">标签</string>
+    <string name="overlay_memo_section">备注</string>
+    <string name="overlay_memo_placeholder">输入备注</string>
+    <string name="overlay_tag_save">保存</string>
 </resources>

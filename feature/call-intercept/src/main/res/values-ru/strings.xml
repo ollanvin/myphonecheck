@@ -25,6 +25,16 @@
     <string name="overlay_cluster_scam">Мошенничество</string>
     <string name="overlay_verdict_high">Опасно</string>
     <string name="overlay_verdict_medium">Внимание</string>
-    <string name="overlay_verdict_low">Безопасно</string>
+    <string name="overlay_verdict_low">Низкий риск</string>
     <string name="overlay_verdict_unknown">Проверка</string>
+
+    <string name="overlay_trust_danger">Опасно</string>
+    <string name="overlay_trust_caution">Внимание</string>
+    <string name="overlay_trust_low_risk">Низкий уровень риска</string>
+    <string name="overlay_unverified_note">Не проверено — нет результатов поиска</string>
+    <string name="overlay_section_similar_numbers">Результаты похожих номеров</string>
+    <string name="overlay_tag_section">Тег</string>
+    <string name="overlay_memo_section">Заметка</string>
+    <string name="overlay_memo_placeholder">Введите заметку</string>
+    <string name="overlay_tag_save">Сохранить</string>
 </resources>

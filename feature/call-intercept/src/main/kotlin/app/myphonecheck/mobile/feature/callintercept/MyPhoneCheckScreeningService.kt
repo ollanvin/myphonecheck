@@ -4,6 +4,7 @@ import android.telecom.Call
 import android.telecom.CallScreeningService
 import android.util.Log
 import app.myphonecheck.mobile.core.util.PhoneNumberNormalizer
+import app.myphonecheck.mobile.data.localcache.repository.UserCallRecordRepository
 import app.myphonecheck.mobile.feature.countryconfig.CountryConfigProvider
 import app.myphonecheck.mobile.feature.countryconfig.SupportedLanguage
 import dagger.hilt.android.EntryPointAccessors
@@ -76,12 +77,14 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
         fun decisionNotificationManager(): DecisionNotificationManager
         fun callerIdOverlayManager(): CallerIdOverlayManager
         fun countryConfigProvider(): CountryConfigProvider
+        fun userCallRecordRepository(): UserCallRecordRepository
     }
 
     private lateinit var callInterceptRepository: CallInterceptRepository
     private lateinit var decisionNotificationManager: DecisionNotificationManager
     private lateinit var callerIdOverlayManager: CallerIdOverlayManager
     private lateinit var countryConfigProvider: CountryConfigProvider
+    private lateinit var userCallRecordRepository: UserCallRecordRepository
     private val serviceScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     /**
@@ -103,6 +106,7 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
             decisionNotificationManager = entryPoint.decisionNotificationManager()
             callerIdOverlayManager = entryPoint.callerIdOverlayManager()
             countryConfigProvider = entryPoint.countryConfigProvider()
+            userCallRecordRepository = entryPoint.userCallRecordRepository()
 
             // 디바이스 국가 감지 (SIM → Network → Locale)
             deviceCountry = countryConfigProvider.detectCountry(applicationContext)
@@ -239,12 +243,28 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
                             "ko" -> SupportedLanguage.KO
                             else -> SupportedLanguage.EN
                         }
+                        // 기존 태그/메모/차단 횟수 조회 (학습 반영)
+                        val existingRecord = try {
+                            userCallRecordRepository.findByNumber(normalizedNumber)
+                        } catch (e: Exception) {
+                            Log.w(TAG, "UserCallRecord lookup failed (non-fatal): ${e.message}")
+                            null
+                        }
+                        val blockCount = if (existingRecord?.lastAction == "blocked") {
+                            existingRecord.callCount
+                        } else {
+                            0
+                        }
+
                         callerIdOverlayManager.showOverlay(
                             context = applicationContext,
                             result = finalResult,
                             phoneNumber = normalizedNumber,
                             language = overlayLang,
                             twoPhaseDecision = twoPhase,
+                            userBlockCount = blockCount,
+                            savedTag = existingRecord?.tag,
+                            savedMemo = existingRecord?.memo,
                         )
                         Log.i(TAG, "Overlay shown for: $normalizedNumber")
                     } catch (e: Exception) {

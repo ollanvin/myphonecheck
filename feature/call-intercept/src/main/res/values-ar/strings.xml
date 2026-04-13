@@ -25,6 +25,16 @@
     <string name="overlay_cluster_scam">احتيال</string>
     <string name="overlay_verdict_high">خطر</string>
     <string name="overlay_verdict_medium">تنبيه</string>
-    <string name="overlay_verdict_low">آمن</string>
+    <string name="overlay_verdict_low">خطر منخفض</string>
     <string name="overlay_verdict_unknown">جاري التحقق</string>
+
+    <string name="overlay_trust_danger">خطر</string>
+    <string name="overlay_trust_caution">تحذير</string>
+    <string name="overlay_trust_low_risk">إشارات خطر منخفضة</string>
+    <string name="overlay_unverified_note">غير موثق — لا توجد نتائج بحث</string>
+    <string name="overlay_section_similar_numbers">نتائج الأرقام المشابهة</string>
+    <string name="overlay_tag_section">وسم</string>
+    <string name="overlay_memo_section">ملاحظة</string>
+    <string name="overlay_memo_placeholder">أضف ملاحظة</string>
+    <string name="overlay_tag_save">حفظ</string>
 </resources>

@@ -22,9 +22,11 @@ import android.widget.TextView
 import app.myphonecheck.mobile.feature.callintercept.R
 import app.myphonecheck.mobile.core.model.DecisionResult
 import app.myphonecheck.mobile.core.model.RiskLevel
+import app.myphonecheck.mobile.core.model.SimilarNumberResult
 import app.myphonecheck.mobile.core.model.TwoPhaseDecision
 import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter
 import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter.Lang
+import app.myphonecheck.mobile.core.util.TrustScoreCalculator
 import app.myphonecheck.mobile.feature.countryconfig.SignalSummaryLocalizer
 import app.myphonecheck.mobile.feature.countryconfig.SupportedLanguage
 import javax.inject.Inject
@@ -57,6 +59,9 @@ class CallerIdOverlayManager @Inject constructor() {
      * @param language 현재 기기 언어
      * @param localizer SignalSummary 로컬라이저
      * @param twoPhaseDecision 2-Phase 메타(즉시/확정). null이면 Phase UI 생략.
+     * @param userBlockCount 사용자가 이 번호를 차단한 누적 횟수 (학습 반영)
+     * @param savedTag 이전에 저장한 태그 (있으면 상단 즉시 표시)
+     * @param savedMemo 이전에 저장한 메모 (있으면 상단 즉시 표시)
      */
     fun showOverlay(
         context: Context,
@@ -65,6 +70,9 @@ class CallerIdOverlayManager @Inject constructor() {
         language: SupportedLanguage = SupportedLanguage.EN,
         localizer: SignalSummaryLocalizer = SignalSummaryLocalizer(),
         twoPhaseDecision: TwoPhaseDecision? = null,
+        userBlockCount: Int = 0,
+        savedTag: String? = null,
+        savedMemo: String? = null,
     ): Boolean {
         if (!canDrawOverlays(context)) {
             Log.w(TAG, "SYSTEM_ALERT_WINDOW not granted, cannot show overlay")
@@ -92,7 +100,7 @@ class CallerIdOverlayManager @Inject constructor() {
                     y = dpToPx(context, 200)
                 }
 
-                overlayView = buildOverlayView(context, result, phoneNumber, language, localizer, twoPhaseDecision)
+                overlayView = buildOverlayView(context, result, phoneNumber, language, localizer, twoPhaseDecision, userBlockCount, savedTag, savedMemo)
                 wm.addView(overlayView, params)
                 Log.i(TAG, "Overlay shown for $phoneNumber: ${result.riskLevel} (lang=${language.code})")
             } catch (e: Exception) {
@@ -137,8 +145,12 @@ class CallerIdOverlayManager @Inject constructor() {
     // ══════════════════════════════════════════════
 
     /**
-     * 전화 판단 오버레이 — 엔진 출력 전부 노출(요약 숨김 없음).
-     * 스크롤 + 하단 고정 액션 버튼.
+     * 전화 판단 오버레이 — 결론 → 근거 → 세부 구조.
+     *
+     * [결론] 신뢰도 점수 + 색상 (0.5초 내 판단 가능)
+     * [근거] 판단 근거 3줄 요약
+     * [세부] 유사번호 검색 결과 + 기존 4섹션 분석
+     * [행동] 즉시 행동 버튼: 수신 / 거절 / 차단
      */
     private fun buildOverlayView(
         context: Context,
@@ -147,24 +159,49 @@ class CallerIdOverlayManager @Inject constructor() {
         language: SupportedLanguage,
         localizer: SignalSummaryLocalizer,
         twoPhaseDecision: TwoPhaseDecision? = null,
+        userBlockCount: Int = 0,
+        savedTag: String? = null,
+        savedMemo: String? = null,
     ): View {
-        val bgColor = backgroundColorForRisk(result.riskLevel)
+        val trustScore = TrustScoreCalculator.calculate(result, userBlockCount)
+        val bgColor = TrustScoreCalculator.gradeColor(trustScore)
         val textColor = Color.WHITE
         val subtleColor = adjustAlpha(textColor, 0.80f)
         val uiText = OverlayUiText(context)
         val lang = if (language == SupportedLanguage.KO) Lang.KO else Lang.EN
         val categoryText = localizer.localizeCategory(result.category.name, context)
-        val confidencePercent = DecisionReasoningFormatter.confidencePercent(result.confidence)
-        val riskTri = DecisionReasoningFormatter.riskTriLabel(result.riskLevel, lang)
+
+        // 유사번호 결과 추출
+        val similarResults = SimilarNumberResult.fromAdjacentHint(
+            result.searchEvidence?.adjacentNumberHint
+        )
 
         val scrollContent = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
 
-            val verdict = uiText.oneWordVerdict(result.riskLevel)
+            // ══════════════════════════════════
+            // [결론] 신뢰도 점수 — 0.5초 판단
+            // ══════════════════════════════════
+
+            // 저장된 태그/메모가 있으면 최상단 표시
+            if (savedTag != null || savedMemo != null) {
+                addView(TextView(context).apply {
+                    val tagDisplay = savedTag?.let { "[$it]" } ?: ""
+                    val memoDisplay = savedMemo ?: ""
+                    text = "$tagDisplay $memoDisplay".trim()
+                    setTextColor(Color.YELLOW)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                    setTypeface(null, Typeface.BOLD)
+                    gravity = Gravity.CENTER_HORIZONTAL
+                    layoutParams = marginTop(context, 2)
+                })
+            }
+
+            // 큰 숫자로 신뢰도 점수 표시
             addView(TextView(context).apply {
-                text = verdict
+                text = "$trustScore"
                 setTextColor(textColor)
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 36f)
                 setTypeface(null, Typeface.BOLD)
                 gravity = Gravity.CENTER_HORIZONTAL
                 layoutParams = LinearLayout.LayoutParams(
@@ -173,13 +210,14 @@ class CallerIdOverlayManager @Inject constructor() {
                 )
             })
 
+            // 등급 라벨 (위험 / 주의 / 위험 신호 적음)
             addView(TextView(context).apply {
-                text = context.getString(R.string.overlay_risk_confidence_line, riskTri, confidencePercent)
+                text = uiText.trustGradeLabel(trustScore)
                 setTextColor(textColor)
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
                 setTypeface(null, Typeface.BOLD)
                 gravity = Gravity.CENTER_HORIZONTAL
-                layoutParams = marginTop(context, 4)
+                layoutParams = marginTop(context, 2)
             })
 
             addView(TextView(context).apply {
@@ -190,14 +228,44 @@ class CallerIdOverlayManager @Inject constructor() {
                 layoutParams = marginTop(context, 2)
             })
 
-            twoPhaseDecision?.let { tp ->
-                addDivider(context, textColor)
-                for (line in buildPhaseDescriptionLines(context, tp, lang)) {
+            // ══════════════════════════════════
+            // [근거] 판단 근거 3줄 요약
+            // ══════════════════════════════════
+
+            addDivider(context, textColor)
+
+            // 기존 reasons (최대 3개) 표시
+            val reasons = result.reasons.take(3)
+            if (reasons.isNotEmpty()) {
+                for (reason in reasons) {
                     addView(TextView(context).apply {
-                        text = line
+                        text = "\u2022 $reason"
                         setTextColor(subtleColor)
                         setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
                         layoutParams = marginTop(context, 2)
+                    })
+                }
+            } else {
+                addView(TextView(context).apply {
+                    text = if (TrustScoreCalculator.isUnverified(result)) {
+                        context.getString(R.string.overlay_unverified_note)
+                    } else {
+                        result.summary
+                    }
+                    setTextColor(subtleColor)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
+                    layoutParams = marginTop(context, 2)
+                })
+            }
+
+            // 2-Phase 요약 (있으면)
+            twoPhaseDecision?.let { tp ->
+                for (line in buildPhaseDescriptionLines(context, tp, lang)) {
+                    addView(TextView(context).apply {
+                        text = line
+                        setTextColor(adjustAlpha(textColor, 0.70f))
+                        setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+                        layoutParams = marginTop(context, 1)
                     })
                 }
                 tp.takeIf { it.hasPhaseConflict() }?.let {
@@ -211,8 +279,34 @@ class CallerIdOverlayManager @Inject constructor() {
                 }
             }
 
+            // ══════════════════════════════════
+            // [세부] 유사번호 검색 결과 + 분석 섹션
+            // ══════════════════════════════════
+
             addDivider(context, textColor)
 
+            // 유사번호 검색 결과 (있으면)
+            if (similarResults.isNotEmpty()) {
+                addView(TextView(context).apply {
+                    text = context.getString(R.string.overlay_section_similar_numbers)
+                    setTextColor(textColor)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
+                    setTypeface(null, Typeface.BOLD)
+                    layoutParams = marginTop(context, 4)
+                })
+                for (sr in similarResults) {
+                    val orgText = sr.estimatedOrg?.let { " \u2014 $it" } ?: ""
+                    addView(TextView(context).apply {
+                        text = "${sr.pattern}$orgText (${sr.searchSummary})"
+                        setTextColor(subtleColor)
+                        setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+                        layoutParams = marginTop(context, 1)
+                    })
+                }
+                addDivider(context, textColor)
+            }
+
+            // 기존 4섹션 분석 (Report, Pattern, Behavior, Search)
             val titleIds = listOf(
                 R.string.overlay_section_report,
                 R.string.overlay_section_pattern,
@@ -392,6 +486,8 @@ class CallerIdOverlayManager @Inject constructor() {
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to accept call", e)
                 }
+                // 수신 행동을 UserCallRecord에 기록
+                broadcastUserAction(context, "action_accept", phoneNumber)
                 dismissOverlay(context)
             }
             "action_reject" -> {
@@ -404,6 +500,8 @@ class CallerIdOverlayManager @Inject constructor() {
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to reject call", e)
                 }
+                // 거절 행동을 UserCallRecord에 기록
+                broadcastUserAction(context, "action_reject", phoneNumber)
                 dismissOverlay(context)
             }
             "action_block" -> {
@@ -415,14 +513,28 @@ class CallerIdOverlayManager @Inject constructor() {
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to end call for block", e)
                 }
-                val intent = Intent("app.myphonecheck.mobile.ACTION_CALL").apply {
-                    setPackage(context.packageName)
-                    putExtra("action_type", "action_block")
-                    putExtra("phone_number", phoneNumber)
-                }
-                context.sendBroadcast(intent)
+                // 차단 행동을 UserCallRecord에 기록
+                broadcastUserAction(context, "action_block", phoneNumber)
                 dismissOverlay(context)
             }
+        }
+    }
+
+    /**
+     * 사용자 행동을 CallActionReceiver로 브로드캐스트.
+     * CallActionReceiver가 UserCallRecordRepository + BlocklistRepository로 기록.
+     */
+    private fun broadcastUserAction(context: Context, actionType: String, phoneNumber: String) {
+        try {
+            val intent = Intent("app.myphonecheck.mobile.ACTION_CALL").apply {
+                setPackage(context.packageName)
+                putExtra("extra_phone_number", phoneNumber)
+                putExtra("action_type", actionType)
+            }
+            context.sendBroadcast(intent)
+            Log.i(TAG, "Broadcast sent: $actionType for $phoneNumber")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to broadcast user action", e)
         }
     }
 
@@ -517,5 +629,12 @@ internal class OverlayUiText(private val context: Context) {
         RiskLevel.MEDIUM -> context.getString(R.string.overlay_verdict_medium)
         RiskLevel.LOW -> context.getString(R.string.overlay_verdict_low)
         RiskLevel.UNKNOWN -> context.getString(R.string.overlay_verdict_unknown)
+    }
+
+    /** 0~100 신뢰도 점수 → 등급 라벨 ('안전' 표현 절대 금지) */
+    fun trustGradeLabel(score: Int): String = when {
+        score <= 30 -> context.getString(R.string.overlay_trust_danger)
+        score <= 60 -> context.getString(R.string.overlay_trust_caution)
+        else -> context.getString(R.string.overlay_trust_low_risk)
     }
 }

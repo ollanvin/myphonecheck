@@ -136,6 +136,11 @@ dependencies {
     implementation(project(":core:util"))
     implementation(project(":core:security"))
 
+    // WorkManager
+    implementation(libs.work.runtime.ktx)
+    implementation(libs.hilt.work)
+    kapt(libs.hilt.work.compiler)
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

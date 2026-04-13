@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import app.myphonecheck.mobile.core.model.UserCallAction
+import app.myphonecheck.mobile.data.localcache.repository.UserCallRecordRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,10 +15,19 @@ import javax.inject.Inject
 
 private const val TAG = "CallActionReceiver"
 private const val EXTRA_PHONE_NUMBER = "extra_phone_number"
-private const val ACTION_DETAIL = "action_detail"
-private const val ACTION_REJECT = "action_reject"
-private const val ACTION_BLOCK = "action_block"
+private const val EXTRA_ACTION_TYPE = "action_type"
 
+/**
+ * 사용자 행동 브로드캐스트 수신자.
+ *
+ * 오버레이/Notification에서 사용자가 선택한 행동(수신/거절/차단)을
+ * UserCallRecordRepository + BlocklistRepository에 기록한다.
+ *
+ * 인텐트 포맷:
+ * - action: "app.myphonecheck.mobile.ACTION_CALL"
+ * - extra "extra_phone_number": E.164 번호
+ * - extra "action_type": "action_accept" | "action_reject" | "action_block" | "action_detail"
+ */
 @AndroidEntryPoint
 class CallActionReceiver : BroadcastReceiver() {
 
@@ -25,6 +36,9 @@ class CallActionReceiver : BroadcastReceiver() {
 
     @Inject
     lateinit var blocklistRepository: BlocklistRepository
+
+    @Inject
+    lateinit var userCallRecordRepository: UserCallRecordRepository
 
     private val receiverScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
@@ -41,16 +55,35 @@ class CallActionReceiver : BroadcastReceiver() {
                 return
             }
 
-            Log.d(TAG, "Received action: ${intent.action} for $phoneNumber")
+            val actionType = intent.getStringExtra(EXTRA_ACTION_TYPE)
+                ?: intent.action
+                ?: ""
 
-            when (intent.action) {
-                ACTION_DETAIL -> handleDetailAction(context, phoneNumber)
-                ACTION_REJECT -> handleRejectAction(context, phoneNumber)
-                ACTION_BLOCK -> handleBlockAction(context, phoneNumber)
-                else -> Log.w(TAG, "Unknown action: ${intent.action}")
+            Log.d(TAG, "Received action: $actionType for $phoneNumber")
+
+            when (actionType) {
+                "action_accept" -> handleAcceptAction(context, phoneNumber)
+                "action_detail" -> handleDetailAction(context, phoneNumber)
+                "action_reject" -> handleRejectAction(context, phoneNumber)
+                "action_block" -> handleBlockAction(context, phoneNumber)
+                else -> Log.w(TAG, "Unknown action type: $actionType")
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error handling broadcast", e)
+        }
+    }
+
+    private fun handleAcceptAction(context: Context, phoneNumber: String) {
+        try {
+            Log.i(TAG, "User chose ACCEPT for $phoneNumber")
+
+            // UserCallRecord에 수신 행동 기록
+            recordUserAction(phoneNumber, UserCallAction.ANSWERED)
+
+            // Notification 해제
+            decisionNotificationManager.dismissNotification(context, phoneNumber)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error handling accept action", e)
         }
     }
 
@@ -58,13 +91,10 @@ class CallActionReceiver : BroadcastReceiver() {
         try {
             Log.i(TAG, "User chose DETAIL for $phoneNumber")
 
-            // Log the user action
-            logUserAction(phoneNumber, "DETAIL")
-
-            // Dismiss notification
+            // Notification 해제
             decisionNotificationManager.dismissNotification(context, phoneNumber)
 
-            // Future: Open decision detail screen with full evidence
+            // TODO: 상세 화면 열기
         } catch (e: Exception) {
             Log.e(TAG, "Error handling detail action", e)
         }
@@ -74,13 +104,11 @@ class CallActionReceiver : BroadcastReceiver() {
         try {
             Log.d(TAG, "User chose to REJECT call from $phoneNumber")
 
-            // Log the user override
-            logUserAction(phoneNumber, "REJECT")
+            // UserCallRecord에 거절 행동 기록
+            recordUserAction(phoneNumber, UserCallAction.REJECTED)
 
-            // Dismiss notification
+            // Notification 해제
             decisionNotificationManager.dismissNotification(context, phoneNumber)
-
-            // Future: Could update user preferences
         } catch (e: Exception) {
             Log.e(TAG, "Error handling reject action", e)
         }
@@ -90,19 +118,36 @@ class CallActionReceiver : BroadcastReceiver() {
         try {
             Log.d(TAG, "User chose to BLOCK call from $phoneNumber")
 
-            // Log the user override
-            logUserAction(phoneNumber, "BLOCK")
+            // UserCallRecord에 차단 행동 기록
+            recordUserAction(phoneNumber, UserCallAction.BLOCKED)
 
-            // Add to blocklist
+            // BlocklistRepository에도 추가
             addToBlocklist(phoneNumber)
 
-            // Dismiss notification
+            // Notification 해제
             decisionNotificationManager.dismissNotification(context, phoneNumber)
-
-            // Show confirmation
-            showBlockConfirmation(context, phoneNumber)
         } catch (e: Exception) {
             Log.e(TAG, "Error handling block action", e)
+        }
+    }
+
+    /**
+     * UserCallRecordRepository에 사용자 행동 기록.
+     * 기존 레코드가 있으면 callCount 증가 + lastAction 업데이트.
+     * 없으면 새 레코드 생성.
+     */
+    private fun recordUserAction(phoneNumber: String, action: UserCallAction) {
+        receiverScope.launch {
+            try {
+                userCallRecordRepository.recordCall(
+                    canonicalNumber = phoneNumber,
+                    displayNumber = phoneNumber,
+                    action = action,
+                )
+                Log.d(TAG, "UserCallRecord saved: ${action.displayKey} for $phoneNumber")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to record user action to UserCallRecord", e)
+            }
         }
     }
 
@@ -111,34 +156,13 @@ class CallActionReceiver : BroadcastReceiver() {
             try {
                 blocklistRepository.addToBlocklist(
                     phoneNumber = phoneNumber,
-                    reason = "User blocked from notification",
-                    timestamp = System.currentTimeMillis()
+                    reason = "User blocked from overlay/notification",
+                    timestamp = System.currentTimeMillis(),
                 )
                 Log.d(TAG, "Successfully added $phoneNumber to blocklist")
             } catch (e: Exception) {
                 Log.e(TAG, "Error adding to blocklist", e)
             }
-        }
-    }
-
-    private fun logUserAction(phoneNumber: String, action: String) {
-        receiverScope.launch {
-            try {
-                // Log user override decision for analytics
-                Log.d(TAG, "Logged user action: $action for $phoneNumber")
-                // Future: Send to analytics service
-            } catch (e: Exception) {
-                Log.e(TAG, "Error logging user action", e)
-            }
-        }
-    }
-
-    private fun showBlockConfirmation(context: Context, phoneNumber: String) {
-        try {
-            // In a real app, you could show a toast or other confirmation
-            Log.d(TAG, "Block confirmation: $phoneNumber is now blocked")
-        } catch (e: Exception) {
-            Log.e(TAG, "Error showing block confirmation", e)
         }
     }
 }

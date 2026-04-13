@@ -25,6 +25,16 @@
     <string name="overlay_cluster_scam">Fraude</string>
     <string name="overlay_verdict_high">Peligro</string>
     <string name="overlay_verdict_medium">Precaución</string>
-    <string name="overlay_verdict_low">Seguro</string>
+    <string name="overlay_verdict_low">Riesgo bajo</string>
     <string name="overlay_verdict_unknown">Verificando</string>
+
+    <string name="overlay_trust_danger">Peligro</string>
+    <string name="overlay_trust_caution">Precaución</string>
+    <string name="overlay_trust_low_risk">Señales de riesgo bajas</string>
+    <string name="overlay_unverified_note">No verificado — sin resultados de búsqueda</string>
+    <string name="overlay_section_similar_numbers">Resultados de números similares</string>
+    <string name="overlay_tag_section">Etiqueta</string>
+    <string name="overlay_memo_section">Nota</string>
+    <string name="overlay_memo_placeholder">Agregar nota</string>
+    <string name="overlay_tag_save">Guardar</string>
 </resources>

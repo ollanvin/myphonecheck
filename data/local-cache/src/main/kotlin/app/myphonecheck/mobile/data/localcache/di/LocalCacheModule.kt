@@ -7,6 +7,7 @@ import app.myphonecheck.mobile.data.localcache.dao.BackupMetadataDao
 import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
 import app.myphonecheck.mobile.data.localcache.dao.PreJudgeCacheDao
 import app.myphonecheck.mobile.data.localcache.dao.PrivacyHistoryDao
+import app.myphonecheck.mobile.data.localcache.dao.PushStatsDao
 import app.myphonecheck.mobile.data.localcache.dao.UserCallRecordDao
 import app.myphonecheck.mobile.data.localcache.db.MyPhoneCheckDatabase
 import app.myphonecheck.mobile.data.localcache.repository.PreJudgeCacheRepository
@@ -87,6 +88,14 @@ object LocalCacheModule {
         database: MyPhoneCheckDatabase,
     ): PrivacyHistoryDao {
         return database.privacyHistoryDao()
+    }
+
+    @Provides
+    @Singleton
+    fun providePushStatsDao(
+        database: MyPhoneCheckDatabase,
+    ): PushStatsDao {
+        return database.pushStatsDao()
     }
 
     @Provides

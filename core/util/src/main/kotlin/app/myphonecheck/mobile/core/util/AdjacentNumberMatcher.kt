@@ -338,6 +338,95 @@ object AdjacentNumberMatcher {
     }
 
     // ═══════════════════════════════════════════════
+    // 기관 대표번호 패턴 감지 (190개국 확장 가능 구조)
+    // ═══════════════════════════════════════════════
+
+    /**
+     * 기관/기업 대표번호 프리픽스 맵.
+     *
+     * 국가별로 기관 대표번호 체계가 다르다:
+     * - KR: 1588, 1566, 1544, 1600, 1577, 1899, 1688, 1661, 1599, 1522 등
+     * - JP: 0120 (무료전화), 0570 (나비다이얼)
+     * - US: 800, 888, 877, 866, 855, 844, 833 (toll-free)
+     * - CN: 400, 800 (기업 전국 번호)
+     * - RU: 8-800 (무료전화)
+     *
+     * 하드코딩 아님: 국가코드 기반 동적 매핑.
+     * 새 국가 추가 시 이 맵에만 추가하면 된다.
+     */
+    private val INSTITUTIONAL_PREFIXES: Map<String, List<String>> = mapOf(
+        "KR" to listOf(
+            "1588", "1566", "1544", "1600", "1577",
+            "1899", "1688", "1661", "1599", "1522",
+            "1533", "1644", "1666", "1855", "1800",
+        ),
+        "JP" to listOf("0120", "0570", "0800"),
+        "US" to listOf("800", "888", "877", "866", "855", "844", "833"),
+        "CA" to listOf("800", "888", "877", "866", "855", "844", "833"),
+        "CN" to listOf("400", "800"),
+        "RU" to listOf("800"),
+        "GB" to listOf("0800", "0808", "0300"),
+        "DE" to listOf("0800", "0180"),
+        "FR" to listOf("0800", "0805"),
+    )
+
+    /**
+     * 주어진 번호가 기관 대표번호 패턴인지 감지한다.
+     *
+     * @param phoneNumber 전화번호 (E.164 또는 로컬 포맷)
+     * @param countryCode ISO 3166-1 alpha-2
+     * @return 매칭된 프리픽스 (예: "1588") 또는 null
+     */
+    fun detectInstitutionalPrefix(
+        phoneNumber: String,
+        countryCode: String = "ZZ",
+    ): String? {
+        val digits = phoneNumber.replace(Regex("[^\\d]"), "")
+        val prefixes = INSTITUTIONAL_PREFIXES[countryCode.uppercase()] ?: return null
+        return prefixes.firstOrNull { digits.startsWith(it) }
+    }
+
+    /**
+     * 기관 대표번호 패턴에 대한 검색 쿼리를 생성한다.
+     *
+     * 일반 트렁크 쿼리와 다른 점:
+     * - 프리픽스 자체를 검색 대역으로 사용 (예: "1588" → 1588-0000~9999)
+     * - 프리픽스 + 하이픈 포맷 변형 포함 (예: "1588-1234", "1588 1234")
+     * - rangeDescription에 "기관 대표번호 패턴" 명시
+     *
+     * @return 기관 패턴 트렁크 쿼리. 기관 패턴이 아니면 null.
+     */
+    fun generateInstitutionalTrunkQuery(
+        phoneNumber: String,
+        countryCode: String = "ZZ",
+    ): TrunkQuery? {
+        val prefix = detectInstitutionalPrefix(phoneNumber, countryCode) ?: return null
+        val digits = phoneNumber.replace(Regex("[^\\d]"), "")
+        val suffix = digits.removePrefix(prefix)
+
+        val variants = mutableListOf<String>()
+        // 프리픽스만 (전체 대역 커버)
+        variants.add(prefix)
+        // 하이픈 구분
+        if (suffix.length >= 4) {
+            variants.add("$prefix-${suffix.substring(0, 4)}")
+            variants.add("$prefix ${suffix.substring(0, 4)}")
+        }
+        // 전체 번호 무구분
+        variants.add(digits)
+        // 하이픈 전체
+        if (suffix.length >= 4) {
+            variants.add("$prefix-$suffix")
+        }
+
+        return TrunkQuery(
+            trunkVariants = variants.distinct().take(6),
+            rangeDescription = "기관 대표번호 패턴 ($prefix-****)",
+            truncatedDigits = suffix.length.coerceAtMost(4),
+        )
+    }
+
+    // ═══════════════════════════════════════════════
     // Internal: 기본 트렁크 (libphonenumber 파싱 실패 시)
     // ═══════════════════════════════════════════════
 

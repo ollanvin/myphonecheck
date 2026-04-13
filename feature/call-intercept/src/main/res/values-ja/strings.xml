@@ -25,6 +25,16 @@
     <string name="overlay_cluster_scam">詐欺</string>
     <string name="overlay_verdict_high">危険</string>
     <string name="overlay_verdict_medium">注意</string>
-    <string name="overlay_verdict_low">安全</string>
+    <string name="overlay_verdict_low">低リスク</string>
     <string name="overlay_verdict_unknown">確認中</string>
+
+    <string name="overlay_trust_danger">危険</string>
+    <string name="overlay_trust_caution">注意</string>
+    <string name="overlay_trust_low_risk">危険信号なし</string>
+    <string name="overlay_unverified_note">未確認 — 検索結果なし</string>
+    <string name="overlay_section_similar_numbers">類似番号の検索結果</string>
+    <string name="overlay_tag_section">タグ</string>
+    <string name="overlay_memo_section">メモ</string>
+    <string name="overlay_memo_placeholder">メモを入力</string>
+    <string name="overlay_tag_save">保存</string>
 </resources>

@@ -8,7 +8,9 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
+import app.myphonecheck.mobile.data.localcache.dao.PushStatsDao
 import app.myphonecheck.mobile.data.localcache.entity.MessageHubEntity
+import app.myphonecheck.mobile.data.localcache.entity.PushStatsEntity
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
@@ -18,7 +20,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -59,6 +63,7 @@ class PushInterceptService : NotificationListenerService() {
     @InstallIn(SingletonComponent::class)
     interface PushInterceptEntryPoint {
         fun messageHubDao(): MessageHubDao
+        fun pushStatsDao(): PushStatsDao
     }
 
     private companion object {
@@ -115,6 +120,15 @@ class PushInterceptService : NotificationListenerService() {
             PushInterceptEntryPoint::class.java,
         )
         entryPoint.messageHubDao()
+    }
+
+    /** 푸시 통계 DAO (lazy) */
+    private val pushStatsDao: PushStatsDao by lazy {
+        val entryPoint = EntryPointAccessors.fromApplication(
+            applicationContext,
+            PushInterceptEntryPoint::class.java,
+        )
+        entryPoint.pushStatsDao()
     }
 
     override fun onListenerDisconnected() {
@@ -231,6 +245,16 @@ class PushInterceptService : NotificationListenerService() {
                 messageHubDao.insert(entity)
                 Log.d(TAG, "[PushCheck] DB saved: $appLabel (id=$packageName, blocked=$isBlocked)")
 
+                // 푸시 통계 원자적 증가
+                recordPushStats(
+                    packageName = packageName,
+                    appLabel = appLabel,
+                    isNightTime = isNightTime,
+                    hasPromotion = promotionHits > 0,
+                    hasLinks = linkCount > 0,
+                    isHighRisk = result.riskLevel == app.myphonecheck.mobile.core.model.RiskLevel.HIGH,
+                )
+
                 // 차단된 발신자의 알림 자동 캔슬
                 if (isBlocked) {
                     cancelNotification(sbn.key)
@@ -239,6 +263,46 @@ class PushInterceptService : NotificationListenerService() {
             } catch (e: Exception) {
                 Log.e(TAG, "[PushCheck] DB save failed for $appLabel", e)
             }
+        }
+    }
+
+    /**
+     * 푸시 통계 원자적 기록.
+     *
+     * ensureRow → incrementXxx 패턴으로 동시성 안전.
+     * dateKey = yyyy-MM-dd (디바이스 타임존).
+     */
+    private suspend fun recordPushStats(
+        packageName: String,
+        appLabel: String,
+        isNightTime: Boolean,
+        hasPromotion: Boolean,
+        hasLinks: Boolean,
+        isHighRisk: Boolean,
+    ) {
+        try {
+            val dateKey = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                .format(System.currentTimeMillis())
+
+            // row가 없으면 생성 (INSERT OR IGNORE)
+            pushStatsDao.ensureRow(
+                PushStatsEntity(
+                    packageName = packageName,
+                    appLabel = appLabel,
+                    dateKey = dateKey,
+                ),
+            )
+
+            // 원자적 증가
+            pushStatsDao.incrementTotal(packageName, dateKey)
+            if (isNightTime) pushStatsDao.incrementNight(packageName, dateKey)
+            if (hasPromotion) pushStatsDao.incrementPromotion(packageName, dateKey)
+            if (hasLinks) pushStatsDao.incrementLink(packageName, dateKey)
+            if (isHighRisk) pushStatsDao.incrementHighRisk(packageName, dateKey)
+
+            Log.d(TAG, "[PushStats] Recorded: $appLabel ($dateKey)")
+        } catch (e: Exception) {
+            Log.w(TAG, "[PushStats] Record failed (non-fatal): ${e.message}")
         }
     }
 

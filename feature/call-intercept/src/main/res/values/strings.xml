@@ -25,7 +25,7 @@
     <string name="overlay_cluster_scam">Scam/Phishing</string>
     <string name="overlay_verdict_high">Danger</string>
     <string name="overlay_verdict_medium">Caution</string>
-    <string name="overlay_verdict_low">Safe</string>
+    <string name="overlay_verdict_low">Low risk</string>
     <string name="overlay_verdict_unknown">Checking</string>
 
     <string name="overlay_risk_confidence_line">%1$s · confidence %2$d%%</string>
@@ -39,4 +39,19 @@
     <string name="overlay_phase2_done_line">Final: %1$s · %2$s (%3$d%%)</string>
     <string name="overlay_phase2_absent">Final: not run (immediate only)</string>
     <string name="overlay_phase_conflict_note">Note: immediate and final judgments differed.</string>
+
+    <!-- Trust Score System (0~100) -->
+    <string name="overlay_trust_danger">Danger</string>
+    <string name="overlay_trust_caution">Caution</string>
+    <string name="overlay_trust_low_risk">Low risk signals</string>
+    <string name="overlay_unverified_note">Unverified — no search results available</string>
+
+    <!-- Similar Number Search -->
+    <string name="overlay_section_similar_numbers">Similar number results</string>
+
+    <!-- Tag / Memo -->
+    <string name="overlay_tag_section">Tag</string>
+    <string name="overlay_memo_section">Memo</string>
+    <string name="overlay_memo_placeholder">Add a note</string>
+    <string name="overlay_tag_save">Save</string>
 </resources>
