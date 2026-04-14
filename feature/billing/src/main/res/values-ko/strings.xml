@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="subscription_title">구독</string>
+    <string name="subscription_cancel_button">구독 취소</string>
+    <string name="trial_countdown_remaining">무료 체험 종료까지 %1$d일 남음</string>
+    <string name="value_anchor_window_days">최근 %1$d일 동안</string>
+    <string name="value_anchor_retention_note">이 기능은 구독 시 유지됩니다</string>
+</resources>

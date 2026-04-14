@@ -42,6 +42,17 @@ interface UserCallRecordDao {
     @Query("SELECT COUNT(*) FROM user_call_records")
     suspend fun getRecordCount(): Int
 
+    /**
+     * 지정 시각 이후 차단 통화 건수.
+     * 정의: last_action='blocked' AND updated_at >= :sinceMillis.
+     * 구독 가치 앵커의 "차단된 의심 통화 수" 지표로 사용.
+     */
+    @Query(
+        "SELECT COUNT(*) FROM user_call_records " +
+            "WHERE last_action = 'blocked' AND updated_at >= :sinceMillis"
+    )
+    suspend fun countBlockedCallsSince(sinceMillis: Long): Int
+
     /** 전체 기록 일괄 조회 (백업용) */
     @Query("SELECT * FROM user_call_records ORDER BY updated_at DESC")
     suspend fun getAllOnce(): List<UserCallRecord>

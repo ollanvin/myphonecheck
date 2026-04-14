@@ -67,6 +67,13 @@ class BillingManager(
     )
     val subscriptionState: StateFlow<SubscriptionState> = _subscriptionState.asStateFlow()
 
+    /**
+     * 현재 활성 구독의 Play 결제 승인 시각 (epoch millis). 0이면 미구매 또는 미확정.
+     * 체험 기간 D-day 계산의 기준점으로 사용.
+     */
+    private val _activePurchaseTimeMillis = MutableStateFlow(0L)
+    val activePurchaseTimeMillis: StateFlow<Long> = _activePurchaseTimeMillis.asStateFlow()
+
     private var billingClient: BillingClient? = null
     private var isConnected = false
 
@@ -174,6 +181,7 @@ class BillingManager(
 
             if (subscriptionPurchase == null) {
                 _subscriptionState.value = SubscriptionState.NotPurchased
+                _activePurchaseTimeMillis.value = 0L
                 cacheSubscriptionState(false)
                 return
             }
@@ -186,6 +194,7 @@ class BillingManager(
             // Determine subscription state based on purchase state
             when (subscriptionPurchase.purchaseState) {
                 com.android.billingclient.api.Purchase.PurchaseState.PURCHASED -> {
+                    _activePurchaseTimeMillis.value = subscriptionPurchase.purchaseTime
                     // Check if subscription is still valid (not cancelled)
                     if (subscriptionPurchase.isAutoRenewing) {
                         _subscriptionState.value = SubscriptionState.Active
@@ -201,6 +210,7 @@ class BillingManager(
                 }
                 else -> {
                     _subscriptionState.value = SubscriptionState.Expired
+                    _activePurchaseTimeMillis.value = 0L
                     cacheSubscriptionState(false)
                 }
             }

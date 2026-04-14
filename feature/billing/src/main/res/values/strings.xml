@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="subscription_title">Subscription</string>
+    <string name="subscription_cancel_button">Cancel subscription</string>
+    <string name="trial_countdown_remaining">Free trial ends in %1$d days</string>
+    <string name="value_anchor_window_days">Last %1$d days</string>
+    <string name="value_anchor_retention_note">This feature remains with a subscription.</string>
+</resources>

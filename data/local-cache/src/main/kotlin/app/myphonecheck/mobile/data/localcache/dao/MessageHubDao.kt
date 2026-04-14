@@ -57,6 +57,49 @@ interface MessageHubDao {
     @Query("SELECT EXISTS(SELECT 1 FROM message_hub WHERE package_name = :packageName AND is_blocked = 1 LIMIT 1)")
     suspend fun isBlockedSender(packageName: String): Boolean
 
+    // ── 구독 가치 앵커용 집계 쿼리 (since 기반) ──
+
+    /**
+     * 지정 시각 이후 차단된 발신자(package) 메시지 건수.
+     * 현재 is_blocked=1로 전환된 발신자의 해당 기간 메시지 수.
+     */
+    @Query("SELECT COUNT(*) FROM message_hub WHERE is_blocked = 1 AND received_at >= :sinceMillis")
+    suspend fun countBlockedSince(sinceMillis: Long): Int
+
+    /**
+     * 지정 시각 이후 위험 링크 포함 메시지 수.
+     * 정의: link_count > 0 AND risk_level IN ('HIGH','MEDIUM').
+     */
+    @Query(
+        "SELECT COUNT(*) FROM message_hub " +
+            "WHERE link_count > 0 " +
+            "AND risk_level IN ('HIGH','MEDIUM') " +
+            "AND received_at >= :sinceMillis"
+    )
+    suspend fun countRiskyLinkMessagesSince(sinceMillis: Long): Int
+
+    /**
+     * 지정 시각 이후 반복 메시지 건수.
+     * 정의: 같은 package_name에서 3건 이상 수신된 그룹의 총 메시지 수 합.
+     * 동일 앱/발신자가 집요하게 반복 송신하는 패턴 탐지.
+     */
+    @Query(
+        "SELECT COALESCE(SUM(cnt), 0) FROM (" +
+            "SELECT COUNT(*) AS cnt FROM message_hub " +
+            "WHERE received_at >= :sinceMillis " +
+            "GROUP BY package_name " +
+            "HAVING cnt >= 3" +
+            ")"
+    )
+    suspend fun countRepeatMessagesSince(sinceMillis: Long): Int
+
+    /**
+     * 지정 시각 이후 고유 알림 송신자(앱) 수.
+     * 알림 송신자 통계 지표로 사용.
+     */
+    @Query("SELECT COUNT(DISTINCT package_name) FROM message_hub WHERE received_at >= :sinceMillis")
+    suspend fun countDistinctSendersSince(sinceMillis: Long): Int
+
     // ── 삽입 ──
 
     /** 새 메시지 삽입 */
