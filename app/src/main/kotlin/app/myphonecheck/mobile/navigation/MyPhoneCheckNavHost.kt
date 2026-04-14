@@ -2,7 +2,6 @@ package app.myphonecheck.mobile.navigation
 
 import android.Manifest
 import android.app.AppOpsManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -74,19 +73,22 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import app.myphonecheck.mobile.R as AppR
+import app.myphonecheck.mobile.core.model.ActionState
 import app.myphonecheck.mobile.core.model.InterceptEventType
 import app.myphonecheck.mobile.core.model.RiskLevel
+import app.myphonecheck.mobile.core.model.SearchStatus
 import app.myphonecheck.mobile.core.model.UserCallAction
 import app.myphonecheck.mobile.core.model.UserCallTag
 import app.myphonecheck.mobile.data.localcache.entity.MessageHubEntity
 import app.myphonecheck.mobile.data.localcache.entity.PrivacyHistoryEntity
+import app.myphonecheck.mobile.data.localcache.entity.QuickLabel
 import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
+import app.myphonecheck.mobile.data.localcache.repository.NumberProfileSnapshot
 import app.myphonecheck.mobile.feature.countryconfig.*
 import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter
 import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter.Lang
 import app.myphonecheck.mobile.feature.decisionui.components.FullEngineReasoningSection
 import app.myphonecheck.mobile.feature.privacycheck.R as PrivacyR
-import app.myphonecheck.mobile.feature.pushintercept.PushInterceptService
 import app.myphonecheck.mobile.ui.backup.BackupScreen
 import app.myphonecheck.mobile.viewmodel.CallHistoryViewModel
 import app.myphonecheck.mobile.viewmodel.MessageHubViewModel
@@ -239,17 +241,6 @@ fun MyPhoneCheckNavHost(
                     onBack = { navController.popBackStack() },
                 )
             }
-            composable("engine/push") {
-                EngineDetailScreen(
-                    engineName = context.getString(AppR.string.engine_name_pushcheck),
-                    engineNameKo = context.getString(AppR.string.engine_title_push),
-                    eventType = InterceptEventType.PUSH,
-                    color = Color(0xFFFFB74D),
-                    icon = Icons.Filled.Notifications,
-                    languageProvider = languageProvider,
-                    onBack = { navController.popBackStack() },
-                )
-            }
             composable("engine/message") {
                 EngineDetailScreen(
                     engineName = context.getString(AppR.string.engine_name_messagecheck),
@@ -336,12 +327,6 @@ private const val ONBOARDING_PAGE_COUNT = 5
 
 private fun Context.hasDrawOverlayPermission(): Boolean =
     Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(this)
-
-private fun Context.isNotificationListenerEnabled(): Boolean {
-    val cn = ComponentName(this, PushInterceptService::class.java)
-    val flat = Settings.Secure.getString(contentResolver, "enabled_notification_listeners") ?: return false
-    return flat.contains(cn.flattenToString(), ignoreCase = false)
-}
 
 private fun Context.hasUsageStatsPermission(): Boolean {
     val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
@@ -632,12 +617,6 @@ private fun OnboardingPage2() {
                 Color(0xFF4FC3F7)
             ),
             ThreatInfo(
-                Icons.Filled.Notifications,
-                context.getString(AppR.string.threat_push_title),
-                context.getString(AppR.string.threat_push_desc),
-                Color(0xFFFFB74D)
-            ),
-            ThreatInfo(
                 Icons.Filled.Message,
                 context.getString(AppR.string.threat_message_title),
                 context.getString(AppR.string.threat_message_desc),
@@ -725,11 +704,6 @@ private fun OnboardingPage3() {
                 context.getString(AppR.string.access_phone_target),
                 context.getString(AppR.string.access_phone_why),
                 Icons.Filled.Phone
-            ),
-            AccessInfo(
-                context.getString(AppR.string.access_push_target),
-                context.getString(AppR.string.access_push_why),
-                Icons.Filled.Notifications
             ),
             AccessInfo(
                 context.getString(AppR.string.access_sms_target),
@@ -945,7 +919,6 @@ private fun OnboardingPage5() {
     }
 
     val overlayOk = remember(refreshTrigger) { context.hasDrawOverlayPermission() }
-    val notifOk = remember(refreshTrigger) { context.isNotificationListenerEnabled() }
     val usageOk = remember(refreshTrigger) { context.hasUsageStatsPermission() }
 
     val phoneLauncher = rememberLauncherForActivityResult(
@@ -980,15 +953,6 @@ private fun OnboardingPage5() {
                     )
                     context.startActivity(intent)
                 }
-            },
-        )
-        OnboardingPermissionRow(
-            icon = Icons.Filled.Notifications,
-            title = context.getString(AppR.string.perm_notification_listener_title),
-            description = context.getString(AppR.string.perm_notification_listener_desc),
-            granted = notifOk,
-            onAllow = {
-                context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
             },
         )
         OnboardingPermissionRow(
@@ -1055,7 +1019,7 @@ private fun HomeScreen(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            // Row 1: MyPhoneCheck + PushCheck
+            // Row 1: CallCheck + Message intelligence
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -1069,28 +1033,20 @@ private fun HomeScreen(
                     onClick = { onEngineClick("engine/call") },
                 )
                 EngineCard(
-                    question = stringResource(AppR.string.engine_push_question),
-                    description = stringResource(AppR.string.engine_push_desc),
-                    icon = Icons.Filled.Notifications,
-                    color = Color(0xFFFFB74D),
-                    modifier = Modifier.weight(1f),
-                    onClick = { onEngineClick("engine/push") },
-                )
-            }
-
-            // Row 2: MessageCheck + PrivacyCheck
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                EngineCard(
-                    question = stringResource(AppR.string.engine_message_question),
-                    description = stringResource(AppR.string.engine_message_desc),
+                    question = "문자도 번호로 확인할까요?",
+                    description = "문자 발신 번호를 CallCheck 엔진으로 함께 확인합니다.",
                     icon = Icons.Filled.Message,
                     color = Color(0xFF81C784),
                     modifier = Modifier.weight(1f),
                     onClick = { onEngineClick("message-hub") },
                 )
+            }
+
+            // Row 2: PrivacyCheck
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
                 EngineCard(
                     question = stringResource(AppR.string.engine_privacy_question),
                     description = stringResource(AppR.string.engine_privacy_desc),
@@ -1099,6 +1055,7 @@ private fun HomeScreen(
                     modifier = Modifier.weight(1f),
                     onClick = { onEngineClick("privacy-history") },
                 )
+                Spacer(modifier = Modifier.weight(1f))
             }
         }
 
@@ -1206,6 +1163,167 @@ private fun EngineCard(
 // ═══════════════════════════════════════════════════════════
 // 엔진 상세 화면 — 4개 엔진 공통 레이아웃
 // ═══════════════════════════════════════════════════════════
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun MessageHubProfileItem(
+    item: MessageHubEntity,
+    numberProfile: NumberProfileSnapshot?,
+    onLinkClick: (String) -> Unit,
+    onDelete: () -> Unit,
+    onBlock: () -> Unit,
+    onDeleteAndBlock: () -> Unit,
+    onQuickLabelToggle: (QuickLabel) -> Unit,
+    onAddDetailTag: (String) -> Unit,
+    onRemoveDetailTag: (String) -> Unit,
+    onSaveShortMemo: (String) -> Unit,
+    onDoNotBlock: () -> Unit,
+) {
+    val link = remember(item.detectedLinks) { item.firstDetectedLink() }
+    val timeText = remember(item.receivedAt) { formatMessageHubTime(item.receivedAt) }
+    val meta = remember(item.reasons) { parseMessageHubMeta(item.reasons) }
+    var detailTagInput by remember(item.id) { mutableStateOf("") }
+    var memoInput by remember(numberProfile?.userMemoShort) { mutableStateOf(numberProfile?.userMemoShort.orEmpty()) }
+    val searchStatus = remember(item.summary, meta.searchSummary) {
+        SearchStatus.fromStoredMessage(
+            searchSummary = meta.searchSummary,
+            fallbackSummary = item.summary,
+        ).labelKo
+    }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A2A3A)),
+        shape = RoundedCornerShape(12.dp),
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text("번호  ${item.title ?: item.appLabel}", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.White)
+            Spacer(modifier = Modifier.height(6.dp))
+            Text("시간  $timeText", fontSize = 13.sp, color = Color(0xFFB0BEC5))
+            Spacer(modifier = Modifier.height(6.dp))
+            Text("검색 요약  ${meta.searchSummary ?: item.summary}", fontSize = 13.sp, color = Color(0xFFFFCC80), maxLines = 1)
+            Spacer(modifier = Modifier.height(6.dp))
+            Text("유사번호 존재 여부  ${meta.similarNumberLabel ?: "확인 안 됨"}", fontSize = 13.sp, color = Color(0xFFB0BEC5), maxLines = 1)
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(searchStatus, fontSize = 13.sp, color = Color(0xFF80CBC4))
+            Spacer(modifier = Modifier.height(6.dp))
+            if (item.linkCount > 0 && link != null) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onLinkClick(link) }
+                        .padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        Icons.Filled.Warning,
+                        contentDescription = null,
+                        tint = Color(0xFFFFB74D),
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text("링크 경고  ${meta.linkWarning ?: "링크 있음"}", fontSize = 13.sp, color = Color(0xFFFFB74D), maxLines = 1)
+                }
+            } else {
+                Text("링크 경고  없음", fontSize = 13.sp, color = Color(0xFFB0BEC5))
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            Text("저장 없이 기억하기", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(0xFF81D4FA))
+            Spacer(modifier = Modifier.height(8.dp))
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                QuickLabel.entries.forEach { label ->
+                    FilterChip(
+                        selected = numberProfile?.quickLabels?.contains(label) == true,
+                        onClick = { onQuickLabelToggle(label) },
+                        label = { Text(label.displayName) },
+                    )
+                }
+            }
+            val summaryChips = remember(numberProfile) {
+                buildList {
+                    numberProfile?.quickLabels?.forEach { add(it.displayName) }
+                    numberProfile?.detailTags?.forEach { add(it.tagName) }
+                    if (numberProfile?.actionState == ActionState.DO_NOT_BLOCK) add("차단 금지")
+                }
+            }
+            if (summaryChips.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    summaryChips.forEach { chip ->
+                        AssistChip(onClick = {}, label = { Text(chip) })
+                    }
+                }
+            }
+            if (!numberProfile?.detailTags.isNullOrEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    numberProfile!!.detailTags.forEach { tag ->
+                        InputChip(
+                            selected = false,
+                            onClick = { onRemoveDetailTag(tag.tagName) },
+                            label = { Text(tag.tagName) },
+                            trailingIcon = {
+                                Icon(Icons.Filled.Delete, contentDescription = null, modifier = Modifier.size(16.dp))
+                            },
+                        )
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = detailTagInput,
+                onValueChange = { detailTagInput = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("상세 태그 추가") },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedBorderColor = Color(0xFF4FC3F7),
+                    unfocusedBorderColor = Color(0xFF455A64),
+                ),
+                singleLine = true,
+            )
+            Row {
+                TextButton(
+                    onClick = {
+                        onAddDetailTag(detailTagInput)
+                        detailTagInput = ""
+                    },
+                    enabled = detailTagInput.isNotBlank(),
+                ) {
+                    Text("태그 추가", color = Color(0xFF81C784))
+                }
+                TextButton(onClick = onDoNotBlock) {
+                    Text("차단 금지", color = Color(0xFF64B5F6))
+                }
+            }
+            OutlinedTextField(
+                value = memoInput,
+                onValueChange = { memoInput = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("짧은 메모") },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White,
+                    focusedBorderColor = Color(0xFF4FC3F7),
+                    unfocusedBorderColor = Color(0xFF455A64),
+                ),
+                maxLines = 2,
+            )
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                TextButton(onClick = { onSaveShortMemo(memoInput) }) {
+                    Text("메모 저장", color = Color(0xFF81D4FA))
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                TextButton(onClick = onDelete) { Text("삭제", color = Color(0xFFE57373)) }
+                TextButton(onClick = onBlock) { Text("차단", color = Color(0xFFFFB74D)) }
+                TextButton(onClick = onDeleteAndBlock) { Text("둘 다", color = Color(0xFF81C784)) }
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -2188,7 +2306,6 @@ private fun SettingsPermissionsSection() {
 
     // ── 접근성 그룹 (특수 권한 — 시스템 설정으로 직행) ──
     val overlayOk = remember(refreshTrigger) { context.hasDrawOverlayPermission() }
-    val notifListenerOk = remember(refreshTrigger) { context.isNotificationListenerEnabled() }
     val usageStatsOk = remember(refreshTrigger) { context.hasUsageStatsPermission() }
 
     // ── 통화·메시지 그룹 (런타임 권한) ──
@@ -2251,18 +2368,6 @@ private fun SettingsPermissionsSection() {
                 ).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
                 context.startActivity(intent)
             }
-        },
-    )
-    OnboardingPermissionRow(
-        icon = Icons.Filled.Notifications,
-        title = context.getString(AppR.string.perm_notification_listener_title),
-        description = context.getString(AppR.string.perm_notification_listener_desc),
-        granted = notifListenerOk,
-        onAllow = {
-            context.startActivity(
-                Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-                    .apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) },
-            )
         },
     )
     OnboardingPermissionRow(
@@ -3209,13 +3314,42 @@ private fun getDeleteLabel(context: Context): String = context.getString(AppR.st
 // ═══════════════════════════════════════════════════════════
 
 private fun MessageHubEntity.firstDetectedLink(): String? =
-    detectedLinks
-        ?.split(',')
-        ?.map { it.trim() }
-        ?.firstOrNull { it.startsWith("http://", ignoreCase = true) || it.startsWith("https://", ignoreCase = true) }
+    allLinkTokens().firstOrNull {
+        it.startsWith("http://", ignoreCase = true) || it.startsWith("https://", ignoreCase = true)
+    }
 
 private fun MessageHubEntity.allLinkTokens(): List<String> =
-    detectedLinks?.split(',')?.map { it.trim() }?.filter { it.isNotEmpty() } ?: emptyList()
+    detectedLinks
+        ?.removePrefix("[")
+        ?.removeSuffix("]")
+        ?.split(',')
+        ?.map { it.trim().trim('"') }
+        ?.filter { it.isNotEmpty() }
+        ?: emptyList()
+
+private data class MessageHubMeta(
+    val searchSummary: String?,
+    val similarNumberLabel: String?,
+    val linkWarning: String?,
+)
+
+private fun parseMessageHubMeta(reasons: String?): MessageHubMeta {
+    if (reasons.isNullOrBlank()) return MessageHubMeta(null, null, null)
+
+    var searchSummary: String? = null
+    var similarNumberLabel: String? = null
+    var linkWarning: String? = null
+
+    reasons.split('|').forEach { token ->
+        when {
+            token.startsWith("SEARCH=") -> searchSummary = token.removePrefix("SEARCH=")
+            token.startsWith("SIMILAR=") -> similarNumberLabel = token.removePrefix("SIMILAR=")
+            token.startsWith("LINK=") -> linkWarning = token.removePrefix("LINK=")
+        }
+    }
+
+    return MessageHubMeta(searchSummary, similarNumberLabel, linkWarning)
+}
 
 private fun MessageHubEntity.previewText(maxLen: Int = 50): String {
     val raw = listOfNotNull(title, text).joinToString(" ").trim()
@@ -3251,9 +3385,9 @@ private fun MessageHubScreen(
     onBack: () -> Unit,
 ) {
     val messages by viewModel.messages.collectAsState()
+    val numberProfiles by viewModel.numberProfiles.collectAsState()
     val context = LocalContext.current
     var linkDialogUrl by remember { mutableStateOf<String?>(null) }
-    val keptMarker = stringResource(AppR.string.message_hub_kept_marker)
 
     linkDialogUrl?.let { url ->
         AlertDialog(
@@ -3339,17 +3473,33 @@ private fun MessageHubScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 items(messages, key = { it.id }) { item ->
-                    MessageHubListItem(
+                    MessageHubProfileItem(
                         item = item,
+                        numberProfile = numberProfiles[item.packageName],
                         onLinkClick = { url -> linkDialogUrl = url },
-                        onKeep = {
-                            viewModel.keepMessage(item.id, keptMarker)
-                        },
                         onDelete = {
                             viewModel.deleteMessage(item.id)
                         },
                         onBlock = {
                             viewModel.blockSender(item.packageName)
+                        },
+                        onDeleteAndBlock = {
+                            viewModel.blockAndDelete(item.id, item.packageName)
+                        },
+                        onQuickLabelToggle = { label ->
+                            viewModel.toggleQuickLabel(item.packageName, label)
+                        },
+                        onAddDetailTag = { tagName ->
+                            viewModel.addDetailTag(item.packageName, tagName)
+                        },
+                        onRemoveDetailTag = { tagName ->
+                            viewModel.removeDetailTag(item.packageName, tagName)
+                        },
+                        onSaveShortMemo = { memo ->
+                            viewModel.saveShortMemo(item.packageName, memo)
+                        },
+                        onDoNotBlock = {
+                            viewModel.setDoNotBlock(item.packageName)
                         },
                     )
                 }
@@ -3362,35 +3512,27 @@ private fun MessageHubScreen(
 @Composable
 private fun MessageHubListItem(
     item: MessageHubEntity,
+    numberProfile: NumberProfileSnapshot?,
     onLinkClick: (String) -> Unit,
-    onKeep: () -> Unit,
     onDelete: () -> Unit,
     onBlock: () -> Unit,
+    onDeleteAndBlock: () -> Unit,
+    onQuickLabelToggle: (QuickLabel) -> Unit,
+    onAddDetailTag: (String) -> Unit,
+    onRemoveDetailTag: (String) -> Unit,
+    onSaveShortMemo: (String) -> Unit,
+    onDoNotBlock: () -> Unit,
 ) {
     val link = remember(item.detectedLinks) { item.firstDetectedLink() }
     val timeText = remember(item.receivedAt) { formatMessageHubTime(item.receivedAt) }
-    val urlTokens = remember(item.detectedLinks) { item.allLinkTokens() }
-    val lang = when (LocalConfiguration.current.locales[0]?.language) {
-        "ko" -> Lang.KO
-        else -> Lang.EN
-    }
-    val hubDecision = remember(
-        item.id,
-        item.riskLevel,
-        item.category,
-        item.action,
-        item.confidence,
-        item.summary,
-        item.reasons,
-    ) {
-        DecisionReasoningFormatter.parseDecisionResultFromHubSnapshot(
-            riskLevelName = item.riskLevel,
-            categoryName = item.category,
-            actionName = item.action,
-            confidence = item.confidence,
-            summary = item.summary,
-            reasonsPipeSeparated = item.reasons,
-        )
+    val meta = remember(item.reasons) { parseMessageHubMeta(item.reasons) }
+    var detailTagInput by remember(item.id) { mutableStateOf("") }
+    var memoInput by remember(numberProfile?.userMemoShort) { mutableStateOf(numberProfile?.userMemoShort.orEmpty()) }
+    val searchStatus = remember(item.summary, meta.searchSummary) {
+        SearchStatus.fromStoredMessage(
+            searchSummary = meta.searchSummary,
+            fallbackSummary = item.summary,
+        ).labelKo
     }
 
     Card(
@@ -3400,113 +3542,33 @@ private fun MessageHubListItem(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
-                text = item.appLabel,
-                fontSize = 16.sp,
+                text = "번호  ${item.title ?: item.appLabel}",
+                fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            if (hubDecision != null) {
-                Text(
-                    text = stringResource(
-                        AppR.string.message_hub_risk_fmt,
-                        DecisionReasoningFormatter.riskTriLabel(hubDecision.riskLevel, lang),
-                        DecisionReasoningFormatter.confidencePercent(hubDecision.confidence),
-                    ),
-                    fontSize = 12.sp,
-                    color = Color(0xFF90CAF9),
-                )
-            } else {
-                Text(
-                    text = stringResource(
-                        AppR.string.message_hub_risk_fmt,
-                        item.riskLevel,
-                        (item.confidence * 100f).toInt().coerceIn(0, 100),
-                    ),
-                    fontSize = 12.sp,
-                    color = Color(0xFF90CAF9),
-                )
-            }
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = hubDecision?.summary ?: item.summary,
-                fontSize = 13.sp,
-                color = Color(0xFFFFCC80),
-                maxLines = 4,
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = item.previewText(200),
+                text = "시간  $timeText",
                 fontSize = 13.sp,
                 color = Color(0xFFB0BEC5),
-                maxLines = 6,
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = timeText,
-                fontSize = 11.sp,
-                color = Color(0xFF607D8B),
+                text = "검색 요약  ${meta.searchSummary ?: item.summary}",
+                fontSize = 13.sp,
+                color = Color(0xFFFFCC80),
+                maxLines = 1,
             )
-            if (item.isNightTime) {
-                Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    stringResource(AppR.string.message_hub_night_receive),
-                    fontSize = 11.sp,
-                    color = Color(0xFFFFB74D),
-                )
-            }
-            if (item.promotionKeywordHits > 0) {
-                Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    stringResource(AppR.string.message_hub_promo_hits, item.promotionKeywordHits),
-                    fontSize = 11.sp,
-                    color = Color(0xFFB0BEC5),
-                )
-            }
-            hubDecision?.let { dr ->
-                Spacer(modifier = Modifier.height(10.dp))
-                FullEngineReasoningSection(
-                    result = dr,
-                    searchPending = false,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             Text(
-                stringResource(AppR.string.message_hub_extracted_urls),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.White,
+                text = "유사번호 존재 여부  ${meta.similarNumberLabel ?: "확인 안 됨"}",
+                fontSize = 13.sp,
+                color = Color(0xFFB0BEC5),
+                maxLines = 1,
             )
-            if (urlTokens.isEmpty()) {
-                Text(
-                    stringResource(AppR.string.message_hub_no_urls),
-                    fontSize = 11.sp,
-                    color = Color(0xFF78909C),
-                    modifier = Modifier.padding(top = 4.dp),
-                )
-            } else {
-                urlTokens.forEach { u ->
-                    val openable = u.startsWith("http://", ignoreCase = true) ||
-                        u.startsWith("https://", ignoreCase = true)
-                    Text(
-                        text = u,
-                        fontSize = 11.sp,
-                        color = Color(0xFF4FC3F7),
-                        modifier = Modifier
-                            .padding(top = 4.dp)
-                            .then(
-                                if (openable) {
-                                    Modifier.clickable { onLinkClick(u) }
-                                } else {
-                                    Modifier
-                                },
-                            ),
-                    )
-                }
-            }
+            Spacer(modifier = Modifier.height(6.dp))
             if (item.linkCount > 0 && link != null) {
-                Spacer(modifier = Modifier.height(6.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -3516,31 +3578,38 @@ private fun MessageHubListItem(
                 ) {
                     Icon(
                         Icons.Filled.Warning,
-                        contentDescription = stringResource(AppR.string.message_hub_link_warning),
+                        contentDescription = null,
                         tint = Color(0xFFFFB74D),
                         modifier = Modifier.size(18.dp),
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        stringResource(AppR.string.message_hub_link_warning),
-                        fontSize = 12.sp,
+                        text = "링크 경고  ${meta.linkWarning ?: "링크 있음"}",
+                        fontSize = 13.sp,
                         color = Color(0xFFFFB74D),
+                        maxLines = 1,
                     )
                 }
+            } else {
+                Text(
+                    text = "링크 경고  없음",
+                    fontSize = 13.sp,
+                    color = Color(0xFFB0BEC5),
+                )
             }
             Spacer(modifier = Modifier.height(12.dp))
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                TextButton(onClick = onKeep) {
-                    Text(stringResource(AppR.string.message_hub_action_keep), color = Color(0xFF81C784))
-                }
                 TextButton(onClick = onDelete) {
-                    Text(stringResource(AppR.string.message_hub_action_delete), color = Color(0xFFE57373))
+                    Text("삭제", color = Color(0xFFE57373))
                 }
                 TextButton(onClick = onBlock) {
-                    Text(stringResource(AppR.string.message_hub_action_block), color = Color(0xFFFFB74D))
+                    Text("차단", color = Color(0xFFFFB74D))
+                }
+                TextButton(onClick = onDeleteAndBlock) {
+                    Text("둘 다", color = Color(0xFF81C784))
                 }
             }
         }

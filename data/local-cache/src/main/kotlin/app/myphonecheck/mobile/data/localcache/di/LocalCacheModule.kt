@@ -5,12 +5,15 @@ import android.util.Log
 import androidx.room.Room
 import app.myphonecheck.mobile.core.security.DatabaseKeyProvider
 import app.myphonecheck.mobile.data.localcache.dao.BackupMetadataDao
+import app.myphonecheck.mobile.data.localcache.dao.DetailTagDao
 import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
+import app.myphonecheck.mobile.data.localcache.dao.NumberProfileDao
 import app.myphonecheck.mobile.data.localcache.dao.PreJudgeCacheDao
 import app.myphonecheck.mobile.data.localcache.dao.PrivacyHistoryDao
 import app.myphonecheck.mobile.data.localcache.dao.PushStatsDao
 import app.myphonecheck.mobile.data.localcache.dao.UserCallRecordDao
 import app.myphonecheck.mobile.data.localcache.db.MyPhoneCheckDatabase
+import app.myphonecheck.mobile.data.localcache.repository.NumberProfileRepository
 import app.myphonecheck.mobile.data.localcache.repository.PreJudgeCacheRepository
 import app.myphonecheck.mobile.data.localcache.repository.UserCallRecordRepository
 import dagger.Module
@@ -101,6 +104,31 @@ object LocalCacheModule {
         database: MyPhoneCheckDatabase,
     ): MessageHubDao {
         return database.messageHubDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNumberProfileDao(
+        database: MyPhoneCheckDatabase,
+    ): NumberProfileDao {
+        return database.numberProfileDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDetailTagDao(
+        database: MyPhoneCheckDatabase,
+    ): DetailTagDao {
+        return database.detailTagDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNumberProfileRepository(
+        numberProfileDao: NumberProfileDao,
+        detailTagDao: DetailTagDao,
+    ): NumberProfileRepository {
+        return NumberProfileRepository(numberProfileDao, detailTagDao)
     }
 
     @Provides

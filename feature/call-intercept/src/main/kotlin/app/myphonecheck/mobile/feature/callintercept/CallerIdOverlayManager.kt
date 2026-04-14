@@ -22,11 +22,13 @@ import android.widget.TextView
 import app.myphonecheck.mobile.feature.callintercept.R
 import app.myphonecheck.mobile.core.model.DecisionResult
 import app.myphonecheck.mobile.core.model.RiskLevel
+import app.myphonecheck.mobile.core.model.SearchStatus
 import app.myphonecheck.mobile.core.model.SimilarNumberResult
 import app.myphonecheck.mobile.core.model.TwoPhaseDecision
 import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter
 import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter.Lang
 import app.myphonecheck.mobile.core.util.TrustScoreCalculator
+import app.myphonecheck.mobile.data.localcache.repository.NumberProfileSnapshot
 import app.myphonecheck.mobile.feature.countryconfig.SignalSummaryLocalizer
 import app.myphonecheck.mobile.feature.countryconfig.SupportedLanguage
 import javax.inject.Inject
@@ -48,6 +50,7 @@ private const val TAG = "CallerIdOverlay"
 class CallerIdOverlayManager @Inject constructor() {
 
     private var overlayView: View? = null
+    private var pendingPromptNumber: String? = null
     private val mainHandler = Handler(Looper.getMainLooper())
 
     /**
@@ -71,8 +74,7 @@ class CallerIdOverlayManager @Inject constructor() {
         localizer: SignalSummaryLocalizer = SignalSummaryLocalizer(),
         twoPhaseDecision: TwoPhaseDecision? = null,
         userBlockCount: Int = 0,
-        savedTag: String? = null,
-        savedMemo: String? = null,
+        numberProfileSnapshot: NumberProfileSnapshot? = null,
     ): Boolean {
         if (!canDrawOverlays(context)) {
             Log.w(TAG, "SYSTEM_ALERT_WINDOW not granted, cannot show overlay")
@@ -84,6 +86,7 @@ class CallerIdOverlayManager @Inject constructor() {
                 dismissOverlayInternal(context)
 
                 val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+                pendingPromptNumber = phoneNumber
 
                 val horizontalMargin = dpToPx(context, 12)
                 val screenWidth = context.resources.displayMetrics.widthPixels
@@ -100,7 +103,16 @@ class CallerIdOverlayManager @Inject constructor() {
                     y = dpToPx(context, 200)
                 }
 
-                overlayView = buildOverlayView(context, result, phoneNumber, language, localizer, twoPhaseDecision, userBlockCount, savedTag, savedMemo)
+                overlayView = buildOverlayView(
+                    context = context,
+                    result = result,
+                    phoneNumber = phoneNumber,
+                    language = language,
+                    localizer = localizer,
+                    twoPhaseDecision = twoPhaseDecision,
+                    userBlockCount = userBlockCount,
+                    numberProfileSnapshot = numberProfileSnapshot,
+                )
                 wm.addView(overlayView, params)
                 Log.i(TAG, "Overlay shown for $phoneNumber: ${result.riskLevel} (lang=${language.code})")
             } catch (e: Exception) {
@@ -132,6 +144,16 @@ class CallerIdOverlayManager @Inject constructor() {
 
     fun isOverlayShowing(): Boolean = overlayView != null
 
+    fun rememberPostCallNumber(phoneNumber: String) {
+        pendingPromptNumber = phoneNumber
+    }
+
+    fun consumePendingPromptNumber(): String? {
+        val number = pendingPromptNumber
+        pendingPromptNumber = null
+        return number
+    }
+
     private fun canDrawOverlays(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Settings.canDrawOverlays(context)
@@ -160,8 +182,7 @@ class CallerIdOverlayManager @Inject constructor() {
         localizer: SignalSummaryLocalizer,
         twoPhaseDecision: TwoPhaseDecision? = null,
         userBlockCount: Int = 0,
-        savedTag: String? = null,
-        savedMemo: String? = null,
+        numberProfileSnapshot: NumberProfileSnapshot? = null,
     ): View {
         val trustScore = TrustScoreCalculator.calculate(result, userBlockCount)
         val bgColor = TrustScoreCalculator.gradeColor(trustScore)
@@ -184,11 +205,16 @@ class CallerIdOverlayManager @Inject constructor() {
             // ══════════════════════════════════
 
             // 저장된 태그/메모가 있으면 최상단 표시
-            if (savedTag != null || savedMemo != null) {
+            if (numberProfileSnapshot?.hasUserSignals == true) {
                 addView(TextView(context).apply {
-                    val tagDisplay = savedTag?.let { "[$it]" } ?: ""
-                    val memoDisplay = savedMemo ?: ""
-                    text = "$tagDisplay $memoDisplay".trim()
+                    val labelText = numberProfileSnapshot.quickLabels
+                        .joinToString(" / ") { it.displayName }
+                    val detailText = numberProfileSnapshot.detailTags
+                        .joinToString(" / ") { it.tagName }
+                    val memoText = numberProfileSnapshot.userMemoShort.orEmpty()
+                    text = listOf(labelText, detailText, memoText)
+                        .filter { it.isNotBlank() }
+                        .joinToString(" / ")
                     setTextColor(Color.YELLOW)
                     setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
                     setTypeface(null, Typeface.BOLD)
@@ -226,6 +252,14 @@ class CallerIdOverlayManager @Inject constructor() {
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
                 gravity = Gravity.CENTER_HORIZONTAL
                 layoutParams = marginTop(context, 2)
+            })
+
+            addView(TextView(context).apply {
+                text = searchStatusLabel(result)
+                setTextColor(Color.parseColor("#FFE082"))
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
+                gravity = Gravity.CENTER_HORIZONTAL
+                layoutParams = marginTop(context, 4)
             })
 
             // ══════════════════════════════════
@@ -588,6 +622,10 @@ class CallerIdOverlayManager @Inject constructor() {
             dp.toFloat(),
             context.resources.displayMetrics,
         ).toInt()
+    }
+
+    private fun searchStatusLabel(result: DecisionResult): String {
+        return SearchStatus.fromDecisionResult(result).labelKo
     }
 }
 

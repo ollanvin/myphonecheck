@@ -45,7 +45,9 @@ dependencies {
 
     implementation(project(":core:model"))
     implementation(project(":core:util"))
+    implementation(project(":data:contacts"))
     implementation(project(":data:local-cache"))
+    implementation(project(":feature:call-intercept"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

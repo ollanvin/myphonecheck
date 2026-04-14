@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,7 +18,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Button
@@ -70,8 +70,8 @@ fun PaywallScreen(
             }
             runCatching { context.startActivity(intent) }
         },
-        onPrivacyClick = { },
-        onTermsClick = { },
+        onPrivacyClick = {},
+        onTermsClick = {},
     )
 }
 
@@ -93,6 +93,11 @@ fun PaywallContent(
     val textSecondary = Color(0xFFB3B3B3)
     val primary = Color(0xFF00BCD4)
     val danger = Color(0xFFFF3B30)
+    val ctaText = if (trialCountdown is TrialCountdown.Remaining) {
+        "지금 보호 계속하기"
+    } else {
+        "지금 보호 시작하기"
+    }
 
     Box(
         modifier = modifier
@@ -122,7 +127,7 @@ fun PaywallContent(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            if (valueAnchor != null && !valueAnchor.shouldHide) {
+            if (valueAnchor?.visible == true) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
@@ -131,9 +136,7 @@ fun PaywallContent(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            if (trialCountdown is TrialCountdown.Remaining) {
-                Spacer(modifier = Modifier.height(20.dp))
-            }
+            Spacer(modifier = Modifier.height(24.dp))
 
             Icon(
                 imageVector = Icons.Default.Phone,
@@ -155,7 +158,7 @@ fun PaywallContent(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "스팸 전화로부터 안전하게 보호받으세요",
+                text = "실측된 보호 기록을 바탕으로 구독 전에도 상태를 확인합니다",
                 fontSize = 14.sp,
                 color = textSecondary,
                 textAlign = TextAlign.Center,
@@ -171,39 +174,18 @@ fun PaywallContent(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 ValuePropositionItem(
-                    icon = Icons.Default.Lock,
-                    title = "실시간 스팸 차단",
-                    description = "온디바이스 분석으로 의심 전화를 빠르게 감지합니다.",
-                    iconTint = primary,
-                )
-                ValuePropositionItem(
-                    icon = Icons.Default.CheckCircle,
-                    title = "위험 링크 확인",
-                    description = "문자 속 위험 링크를 로컬 기준으로 확인합니다.",
-                    iconTint = Color(0xFF4CAF50),
-                )
-                ValuePropositionItem(
                     icon = Icons.Default.Phone,
-                    title = "중요 통화 보호",
-                    description = "필요한 전화는 놓치지 않고 스팸만 걸러냅니다.",
+                    title = "실시간 의심 전화 확인",
+                    description = "저장된 판단 기록을 바탕으로 의심 전화를 확인합니다.",
                     iconTint = primary,
+                )
+                ValuePropositionItem(
+                    icon = Icons.Default.Lock,
+                    title = "위험 링크 메시지 확인",
+                    description = "로컬에 저장된 위험 링크 메시지만 선별해 보여줍니다.",
+                    iconTint = Color(0xFF34C759),
                 )
             }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Text(
-                text = "월간 구독",
-                fontSize = 14.sp,
-                color = textSecondary,
-            )
-
-            Text(
-                text = "첫 1개월 무료",
-                fontSize = 12.sp,
-                color = Color(0xFF34C759),
-                modifier = Modifier.padding(top = 6.dp),
-            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -227,7 +209,7 @@ fun PaywallContent(
                     )
                 } else {
                     Text(
-                        text = "구독 시작하기",
+                        text = ctaText,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                     )
@@ -263,7 +245,7 @@ fun PaywallContent(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            androidx.compose.foundation.layout.Row(
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
@@ -290,28 +272,24 @@ fun PaywallContent(
             }
         }
 
-        if (subscriptionState is SubscriptionState.Active ||
-            subscriptionState is SubscriptionState.Expired
+        Button(
+            onClick = onCancelSubscriptionClick,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 12.dp)
+                .height(72.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = danger,
+                contentColor = Color.White,
+            ),
+            shape = RoundedCornerShape(18.dp),
         ) {
-            Button(
-                onClick = onCancelSubscriptionClick,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 12.dp)
-                    .height(72.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = danger,
-                    contentColor = Color.White,
-                ),
-                shape = RoundedCornerShape(18.dp),
-            ) {
-                Text(
-                    text = "구독 취소",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
+            Text(
+                text = "구독 취소",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+            )
         }
     }
 }
@@ -326,7 +304,7 @@ private fun ValuePropositionItem(
     description: String,
     iconTint: Color,
 ) {
-    androidx.compose.foundation.layout.Row(
+    Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.Top,
@@ -357,14 +335,15 @@ private fun ValuePropositionItem(
 
 @Preview(showBackground = true, backgroundColor = 0xFF000000, widthDp = 360, heightDp = 920)
 @Composable
-private fun PaywallContentPreview_WithData() {
+private fun PaywallContentPreview_WithMeasuredState() {
     PaywallContent(
         subscriptionState = SubscriptionState.Active,
-        trialCountdown = TrialCountdown.Remaining(days = 5),
+        trialCountdown = TrialCountdown.Remaining(days = 3),
         valueAnchor = SubscriptionValueAnchorState(
-            blockedCalls = 8,
-            riskyLinks = 3,
-            windowDays = 7,
+            selectedPeriodLabel = "최근 7일",
+            suspiciousCallsCount = 2,
+            riskyLinkMessagesCount = 1,
+            visible = true,
         ),
         onSubscribeClick = {},
         onRestoreClick = {},
@@ -376,7 +355,7 @@ private fun PaywallContentPreview_WithData() {
 
 @Preview(showBackground = true, backgroundColor = 0xFF000000, widthDp = 360, heightDp = 920)
 @Composable
-private fun PaywallContentPreview_WithoutData() {
+private fun PaywallContentPreview_EmptyState() {
     PaywallContent(
         subscriptionState = SubscriptionState.NotPurchased,
         trialCountdown = TrialCountdown.NotApplicable,

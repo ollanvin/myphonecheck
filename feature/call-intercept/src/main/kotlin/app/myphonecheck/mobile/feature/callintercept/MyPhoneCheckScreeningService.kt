@@ -3,7 +3,10 @@ package app.myphonecheck.mobile.feature.callintercept
 import android.telecom.Call
 import android.telecom.CallScreeningService
 import android.util.Log
+import app.myphonecheck.mobile.core.model.IdentifierAnalysisInput
+import app.myphonecheck.mobile.core.model.IdentifierChannel
 import app.myphonecheck.mobile.core.util.PhoneNumberNormalizer
+import app.myphonecheck.mobile.data.localcache.repository.NumberProfileRepository
 import app.myphonecheck.mobile.data.localcache.repository.UserCallRecordRepository
 import app.myphonecheck.mobile.feature.countryconfig.CountryConfigProvider
 import app.myphonecheck.mobile.feature.countryconfig.SupportedLanguage
@@ -77,6 +80,7 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
         fun decisionNotificationManager(): DecisionNotificationManager
         fun callerIdOverlayManager(): CallerIdOverlayManager
         fun countryConfigProvider(): CountryConfigProvider
+        fun numberProfileRepository(): NumberProfileRepository
         fun userCallRecordRepository(): UserCallRecordRepository
     }
 
@@ -84,6 +88,7 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
     private lateinit var decisionNotificationManager: DecisionNotificationManager
     private lateinit var callerIdOverlayManager: CallerIdOverlayManager
     private lateinit var countryConfigProvider: CountryConfigProvider
+    private lateinit var numberProfileRepository: NumberProfileRepository
     private lateinit var userCallRecordRepository: UserCallRecordRepository
     private val serviceScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
@@ -106,6 +111,7 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
             decisionNotificationManager = entryPoint.decisionNotificationManager()
             callerIdOverlayManager = entryPoint.callerIdOverlayManager()
             countryConfigProvider = entryPoint.countryConfigProvider()
+            numberProfileRepository = entryPoint.numberProfileRepository()
             userCallRecordRepository = entryPoint.userCallRecordRepository()
 
             // 디바이스 국가 감지 (SIM → Network → Locale)
@@ -196,12 +202,22 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
                 // effectiveCountry를 전달하여 로컬 번호 정규화
                 val normalizedNumber = PhoneNumberNormalizer.formatE164(rawNumber, effectiveCountry)
                     ?: rawNumber
+                callerIdOverlayManager.rememberPostCallNumber(normalizedNumber)
+                if (::numberProfileRepository.isInitialized) {
+                    numberProfileRepository.touchCallInteraction(normalizedNumber)
+                }
 
                 // ═══════════════════════════════════════════════
                 // 2-Phase UX: Phase 1 즉시 표시 → Phase 2 확정 업데이트
                 // ═══════════════════════════════════════════════
                 val twoPhase = withTimeout(SCREENING_TIMEOUT_MS) {
-                    callInterceptRepository.processIncomingCallTwoPhase(normalizedNumber, effectiveCountry)
+                    callInterceptRepository.analyzeIdentifierTwoPhase(
+                        IdentifierAnalysisInput(
+                            normalizedNumber = normalizedNumber,
+                            deviceCountryCode = effectiveCountry,
+                            channel = IdentifierChannel.CALL,
+                        ),
+                    )
                 }
 
                 val finalResult = twoPhase.finalResult()
@@ -250,6 +266,12 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
                             Log.w(TAG, "UserCallRecord lookup failed (non-fatal): ${e.message}")
                             null
                         }
+                        val numberProfileSnapshot = try {
+                            numberProfileRepository.getSnapshot(normalizedNumber)
+                        } catch (e: Exception) {
+                            Log.w(TAG, "NumberProfile lookup failed (non-fatal): ${e.message}")
+                            null
+                        }
                         val blockCount = if (existingRecord?.lastAction == "blocked") {
                             existingRecord.callCount
                         } else {
@@ -263,8 +285,7 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
                             language = overlayLang,
                             twoPhaseDecision = twoPhase,
                             userBlockCount = blockCount,
-                            savedTag = existingRecord?.tag,
-                            savedMemo = existingRecord?.memo,
+                            numberProfileSnapshot = numberProfileSnapshot,
                         )
                         Log.i(TAG, "Overlay shown for: $normalizedNumber")
                     } catch (e: Exception) {

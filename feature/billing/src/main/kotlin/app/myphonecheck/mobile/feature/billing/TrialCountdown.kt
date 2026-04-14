@@ -37,12 +37,15 @@ fun TrialCountdown(
     state: TrialCountdown,
     modifier: Modifier = Modifier,
 ) {
-    val remaining = state as? TrialCountdown.Remaining ?: return
+    val (text, color) = when (state) {
+        is TrialCountdown.Remaining -> "무료 체험 종료까지 D-${state.days}" to Color(0xFF34C759)
+        TrialCountdown.NotApplicable -> "구독으로 보호 상태를 유지할 수 있습니다" to Color(0xFFB3B3B3)
+    }
 
     Text(
-        text = "무료 체험 종료까지 ${remaining.days}일 남음",
+        text = text,
         modifier = modifier,
-        color = Color(0xFF34C759),
+        color = color,
         fontSize = 14.sp,
         fontWeight = FontWeight.SemiBold,
     )

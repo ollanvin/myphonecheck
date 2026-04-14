@@ -9,6 +9,7 @@ import app.myphonecheck.mobile.core.model.BehaviorPatternSignal
 import app.myphonecheck.mobile.core.model.ConclusionCategory
 import app.myphonecheck.mobile.core.model.DecisionResult
 import app.myphonecheck.mobile.core.model.InterceptRoute
+import app.myphonecheck.mobile.core.model.IdentifierAnalysisInput
 import app.myphonecheck.mobile.core.model.PhaseMeta
 import app.myphonecheck.mobile.core.model.PhaseResult
 import app.myphonecheck.mobile.core.model.PhaseSource
@@ -77,21 +78,21 @@ class CallInterceptRepositoryImpl @Inject constructor(
     // 기존 호환: DecisionResult 반환
     // ══════════════════════════════════════════
 
-    override suspend fun processIncomingCall(
-        normalizedNumber: String,
-        deviceCountryCode: String?,
+    override suspend fun analyzeIdentifier(
+        input: IdentifierAnalysisInput,
     ): DecisionResult {
-        return processIncomingCallTwoPhase(normalizedNumber, deviceCountryCode).finalResult()
+        return analyzeIdentifierTwoPhase(input).finalResult()
     }
 
     // ══════════════════════════════════════════
     // Stage 9: 2-Phase 파이프라인
     // ══════════════════════════════════════════
 
-    override suspend fun processIncomingCallTwoPhase(
-        normalizedNumber: String,
-        deviceCountryCode: String?,
+    override suspend fun analyzeIdentifierTwoPhase(
+        input: IdentifierAnalysisInput,
     ): TwoPhaseDecision {
+        val normalizedNumber = input.normalizedNumber
+        val deviceCountryCode = input.deviceCountryCode
         val pipelineStartMs = System.currentTimeMillis()
         val countryCode = deviceCountryCode ?: "ZZ"
 

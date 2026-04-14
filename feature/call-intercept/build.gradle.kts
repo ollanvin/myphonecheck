@@ -48,6 +48,7 @@ dependencies {
     implementation(project(":feature:device-evidence"))
     implementation(project(":feature:decision-engine"))
     implementation(project(":feature:country-config"))
+    implementation(project(":data:contacts"))
     implementation(project(":data:search"))
     implementation(project(":data:local-cache"))
 

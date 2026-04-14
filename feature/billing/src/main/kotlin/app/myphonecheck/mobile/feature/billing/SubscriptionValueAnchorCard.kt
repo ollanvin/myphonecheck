@@ -3,6 +3,7 @@ package app.myphonecheck.mobile.feature.billing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -19,10 +20,22 @@ fun SubscriptionValueAnchorCard(
     state: SubscriptionValueAnchorState?,
     modifier: Modifier = Modifier,
 ) {
-    if (state == null || state.shouldHide) return
+    if (state == null || !state.visible) return
+
+    val metricLines = buildList {
+        state.suspiciousCallsCount?.let {
+            add("검색 근거가 있는 의심 전화 ${it}건 확인")
+        }
+        state.riskyLinkMessagesCount?.let {
+            add("위험 링크 메시지 ${it}건 확인")
+        }
+    }.take(2)
+
+    if (metricLines.isEmpty()) return
 
     Column(
         modifier = modifier
+            .fillMaxWidth()
             .background(
                 color = Color(0xFF1A1A1A),
                 shape = RoundedCornerShape(20.dp),
@@ -31,14 +44,14 @@ fun SubscriptionValueAnchorCard(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
-            text = "최근 ${state.windowDays}일 동안",
+            text = "${state.selectedPeriodLabel} 동안",
             color = Color(0xFFB3B3B3),
             fontSize = 13.sp,
         )
 
-        state.metrics.take(2).forEach { metric ->
+        metricLines.forEach { line ->
             Text(
-                text = metric.toDisplayText(),
+                text = line,
                 color = Color.White,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
@@ -54,19 +67,15 @@ fun SubscriptionValueAnchorCard(
     }
 }
 
-private fun SubscriptionValueAnchorState.ValueMetric.toDisplayText(): String = when (this) {
-    is SubscriptionValueAnchorState.ValueMetric.BlockedCalls -> "의심 전화 ${count}건 탐지"
-    is SubscriptionValueAnchorState.ValueMetric.RiskyLinks -> "위험 링크 메시지 ${count}건 확인"
-}
-
 @Preview(showBackground = true, backgroundColor = 0xFF101010, widthDp = 360)
 @Composable
-private fun SubscriptionValueAnchorCardPreview_WithData() {
+private fun SubscriptionValueAnchorCardPreview_WithMeasuredState() {
     SubscriptionValueAnchorCard(
         state = SubscriptionValueAnchorState(
-            blockedCalls = 12,
-            riskyLinks = 4,
-            windowDays = 30,
+            selectedPeriodLabel = "최근 7일",
+            suspiciousCallsCount = 2,
+            riskyLinkMessagesCount = 1,
+            visible = true,
         ),
         modifier = Modifier.padding(16.dp),
     )
@@ -74,12 +83,13 @@ private fun SubscriptionValueAnchorCardPreview_WithData() {
 
 @Preview(showBackground = true, backgroundColor = 0xFF101010, widthDp = 360, heightDp = 120)
 @Composable
-private fun SubscriptionValueAnchorCardPreview_WithoutData() {
+private fun SubscriptionValueAnchorCardPreview_HiddenState() {
     SubscriptionValueAnchorCard(
         state = SubscriptionValueAnchorState(
-            blockedCalls = 0,
-            riskyLinks = 0,
-            windowDays = 90,
+            selectedPeriodLabel = "누계",
+            suspiciousCallsCount = null,
+            riskyLinkMessagesCount = null,
+            visible = false,
         ),
         modifier = Modifier.padding(16.dp),
     )

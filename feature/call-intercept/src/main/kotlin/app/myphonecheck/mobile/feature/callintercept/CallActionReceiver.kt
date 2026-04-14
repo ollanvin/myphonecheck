@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import app.myphonecheck.mobile.core.model.UserCallAction
+import app.myphonecheck.mobile.data.localcache.entity.NumberProfileBlockState
+import app.myphonecheck.mobile.data.localcache.repository.NumberProfileRepository
 import app.myphonecheck.mobile.data.localcache.repository.UserCallRecordRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -39,6 +41,9 @@ class CallActionReceiver : BroadcastReceiver() {
 
     @Inject
     lateinit var userCallRecordRepository: UserCallRecordRepository
+
+    @Inject
+    lateinit var numberProfileRepository: NumberProfileRepository
 
     private val receiverScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
@@ -79,6 +84,7 @@ class CallActionReceiver : BroadcastReceiver() {
 
             // UserCallRecord에 수신 행동 기록
             recordUserAction(phoneNumber, UserCallAction.ANSWERED)
+            updateBlockState(phoneNumber, NumberProfileBlockState.NONE)
 
             // Notification 해제
             decisionNotificationManager.dismissNotification(context, phoneNumber)
@@ -106,6 +112,7 @@ class CallActionReceiver : BroadcastReceiver() {
 
             // UserCallRecord에 거절 행동 기록
             recordUserAction(phoneNumber, UserCallAction.REJECTED)
+            updateBlockState(phoneNumber, NumberProfileBlockState.NONE)
 
             // Notification 해제
             decisionNotificationManager.dismissNotification(context, phoneNumber)
@@ -120,6 +127,7 @@ class CallActionReceiver : BroadcastReceiver() {
 
             // UserCallRecord에 차단 행동 기록
             recordUserAction(phoneNumber, UserCallAction.BLOCKED)
+            updateBlockState(phoneNumber, NumberProfileBlockState.BLOCKED)
 
             // BlocklistRepository에도 추가
             addToBlocklist(phoneNumber)
@@ -162,6 +170,16 @@ class CallActionReceiver : BroadcastReceiver() {
                 Log.d(TAG, "Successfully added $phoneNumber to blocklist")
             } catch (e: Exception) {
                 Log.e(TAG, "Error adding to blocklist", e)
+            }
+        }
+    }
+
+    private fun updateBlockState(phoneNumber: String, state: NumberProfileBlockState) {
+        receiverScope.launch {
+            runCatching {
+                numberProfileRepository.setBlockState(phoneNumber, state)
+            }.onFailure {
+                Log.w(TAG, "Failed to update NumberProfile block state for $phoneNumber", it)
             }
         }
     }

@@ -68,6 +68,7 @@ class PushInterceptService : NotificationListenerService() {
 
     private companion object {
         private const val TAG = "PushInterceptService"
+        private const val PUSH_CHECK_ENABLED = false
 
         /** 자체 앱 알림 무시 */
         private const val SELF_PACKAGE = "app.myphonecheck.mobile"
@@ -136,7 +137,8 @@ class PushInterceptService : NotificationListenerService() {
         serviceScope.cancel()
     }
 
-    override fun onNotificationPosted(sbn: StatusBarNotification?) {
+override fun onNotificationPosted(sbn: StatusBarNotification?) {
+        if (!PUSH_CHECK_ENABLED) return
         sbn ?: return
 
         val packageName = sbn.packageName ?: return
@@ -152,7 +154,8 @@ class PushInterceptService : NotificationListenerService() {
         }
     }
 
-    override fun onNotificationRemoved(sbn: StatusBarNotification?) {
+override fun onNotificationRemoved(sbn: StatusBarNotification?) {
+        if (!PUSH_CHECK_ENABLED) return
         // 알림 제거 시 상호작용 기록 업데이트 가능
         // 현재는 별도 처리 없음
     }

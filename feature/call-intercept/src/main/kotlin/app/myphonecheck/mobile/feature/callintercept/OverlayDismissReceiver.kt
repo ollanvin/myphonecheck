@@ -5,10 +5,16 @@ import android.content.Context
 import android.content.Intent
 import android.telephony.TelephonyManager
 import android.util.Log
+import app.myphonecheck.mobile.data.contacts.ContactsDataSource
+import app.myphonecheck.mobile.data.localcache.repository.NumberProfileRepository
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 private const val TAG = "OverlayDismiss"
 
@@ -32,7 +38,11 @@ class OverlayDismissReceiver : BroadcastReceiver() {
     @InstallIn(SingletonComponent::class)
     interface DismissReceiverEntryPoint {
         fun callerIdOverlayManager(): CallerIdOverlayManager
+        fun contactsDataSource(): ContactsDataSource
+        fun numberProfileRepository(): NumberProfileRepository
     }
+
+    private val receiverScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent?.action != TelephonyManager.ACTION_PHONE_STATE_CHANGED) return
@@ -42,18 +52,43 @@ class OverlayDismissReceiver : BroadcastReceiver() {
         when (state) {
             TelephonyManager.EXTRA_STATE_IDLE,
             TelephonyManager.EXTRA_STATE_OFFHOOK -> {
-                try {
-                    val entryPoint = EntryPointAccessors.fromApplication(
-                        context.applicationContext, DismissReceiverEntryPoint::class.java
-                    )
-                    val overlayManager = entryPoint.callerIdOverlayManager()
+                val pendingResult = goAsync()
+                receiverScope.launch {
+                    try {
+                        val entryPoint = EntryPointAccessors.fromApplication(
+                            context.applicationContext,
+                            DismissReceiverEntryPoint::class.java,
+                        )
+                        val overlayManager = entryPoint.callerIdOverlayManager()
 
-                    if (overlayManager.isOverlayShowing()) {
-                        overlayManager.dismissOverlay(context.applicationContext)
-                        Log.i(TAG, "Overlay dismissed on phone state: $state")
+                        if (overlayManager.isOverlayShowing()) {
+                            overlayManager.dismissOverlay(context.applicationContext)
+                            Log.i(TAG, "Overlay dismissed on phone state: $state")
+                        }
+
+                        if (state == TelephonyManager.EXTRA_STATE_IDLE) {
+                            val number = overlayManager.consumePendingPromptNumber()
+                            if (!number.isNullOrBlank()) {
+                                val isSavedContact = entryPoint.contactsDataSource().isContactSaved(number)
+                                val snapshot = entryPoint.numberProfileRepository().getSnapshot(number)
+                                val shouldPrompt = !isSavedContact && (snapshot == null || !snapshot.hasUserSignals)
+                                if (shouldPrompt) {
+                                    val launchIntent = Intent(
+                                        context.applicationContext,
+                                        Class.forName("app.myphonecheck.mobile.NonContactQuickLabelActivity"),
+                                    ).apply {
+                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        putExtra("extra_normalized_number", number)
+                                    }
+                                    context.applicationContext.startActivity(launchIntent)
+                                }
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Overlay dismiss error", e)
+                    } finally {
+                        pendingResult.finish()
                     }
-                } catch (e: Exception) {
-                    Log.e(TAG, "Overlay dismiss error", e)
                 }
             }
         }

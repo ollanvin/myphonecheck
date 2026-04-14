@@ -1,6 +1,9 @@
 package app.myphonecheck.mobile.feature.callintercept
 
 import app.myphonecheck.mobile.core.model.DecisionResult
+import app.myphonecheck.mobile.core.model.GlobalIdentifierCore
+import app.myphonecheck.mobile.core.model.IdentifierAnalysisInput
+import app.myphonecheck.mobile.core.model.IdentifierChannel
 import app.myphonecheck.mobile.core.model.TwoPhaseDecision
 
 /**
@@ -15,7 +18,7 @@ import app.myphonecheck.mobile.core.model.TwoPhaseDecision
  * Total target: 3 seconds optimal, 4.5-second hard limit.
  * Returns partial results if search enrichment times out.
  */
-interface CallInterceptRepository {
+interface CallInterceptRepository : GlobalIdentifierCore {
     /**
      * 수신 전화 처리 (기존 호환).
      * TwoPhaseDecision의 finalResult()를 반환.
@@ -26,7 +29,13 @@ interface CallInterceptRepository {
     suspend fun processIncomingCall(
         normalizedNumber: String,
         deviceCountryCode: String?,
-    ): DecisionResult
+    ): DecisionResult = analyzeIdentifier(
+        IdentifierAnalysisInput(
+            normalizedNumber = normalizedNumber,
+            deviceCountryCode = deviceCountryCode,
+            channel = IdentifierChannel.CALL,
+        ),
+    )
 
     /**
      * 수신 전화 처리 (2-Phase).
@@ -38,5 +47,11 @@ interface CallInterceptRepository {
     suspend fun processIncomingCallTwoPhase(
         normalizedNumber: String,
         deviceCountryCode: String?,
-    ): TwoPhaseDecision
+    ): TwoPhaseDecision = analyzeIdentifierTwoPhase(
+        IdentifierAnalysisInput(
+            normalizedNumber = normalizedNumber,
+            deviceCountryCode = deviceCountryCode,
+            channel = IdentifierChannel.CALL,
+        ),
+    )
 }
