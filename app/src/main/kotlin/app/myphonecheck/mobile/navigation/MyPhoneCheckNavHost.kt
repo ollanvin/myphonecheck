@@ -301,6 +301,16 @@ fun MyPhoneCheckNavHost(
                     languageProvider = languageProvider,
                     onBack = { navController.popBackStack() },
                     onNavigateToBackup = { navController.navigate("backup") },
+                    onRestartOnboarding = {
+                        // 온보딩 완료 플래그 동기 제거 → 네비게이션 → 뒤로가기 스택 초기화
+                        appPrefs.edit()
+                            .putBoolean(KEY_ONBOARDING_COMPLETED, false)
+                            .commit()
+                        navController.navigate("onboarding") {
+                            popUpTo(navController.graph.id) { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    },
                 )
             }
             composable("purchase") {
@@ -355,6 +365,62 @@ private fun Context.hasUsageStatsPermission(): Boolean {
 private fun Context.hasReadPhoneStatePermission(): Boolean =
     ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) ==
         PackageManager.PERMISSION_GRANTED
+
+// ─────────────────────────────────────────────────────────────
+// 추가 런타임 권한 체크 — Settings 화면에서 표시/변경
+// ─────────────────────────────────────────────────────────────
+
+private fun Context.hasContactsPermission(): Boolean =
+    ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) ==
+        PackageManager.PERMISSION_GRANTED
+
+private fun Context.hasCallLogPermission(): Boolean =
+    ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) ==
+        PackageManager.PERMISSION_GRANTED
+
+private fun Context.hasReadSmsPermission(): Boolean =
+    ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) ==
+        PackageManager.PERMISSION_GRANTED
+
+private fun Context.hasReceiveSmsPermission(): Boolean =
+    ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) ==
+        PackageManager.PERMISSION_GRANTED
+
+/**
+ * POST_NOTIFICATIONS 은 Android 13 (API 33) 이상에서만 런타임 권한.
+ * 이하 버전에서는 항상 true (시스템이 자동 허용).
+ */
+private fun Context.hasPostNotificationsPermission(): Boolean =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+            PackageManager.PERMISSION_GRANTED
+    } else {
+        true
+    }
+
+/**
+ * ANSWER_PHONE_CALLS 은 Android 8 (API 26) 이상에서만 런타임 권한.
+ * 이하 버전에서는 해당 기능 미지원 — 항상 false 반환하여 UI에서 숨김 처리 가능.
+ */
+private fun Context.hasAnswerCallsPermission(): Boolean =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        ContextCompat.checkSelfPermission(this, Manifest.permission.ANSWER_PHONE_CALLS) ==
+            PackageManager.PERMISSION_GRANTED
+    } else {
+        false
+    }
+
+/**
+ * 앱 세부정보 설정 화면으로 이동.
+ * Android 11+ 런타임 권한 거부가 영구화된 경우 설정에서만 재허용 가능.
+ */
+private fun Context.openAppDetailsSettings() {
+    val intent = Intent(
+        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+        Uri.parse("package:$packageName"),
+    ).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
+    startActivity(intent)
+}
 
 @Composable
 private fun OnboardingScreen(
@@ -1771,6 +1837,7 @@ private fun SettingsScreen(
     languageProvider: LanguageContextProvider,
     onBack: () -> Unit,
     onNavigateToBackup: () -> Unit = {},
+    onRestartOnboarding: () -> Unit = {},
 ) {
     val language = languageProvider.resolveLanguage()
     val context = LocalContext.current
@@ -1956,6 +2023,13 @@ private fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // ═══════════════════════════════════════════════════════
+            // 권한 관리 — 온보딩에서 설정한 항목을 여기서 보고 변경
+            // ═══════════════════════════════════════════════════════
+            SettingsPermissionsSection()
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             // Language info
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -2030,8 +2104,299 @@ private fun SettingsScreen(
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // ═══════════════════════════════════════════════════════
+            // 온보딩 다시 보기 — 대표님 지시: 온보딩에서 설정한 것을
+            // 설정 화면에서 보고 변경할 수 있게. 이 카드는 "재진입" 경로.
+            // ═══════════════════════════════════════════════════════
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onRestartOnboarding() },
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1B2838)),
+                shape = RoundedCornerShape(16.dp),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            Icons.Filled.Shield,
+                            contentDescription = null,
+                            tint = Color(0xFF4FC3F7),
+                            modifier = Modifier.size(24.dp),
+                        )
+                        Column {
+                            Text(
+                                text = context.getString(AppR.string.settings_restart_onboarding_title),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = context.getString(AppR.string.settings_restart_onboarding_desc),
+                                fontSize = 12.sp,
+                                color = Color(0xFFB0BEC5),
+                            )
+                        }
+                    }
+                    Icon(
+                        Icons.Filled.ChevronRight,
+                        contentDescription = null,
+                        tint = Color(0xFFB0BEC5),
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
+            }
         }
     }
+}
+
+// ═══════════════════════════════════════════════════════════
+// Settings > 권한 관리 섹션
+// — 접근성(3) · 통화·메시지(6) · 알림(1) 총 10종
+// — Lifecycle.ON_RESUME 시 자동 새로고침 (시스템 설정에서 변경 반영)
+// — 온보딩 Page 5 의 OnboardingPermissionRow 재사용 (DRY)
+// ═══════════════════════════════════════════════════════════
+
+@Composable
+private fun SettingsPermissionsSection() {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var refreshTrigger by remember { mutableIntStateOf(0) }
+
+    // 포그라운드 복귀 시 자동 새로고침 (온보딩 Page 5 와 동일 패턴)
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                refreshTrigger++
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    // ── 접근성 그룹 (특수 권한 — 시스템 설정으로 직행) ──
+    val overlayOk = remember(refreshTrigger) { context.hasDrawOverlayPermission() }
+    val notifListenerOk = remember(refreshTrigger) { context.isNotificationListenerEnabled() }
+    val usageStatsOk = remember(refreshTrigger) { context.hasUsageStatsPermission() }
+
+    // ── 통화·메시지 그룹 (런타임 권한) ──
+    val phoneStateOk = remember(refreshTrigger) { context.hasReadPhoneStatePermission() }
+    val contactsOk = remember(refreshTrigger) { context.hasContactsPermission() }
+    val callLogOk = remember(refreshTrigger) { context.hasCallLogPermission() }
+    val readSmsOk = remember(refreshTrigger) { context.hasReadSmsPermission() }
+    val receiveSmsOk = remember(refreshTrigger) { context.hasReceiveSmsPermission() }
+    val answerCallsOk = remember(refreshTrigger) { context.hasAnswerCallsPermission() }
+
+    // ── 알림 그룹 ──
+    val postNotifOk = remember(refreshTrigger) { context.hasPostNotificationsPermission() }
+
+    // 런타임 권한 요청 런처 — Manifest permission 이름을 직접 전달
+    val phoneStateLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { refreshTrigger++ }
+    val contactsLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { refreshTrigger++ }
+    val callLogLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { refreshTrigger++ }
+    val readSmsLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { refreshTrigger++ }
+    val receiveSmsLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { refreshTrigger++ }
+    val answerCallsLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { refreshTrigger++ }
+    val postNotifLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { refreshTrigger++ }
+
+    // 섹션 헤더
+    Text(
+        text = context.getString(AppR.string.settings_permissions_header),
+        fontSize = 18.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color.White,
+        modifier = Modifier.padding(bottom = 12.dp),
+    )
+
+    // ─── 접근성 그룹 ───────────────────────────────────
+    PermissionGroupHeader(
+        text = context.getString(AppR.string.settings_perm_group_accessibility),
+    )
+    OnboardingPermissionRow(
+        icon = Icons.Filled.Layers,
+        title = context.getString(AppR.string.perm_overlay_title),
+        description = context.getString(AppR.string.perm_overlay_desc),
+        granted = overlayOk,
+        onAllow = {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:${context.packageName}"),
+                ).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
+                context.startActivity(intent)
+            }
+        },
+    )
+    OnboardingPermissionRow(
+        icon = Icons.Filled.Notifications,
+        title = context.getString(AppR.string.perm_notification_listener_title),
+        description = context.getString(AppR.string.perm_notification_listener_desc),
+        granted = notifListenerOk,
+        onAllow = {
+            context.startActivity(
+                Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+                    .apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) },
+            )
+        },
+    )
+    OnboardingPermissionRow(
+        icon = Icons.Filled.Security,
+        title = context.getString(AppR.string.perm_usage_stats_title),
+        description = context.getString(AppR.string.perm_usage_stats_desc),
+        granted = usageStatsOk,
+        onAllow = {
+            context.startActivity(
+                Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+                    .apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) },
+            )
+        },
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    // ─── 통화·메시지 그룹 ──────────────────────────────
+    PermissionGroupHeader(
+        text = context.getString(AppR.string.settings_perm_group_phone_sms),
+    )
+    OnboardingPermissionRow(
+        icon = Icons.Filled.Phone,
+        title = context.getString(AppR.string.perm_phone_state_title),
+        description = context.getString(AppR.string.perm_phone_state_desc),
+        granted = phoneStateOk,
+        onAllow = {
+            if (phoneStateOk) {
+                context.openAppDetailsSettings()
+            } else {
+                phoneStateLauncher.launch(Manifest.permission.READ_PHONE_STATE)
+            }
+        },
+    )
+    OnboardingPermissionRow(
+        icon = Icons.Filled.Phone,
+        title = context.getString(AppR.string.perm_contacts_title),
+        description = context.getString(AppR.string.perm_contacts_desc),
+        granted = contactsOk,
+        onAllow = {
+            if (contactsOk) {
+                context.openAppDetailsSettings()
+            } else {
+                contactsLauncher.launch(Manifest.permission.READ_CONTACTS)
+            }
+        },
+    )
+    OnboardingPermissionRow(
+        icon = Icons.Filled.Phone,
+        title = context.getString(AppR.string.perm_call_log_title),
+        description = context.getString(AppR.string.perm_call_log_desc),
+        granted = callLogOk,
+        onAllow = {
+            if (callLogOk) {
+                context.openAppDetailsSettings()
+            } else {
+                callLogLauncher.launch(Manifest.permission.READ_CALL_LOG)
+            }
+        },
+    )
+    OnboardingPermissionRow(
+        icon = Icons.Filled.Message,
+        title = context.getString(AppR.string.perm_sms_read_title),
+        description = context.getString(AppR.string.perm_sms_read_desc),
+        granted = readSmsOk,
+        onAllow = {
+            if (readSmsOk) {
+                context.openAppDetailsSettings()
+            } else {
+                readSmsLauncher.launch(Manifest.permission.READ_SMS)
+            }
+        },
+    )
+    OnboardingPermissionRow(
+        icon = Icons.Filled.Message,
+        title = context.getString(AppR.string.perm_sms_receive_title),
+        description = context.getString(AppR.string.perm_sms_receive_desc),
+        granted = receiveSmsOk,
+        onAllow = {
+            if (receiveSmsOk) {
+                context.openAppDetailsSettings()
+            } else {
+                receiveSmsLauncher.launch(Manifest.permission.RECEIVE_SMS)
+            }
+        },
+    )
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        OnboardingPermissionRow(
+            icon = Icons.Filled.Phone,
+            title = context.getString(AppR.string.perm_answer_calls_title),
+            description = context.getString(AppR.string.perm_answer_calls_desc),
+            granted = answerCallsOk,
+            onAllow = {
+                if (answerCallsOk) {
+                    context.openAppDetailsSettings()
+                } else {
+                    answerCallsLauncher.launch(Manifest.permission.ANSWER_PHONE_CALLS)
+                }
+            },
+        )
+    }
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    // ─── 알림 그룹 ─────────────────────────────────────
+    PermissionGroupHeader(
+        text = context.getString(AppR.string.settings_perm_group_notification),
+    )
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        OnboardingPermissionRow(
+            icon = Icons.Filled.Notifications,
+            title = context.getString(AppR.string.perm_post_notifications_title),
+            description = context.getString(AppR.string.perm_post_notifications_desc),
+            granted = postNotifOk,
+            onAllow = {
+                if (postNotifOk) {
+                    context.openAppDetailsSettings()
+                } else {
+                    postNotifLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            },
+        )
+    }
+}
+
+@Composable
+private fun PermissionGroupHeader(text: String) {
+    Text(
+        text = text,
+        fontSize = 13.sp,
+        fontWeight = FontWeight.SemiBold,
+        color = Color(0xFF4FC3F7),
+        modifier = Modifier.padding(top = 4.dp, bottom = 8.dp, start = 4.dp),
+    )
 }
 
 // ═══════════════════════════════════════════════════════════

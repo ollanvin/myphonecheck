@@ -165,6 +165,31 @@
     <string name="perm_phone_state_desc">수신 전화 감지 및 스크리닝</string>
     <string name="perm_action_allow">허용하기</string>
     <string name="perm_status_granted">허용됨</string>
+    <string name="perm_status_denied">허용되지 않음</string>
+
+    <!-- 설정 > 권한 (접근성 그룹) -->
+    <string name="settings_perm_group_accessibility">접근성 권한</string>
+    <string name="settings_perm_group_phone_sms">통화 · 메시지</string>
+    <string name="settings_perm_group_notification">알림</string>
+
+    <!-- 설정 > 권한 (추가 항목) -->
+    <string name="perm_contacts_title">연락처</string>
+    <string name="perm_contacts_desc">수신 전화 중 저장된 발신자 식별</string>
+    <string name="perm_call_log_title">통화 기록</string>
+    <string name="perm_call_log_desc">최근 수·발신 통화 분석</string>
+    <string name="perm_sms_read_title">문자 읽기</string>
+    <string name="perm_sms_read_desc">기존 메시지에서 사기 패턴 탐지</string>
+    <string name="perm_sms_receive_title">문자 수신</string>
+    <string name="perm_sms_receive_desc">새 메시지 실시간 검사</string>
+    <string name="perm_post_notifications_title">알림 표시</string>
+    <string name="perm_post_notifications_desc">위험 감지 시 알림 전송</string>
+    <string name="perm_answer_calls_title">전화 응답</string>
+    <string name="perm_answer_calls_desc">수신 전화 중 앱 제어 허용</string>
+
+    <!-- 설정 > 온보딩 재진입 -->
+    <string name="settings_permissions_header">권한 관리</string>
+    <string name="settings_restart_onboarding_title">온보딩 다시 보기</string>
+    <string name="settings_restart_onboarding_desc">5단계 설정 과정을 다시 진행</string>
     <string name="onboarding_permissions_later">나중에</string>
     <string name="onboarding_permissions_continue_home">시작하기</string>
     <string name="home_security_trust_badge">🔒 100% 온디바이스 · 서버 없음 · 데이터 수집 없음</string>

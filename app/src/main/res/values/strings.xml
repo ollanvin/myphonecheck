@@ -165,6 +165,31 @@
     <string name="perm_phone_state_desc">Detect incoming calls for call screening</string>
     <string name="perm_action_allow">Allow</string>
     <string name="perm_status_granted">Granted</string>
+    <string name="perm_status_denied">Not granted</string>
+
+    <!-- Settings > Permissions (Accessibility group) -->
+    <string name="settings_perm_group_accessibility">Accessibility access</string>
+    <string name="settings_perm_group_phone_sms">Phone and messaging</string>
+    <string name="settings_perm_group_notification">Notifications</string>
+
+    <!-- Settings > Permissions (additional items) -->
+    <string name="perm_contacts_title">Contacts</string>
+    <string name="perm_contacts_desc">Identify saved callers during screening</string>
+    <string name="perm_call_log_title">Call log</string>
+    <string name="perm_call_log_desc">Analyze recent incoming and outgoing calls</string>
+    <string name="perm_sms_read_title">Read SMS</string>
+    <string name="perm_sms_read_desc">Detect scam patterns in existing messages</string>
+    <string name="perm_sms_receive_title">Receive SMS</string>
+    <string name="perm_sms_receive_desc">Inspect new messages in real time</string>
+    <string name="perm_post_notifications_title">Show notifications</string>
+    <string name="perm_post_notifications_desc">Deliver alerts when risk is detected</string>
+    <string name="perm_answer_calls_title">Answer calls</string>
+    <string name="perm_answer_calls_desc">Allow in-app control during incoming calls</string>
+
+    <!-- Settings > Onboarding replay -->
+    <string name="settings_permissions_header">Permissions</string>
+    <string name="settings_restart_onboarding_title">Replay onboarding</string>
+    <string name="settings_restart_onboarding_desc">Go through the 5-step setup flow again</string>
     <string name="onboarding_permissions_later">Later</string>
     <string name="onboarding_permissions_continue_home">Get started</string>
     <string name="home_security_trust_badge">🔒 100% on-device · No servers · No data collection</string>
