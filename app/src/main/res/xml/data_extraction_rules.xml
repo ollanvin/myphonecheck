@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android Auto Backup / Device Transfer 전면 차단.
+
+  이유:
+  - SQLCipher 로 DB 암호화, 키는 Android Keystore 에 device-bound 저장.
+  - Keystore 키는 앱 재설치 시 삭제되며 백업/전송되지 않음.
+  - DB 파일만 Auto Backup 으로 복원되면 새 Keystore 키로 복호화 불가 → HMAC 실패 크래시.
+  - Signal / WhatsApp 동일 패턴: 암호화 DB 를 사용하는 앱은 Auto Backup 비활성화가 업계 정석.
+
+  AndroidManifest 의 android:allowBackup="false" 와 이중 방어 (OEM 편차 대응).
+-->
 <data-extraction-rules>
     <cloud-backup>
-        <exclude domain="sharedpref" path="."/>
+        <exclude domain="root"/>
     </cloud-backup>
+    <device-transfer>
+        <exclude domain="root"/>
+    </device-transfer>
 </data-extraction-rules>

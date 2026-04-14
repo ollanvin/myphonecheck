@@ -16,9 +16,9 @@
 # ---- Hilt 모듈 ----
 -keep class app.myphonecheck.mobile.core.security.SecurityModule { *; }
 
-# ---- SQLCipher ----
--keep class net.sqlcipher.** { *; }
--dontwarn net.sqlcipher.**
+# ---- SQLCipher (sqlcipher-android 4.6.1 — 공식 현행 라이브러리) ----
+-keep class net.zetetic.database.** { *; }
+-dontwarn net.zetetic.database.**
 
 # ---- Security Crypto ----
 -keep class androidx.security.crypto.** { *; }

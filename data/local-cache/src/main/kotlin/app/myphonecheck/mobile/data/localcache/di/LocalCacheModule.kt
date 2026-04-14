@@ -1,6 +1,7 @@
 package app.myphonecheck.mobile.data.localcache.di
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
 import app.myphonecheck.mobile.core.security.DatabaseKeyProvider
 import app.myphonecheck.mobile.data.localcache.dao.BackupMetadataDao
@@ -17,7 +18,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import net.sqlcipher.database.SupportFactory
+import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 import javax.inject.Singleton
 
 /**
@@ -37,8 +38,28 @@ object LocalCacheModule {
         @ApplicationContext context: Context,
         databaseKeyProvider: DatabaseKeyProvider,
     ): MyPhoneCheckDatabase {
-        val passphrase = databaseKeyProvider.getOrCreateDatabaseKey()
-        val factory = SupportFactory(passphrase)
+        // sqlcipher-android 4.6.1 (공식 현행 라이브러리, 기존 android-database-sqlcipher는 deprecated).
+        // Raw 32-byte 키를 SQLCipher raw-key format "x'<64 hex chars>'" 로 변환하여 전달.
+        //
+        // 이유 (SQLCipher 공식 권장):
+        // 1) raw 바이너리 ByteArray 전달 시 내부 C-string 처리 과정에서 0x00 바이트 truncation
+        //    가능성이 있으며, 32바이트 랜덤 키에서 0x00 포함 확률 ≈ 11.8%.
+        // 2) "x'...'" 포맷은 PBKDF2를 우회하고 raw 256-bit AES 키를 그대로 사용.
+        //    https://www.zetetic.net/sqlcipher/sqlcipher-api/#key
+        // 3) clearPassphrase=false — Room connection pool이 동일 ByteArray를 여러
+        //    connection에서 재사용하므로 zero-out 방지 필수.
+        val rawKey = databaseKeyProvider.getOrCreateDatabaseKey()
+        val hex = rawKey.joinToString("") { "%02x".format(it) }
+        val passphrase = "x'$hex'".toByteArray(Charsets.UTF_8)
+        Log.i(
+            "LocalCacheModule",
+            "SQLCipher(sqlcipher-android 4.6.1) raw-key: rawKeyLen=${rawKey.size}, " +
+                "passphraseLen=${passphrase.size}, " +
+                "prefix=${String(passphrase.copyOfRange(0, 4), Charsets.UTF_8)}, " +
+                "suffix=${String(passphrase.copyOfRange(passphrase.size - 2, passphrase.size), Charsets.UTF_8)}",
+        )
+        val factory = SupportOpenHelperFactory(passphrase, null, false)
+        Log.i("LocalCacheModule", "SupportOpenHelperFactory created — clearPassphrase=false")
 
         return Room.databaseBuilder(
             context,

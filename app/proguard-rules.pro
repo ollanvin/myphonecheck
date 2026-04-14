@@ -37,9 +37,9 @@
 -keep class app.myphonecheck.mobile.data.localcache.entity.** { *; }
 -keep class app.myphonecheck.mobile.data.localcache.dao.** { *; }
 
-# ---- SQLCipher ----
--keep class net.sqlcipher.** { *; }
--dontwarn net.sqlcipher.**
+# ---- SQLCipher (sqlcipher-android 4.6.1 — 공식 현행 라이브러리) ----
+-keep class net.zetetic.database.** { *; }
+-dontwarn net.zetetic.database.**
 
 # ---- Navigation ----
 -keepclasseswithmembers class * {

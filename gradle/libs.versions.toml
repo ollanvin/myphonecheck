@@ -24,7 +24,7 @@ datastore = "1.1.1"
 work-runtime = "2.9.0"
 hilt-work = "1.2.0"
 documentfile = "1.0.1"
-sqlcipher = "4.5.4"
+sqlcipher = "4.6.1"
 sqlite-ktx = "2.4.0"
 security-crypto = "1.1.0-alpha06"
 
@@ -77,7 +77,7 @@ hilt-work-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 documentfile = { group = "androidx.documentfile", name = "documentfile", version.ref = "documentfile" }
-sqlcipher-android = { group = "net.zetetic", name = "android-database-sqlcipher", version.ref = "sqlcipher" }
+sqlcipher-android = { group = "net.zetetic", name = "sqlcipher-android", version.ref = "sqlcipher" }
 sqlite-ktx = { group = "androidx.sqlite", name = "sqlite-ktx", version.ref = "sqlite-ktx" }
 security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "security-crypto" }
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }

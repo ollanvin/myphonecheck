@@ -93,6 +93,9 @@ dependencies {
     implementation(libs.room.ktx)
     kapt(libs.room.compiler)
 
+    // SQLCipher — Application.onCreate()에서 loadLibs 호출 위해 직접 의존성 필요
+    implementation(libs.sqlcipher.android)
+
     // Gson
     implementation(libs.gson)
 
