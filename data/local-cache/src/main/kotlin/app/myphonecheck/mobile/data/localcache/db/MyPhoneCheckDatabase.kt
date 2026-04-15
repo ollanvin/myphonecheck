@@ -43,7 +43,7 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
         PrivacyHistoryEntity::class,
         PushStatsEntity::class,
     ],
-    version = 8,
+    version = 9,
     exportSchema = true,
 )
 abstract class MyPhoneCheckDatabase : RoomDatabase() {

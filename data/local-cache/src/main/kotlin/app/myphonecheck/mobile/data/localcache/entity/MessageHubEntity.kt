@@ -79,6 +79,14 @@ data class MessageHubEntity(
     @ColumnInfo(name = "confidence")
     val confidence: Float,
 
+    /** 중요도 축 (UNKNOWN, NORMAL, IMPORTANT, DO_NOT_MISS) */
+    @ColumnInfo(name = "importance_level")
+    val importanceLevel: String = "UNKNOWN",
+
+    /** 중요도 규칙 근거 */
+    @ColumnInfo(name = "importance_reason")
+    val importanceReason: String? = null,
+
     /** AI 판단 요약 (한 줄) */
     @ColumnInfo(name = "summary")
     val summary: String,

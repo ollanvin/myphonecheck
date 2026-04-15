@@ -11,6 +11,7 @@ import app.myphonecheck.mobile.core.model.DecisionResult
 import app.myphonecheck.mobile.core.model.IdentifierAnalysisInput
 import app.myphonecheck.mobile.core.model.IdentifierChannel
 import app.myphonecheck.mobile.core.model.IdentifierMessageMetadata
+import app.myphonecheck.mobile.core.model.ImportanceLevel
 import app.myphonecheck.mobile.core.model.RiskLevel
 import app.myphonecheck.mobile.core.model.SearchEvidence
 import app.myphonecheck.mobile.core.util.PhoneNumberNormalizer
@@ -116,6 +117,8 @@ class SmsInterceptReceiver : BroadcastReceiver() {
             val senderKey = normalizedNumber ?: sender
             val isSavedContact = normalizedNumber?.let { contactsDataSource.isContactSaved(it) } ?: false
             normalizedNumber?.let { numberProfileRepository.touchSmsInteraction(it, now) }
+            val actionState = normalizedNumber
+                ?.let { numberProfileRepository.getSnapshot(it)?.actionState }
 
             val detectedLinks = detectLinks(body)
             val longestLinkLength = detectedLinks.maxOfOrNull { it.length } ?: 0
@@ -130,6 +133,7 @@ class SmsInterceptReceiver : BroadcastReceiver() {
                         deviceCountryCode = deviceCountry,
                         channel = IdentifierChannel.SMS,
                         isSavedContact = false,
+                        actionState = actionState,
                         messageMetadata = IdentifierMessageMetadata(
                             hasUrl = detectedLinks.isNotEmpty(),
                             urlCount = detectedLinks.size,
@@ -158,6 +162,8 @@ class SmsInterceptReceiver : BroadcastReceiver() {
                 category = fallbackDecision.category.name,
                 action = fallbackDecision.action.name,
                 confidence = fallbackDecision.confidence,
+                importanceLevel = fallbackDecision.importanceLevel.name,
+                importanceReason = fallbackDecision.importanceReason,
                 summary = decision?.summary ?: if (isSavedContact) {
                     "저장된 연락처입니다"
                 } else {
@@ -255,6 +261,8 @@ class SmsInterceptReceiver : BroadcastReceiver() {
         confidence = 0f,
         summary = "번호 기반 확인 정보가 충분하지 않습니다",
         reasons = emptyList(),
+        importanceLevel = ImportanceLevel.UNKNOWN,
+        importanceReason = "no_importance_rule_matched",
         deviceEvidence = null,
         searchEvidence = null,
     )

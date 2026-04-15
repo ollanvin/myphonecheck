@@ -112,6 +112,20 @@ class MessageHubViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Toggle number as DO_NOT_MISS.
+     *
+     * When enabled, sets ActionState to DO_NOT_BLOCK, which triggers
+     * ImportanceLevel.DO_NOT_MISS in the decision engine for the next call/SMS.
+     *
+     * Call this from UI actions (button tap, menu item, etc).
+     */
+    fun toggleDoNotMiss(number: String) {
+        viewModelScope.launch {
+            numberProfileRepository.toggleDoNotMiss(number)
+        }
+    }
+
     private fun cancelNotificationsForPackage(packageName: String) {
         val nm = appContext.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
             ?: return

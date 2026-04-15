@@ -75,6 +75,7 @@ import androidx.navigation.navArgument
 import app.myphonecheck.mobile.R as AppR
 import app.myphonecheck.mobile.core.model.ActionState
 import app.myphonecheck.mobile.core.model.InterceptEventType
+import app.myphonecheck.mobile.core.model.ImportanceLevel
 import app.myphonecheck.mobile.core.model.RiskLevel
 import app.myphonecheck.mobile.core.model.SearchStatus
 import app.myphonecheck.mobile.core.model.UserCallAction
@@ -1207,6 +1208,17 @@ private fun MessageHubProfileItem(
             Text("유사번호 존재 여부  ${meta.similarNumberLabel ?: "확인 안 됨"}", fontSize = 13.sp, color = Color(0xFFB0BEC5), maxLines = 1)
             Spacer(modifier = Modifier.height(6.dp))
             Text(searchStatus, fontSize = 13.sp, color = Color(0xFF80CBC4))
+            val importance = runCatching { ImportanceLevel.valueOf(item.importanceLevel) }
+                .getOrDefault(ImportanceLevel.UNKNOWN)
+            if (importance != ImportanceLevel.UNKNOWN) {
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    "중요도  ${importance.name} (${item.importanceReason ?: "-"})",
+                    fontSize = 13.sp,
+                    color = Color(0xFFB39DDB),
+                    maxLines = 1,
+                )
+            }
             Spacer(modifier = Modifier.height(6.dp))
             numberProfile?.actionState?.displayLabelKo()?.let { actionStateLabel ->
                 Text(actionStateLabel, fontSize = 13.sp, color = Color(0xFFA5D6A7))
@@ -3577,6 +3589,17 @@ private fun MessageHubListItem(
                 maxLines = 1,
             )
             Spacer(modifier = Modifier.height(6.dp))
+            val importance = runCatching { ImportanceLevel.valueOf(item.importanceLevel) }
+                .getOrDefault(ImportanceLevel.UNKNOWN)
+            if (importance != ImportanceLevel.UNKNOWN) {
+                Text(
+                    text = "중요도  ${importance.name} (${item.importanceReason ?: "-"})",
+                    fontSize = 13.sp,
+                    color = Color(0xFFB39DDB),
+                    maxLines = 1,
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+            }
             if (item.linkCount > 0 && link != null) {
                 Row(
                     modifier = Modifier

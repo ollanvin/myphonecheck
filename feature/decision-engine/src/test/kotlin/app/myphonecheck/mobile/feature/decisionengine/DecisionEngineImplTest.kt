@@ -390,4 +390,170 @@ class DecisionEngineImplTest {
 
         assertTrue(bothResult.confidence >= deviceOnlyResult.confidence)
     }
+
+    // ===== IMPORTANCE AXIS TESTS =====
+
+    @Test
+    fun savedContact_returnsImportanceImportant() {
+        val device = DeviceEvidence(
+            isSavedContact = true,
+            contactName = "John Doe",
+            outgoingCount = 5,
+            lastOutgoingAt = System.currentTimeMillis(),
+            incomingCount = 10,
+            lastIncomingAt = System.currentTimeMillis(),
+            answeredCount = 12,
+            rejectedCount = 0,
+            lastRejectedAt = null,
+            missedCount = 3,
+            lastMissedAt = null,
+            connectedCount = 12,
+            lastConnectedAt = System.currentTimeMillis(),
+            totalDurationSec = 3600,
+            avgDurationSec = 300,
+            shortCallCount = 1,
+            longCallCount = 5,
+            recentDaysContact = 1,
+            smsExists = true,
+            smsLastAt = System.currentTimeMillis(),
+            localTag = null,
+            localMemo = null,
+        )
+
+        val result = engine.evaluate(device, null)
+
+        assertEquals(
+            app.myphonecheck.mobile.core.model.ImportanceLevel.IMPORTANT,
+            result.importanceLevel,
+        )
+        assertEquals("saved_contact", result.importanceReason)
+    }
+
+    @Test
+    fun noEvidence_returnsImportanceUnknown() {
+        val result = engine.evaluate(null, null)
+
+        assertEquals(
+            app.myphonecheck.mobile.core.model.ImportanceLevel.UNKNOWN,
+            result.importanceLevel,
+        )
+        assertEquals("no_importance_rule_matched", result.importanceReason)
+    }
+
+    @Test
+    fun repeatedInteractionAboveImportantThreshold_returnsImportanceImportant() {
+        val device = DeviceEvidence(
+            isSavedContact = false,
+            contactName = null,
+            outgoingCount = 4,
+            lastOutgoingAt = System.currentTimeMillis(),
+            incomingCount = 8,
+            lastIncomingAt = System.currentTimeMillis(),
+            answeredCount = 10,
+            rejectedCount = 0,
+            lastRejectedAt = null,
+            missedCount = 2,
+            lastMissedAt = null,
+            connectedCount = 10,
+            lastConnectedAt = System.currentTimeMillis(),
+            totalDurationSec = 2400,
+            avgDurationSec = 240,
+            shortCallCount = 1,
+            longCallCount = 4,
+            recentDaysContact = 2,
+            smsExists = true,
+            smsLastAt = System.currentTimeMillis(),
+            localTag = null,
+            localMemo = null,
+        )
+
+        val result = engine.evaluate(device, null)
+
+        assertEquals(
+            app.myphonecheck.mobile.core.model.ImportanceLevel.IMPORTANT,
+            result.importanceLevel,
+        )
+        assertTrue(
+            result.importanceReason.contains("repeated_interaction_high") ||
+                result.importanceReason.contains("repeated_interaction"),
+        )
+    }
+
+    @Test
+    fun repeatedInteractionAboveNormalThreshold_returnsImportanceNormal() {
+        val device = DeviceEvidence(
+            isSavedContact = false,
+            contactName = null,
+            outgoingCount = 1,
+            lastOutgoingAt = System.currentTimeMillis(),
+            incomingCount = 3,
+            lastIncomingAt = System.currentTimeMillis(),
+            answeredCount = 3,
+            rejectedCount = 0,
+            lastRejectedAt = null,
+            missedCount = 1,
+            lastMissedAt = null,
+            connectedCount = 3,
+            lastConnectedAt = System.currentTimeMillis(),
+            totalDurationSec = 300,
+            avgDurationSec = 100,
+            shortCallCount = 0,
+            longCallCount = 1,
+            recentDaysContact = 2,
+            smsExists = false,
+            smsLastAt = null,
+            localTag = null,
+            localMemo = null,
+        )
+
+        val result = engine.evaluate(device, null)
+
+        assertEquals(
+            app.myphonecheck.mobile.core.model.ImportanceLevel.NORMAL,
+            result.importanceLevel,
+        )
+        assertTrue(result.importanceReason.contains("repeated_interaction"))
+    }
+
+    @Test
+    fun doNotBlockActionState_returnsImportanceDoNotMiss() {
+        val device = DeviceEvidence(
+            isSavedContact = false,
+            contactName = null,
+            outgoingCount = 0,
+            lastOutgoingAt = null,
+            incomingCount = 0,
+            lastIncomingAt = null,
+            answeredCount = 0,
+            rejectedCount = 0,
+            lastRejectedAt = null,
+            missedCount = 0,
+            lastMissedAt = null,
+            connectedCount = 0,
+            lastConnectedAt = null,
+            totalDurationSec = 0,
+            avgDurationSec = 0,
+            shortCallCount = 0,
+            longCallCount = 0,
+            recentDaysContact = null,
+            smsExists = false,
+            smsLastAt = null,
+            localTag = null,
+            localMemo = null,
+        )
+
+        val result = engine.evaluate(
+            device,
+            null,
+            null,
+            null,
+            app.myphonecheck.mobile.core.model.ActionState.DO_NOT_BLOCK,
+        )
+
+        assertEquals(
+            app.myphonecheck.mobile.core.model.ImportanceLevel.DO_NOT_MISS,
+            result.importanceLevel,
+        )
+        assertEquals("action_state_do_not_block", result.importanceReason)
+    }
 }

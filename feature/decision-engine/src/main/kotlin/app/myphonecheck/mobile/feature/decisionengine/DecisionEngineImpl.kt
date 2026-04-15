@@ -1,10 +1,12 @@
 package app.myphonecheck.mobile.feature.decisionengine
 
 import app.myphonecheck.mobile.core.model.ActionRecommendation
+import app.myphonecheck.mobile.core.model.ActionState
 import app.myphonecheck.mobile.core.model.BehaviorPatternSignal
 import app.myphonecheck.mobile.core.model.ConclusionCategory
 import app.myphonecheck.mobile.core.model.DecisionResult
 import app.myphonecheck.mobile.core.model.DeviceEvidence
+import app.myphonecheck.mobile.core.model.ImportanceLevel
 import app.myphonecheck.mobile.core.model.LocalLearningSignal
 import app.myphonecheck.mobile.core.model.RiskLevel
 import app.myphonecheck.mobile.core.model.SearchEvidence
@@ -38,6 +40,7 @@ class DecisionEngineImpl @Inject constructor(
         searchEvidence: SearchEvidence?,
         localLearning: LocalLearningSignal?,
         behaviorPattern: BehaviorPatternSignal?,
+        actionState: ActionState?,
     ): DecisionResult {
         val hasAnyEvidence = (deviceEvidence != null && deviceEvidence.hasAnyHistory) ||
                 (searchEvidence != null && !searchEvidence.isEmpty) ||
@@ -79,6 +82,11 @@ class DecisionEngineImpl @Inject constructor(
         // Step 7: Summary + reasons
         val summary = summaryGenerator.generateSummary(category)
         val reasons = summaryGenerator.generateReasons(category, deviceEvidence, searchEvidence)
+        val importance = determineImportance(
+            deviceEvidence = deviceEvidence,
+            localLearning = localLearning,
+            actionState = actionState,
+        )
 
         return DecisionResult(
             riskLevel = riskLevel,
@@ -87,6 +95,8 @@ class DecisionEngineImpl @Inject constructor(
             confidence = confidence,
             summary = summary,
             reasons = reasons,
+            importanceLevel = importance.level,
+            importanceReason = importance.reason,
             deviceEvidence = deviceEvidence,
             searchEvidence = searchEvidence,
         )
@@ -358,5 +368,59 @@ class DecisionEngineImpl @Inject constructor(
         score >= 0.3f -> RiskLevel.MEDIUM
         score > 0f -> RiskLevel.LOW
         else -> RiskLevel.UNKNOWN
+    }
+
+    private fun determineImportance(
+        deviceEvidence: DeviceEvidence?,
+        localLearning: LocalLearningSignal?,
+        actionState: ActionState?,
+    ): ImportanceDecision {
+        if (actionState == ActionState.DO_NOT_BLOCK) {
+            return ImportanceDecision(
+                level = ImportanceLevel.DO_NOT_MISS,
+                reason = "action_state_do_not_block",
+            )
+        }
+
+        if (deviceEvidence?.isSavedContact == true) {
+            return ImportanceDecision(
+                level = ImportanceLevel.IMPORTANT,
+                reason = "saved_contact",
+            )
+        }
+
+        val repeatedInteractionCount = maxOf(
+            localLearning?.callCount ?: 0,
+            (deviceEvidence?.incomingCount ?: 0) +
+                (deviceEvidence?.outgoingCount ?: 0) +
+                (deviceEvidence?.smsTotalCount ?: 0),
+        )
+        if (repeatedInteractionCount >= REPEATED_IMPORTANT_THRESHOLD) {
+            return ImportanceDecision(
+                level = ImportanceLevel.IMPORTANT,
+                reason = "repeated_interaction_high($repeatedInteractionCount)",
+            )
+        }
+        if (repeatedInteractionCount >= REPEATED_NORMAL_THRESHOLD) {
+            return ImportanceDecision(
+                level = ImportanceLevel.NORMAL,
+                reason = "repeated_interaction($repeatedInteractionCount)",
+            )
+        }
+
+        return ImportanceDecision(
+            level = ImportanceLevel.UNKNOWN,
+            reason = "no_importance_rule_matched",
+        )
+    }
+
+    private data class ImportanceDecision(
+        val level: ImportanceLevel,
+        val reason: String,
+    )
+
+    private companion object {
+        const val REPEATED_NORMAL_THRESHOLD = 3
+        const val REPEATED_IMPORTANT_THRESHOLD = 8
     }
 }

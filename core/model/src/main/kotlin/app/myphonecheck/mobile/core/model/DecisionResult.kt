@@ -18,6 +18,8 @@ data class DecisionResult(
     val confidence: Float,         // 0.0 ~ 1.0
     val summary: String,           // one-line human-readable conclusion
     val reasons: List<String>,     // max 3 supporting reasons
+    val importanceLevel: ImportanceLevel = ImportanceLevel.UNKNOWN,
+    val importanceReason: String = "",
     val deviceEvidence: DeviceEvidence?,
     val searchEvidence: SearchEvidence?,
 ) {
@@ -30,6 +32,8 @@ data class DecisionResult(
             confidence = 0.0f,
             summary = "판단 근거 부족",
             reasons = listOf("검색 근거 부족"),
+            importanceLevel = ImportanceLevel.UNKNOWN,
+            importanceReason = "규칙 매칭 없음",
             deviceEvidence = null,
             searchEvidence = null,
         )

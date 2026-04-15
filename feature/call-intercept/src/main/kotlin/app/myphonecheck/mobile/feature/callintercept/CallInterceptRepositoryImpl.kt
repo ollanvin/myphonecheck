@@ -258,9 +258,14 @@ class CallInterceptRepositoryImpl @Inject constructor(
                     searchEvidence = null,
                     localLearning = localLearning,
                     behaviorPattern = behaviorSignal,
+                        actionState = input.actionState,
                 ),
                 input = input,
             )
+                Log.d(
+                    TAG,
+                    "importance level=${result.importanceLevel} rule=${result.importanceReason}",
+                )
 
             // 국가별 위험 가중 적용
             val countryRiskBoost = countryPolicyProvider.getRiskBoost(normalizedNumber, countryCode)
@@ -373,8 +378,13 @@ class CallInterceptRepositoryImpl @Inject constructor(
                         searchEvidence = searchEvidence,
                         localLearning = localLearning,
                         behaviorPattern = behaviorSignal,
+                        actionState = input.actionState,
                     ),
                     input = input,
+                )
+                Log.d(
+                    TAG,
+                    "importance level=${result.importanceLevel} rule=${result.importanceReason}",
                 )
 
                 // 국가별 위험 가중 적용

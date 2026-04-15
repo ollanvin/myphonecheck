@@ -6,6 +6,7 @@ import app.myphonecheck.mobile.core.model.DeviceEvidence
 import app.myphonecheck.mobile.core.model.LocalLearningSignal
 import app.myphonecheck.mobile.core.model.RiskLevel
 import app.myphonecheck.mobile.core.model.SearchEvidence
+import app.myphonecheck.mobile.core.model.ActionState
 
 /**
  * Core decision engine interface.
@@ -29,6 +30,7 @@ interface DecisionEngine {
         searchEvidence: SearchEvidence?,
         localLearning: LocalLearningSignal? = null,
         behaviorPattern: BehaviorPatternSignal? = null,
+        actionState: ActionState? = null,
     ): DecisionResult
 
     /**

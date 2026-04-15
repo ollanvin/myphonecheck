@@ -71,12 +71,16 @@ class NonContactQuickLabelActivity : ComponentActivity() {
                         .collectAsState(initial = null)
                     val summary = intent.getStringExtra(EXTRA_SUMMARY)
                     val searchStatus = intent.getStringExtra(EXTRA_SEARCH_STATUS)
+                    val importanceLevel = intent.getStringExtra(EXTRA_IMPORTANCE_LEVEL)
+                    val importanceReason = intent.getStringExtra(EXTRA_IMPORTANCE_REASON)
                     val renderStartedAtMs = remember { System.currentTimeMillis() }
 
                     QuickLabelBottomSheet(
                         normalizedNumber = normalizedNumber,
                         summary = summary,
                         searchStatus = searchStatus,
+                        importanceLevel = importanceLevel,
+                        importanceReason = importanceReason,
                         selectedLabels = snapshot?.quickLabels.orEmpty(),
                         actionState = snapshot?.actionState,
                         renderStartedAtMs = renderStartedAtMs,
@@ -128,6 +132,8 @@ class NonContactQuickLabelActivity : ComponentActivity() {
         const val EXTRA_NORMALIZED_NUMBER = "extra_normalized_number"
         const val EXTRA_SUMMARY = "extra_summary"
         const val EXTRA_SEARCH_STATUS = "extra_search_status"
+        const val EXTRA_IMPORTANCE_LEVEL = "extra_importance_level"
+        const val EXTRA_IMPORTANCE_REASON = "extra_importance_reason"
     }
 }
 
@@ -137,6 +143,8 @@ private fun QuickLabelBottomSheet(
     normalizedNumber: String,
     summary: String?,
     searchStatus: String?,
+    importanceLevel: String?,
+    importanceReason: String?,
     selectedLabels: Set<QuickLabel>,
     actionState: ActionState?,
     renderStartedAtMs: Long,
@@ -186,6 +194,14 @@ private fun QuickLabelBottomSheet(
                         text = "Search status  $it",
                         fontSize = 12.sp,
                         color = Color(0xFF81D4FA),
+                    )
+                }
+                importanceLevel?.takeIf { it.isNotBlank() && it != "UNKNOWN" }?.let {
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "Importance  $it${importanceReason?.takeIf { r -> r.isNotBlank() }?.let { r -> " ($r)" } ?: ""}",
+                        fontSize = 12.sp,
+                        color = Color(0xFFB39DDB),
                     )
                 }
                 actionState?.displayLabelKo()?.let {

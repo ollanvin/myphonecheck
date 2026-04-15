@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import app.myphonecheck.mobile.core.util.DevicePatternProfileBootstrapper
 import app.myphonecheck.mobile.core.util.GlobalNumberEngineProfileStore
 import app.myphonecheck.mobile.worker.WeeklyReportScheduler
 import dagger.hilt.android.HiltAndroidApp
@@ -34,6 +35,7 @@ class MyPhoneCheckApplication : Application(), Configuration.Provider {
 
         // 주간 보안 리포트 스케줄링
         GlobalNumberEngineProfileStore.initialize(this)
+        DevicePatternProfileBootstrapper.refreshIfNeededAsync(this)
         WeeklyReportScheduler.schedule(this)
     }
 }

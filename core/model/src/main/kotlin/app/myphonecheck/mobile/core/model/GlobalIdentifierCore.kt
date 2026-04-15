@@ -33,5 +33,6 @@ data class IdentifierAnalysisInput(
     val deviceCountryCode: String?,
     val channel: IdentifierChannel,
     val isSavedContact: Boolean = false,
+    val actionState: ActionState? = null,
     val messageMetadata: IdentifierMessageMetadata? = null,
 )

@@ -206,6 +206,15 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
                 if (::numberProfileRepository.isInitialized) {
                     numberProfileRepository.touchCallInteraction(normalizedNumber)
                 }
+                val profileActionState = if (::numberProfileRepository.isInitialized) {
+                    try {
+                        numberProfileRepository.getSnapshot(normalizedNumber)?.actionState
+                    } catch (_: Exception) {
+                        null
+                    }
+                } else {
+                    null
+                }
 
                 // ═══════════════════════════════════════════════
                 // 2-Phase UX: Phase 1 즉시 표시 → Phase 2 확정 업데이트
@@ -216,6 +225,7 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
                             normalizedNumber = normalizedNumber,
                             deviceCountryCode = effectiveCountry,
                             channel = IdentifierChannel.CALL,
+                            actionState = profileActionState,
                         ),
                     )
                 }

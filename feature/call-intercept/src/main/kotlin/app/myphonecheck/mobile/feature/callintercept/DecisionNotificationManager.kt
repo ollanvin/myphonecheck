@@ -20,6 +20,7 @@ private const val NOTIFICATION_ID_PREFIX = 1000
 private const val ACTION_REJECT = "action_reject"
 private const val ACTION_BLOCK = "action_block"
 private const val ACTION_DETAIL = "action_detail"
+// Note: ACTION_MARK_DO_NOT_MISS and other action constants are centralized in CallActionReceiver.kt
 private const val EXTRA_PHONE_NUMBER = "extra_phone_number"
 
 /**
@@ -190,6 +191,41 @@ class DecisionNotificationManager @Inject constructor() {
     ): PendingIntent {
         val intent = Intent(context, CallActionReceiver::class.java).apply {
             this.action = action
+            putExtra(EXTRA_PHONE_NUMBER, phoneNumber)
+        }
+        return PendingIntent.getBroadcast(
+            context,
+            requestCode,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
+    }
+
+    /**
+     * Create PendingIntent for DO_NOT_MISS action.
+     *
+     * Product-level mapping: DO_NOT_MISS → ActionState.DO_NOT_BLOCK → ImportanceLevel.DO_NOT_MISS
+     * on the next incoming call or SMS.
+     *
+     * Toggles NumberProfileBlockState between DO_NOT_BLOCK (enabled) and NONE (disabled).
+     *
+     * Can be used to add a 4th optional action button to notifications:
+     * ```
+     * .addAction(android.R.drawable.ic_menu_add, "DO_NOT_MISS", doNotMissPI)
+     * ```
+     *
+     * @param context Android Context
+     * @param phoneNumber Phone number to mark as DO_NOT_MISS
+     * @param requestCode Unique request code for this PendingIntent
+     */
+    fun createDoNotMissPI(
+        context: Context,
+        phoneNumber: String,
+        requestCode: Int,
+    ): PendingIntent {
+        val intent = Intent(context, CallActionReceiver::class.java).apply {
+            // Action constant "action_mark_do_not_miss" is centralized in CallActionReceiver.kt
+            action = "action_mark_do_not_miss"
             putExtra(EXTRA_PHONE_NUMBER, phoneNumber)
         }
         return PendingIntent.getBroadcast(

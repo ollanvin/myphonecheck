@@ -111,6 +111,27 @@ class NumberProfileRepository @Inject constructor(
         )
     }
 
+    /**
+     * Mark or unmark number as DO_NOT_MISS.
+     *
+     * DO_NOT_MISS is a user action that sets ActionState to DO_NOT_BLOCK,
+     * which triggers ImportanceLevel.DO_NOT_MISS in the decision engine.
+     *
+     * This ensures the next call/SMS from this number will be marked as critical.
+     * Toggles between DO_NOT_BLOCK and NONE states.
+     */
+    suspend fun toggleDoNotMiss(normalizedNumber: String) {
+        val now = System.currentTimeMillis()
+        val existing = ensureProfile(normalizedNumber, now)
+        val currentState = existing.blockStateEnum()
+        val nextState = if (currentState == NumberProfileBlockState.DO_NOT_BLOCK) {
+            NumberProfileBlockState.NONE
+        } else {
+            NumberProfileBlockState.DO_NOT_BLOCK
+        }
+        setBlockState(normalizedNumber, nextState)
+    }
+
     suspend fun updateShortMemo(normalizedNumber: String, memo: String?) {
         val now = System.currentTimeMillis()
         val existing = ensureProfile(normalizedNumber, now)
