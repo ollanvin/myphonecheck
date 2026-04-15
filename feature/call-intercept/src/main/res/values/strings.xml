@@ -49,6 +49,12 @@
     <!-- Similar Number Search -->
     <string name="overlay_section_similar_numbers">Similar number results</string>
 
+    <!-- 2-Second Decision Overlay -->
+    <string name="overlay_action_important">Important</string>
+    <string name="overlay_do_not_miss_badge">★ Marked Important</string>
+    <string name="overlay_do_not_miss_pro_hint">Upgrade to PRO to auto-prioritize this number</string>
+    <string name="overlay_disclaimer_short">Decision aid only. Final choice is yours.</string>
+
     <!-- Tag / Memo -->
     <string name="overlay_tag_section">Tag</string>
     <string name="overlay_memo_section">Memo</string>

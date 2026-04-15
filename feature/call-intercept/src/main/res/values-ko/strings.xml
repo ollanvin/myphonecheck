@@ -45,6 +45,13 @@
     <string name="overlay_trust_low_risk">위험 신호 적음</string>
     <string name="overlay_unverified_note">미확인 — 검색 결과 없음</string>
     <string name="overlay_section_similar_numbers">유사번호 검색 결과</string>
+
+    <!-- 2-Second Decision Overlay -->
+    <string name="overlay_action_important">중요표시</string>
+    <string name="overlay_do_not_miss_badge">★ 중요 표시됨</string>
+    <string name="overlay_do_not_miss_pro_hint">PRO 구독 시 이 번호를 자동 우선 처리합니다</string>
+    <string name="overlay_disclaimer_short">판단을 돕습니다. 최종 선택은 사용자에게 있습니다.</string>
+
     <string name="overlay_tag_section">태그</string>
     <string name="overlay_memo_section">메모</string>
     <string name="overlay_memo_placeholder">메모 입력</string>

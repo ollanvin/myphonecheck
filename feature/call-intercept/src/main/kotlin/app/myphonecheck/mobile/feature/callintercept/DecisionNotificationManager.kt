@@ -134,10 +134,11 @@ class DecisionNotificationManager @Inject constructor() {
             append(RingSystem.DISCLAIMER_KO)
         }
 
-        // 액션: 거절 / 차단 / 자세히
+        // 액션: 거절 / 차단 / 자세히 / 중요표시
         val rejectPI = createActionPI(context, ACTION_REJECT, phoneNumber, notificationId + 1)
         val blockPI = createActionPI(context, ACTION_BLOCK, phoneNumber, notificationId + 2)
         val detailPI = createActionPI(context, ACTION_DETAIL, phoneNumber, notificationId + 3)
+        val doNotMissPI = createDoNotMissPI(context, phoneNumber, notificationId + 4)
 
         return NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle(title)
@@ -153,6 +154,7 @@ class DecisionNotificationManager @Inject constructor() {
             .addAction(android.R.drawable.ic_menu_close_clear_cancel, "거절", rejectPI)
             .addAction(android.R.drawable.ic_delete, "차단", blockPI)
             .addAction(android.R.drawable.ic_menu_info_details, "자세히", detailPI)
+            .addAction(android.R.drawable.ic_menu_add, "중요표시", doNotMissPI)
             .setColorized(true)
             .setColor(stateColor)
             .build()
@@ -255,10 +257,4 @@ class DecisionNotificationManager @Inject constructor() {
         }
     }
 
-    private fun generateId(phoneNumber: String): Int {
-        return (NOTIFICATION_ID_PREFIX + phoneNumber.hashCode()).coerceIn(
-            NOTIFICATION_ID_PREFIX,
-            NOTIFICATION_ID_PREFIX + 10000,
-        )
-    }
-}
+    private fun generateId(phoneNumber: String):
