@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import app.myphonecheck.mobile.core.util.GlobalNumberEngineProfileStore
 import app.myphonecheck.mobile.worker.WeeklyReportScheduler
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
@@ -32,6 +33,7 @@ class MyPhoneCheckApplication : Application(), Configuration.Provider {
         Log.i("MyPhoneCheckApp", "SQLCipher native libs loaded successfully")
 
         // 주간 보안 리포트 스케줄링
+        GlobalNumberEngineProfileStore.initialize(this)
         WeeklyReportScheduler.schedule(this)
     }
 }

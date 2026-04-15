@@ -67,7 +67,8 @@ class OverlayDismissReceiver : BroadcastReceiver() {
                         }
 
                         if (state == TelephonyManager.EXTRA_STATE_IDLE) {
-                            val number = overlayManager.consumePendingPromptNumber()
+                            val promptContext = overlayManager.consumePendingPromptContext()
+                            val number = promptContext?.phoneNumber
                             if (!number.isNullOrBlank()) {
                                 val isSavedContact = entryPoint.contactsDataSource().isContactSaved(number)
                                 val snapshot = entryPoint.numberProfileRepository().getSnapshot(number)
@@ -79,6 +80,8 @@ class OverlayDismissReceiver : BroadcastReceiver() {
                                     ).apply {
                                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                         putExtra("extra_normalized_number", number)
+                                        putExtra("extra_summary", promptContext?.summary)
+                                        putExtra("extra_search_status", promptContext?.searchStatus)
                                     }
                                     context.applicationContext.startActivity(launchIntent)
                                 }

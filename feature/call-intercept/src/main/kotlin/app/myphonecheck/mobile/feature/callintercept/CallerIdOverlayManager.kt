@@ -1,4 +1,4 @@
-package app.myphonecheck.mobile.feature.callintercept
+﻿package app.myphonecheck.mobile.feature.callintercept
 
 import android.content.Context
 import android.content.Intent
@@ -20,51 +20,60 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import app.myphonecheck.mobile.feature.callintercept.R
+import app.myphonecheck.mobile.core.model.ActionState
 import app.myphonecheck.mobile.core.model.DecisionResult
 import app.myphonecheck.mobile.core.model.RiskLevel
 import app.myphonecheck.mobile.core.model.SearchStatus
 import app.myphonecheck.mobile.core.model.SimilarNumberResult
 import app.myphonecheck.mobile.core.model.TwoPhaseDecision
+import app.myphonecheck.mobile.core.model.displayLabelKo
 import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter
 import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter.Lang
 import app.myphonecheck.mobile.core.util.TrustScoreCalculator
 import app.myphonecheck.mobile.data.localcache.repository.NumberProfileSnapshot
 import app.myphonecheck.mobile.feature.countryconfig.SignalSummaryLocalizer
 import app.myphonecheck.mobile.feature.countryconfig.SupportedLanguage
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val TAG = "CallerIdOverlay"
 
 /**
- * 전화 앱 위에 판정 결과 오버레이를 표시한다.
+ * ?꾪솕 ???꾩뿉 ?먯젙 寃곌낵 ?ㅻ쾭?덉씠瑜??쒖떆?쒕떎.
  *
- * 글로벌 대응:
- * - 모든 UI 텍스트는 SupportedLanguage + SignalSummaryLocalizer를 통해 로컬라이즈
- * - 번호는 raw 형식 유지, 의미 문구만 locale에 맞게 변환
- * - 검색 엔진 이름(Google, Naver 등)은 UI에 절대 노출하지 않음
+ * 湲濡쒕쾶 ???
+ * - 紐⑤뱺 UI ?띿뒪?몃뒗 SupportedLanguage + SignalSummaryLocalizer瑜??듯빐 濡쒖뺄?쇱씠利? * - 踰덊샇??raw ?뺤떇 ?좎?, ?섎? 臾멸뎄留?locale??留욊쾶 蹂?? * - 寃???붿쭊 ?대쫫(Google, Naver ??? UI???덈? ?몄텧?섏? ?딆쓬
  *
- * 대상: 미저장 번호만. 저장된 연락처는 이 매니저에 도달하지 않음.
+ * ??? 誘몄???踰덊샇留? ??λ맂 ?곕씫泥섎뒗 ??留ㅻ땲????꾨떖?섏? ?딆쓬.
  */
 @Singleton
 class CallerIdOverlayManager @Inject constructor() {
 
     private var overlayView: View? = null
     private var pendingPromptNumber: String? = null
+    private var pendingPromptContext: PendingPromptContext? = null
     private val mainHandler = Handler(Looper.getMainLooper())
+    private val renderStartMsByNumber = ConcurrentHashMap<String, Long>()
+
+    data class PendingPromptContext(
+        val phoneNumber: String,
+        val summary: String,
+        val searchStatus: String,
+    )
 
     /**
-     * 오버레이를 표시한다.
+     * ?ㅻ쾭?덉씠瑜??쒖떆?쒕떎.
      *
      * @param context Android Context
-     * @param result 판정 결과
-     * @param phoneNumber raw 번호 (기기 원본 그대로)
-     * @param language 현재 기기 언어
-     * @param localizer SignalSummary 로컬라이저
-     * @param twoPhaseDecision 2-Phase 메타(즉시/확정). null이면 Phase UI 생략.
-     * @param userBlockCount 사용자가 이 번호를 차단한 누적 횟수 (학습 반영)
-     * @param savedTag 이전에 저장한 태그 (있으면 상단 즉시 표시)
-     * @param savedMemo 이전에 저장한 메모 (있으면 상단 즉시 표시)
+     * @param result ?먯젙 寃곌낵
+     * @param phoneNumber raw 踰덊샇 (湲곌린 ?먮낯 洹몃?濡?
+     * @param language ?꾩옱 湲곌린 ?몄뼱
+     * @param localizer SignalSummary 濡쒖뺄?쇱씠?
+     * @param twoPhaseDecision 2-Phase 硫뷀?(利됱떆/?뺤젙). null?대㈃ Phase UI ?앸왂.
+     * @param userBlockCount ?ъ슜?먭? ??踰덊샇瑜?李⑤떒???꾩쟻 ?잛닔 (?숈뒿 諛섏쁺)
+     * @param savedTag ?댁쟾????ν븳 ?쒓렇 (?덉쑝硫??곷떒 利됱떆 ?쒖떆)
+     * @param savedMemo ?댁쟾????ν븳 硫붾え (?덉쑝硫??곷떒 利됱떆 ?쒖떆)
      */
     fun showOverlay(
         context: Context,
@@ -87,6 +96,12 @@ class CallerIdOverlayManager @Inject constructor() {
 
                 val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
                 pendingPromptNumber = phoneNumber
+                pendingPromptContext = PendingPromptContext(
+                    phoneNumber = phoneNumber,
+                    summary = result.summary,
+                    searchStatus = searchStatusLabel(result),
+                )
+                renderStartMsByNumber[phoneNumber] = System.currentTimeMillis()
 
                 val horizontalMargin = dpToPx(context, 12)
                 val screenWidth = context.resources.displayMetrics.widthPixels
@@ -114,7 +129,12 @@ class CallerIdOverlayManager @Inject constructor() {
                     numberProfileSnapshot = numberProfileSnapshot,
                 )
                 wm.addView(overlayView, params)
-                Log.i(TAG, "Overlay shown for $phoneNumber: ${result.riskLevel} (lang=${language.code})")
+                Log.i(
+                    TAG,
+                    "overlay_rendered number=$phoneNumber risk=${result.riskLevel} " +
+                        "actionStateReused=${numberProfileSnapshot?.actionState != ActionState.NONE} " +
+                        "lang=${language.code}",
+                )
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to show overlay", e)
             }
@@ -139,6 +159,7 @@ class CallerIdOverlayManager @Inject constructor() {
                 Log.w(TAG, "Overlay dismiss error (may already be removed)", e)
             }
             overlayView = null
+            pendingPromptNumber?.let { renderStartMsByNumber.remove(it) }
         }
     }
 
@@ -146,12 +167,24 @@ class CallerIdOverlayManager @Inject constructor() {
 
     fun rememberPostCallNumber(phoneNumber: String) {
         pendingPromptNumber = phoneNumber
+        pendingPromptContext = PendingPromptContext(
+            phoneNumber = phoneNumber,
+            summary = "",
+            searchStatus = "",
+        )
     }
 
     fun consumePendingPromptNumber(): String? {
         val number = pendingPromptNumber
         pendingPromptNumber = null
         return number
+    }
+
+    fun consumePendingPromptContext(): PendingPromptContext? {
+        val context = pendingPromptContext
+        pendingPromptContext = null
+        pendingPromptNumber = null
+        return context
     }
 
     private fun canDrawOverlays(context: Context): Boolean {
@@ -162,17 +195,17 @@ class CallerIdOverlayManager @Inject constructor() {
         }
     }
 
-    // ══════════════════════════════════════════════
+    // ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
     // View Builder
-    // ══════════════════════════════════════════════
+    // ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
 
     /**
-     * 전화 판단 오버레이 — 결론 → 근거 → 세부 구조.
+     * ?꾪솕 ?먮떒 ?ㅻ쾭?덉씠 ??寃곕줎 ??洹쇨굅 ???몃? 援ъ“.
      *
-     * [결론] 신뢰도 점수 + 색상 (0.5초 내 판단 가능)
-     * [근거] 판단 근거 3줄 요약
-     * [세부] 유사번호 검색 결과 + 기존 4섹션 분석
-     * [행동] 즉시 행동 버튼: 수신 / 거절 / 차단
+     * [寃곕줎] ?좊ː???먯닔 + ?됱긽 (0.5珥????먮떒 媛??
+     * [洹쇨굅] ?먮떒 洹쇨굅 3以??붿빟
+     * [?몃?] ?좎궗踰덊샇 寃??寃곌낵 + 湲곗〈 4?뱀뀡 遺꾩꽍
+     * [?됰룞] 利됱떆 ?됰룞 踰꾪듉: ?섏떊 / 嫄곗젅 / 李⑤떒
      */
     private fun buildOverlayView(
         context: Context,
@@ -191,8 +224,16 @@ class CallerIdOverlayManager @Inject constructor() {
         val uiText = OverlayUiText(context)
         val lang = if (language == SupportedLanguage.KO) Lang.KO else Lang.EN
         val categoryText = localizer.localizeCategory(result.category.name, context)
+        val actionStateText = numberProfileSnapshot?.actionState?.displayLabelKo()
+        val labelText = numberProfileSnapshot?.quickLabels
+            ?.joinToString(" / ") { it.displayName }
+            ?.takeIf { it.isNotBlank() }
+        val detailText = numberProfileSnapshot?.detailTags
+            ?.joinToString(" / ") { it.tagName }
+            ?.takeIf { it.isNotBlank() }
+        val keySignalsText = result.reasons.take(2).joinToString(" 쨌 ").takeIf { it.isNotBlank() }
 
-        // 유사번호 결과 추출
+        // ?좎궗踰덊샇 寃곌낵 異붿텧
         val similarResults = SimilarNumberResult.fromAdjacentHint(
             result.searchEvidence?.adjacentNumberHint
         )
@@ -200,19 +241,72 @@ class CallerIdOverlayManager @Inject constructor() {
         val scrollContent = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
 
-            // ══════════════════════════════════
-            // [결론] 신뢰도 점수 — 0.5초 판단
-            // ══════════════════════════════════
+            // ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+            // [寃곕줎] ?좊ː???먯닔 ??0.5珥??먮떒
+            // ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
 
-            // 저장된 태그/메모가 있으면 최상단 표시
-            if (numberProfileSnapshot?.hasUserSignals == true) {
+            // ??λ맂 ?쒓렇/硫붾え媛 ?덉쑝硫?理쒖긽???쒖떆
+            addView(TextView(context).apply {
+                text = result.summary
+                setTextColor(Color.WHITE)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                setTypeface(null, Typeface.BOLD)
+                gravity = Gravity.CENTER_HORIZONTAL
+                layoutParams = marginTop(context, 2)
+            })
+
+            addView(TextView(context).apply {
+                text = searchStatusLabel(result)
+                setTextColor(Color.parseColor("#FFE082"))
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
+                gravity = Gravity.CENTER_HORIZONTAL
+                layoutParams = marginTop(context, 4)
+            })
+
+            actionStateText?.let {
                 addView(TextView(context).apply {
-                    val labelText = numberProfileSnapshot.quickLabels
+                    text = it
+                    setTextColor(Color.parseColor("#A5D6A7"))
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                    setTypeface(null, Typeface.BOLD)
+                    gravity = Gravity.CENTER_HORIZONTAL
+                    layoutParams = marginTop(context, 2)
+                })
+            }
+
+            if (!labelText.isNullOrBlank() || !detailText.isNullOrBlank()) {
+                addView(TextView(context).apply {
+                    text = listOf(labelText, detailText).filterNotNull().joinToString(" / ")
+                    setTextColor(Color.YELLOW)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                    gravity = Gravity.CENTER_HORIZONTAL
+                    layoutParams = marginTop(context, 2)
+                })
+            }
+
+            keySignalsText?.let {
+                addView(TextView(context).apply {
+                    text = it
+                    setTextColor(subtleColor)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
+                    gravity = Gravity.CENTER_HORIZONTAL
+                    layoutParams = marginTop(context, 4)
+                })
+            }
+
+            if (false) {
+                addView(TextView(context).apply {
+                    val labelText = numberProfileSnapshot?.quickLabels.orEmpty()
                         .joinToString(" / ") { it.displayName }
-                    val detailText = numberProfileSnapshot.detailTags
+                    val detailText = numberProfileSnapshot?.detailTags.orEmpty()
                         .joinToString(" / ") { it.tagName }
-                    val memoText = numberProfileSnapshot.userMemoShort.orEmpty()
-                    text = listOf(labelText, detailText, memoText)
+                    val actionStateText = when (numberProfileSnapshot?.actionState ?: ActionState.NONE) {
+                        ActionState.BLOCKED -> "李⑤떒 ?곹깭"
+                        ActionState.DO_NOT_BLOCK -> "李⑤떒 湲덉?"
+                        ActionState.NONE -> ""
+                    }
+                    val memoText = numberProfileSnapshot?.userMemoShort.orEmpty()
+                    text = listOf(labelText, detailText, actionStateText, memoText)
                         .filter { it.isNotBlank() }
                         .joinToString(" / ")
                     setTextColor(Color.YELLOW)
@@ -223,7 +317,7 @@ class CallerIdOverlayManager @Inject constructor() {
                 })
             }
 
-            // 큰 숫자로 신뢰도 점수 표시
+            // ???レ옄濡??좊ː???먯닔 ?쒖떆
             addView(TextView(context).apply {
                 text = "$trustScore"
                 setTextColor(textColor)
@@ -236,7 +330,7 @@ class CallerIdOverlayManager @Inject constructor() {
                 )
             })
 
-            // 등급 라벨 (위험 / 주의 / 위험 신호 적음)
+            // ?깃툒 ?쇰꺼 (?꾪뿕 / 二쇱쓽 / ?꾪뿕 ?좏샇 ?곸쓬)
             addView(TextView(context).apply {
                 text = uiText.trustGradeLabel(trustScore)
                 setTextColor(textColor)
@@ -254,21 +348,13 @@ class CallerIdOverlayManager @Inject constructor() {
                 layoutParams = marginTop(context, 2)
             })
 
-            addView(TextView(context).apply {
-                text = searchStatusLabel(result)
-                setTextColor(Color.parseColor("#FFE082"))
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
-                gravity = Gravity.CENTER_HORIZONTAL
-                layoutParams = marginTop(context, 4)
-            })
-
-            // ══════════════════════════════════
-            // [근거] 판단 근거 3줄 요약
-            // ══════════════════════════════════
+            // ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+            // [洹쇨굅] ?먮떒 洹쇨굅 3以??붿빟
+            // ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
 
             addDivider(context, textColor)
 
-            // 기존 reasons (최대 3개) 표시
+            // 湲곗〈 reasons (理쒕? 3媛? ?쒖떆
             val reasons = result.reasons.take(3)
             if (reasons.isNotEmpty()) {
                 for (reason in reasons) {
@@ -292,7 +378,7 @@ class CallerIdOverlayManager @Inject constructor() {
                 })
             }
 
-            // 2-Phase 요약 (있으면)
+            // 2-Phase ?붿빟 (?덉쑝硫?
             twoPhaseDecision?.let { tp ->
                 for (line in buildPhaseDescriptionLines(context, tp, lang)) {
                     addView(TextView(context).apply {
@@ -313,13 +399,13 @@ class CallerIdOverlayManager @Inject constructor() {
                 }
             }
 
-            // ══════════════════════════════════
-            // [세부] 유사번호 검색 결과 + 분석 섹션
-            // ══════════════════════════════════
+            // ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+            // [?몃?] ?좎궗踰덊샇 寃??寃곌낵 + 遺꾩꽍 ?뱀뀡
+            // ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
 
             addDivider(context, textColor)
 
-            // 유사번호 검색 결과 (있으면)
+            // ?좎궗踰덊샇 寃??寃곌낵 (?덉쑝硫?
             if (similarResults.isNotEmpty()) {
                 addView(TextView(context).apply {
                     text = context.getString(R.string.overlay_section_similar_numbers)
@@ -340,7 +426,7 @@ class CallerIdOverlayManager @Inject constructor() {
                 addDivider(context, textColor)
             }
 
-            // 기존 4섹션 분석 (Report, Pattern, Behavior, Search)
+            // 湲곗〈 4?뱀뀡 遺꾩꽍 (Report, Pattern, Behavior, Search)
             val titleIds = listOf(
                 R.string.overlay_section_report,
                 R.string.overlay_section_pattern,
@@ -425,14 +511,14 @@ class CallerIdOverlayManager @Inject constructor() {
         val r1 = DecisionReasoningFormatter.riskTriLabel(p1.riskLevel, lang)
         val line1 = when (lang) {
             Lang.KO -> context.getString(R.string.overlay_phase1_line, r1, p1.summary, c1)
-            Lang.EN -> "Immediate: $r1 · ${p1.summary} ($c1%)"
+            Lang.EN -> "Immediate: $r1 쨌 ${p1.summary} ($c1%)"
         }
         val line2 = two.phase2?.let { p2 ->
             val c2 = DecisionReasoningFormatter.confidencePercent(p2.confidence)
             val r2 = DecisionReasoningFormatter.riskTriLabel(p2.riskLevel, lang)
             when (lang) {
                 Lang.KO -> context.getString(R.string.overlay_phase2_done_line, r2, p2.summary, c2)
-                Lang.EN -> "Final: $r2 · ${p2.summary} ($c2%)"
+                Lang.EN -> "Final: $r2 쨌 ${p2.summary} ($c2%)"
             }
         } ?: when (lang) {
             Lang.KO -> context.getString(R.string.overlay_phase2_absent)
@@ -451,9 +537,9 @@ class CallerIdOverlayManager @Inject constructor() {
         }
     }
 
-    // ══════════════════════════════════════════════
+    // ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
     // Action Buttons
-    // ══════════════════════════════════════════════
+    // ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
 
     private fun buildActionButtons(
         context: Context,
@@ -504,7 +590,9 @@ class CallerIdOverlayManager @Inject constructor() {
 
     @Suppress("DEPRECATION", "MissingPermission")
     private fun handleOverlayAction(context: Context, action: String, phoneNumber: String) {
-        Log.i(TAG, "Overlay action: $action for $phoneNumber")
+        val renderStartedAtMs = renderStartMsByNumber.remove(phoneNumber)
+        val actionLatencyMs = renderStartedAtMs?.let { System.currentTimeMillis() - it }
+        Log.i(TAG, "overlay_action action=$action number=$phoneNumber latencyMs=$actionLatencyMs")
 
         when (action) {
             "action_overlay_accept" -> {
@@ -520,7 +608,7 @@ class CallerIdOverlayManager @Inject constructor() {
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to accept call", e)
                 }
-                // 수신 행동을 UserCallRecord에 기록
+                // ?섏떊 ?됰룞??UserCallRecord??湲곕줉
                 broadcastUserAction(context, "action_accept", phoneNumber)
                 dismissOverlay(context)
             }
@@ -534,7 +622,7 @@ class CallerIdOverlayManager @Inject constructor() {
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to reject call", e)
                 }
-                // 거절 행동을 UserCallRecord에 기록
+                // 嫄곗젅 ?됰룞??UserCallRecord??湲곕줉
                 broadcastUserAction(context, "action_reject", phoneNumber)
                 dismissOverlay(context)
             }
@@ -547,7 +635,7 @@ class CallerIdOverlayManager @Inject constructor() {
                 } catch (e: Exception) {
                     Log.e(TAG, "Failed to end call for block", e)
                 }
-                // 차단 행동을 UserCallRecord에 기록
+                // 李⑤떒 ?됰룞??UserCallRecord??湲곕줉
                 broadcastUserAction(context, "action_block", phoneNumber)
                 dismissOverlay(context)
             }
@@ -555,8 +643,8 @@ class CallerIdOverlayManager @Inject constructor() {
     }
 
     /**
-     * 사용자 행동을 CallActionReceiver로 브로드캐스트.
-     * CallActionReceiver가 UserCallRecordRepository + BlocklistRepository로 기록.
+     * ?ъ슜???됰룞??CallActionReceiver濡?釉뚮줈?쒖틦?ㅽ듃.
+     * CallActionReceiver媛 UserCallRecordRepository + BlocklistRepository濡?湲곕줉.
      */
     private fun broadcastUserAction(context: Context, actionType: String, phoneNumber: String) {
         try {
@@ -572,9 +660,9 @@ class CallerIdOverlayManager @Inject constructor() {
         }
     }
 
-    // ══════════════════════════════════════════════
+    // ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
     // View Helpers
-    // ══════════════════════════════════════════════
+    // ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
 
     private fun LinearLayout.addDivider(context: Context, textColor: Int) {
         addView(View(context).apply {
@@ -598,9 +686,9 @@ class CallerIdOverlayManager @Inject constructor() {
         }
     }
 
-    // ══════════════════════════════════════════════
+    // ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
     // Style
-    // ══════════════════════════════════════════════
+    // ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
 
     private fun backgroundColorForRisk(riskLevel: RiskLevel): Int {
         return when (riskLevel) {
@@ -629,14 +717,14 @@ class CallerIdOverlayManager @Inject constructor() {
     }
 }
 
-// ══════════════════════════════════════════════
-// Overlay UI 텍스트 — Android String Resources
-// ══════════════════════════════════════════════
+// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// Overlay UI ?띿뒪????Android String Resources
+// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
 
 /**
- * 오버레이 UI 텍스트 헬퍼.
- * Android string resources를 통해 로컬라이즈된 텍스트를 제공한다.
- * Context를 받아 locale을 자동으로 처리한다.
+ * ?ㅻ쾭?덉씠 UI ?띿뒪???ы띁.
+ * Android string resources瑜??듯빐 濡쒖뺄?쇱씠利덈맂 ?띿뒪?몃? ?쒓났?쒕떎.
+ * Context瑜?諛쏆븘 locale???먮룞?쇰줈 泥섎━?쒕떎.
  */
 internal class OverlayUiText(private val context: Context) {
     val deviceHistory: String get() = context.getString(R.string.overlay_device_history)
@@ -669,7 +757,7 @@ internal class OverlayUiText(private val context: Context) {
         RiskLevel.UNKNOWN -> context.getString(R.string.overlay_verdict_unknown)
     }
 
-    /** 0~100 신뢰도 점수 → 등급 라벨 ('안전' 표현 절대 금지) */
+    /** 0~100 ?좊ː???먯닔 ???깃툒 ?쇰꺼 ('?덉쟾' ?쒗쁽 ?덈? 湲덉?) */
     fun trustGradeLabel(score: Int): String = when {
         score <= 30 -> context.getString(R.string.overlay_trust_danger)
         score <= 60 -> context.getString(R.string.overlay_trust_caution)

@@ -79,6 +79,7 @@ import app.myphonecheck.mobile.core.model.RiskLevel
 import app.myphonecheck.mobile.core.model.SearchStatus
 import app.myphonecheck.mobile.core.model.UserCallAction
 import app.myphonecheck.mobile.core.model.UserCallTag
+import app.myphonecheck.mobile.core.model.displayLabelKo
 import app.myphonecheck.mobile.data.localcache.entity.MessageHubEntity
 import app.myphonecheck.mobile.data.localcache.entity.PrivacyHistoryEntity
 import app.myphonecheck.mobile.data.localcache.entity.QuickLabel
@@ -1207,6 +1208,10 @@ private fun MessageHubProfileItem(
             Spacer(modifier = Modifier.height(6.dp))
             Text(searchStatus, fontSize = 13.sp, color = Color(0xFF80CBC4))
             Spacer(modifier = Modifier.height(6.dp))
+            numberProfile?.actionState?.displayLabelKo()?.let { actionStateLabel ->
+                Text(actionStateLabel, fontSize = 13.sp, color = Color(0xFFA5D6A7))
+                Spacer(modifier = Modifier.height(6.dp))
+            }
             if (item.linkCount > 0 && link != null) {
                 Row(
                     modifier = Modifier
@@ -1243,7 +1248,11 @@ private fun MessageHubProfileItem(
                 buildList {
                     numberProfile?.quickLabels?.forEach { add(it.displayName) }
                     numberProfile?.detailTags?.forEach { add(it.tagName) }
-                    if (numberProfile?.actionState == ActionState.DO_NOT_BLOCK) add("차단 금지")
+                    if (false) when (numberProfile?.actionState) {
+                        ActionState.BLOCKED -> add("차단 상태")
+                        ActionState.DO_NOT_BLOCK -> add("차단 금지")
+                        else -> Unit
+                    }
                 }
             }
             if (summaryChips.isNotEmpty()) {

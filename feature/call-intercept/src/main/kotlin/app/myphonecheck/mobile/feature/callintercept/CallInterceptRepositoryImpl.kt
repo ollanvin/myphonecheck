@@ -8,6 +8,7 @@ import app.myphonecheck.mobile.core.model.ActionRecommendation
 import app.myphonecheck.mobile.core.model.BehaviorPatternSignal
 import app.myphonecheck.mobile.core.model.ConclusionCategory
 import app.myphonecheck.mobile.core.model.DecisionResult
+import app.myphonecheck.mobile.core.model.IdentifierChannel
 import app.myphonecheck.mobile.core.model.InterceptRoute
 import app.myphonecheck.mobile.core.model.IdentifierAnalysisInput
 import app.myphonecheck.mobile.core.model.PhaseMeta
@@ -114,14 +115,18 @@ class CallInterceptRepositoryImpl @Inject constructor(
         // ── Step 3: Priority Router 분기 ──
         val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         val isInternational = isInternationalNumber(normalizedNumber, countryCode)
-        val recentCount = recentCallLog[normalizedNumber]?.count {
-            it > System.currentTimeMillis() - 3_600_000L
-        } ?: 0
+        val recentCount = if (input.channel == IdentifierChannel.CALL) {
+            recentCallLog[normalizedNumber]?.count {
+                it > System.currentTimeMillis() - 3_600_000L
+            } ?: 0
+        } else {
+            0
+        }
 
         val route = priorityRouter.route(
             normalizedNumber = normalizedNumber,
             preJudge = preJudge,
-            isSavedContact = false, // DeviceEvidence 없이는 알 수 없음 — LIGHT/FULL에서 보완
+            isSavedContact = input.isSavedContact,
             isInternational = isInternational,
             isVoip = false, // TODO: TelephonyManager 기반
             currentHour = currentHour,
@@ -142,13 +147,13 @@ class CallInterceptRepositoryImpl @Inject constructor(
                 buildSkipDecision(pipelineStartMs, route)
             }
             InterceptRoute.INSTANT -> {
-                buildInstantDecision(normalizedNumber, preJudge, pipelineStartMs, route)
+                buildInstantDecision(input, preJudge, pipelineStartMs, route)
             }
             InterceptRoute.LIGHT -> {
-                buildLightDecision(normalizedNumber, countryCode, preJudge, pipelineStartMs, route)
+                buildLightDecision(input, countryCode, preJudge, pipelineStartMs, route)
             }
             InterceptRoute.FULL -> {
-                buildFullDecision(normalizedNumber, countryCode, preJudge, pipelineStartMs, route)
+                buildFullDecision(input, countryCode, preJudge, pipelineStartMs, route)
             }
         }
 
@@ -168,13 +173,16 @@ class CallInterceptRepositoryImpl @Inject constructor(
     // ══════════════════════════════════════════
 
     private fun buildInstantDecision(
-        normalizedNumber: String,
+        input: IdentifierAnalysisInput,
         preJudge: PreJudgeResult?,
         startMs: Long,
         route: InterceptRoute,
     ): TwoPhaseDecision {
+        val normalizedNumber = input.normalizedNumber
         val now = System.currentTimeMillis()
-        trackRecentCall(normalizedNumber, now)
+        if (input.channel == IdentifierChannel.CALL) {
+            trackRecentCall(normalizedNumber, now)
+        }
 
         val phase1 = if (preJudge != null && preJudge.isUsable()) {
             PhaseResult(
@@ -219,14 +227,17 @@ class CallInterceptRepositoryImpl @Inject constructor(
     // ══════════════════════════════════════════
 
     private suspend fun buildLightDecision(
-        normalizedNumber: String,
+        input: IdentifierAnalysisInput,
         countryCode: String,
         preJudge: PreJudgeResult?,
         startMs: Long,
         route: InterceptRoute,
     ): TwoPhaseDecision {
+        val normalizedNumber = input.normalizedNumber
         val now = System.currentTimeMillis()
-        trackRecentCall(normalizedNumber, now)
+        if (input.channel == IdentifierChannel.CALL) {
+            trackRecentCall(normalizedNumber, now)
+        }
 
         // Phase 1: 캐시 기반 즉시 판단 (또는 국가 정책 기반 기본값)
         val phase1 = buildPhase1FromCacheOrPolicy(normalizedNumber, preJudge, countryCode, now)
@@ -239,13 +250,16 @@ class CallInterceptRepositoryImpl @Inject constructor(
             }
 
             val localLearning = localLearningProvider.getSignal(normalizedNumber)
-            val behaviorSignal = buildBehaviorSignal(normalizedNumber, countryCode)
+            val behaviorSignal = buildBehaviorSignal(input, countryCode)
 
-            val result = decisionEngine.evaluate(
-                deviceEvidence = deviceEvidence,
-                searchEvidence = null,
-                localLearning = localLearning,
-                behaviorPattern = behaviorSignal,
+            val result = applySecondaryIdentifierSignals(
+                base = decisionEngine.evaluate(
+                    deviceEvidence = deviceEvidence,
+                    searchEvidence = null,
+                    localLearning = localLearning,
+                    behaviorPattern = behaviorSignal,
+                ),
+                input = input,
             )
 
             // 국가별 위험 가중 적용
@@ -253,8 +267,10 @@ class CallInterceptRepositoryImpl @Inject constructor(
             val adjustedRiskScore = (result.confidence + countryRiskBoost).coerceIn(0f, 1f)
 
             // 캐시 저장
-            cacheResult(normalizedNumber, result)
-            storePreJudge(normalizedNumber, result)
+            if (input.channel == IdentifierChannel.CALL) {
+                cacheResult(normalizedNumber, result)
+                storePreJudge(normalizedNumber, result)
+            }
 
             val phase2Time = System.currentTimeMillis()
             PhaseResult(
@@ -293,14 +309,17 @@ class CallInterceptRepositoryImpl @Inject constructor(
     // ══════════════════════════════════════════
 
     private suspend fun buildFullDecision(
-        normalizedNumber: String,
+        input: IdentifierAnalysisInput,
         countryCode: String,
         preJudge: PreJudgeResult?,
         startMs: Long,
         route: InterceptRoute,
     ): TwoPhaseDecision {
+        val normalizedNumber = input.normalizedNumber
         val now = System.currentTimeMillis()
-        trackRecentCall(normalizedNumber, now)
+        if (input.channel == IdentifierChannel.CALL) {
+            trackRecentCall(normalizedNumber, now)
+        }
 
         // Phase 1: 캐시 기반 즉시 판단
         val phase1 = buildPhase1FromCacheOrPolicy(normalizedNumber, preJudge, countryCode, now)
@@ -346,13 +365,16 @@ class CallInterceptRepositoryImpl @Inject constructor(
                 val deviceEvidence = deviceJob.await()
                 val searchEvidence = searchJob?.await()
                 val localLearning = localLearningJob.await()
-                val behaviorSignal = buildBehaviorSignal(normalizedNumber, countryCode)
+                val behaviorSignal = buildBehaviorSignal(input, countryCode)
 
-                val result = decisionEngine.evaluate(
-                    deviceEvidence = deviceEvidence,
-                    searchEvidence = searchEvidence,
-                    localLearning = localLearning,
-                    behaviorPattern = behaviorSignal,
+                val result = applySecondaryIdentifierSignals(
+                    base = decisionEngine.evaluate(
+                        deviceEvidence = deviceEvidence,
+                        searchEvidence = searchEvidence,
+                        localLearning = localLearning,
+                        behaviorPattern = behaviorSignal,
+                    ),
+                    input = input,
                 )
 
                 // 국가별 위험 가중 적용
@@ -363,8 +385,10 @@ class CallInterceptRepositoryImpl @Inject constructor(
                 val totalBoost = countryRiskBoost + spamPeakBoost
 
                 // 캐시 저장
-                cacheResult(normalizedNumber, result)
-                storePreJudge(normalizedNumber, result)
+                if (input.channel == IdentifierChannel.CALL) {
+                    cacheResult(normalizedNumber, result)
+                    storePreJudge(normalizedNumber, result)
+                }
 
                 val phase2Time = System.currentTimeMillis()
                 PhaseResult(
@@ -495,12 +519,17 @@ class CallInterceptRepositoryImpl @Inject constructor(
     }
 
     private fun buildBehaviorSignal(
-        normalizedNumber: String,
+        input: IdentifierAnalysisInput,
         deviceCountryCode: String?,
     ): BehaviorPatternSignal {
+        val normalizedNumber = input.normalizedNumber
         val now = System.currentTimeMillis()
         val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-        val timestamps = recentCallLog[normalizedNumber] ?: emptyList()
+        val timestamps = if (input.channel == IdentifierChannel.CALL) {
+            recentCallLog[normalizedNumber] ?: emptyList()
+        } else {
+            emptyList()
+        }
         val oneHourAgo = now - 3_600_000L
         val oneDayAgo = now - 86_400_000L
 
@@ -513,6 +542,100 @@ class CallInterceptRepositoryImpl @Inject constructor(
             isInternationalCall = isInternationalNumber(normalizedNumber, deviceCountryCode),
             isRoaming = false, // TODO: TelephonyManager.isNetworkRoaming()
         )
+    }
+
+    private fun applySecondaryIdentifierSignals(
+        base: DecisionResult,
+        input: IdentifierAnalysisInput,
+    ): DecisionResult {
+        if (input.channel != IdentifierChannel.SMS) return base
+
+        val metadata = input.messageMetadata ?: return base
+        if (!metadata.hasUrl && !metadata.hasShortLink) return base
+
+        val riskBoost = when {
+            metadata.hasShortLink -> 0.25f
+            metadata.hasUrl -> 0.12f
+            else -> 0f
+        } + when {
+            metadata.urlCount >= 2 -> 0.08f
+            metadata.urlCount == 1 -> 0.03f
+            else -> 0f
+        } + when {
+            metadata.longestUrlLength >= 48 -> 0.05f
+            metadata.longestUrlLength >= 24 -> 0.02f
+            else -> 0f
+        }
+
+        val adjustedBoost = if (input.isSavedContact) riskBoost * 0.5f else riskBoost
+        val boostedRiskLevel = decisionEngine.riskLevelFromScore(
+            (riskLevelScore(base.riskLevel) + adjustedBoost).coerceIn(0f, 1f),
+        )
+
+        val messageReasons = buildList {
+            if (metadata.hasUrl) add("문자 링크 포함")
+            if (metadata.urlCount >= 2) add("메시지 링크 ${metadata.urlCount}개 감지")
+            if (metadata.longestUrlLength >= 24) add("긴 링크 패턴 감지")
+            if (metadata.hasShortLink) add("단축 링크 포함")
+        }
+
+        val adjustedCategory = when {
+            input.isSavedContact -> base.category
+            metadata.hasShortLink &&
+                base.category !in setOf(ConclusionCategory.SCAM_RISK_HIGH, ConclusionCategory.MSG_FINANCIAL_SCAM) ->
+                ConclusionCategory.MSG_PHISHING_LINK
+            metadata.hasUrl && base.category == ConclusionCategory.INSUFFICIENT_EVIDENCE ->
+                ConclusionCategory.MSG_UNKNOWN_SENDER
+            else -> base.category
+        }
+
+        val adjustedAction = moreCautiousAction(
+            current = base.action,
+            candidate = when (adjustedCategory) {
+                ConclusionCategory.MSG_PHISHING_LINK -> ActionRecommendation.BLOCK_REVIEW
+                ConclusionCategory.MSG_UNKNOWN_SENDER -> ActionRecommendation.ANSWER_WITH_CAUTION
+                else -> base.action
+            },
+        )
+
+        val adjustedSummary = when (adjustedCategory) {
+            ConclusionCategory.MSG_PHISHING_LINK -> ConclusionCategory.MSG_PHISHING_LINK.summaryKo
+            ConclusionCategory.MSG_UNKNOWN_SENDER -> ConclusionCategory.MSG_UNKNOWN_SENDER.summaryKo
+            else -> base.summary
+        }
+
+        return base.copy(
+            riskLevel = if (boostedRiskLevel.ordinal > base.riskLevel.ordinal) boostedRiskLevel else base.riskLevel,
+            category = adjustedCategory,
+            action = adjustedAction,
+            confidence = (base.confidence + if (messageReasons.isNotEmpty()) 0.08f else 0f).coerceIn(0f, 1f),
+            summary = adjustedSummary,
+            reasons = (messageReasons + base.reasons).distinct().take(3),
+        )
+    }
+
+    private fun riskLevelScore(level: RiskLevel): Float = when (level) {
+        RiskLevel.UNKNOWN -> 0f
+        RiskLevel.LOW -> 0.15f
+        RiskLevel.MEDIUM -> 0.45f
+        RiskLevel.HIGH -> 0.75f
+    }
+
+    private fun moreCautiousAction(
+        current: ActionRecommendation,
+        candidate: ActionRecommendation,
+    ): ActionRecommendation = if (actionSeverity(candidate) > actionSeverity(current)) {
+        candidate
+    } else {
+        current
+    }
+
+    private fun actionSeverity(action: ActionRecommendation): Int = when (action) {
+        ActionRecommendation.ANSWER -> 0
+        ActionRecommendation.HOLD -> 1
+        ActionRecommendation.ANSWER_WITH_CAUTION -> 2
+        ActionRecommendation.REJECT -> 3
+        ActionRecommendation.BLOCK_REVIEW -> 4
     }
 
     private fun isInternationalNumber(normalizedNumber: String, deviceCountryCode: String?): Boolean {
