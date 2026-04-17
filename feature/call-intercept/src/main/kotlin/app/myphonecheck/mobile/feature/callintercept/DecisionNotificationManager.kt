@@ -257,4 +257,10 @@ class DecisionNotificationManager @Inject constructor() {
         }
     }
 
-    private fun generateId(phoneNumber: String):
+    private fun generateId(phoneNumber: String): Int {
+        return (NOTIFICATION_ID_PREFIX + phoneNumber.hashCode()).coerceIn(
+            NOTIFICATION_ID_PREFIX,
+            NOTIFICATION_ID_PREFIX + 10000,
+        )
+    }
+}

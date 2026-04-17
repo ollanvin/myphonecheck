@@ -1,5 +1,6 @@
 package app.myphonecheck.mobile.feature.decisionengine
 
+import android.util.Log
 import app.myphonecheck.mobile.core.model.ActionRecommendation
 import app.myphonecheck.mobile.core.model.ActionState
 import app.myphonecheck.mobile.core.model.BehaviorPatternSignal
@@ -376,6 +377,7 @@ class DecisionEngineImpl @Inject constructor(
         actionState: ActionState?,
     ): ImportanceDecision {
         if (actionState == ActionState.DO_NOT_BLOCK) {
+            Log.i(MPC_IMPORTANCE, "DO_NOT_MISS_APPLIED actionState=$actionState")
             return ImportanceDecision(
                 level = ImportanceLevel.DO_NOT_MISS,
                 reason = "action_state_do_not_block",
@@ -408,10 +410,12 @@ class DecisionEngineImpl @Inject constructor(
             )
         }
 
-        return ImportanceDecision(
+        val fallback = ImportanceDecision(
             level = ImportanceLevel.UNKNOWN,
             reason = "no_importance_rule_matched",
         )
+        Log.d(MPC_IMPORTANCE, "RESULT level=${fallback.level} reason=${fallback.reason}")
+        return fallback
     }
 
     private data class ImportanceDecision(
@@ -420,6 +424,7 @@ class DecisionEngineImpl @Inject constructor(
     )
 
     private companion object {
+        const val MPC_IMPORTANCE = "MPC_IMPORTANCE"
         const val REPEATED_NORMAL_THRESHOLD = 3
         const val REPEATED_IMPORTANT_THRESHOLD = 8
     }

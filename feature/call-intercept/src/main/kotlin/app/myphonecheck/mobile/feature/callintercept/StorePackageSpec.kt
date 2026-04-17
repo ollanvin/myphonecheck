@@ -122,11 +122,7 @@ MyPhoneCheck — Know before you answer."""
             reason = "To detect incoming calls and display caller information",
             required = true,
         ),
-        PermissionSpec(
-            permission = "android.permission.READ_CALL_LOG",
-            reason = "To check call history for previously identified numbers",
-            required = true,
-        ),
+        // v4.3: READ_CALL_LOG removed per PERMISSION POLICY (DENY)
         PermissionSpec(
             permission = "android.permission.BIND_SCREENING_SERVICE",
             reason = "To provide call screening information before you answer",

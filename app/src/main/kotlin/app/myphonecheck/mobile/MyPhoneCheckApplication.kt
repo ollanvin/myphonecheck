@@ -1,3 +1,4 @@
+﻿
 package app.myphonecheck.mobile
 
 import android.app.Application
@@ -22,20 +23,29 @@ class MyPhoneCheckApplication : Application(), Configuration.Provider {
             .build()
 
     override fun onCreate() {
+
         super.onCreate()
+        // v4.3: OverlayTrigger.fire() and ForcePhoneListener removed (legacy dead code)
+
         // Do not start foreground services from Application.onCreate().
         // Android 12+ blocks this path and can crash app launch.
 
-        // SQLCipher native library 초기화 — Room DB 개방 전 반드시 호출되어야 함.
-        // sqlcipher-android 4.6.0+ 공식 권장 방식: System.loadLibrary("sqlcipher").
-        // (이전 android-database-sqlcipher의 SQLiteDatabase.loadLibs()는 deprecated)
+        // SQLCipher native library 珥덇린????Room DB 媛쒕갑 ??諛섎뱶???몄텧?섏뼱????
+        // sqlcipher-android 4.6.0+ 怨듭떇 沅뚯옣 諛⑹떇: System.loadLibrary("sqlcipher").
+        // (?댁쟾 android-database-sqlcipher??SQLiteDatabase.loadLibs()??deprecated)
         Log.i("MyPhoneCheckApp", "Loading SQLCipher native libs...")
         System.loadLibrary("sqlcipher")
         Log.i("MyPhoneCheckApp", "SQLCipher native libs loaded successfully")
 
-        // 주간 보안 리포트 스케줄링
+        // 二쇨컙 蹂댁븞 由ы룷???ㅼ?以꾨쭅
         GlobalNumberEngineProfileStore.initialize(this)
         DevicePatternProfileBootstrapper.refreshIfNeededAsync(this)
         WeeklyReportScheduler.schedule(this)
     }
 }
+
+
+
+
+
+

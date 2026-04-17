@@ -5,13 +5,13 @@
 
     <!-- Telephony and call-related permissions -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <!-- READ_CALL_LOG removed per v4.3 PERMISSION POLICY (DENY) -->
     <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
     <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" />
 
     <!-- Contact and SMS permissions -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.READ_SMS" />
+    <!-- READ_SMS removed per v4.3 PERMISSION POLICY (DENY) -->
 
     <!-- Network and internet -->
     <uses-permission android:name="android.permission.INTERNET" />

@@ -1,4 +1,4 @@
-package app.myphonecheck.mobile
+﻿package app.myphonecheck.mobile
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -29,3 +29,4 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+

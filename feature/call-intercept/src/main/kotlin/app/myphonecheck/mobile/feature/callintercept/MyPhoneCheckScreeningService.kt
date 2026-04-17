@@ -23,6 +23,7 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.cancel
 
 private const val TAG = "MyPhoneCheckScreening"
+private const val MPC_SCREEN = "MPC_SCREEN"
 private const val SCREENING_TIMEOUT_MS = 4500L
 
 /**
@@ -77,19 +78,19 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
     @InstallIn(SingletonComponent::class)
     interface ScreeningServiceEntryPoint {
         fun callInterceptRepository(): CallInterceptRepository
-        fun decisionNotificationManager(): DecisionNotificationManager
         fun callerIdOverlayManager(): CallerIdOverlayManager
         fun countryConfigProvider(): CountryConfigProvider
         fun numberProfileRepository(): NumberProfileRepository
         fun userCallRecordRepository(): UserCallRecordRepository
+        fun overlayPresenter(): app.myphonecheck.mobile.feature.callintercept.presentation.OverlayPresenter
     }
 
     private lateinit var callInterceptRepository: CallInterceptRepository
-    private lateinit var decisionNotificationManager: DecisionNotificationManager
     private lateinit var callerIdOverlayManager: CallerIdOverlayManager
     private lateinit var countryConfigProvider: CountryConfigProvider
     private lateinit var numberProfileRepository: NumberProfileRepository
     private lateinit var userCallRecordRepository: UserCallRecordRepository
+    private lateinit var overlayPresenter: app.myphonecheck.mobile.feature.callintercept.presentation.OverlayPresenter
     private val serviceScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     /**
@@ -108,11 +109,11 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
                 ScreeningServiceEntryPoint::class.java,
             )
             callInterceptRepository = entryPoint.callInterceptRepository()
-            decisionNotificationManager = entryPoint.decisionNotificationManager()
             callerIdOverlayManager = entryPoint.callerIdOverlayManager()
             countryConfigProvider = entryPoint.countryConfigProvider()
             numberProfileRepository = entryPoint.numberProfileRepository()
             userCallRecordRepository = entryPoint.userCallRecordRepository()
+            overlayPresenter = entryPoint.overlayPresenter()
 
             // 디바이스 국가 감지 (SIM → Network → Locale)
             deviceCountry = countryConfigProvider.detectCountry(applicationContext)
@@ -124,6 +125,7 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
 
     override fun onScreenCall(callDetails: Call.Details) {
         Log.i(TAG, "onScreenCall invoked")
+        Log.i(MPC_SCREEN, "ENTER onScreenCall")
         try {
             val rawNumber = extractPhoneNumber(callDetails)
 
@@ -238,69 +240,43 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
                     "p2=${twoPhase.phase2?.action ?: "N/A"}(${meta.phase2LatencyMs}ms) " +
                     "conflict=${twoPhase.hasPhaseConflict()}")
 
-                // Phase 1: 즉시 Notification + Overlay 표시
-                // (Phase 2가 있으면 나중에 업데이트됨)
-                if (::decisionNotificationManager.isInitialized) {
-                    if (hasPhase2 && twoPhase.hasPhaseConflict()) {
-                        // Phase 불일치: 확정 판단으로 Notification 표시 + 강화 문구
-                        decisionNotificationManager.showDecisionNotification(
-                            context = applicationContext,
-                            result = finalResult,
-                            phoneNumber = normalizedNumber,
-                            phaseUpgraded = twoPhase.riskEscalated(),
-                        )
-                    } else {
-                        // Phase 일치 또는 Phase 1만: 최종 결과로 Notification
-                        decisionNotificationManager.showDecisionNotification(
-                            context = applicationContext,
-                            result = finalResult,
-                            phoneNumber = normalizedNumber,
-                        )
+                // v4.3: Presentation via OverlayPresenter (single entry point)
+                if (::overlayPresenter.isInitialized) {
+                    val overlayLang = when (
+                        applicationContext.resources.configuration.locales[0]?.language
+                    ) {
+                        "ko" -> SupportedLanguage.KO
+                        else -> SupportedLanguage.EN
                     }
-                    Log.i(TAG, "Decision notification shown for: $normalizedNumber")
-                }
-
-                // Overlay 표시 — 최종 결과 + 2-Phase 메타(즉시/확정) 전부 노출
-                if (::callerIdOverlayManager.isInitialized) {
-                    try {
-                        val overlayLang = when (
-                            applicationContext.resources.configuration.locales[0]?.language
-                        ) {
-                            "ko" -> SupportedLanguage.KO
-                            else -> SupportedLanguage.EN
-                        }
-                        // 기존 태그/메모/차단 횟수 조회 (학습 반영)
-                        val existingRecord = try {
-                            userCallRecordRepository.findByNumber(normalizedNumber)
-                        } catch (e: Exception) {
-                            Log.w(TAG, "UserCallRecord lookup failed (non-fatal): ${e.message}")
-                            null
-                        }
-                        val numberProfileSnapshot = try {
-                            numberProfileRepository.getSnapshot(normalizedNumber)
-                        } catch (e: Exception) {
-                            Log.w(TAG, "NumberProfile lookup failed (non-fatal): ${e.message}")
-                            null
-                        }
-                        val blockCount = if (existingRecord?.lastAction == "blocked") {
-                            existingRecord.callCount
-                        } else {
-                            0
-                        }
-
-                        callerIdOverlayManager.showOverlay(
-                            context = applicationContext,
-                            result = finalResult,
-                            phoneNumber = normalizedNumber,
-                            language = overlayLang,
-                            twoPhaseDecision = twoPhase,
-                            userBlockCount = blockCount,
-                            numberProfileSnapshot = numberProfileSnapshot,
-                        )
-                        Log.i(TAG, "Overlay shown for: $normalizedNumber")
+                    val existingRecord = try {
+                        userCallRecordRepository.findByNumber(normalizedNumber)
                     } catch (e: Exception) {
-                        Log.w(TAG, "Overlay failed (non-fatal): ${e.message}")
+                        Log.w(TAG, "UserCallRecord lookup failed (non-fatal): ${e.message}")
+                        null
                     }
+                    val numberProfileSnapshot = try {
+                        numberProfileRepository.getSnapshot(normalizedNumber)
+                    } catch (e: Exception) {
+                        Log.w(TAG, "NumberProfile lookup failed (non-fatal): ${e.message}")
+                        null
+                    }
+                    val blockCount = if (existingRecord?.lastAction == "blocked") {
+                        existingRecord.callCount
+                    } else {
+                        0
+                    }
+
+                    overlayPresenter.present(
+                        context = applicationContext,
+                        result = finalResult,
+                        phoneNumber = normalizedNumber,
+                        twoPhaseDecision = twoPhase,
+                        language = overlayLang,
+                        userBlockCount = blockCount,
+                        numberProfileSnapshot = numberProfileSnapshot,
+                        phaseUpgraded = hasPhase2 && twoPhase.hasPhaseConflict() && twoPhase.riskEscalated(),
+                    )
+                    Log.i(MPC_SCREEN, "OVERLAY_SHOWN number=$normalizedNumber risk=${finalResult.riskLevel}")
                 }
 
                 // ALLOW 응답 (전화 울림)
@@ -309,10 +285,10 @@ class MyPhoneCheckScreeningService : CallScreeningService() {
 
             } catch (e: TimeoutCancellationException) {
                 Log.w(TAG, "Assessment timeout (${SCREENING_TIMEOUT_MS}ms) — ALLOW")
-                if (::decisionNotificationManager.isInitialized) {
+                if (::overlayPresenter.isInitialized) {
                     val normalizedNumber = PhoneNumberNormalizer.formatE164(rawNumber, effectiveCountry)
                         ?: rawNumber
-                    decisionNotificationManager.showTimeoutNotification(
+                    overlayPresenter.presentTimeout(
                         context = applicationContext,
                         phoneNumber = normalizedNumber,
                     )

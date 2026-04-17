@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "CallActionReceiver"
+private const val MPC_ACTION = "MPC_ACTION"
 private const val EXTRA_PHONE_NUMBER = "extra_phone_number"
 private const val EXTRA_ACTION_TYPE = "action_type"
 
@@ -154,6 +155,7 @@ class CallActionReceiver : BroadcastReceiver() {
     private fun handleMarkDoNotMissAction(context: Context, phoneNumber: String) {
         try {
             Log.d(TAG, "User chose to mark $phoneNumber as DO_NOT_MISS")
+            Log.i(MPC_ACTION, "DO_NOT_MISS_RECEIVED number=$phoneNumber")
 
             // Toggle DO_NOT_MISS: NumberProfileBlockState between DO_NOT_BLOCK and NONE.
             // Maps to ActionState.DO_NOT_BLOCK, which triggers ImportanceLevel.DO_NOT_MISS
@@ -162,6 +164,7 @@ class CallActionReceiver : BroadcastReceiver() {
                 try {
                     numberProfileRepository.toggleDoNotMiss(phoneNumber)
                     Log.d(TAG, "Successfully toggled DO_NOT_MISS for $phoneNumber")
+                    Log.i(MPC_ACTION, "DO_NOT_MISS_TOGGLED number=$phoneNumber")
                 } catch (e: Exception) {
                     Log.e(TAG, "Error toggling DO_NOT_MISS", e)
                 }

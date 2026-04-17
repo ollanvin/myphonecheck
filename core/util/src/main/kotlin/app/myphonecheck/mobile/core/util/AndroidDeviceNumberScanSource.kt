@@ -2,9 +2,8 @@ package app.myphonecheck.mobile.core.util
 
 import android.Manifest
 import android.content.Context
-import android.provider.CallLog
 import android.provider.ContactsContract
-import android.provider.Telephony
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import app.myphonecheck.mobile.core.model.DeviceNumberScanSource
@@ -15,11 +14,13 @@ class AndroidDeviceNumberScanSource(
     private val context: Context,
 ) : DeviceNumberScanSource {
 
-    fun hasCallLogAccess(): Boolean = hasPermission(Manifest.permission.READ_CALL_LOG)
+    /** v4.3: READ_CALL_LOG removed — always returns false */
+    fun hasCallLogAccess(): Boolean = false
 
     fun hasContactsAccess(): Boolean = hasPermission(Manifest.permission.READ_CONTACTS)
 
-    fun hasSmsAccess(): Boolean = hasPermission(Manifest.permission.READ_SMS)
+    /** v4.3: READ_SMS removed — always returns false */
+    fun hasSmsAccess(): Boolean = false
 
     override suspend fun recentCallHistoryNumbers(limit: Int): List<String> = withContext(Dispatchers.IO) {
         if (!hasCallLogAccess()) {
@@ -70,27 +71,32 @@ class AndroidDeviceNumberScanSource(
         columnName: String,
         sortOrder: String,
     ): List<String> {
-        val resolver = context.contentResolver
-        val values = mutableListOf<String>()
-        resolver.query(
-            uri,
-            projection,
-            null,
-            null,
-            sortOrder,
-        )?.use { cursor ->
-            val columnIndex = cursor.getColumnIndex(columnName)
-            if (columnIndex == -1) {
-                return emptyList()
-            }
+        return try {
+            val resolver = context.contentResolver
+            val values = mutableListOf<String>()
+            resolver.query(
+                uri,
+                projection,
+                null,
+                null,
+                sortOrder,
+            )?.use { cursor ->
+                val columnIndex = cursor.getColumnIndex(columnName)
+                if (columnIndex == -1) {
+                    return emptyList()
+                }
 
-            while (cursor.moveToNext()) {
-                val value = cursor.getString(columnIndex)?.trim().orEmpty()
-                if (value.isNotBlank()) {
-                    values += value
+                while (cursor.moveToNext()) {
+                    val value = cursor.getString(columnIndex)?.trim().orEmpty()
+                    if (value.isNotBlank()) {
+                        values += value
+                    }
                 }
             }
+            values
+        } catch (e: Exception) {
+            Log.w("MPC_SCAN", "queryStrings failed uri=$uri: ${e.message}")
+            emptyList()
         }
-        return values
     }
 }

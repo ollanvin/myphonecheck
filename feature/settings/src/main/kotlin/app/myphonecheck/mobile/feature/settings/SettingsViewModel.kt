@@ -101,12 +101,8 @@ class SettingsViewModel @Inject constructor(
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun hasCallLogPermission(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.READ_CALL_LOG,
-        ) == PackageManager.PERMISSION_GRANTED
-    }
+    /** v4.3: READ_CALL_LOG removed — always returns false */
+    private fun hasCallLogPermission(): Boolean = false
 
     private fun isDefaultCallerIdApp(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

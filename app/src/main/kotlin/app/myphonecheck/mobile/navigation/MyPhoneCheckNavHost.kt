@@ -361,13 +361,11 @@ private fun Context.hasContactsPermission(): Boolean =
     ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) ==
         PackageManager.PERMISSION_GRANTED
 
-private fun Context.hasCallLogPermission(): Boolean =
-    ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) ==
-        PackageManager.PERMISSION_GRANTED
+/** v4.3: READ_CALL_LOG removed — always returns false */
+private fun Context.hasCallLogPermission(): Boolean = false
 
-private fun Context.hasReadSmsPermission(): Boolean =
-    ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) ==
-        PackageManager.PERMISSION_GRANTED
+/** v4.3: READ_SMS removed — always returns false */
+private fun Context.hasReadSmsPermission(): Boolean = false
 
 private fun Context.hasReceiveSmsPermission(): Boolean =
     ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) ==
@@ -2332,8 +2330,7 @@ private fun SettingsPermissionsSection() {
     // ── 통화·메시지 그룹 (런타임 권한) ──
     val phoneStateOk = remember(refreshTrigger) { context.hasReadPhoneStatePermission() }
     val contactsOk = remember(refreshTrigger) { context.hasContactsPermission() }
-    val callLogOk = remember(refreshTrigger) { context.hasCallLogPermission() }
-    val readSmsOk = remember(refreshTrigger) { context.hasReadSmsPermission() }
+    // v4.3: callLogOk, readSmsOk removed — READ_CALL_LOG / READ_SMS denied per PERMISSION POLICY
     val receiveSmsOk = remember(refreshTrigger) { context.hasReceiveSmsPermission() }
     val answerCallsOk = remember(refreshTrigger) { context.hasAnswerCallsPermission() }
 
@@ -2347,12 +2344,7 @@ private fun SettingsPermissionsSection() {
     val contactsLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { refreshTrigger++ }
-    val callLogLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission(),
-    ) { refreshTrigger++ }
-    val readSmsLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission(),
-    ) { refreshTrigger++ }
+    // v4.3: callLogLauncher, readSmsLauncher removed — READ_CALL_LOG / READ_SMS denied per PERMISSION POLICY
     val receiveSmsLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { refreshTrigger++ }
@@ -2436,32 +2428,7 @@ private fun SettingsPermissionsSection() {
             }
         },
     )
-    OnboardingPermissionRow(
-        icon = Icons.Filled.Phone,
-        title = context.getString(AppR.string.perm_call_log_title),
-        description = context.getString(AppR.string.perm_call_log_desc),
-        granted = callLogOk,
-        onAllow = {
-            if (callLogOk) {
-                context.openAppDetailsSettings()
-            } else {
-                callLogLauncher.launch(Manifest.permission.READ_CALL_LOG)
-            }
-        },
-    )
-    OnboardingPermissionRow(
-        icon = Icons.Filled.Message,
-        title = context.getString(AppR.string.perm_sms_read_title),
-        description = context.getString(AppR.string.perm_sms_read_desc),
-        granted = readSmsOk,
-        onAllow = {
-            if (readSmsOk) {
-                context.openAppDetailsSettings()
-            } else {
-                readSmsLauncher.launch(Manifest.permission.READ_SMS)
-            }
-        },
-    )
+    // v4.3: OnboardingPermissionRow for READ_CALL_LOG and READ_SMS removed — denied per PERMISSION POLICY
     OnboardingPermissionRow(
         icon = Icons.Filled.Message,
         title = context.getString(AppR.string.perm_sms_receive_title),

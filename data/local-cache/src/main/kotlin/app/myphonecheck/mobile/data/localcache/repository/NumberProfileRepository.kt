@@ -1,5 +1,6 @@
 package app.myphonecheck.mobile.data.localcache.repository
 
+import android.util.Log
 import app.myphonecheck.mobile.core.model.ActionState
 import app.myphonecheck.mobile.data.localcache.dao.DetailTagDao
 import app.myphonecheck.mobile.data.localcache.dao.NumberProfileDao
@@ -129,7 +130,12 @@ class NumberProfileRepository @Inject constructor(
         } else {
             NumberProfileBlockState.DO_NOT_BLOCK
         }
+        Log.i(MPC_IMPORTANCE, "TOGGLE number=$normalizedNumber from=$currentState to=$nextState")
         setBlockState(normalizedNumber, nextState)
+    }
+
+    companion object {
+        private const val MPC_IMPORTANCE = "MPC_IMPORTANCE"
     }
 
     suspend fun updateShortMemo(normalizedNumber: String, memo: String?) {
