@@ -60,4 +60,17 @@
     <string name="overlay_memo_section">Memo</string>
     <string name="overlay_memo_placeholder">Add a note</string>
     <string name="overlay_tag_save">Save</string>
+
+    <!-- Notification -->
+    <string name="notif_channel_name">MyPhoneCheck Decisions</string>
+    <string name="notif_channel_desc">Incoming call decision results</string>
+    <string name="notif_phase_upgraded_tag">" [Further verified]"</string>
+    <string name="notif_phase_upgraded_content_fmt">%s (deep analysis complete)</string>
+    <string name="notif_phase_upgraded_detail">\n※ Risk level was elevated after further analysis</string>
+    <string name="notif_action_reject">Reject</string>
+    <string name="notif_action_block">Block</string>
+    <string name="notif_action_detail">Details</string>
+    <string name="notif_action_important">Mark Important</string>
+    <string name="notif_timeout_title_fmt">%1$s Unable to determine — %2$s</string>
+    <string name="notif_timeout_content">Decision timed out — please check manually</string>
 </resources>

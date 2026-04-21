@@ -23,6 +23,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import app.myphonecheck.mobile.feature.decisionui.R
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -140,7 +142,7 @@ private fun OverlayCard(
                     )
                 } else {
                     Text(
-                        text = "분석 중...",
+                        text = stringResource(R.string.decision_analyzing_dots),
                         color = MyPhoneCheckTheme.colors.textSecondary,
                         fontSize = 14.sp,
                     )
@@ -180,7 +182,7 @@ private fun OverlayCard(
                 shape = RoundedCornerShape(8.dp),
             ) {
                 Text(
-                    text = "확인",
+                    text = stringResource(R.string.decision_confirm),
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
                 )

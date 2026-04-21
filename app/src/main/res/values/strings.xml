@@ -68,7 +68,7 @@
     <string name="onboarding_page1_threat">Scam calls, phishing messages, and noisy alerts\nare already targeting you.</string>
     <string name="onboarding_page1_card_title">Stop it before you answer.</string>
     <string name="onboarding_page1_card_desc">Real-time interception\ninstantly evaluates risk.</string>
-    <string name="onboarding_on_device_only">100% on-device · no server transmission</string>
+    <string name="onboarding_on_device_only">100%% on-device · no server transmission</string>
     <string name="onboarding_page2_title">Your phone is already under attack\nfrom 4 entry points</string>
     <string name="threat_call_title">Calls</string>
     <string name="threat_call_desc">Scam calls · voice phishing</string>
@@ -120,6 +120,31 @@
     <string name="engine_message_desc">Catch phishing before you open it</string>
     <string name="engine_privacy_question">Is your phone\nsafe right now?</string>
     <string name="engine_privacy_desc">Watch hidden camera and microphone access</string>
+
+    <!-- CameraCheck / MicCheck engine cards -->
+    <string name="engine_camera_question">Who can see\nthrough your camera?</string>
+    <string name="engine_camera_desc">Detect apps with camera access</string>
+    <string name="engine_mic_question">Who is\nlistening in?</string>
+    <string name="engine_mic_desc">Detect apps with microphone access</string>
+
+    <!-- Sensor scan status -->
+    <string name="scan_status_not_scanned">Not scanned</string>
+    <string name="scan_status_scanning">Scanning…</string>
+    <string name="scan_status_granted_count">%1$d apps granted</string>
+    <string name="scan_status_init_required">Initial scan required</string>
+    <string name="scan_status_failed">Scan failed</string>
+    <string name="scan_retry">Retry</string>
+
+    <!-- CameraCheck / MicCheck detail screen -->
+    <string name="camera_check_title">Camera Check</string>
+    <string name="mic_check_title">Microphone Check</string>
+    <string name="sensor_granted_apps_header">Apps with permission</string>
+    <string name="sensor_recent_apps_header">Recently used</string>
+    <string name="sensor_no_granted_apps">No apps have this permission</string>
+    <string name="sensor_no_recent_apps">No recent access detected</string>
+    <string name="sensor_last_used_label">Last used</string>
+    <string name="sensor_known_safe_badge">Known safe</string>
+    <string name="sensor_days_installed">Installed %1$d days ago</string>
     <string name="message_hub_title">Message hub</string>
     <string name="message_hub_link_warning">This message contains a link</string>
     <string name="message_hub_action_keep">Keep</string>
@@ -192,10 +217,83 @@
     <string name="settings_restart_onboarding_desc">Go through the 5-step setup flow again</string>
     <string name="onboarding_permissions_later">Later</string>
     <string name="onboarding_permissions_continue_home">Get started</string>
-    <string name="home_security_trust_badge">🔒 100% on-device · No servers · No data collection</string>
+    <string name="home_security_trust_badge">🔒 100%% on-device · No servers · No data collection</string>
     <string name="settings_security_card_title">Security status: Normal</string>
     <string name="settings_security_bullet_no_server">No server connection</string>
     <string name="settings_security_bullet_no_transfer">No external data transfer</string>
     <string name="settings_security_bullet_aes">AES-256-GCM backup encryption</string>
     <string name="settings_security_bullet_on_device">On-device processing only</string>
+
+    <!-- Call/Message detail screen -->
+    <string name="detail_label_number">Number</string>
+    <string name="detail_label_time">Time</string>
+    <string name="detail_label_search_summary">Search summary</string>
+    <string name="detail_label_similar_number">Similar number</string>
+    <string name="detail_label_not_confirmed">Not confirmed</string>
+    <string name="detail_label_importance">Importance</string>
+    <string name="detail_label_link_warning">Link warning</string>
+    <string name="detail_label_link_exists">Link detected</string>
+    <string name="detail_label_link_none">No links</string>
+    <string name="detail_action_remember">Remember without saving</string>
+    <string name="detail_state_blocked">Blocked</string>
+    <string name="detail_state_do_not_block">Do not block</string>
+    <string name="detail_tag_placeholder">Add tag</string>
+    <string name="detail_tag_add">Add tag</string>
+    <string name="detail_memo_placeholder">Short memo</string>
+    <string name="detail_memo_save">Save memo</string>
+    <string name="detail_action_delete">Delete</string>
+    <string name="detail_action_block">Block</string>
+    <string name="detail_action_both">Both</string>
+
+    <!-- Backup screen -->
+    <string name="backup_screen_title">Backup &amp; Restore</string>
+    <string name="backup_passphrase_warning">If you forget the password, recovery is impossible. Store it safely.</string>
+    <string name="backup_passphrase_hint">Enter 6-digit number</string>
+    <string name="backup_passphrase_label">Recovery password</string>
+    <string name="backup_passphrase_confirm_label">Confirm recovery password</string>
+    <string name="backup_passphrase_title">Recovery password</string>
+    <string name="backup_passphrase_error_empty">Enter recovery password</string>
+    <string name="backup_passphrase_error_confirm_empty">Confirm recovery password</string>
+    <string name="backup_passphrase_error_length">Recovery password must be 6 digits</string>
+    <string name="backup_passphrase_error_mismatch">Passwords do not match</string>
+    <string name="backup_confirm_default">Backup</string>
+    <string name="backup_nav_back">Back</string>
+    <string name="backup_close">Close</string>
+    <string name="backup_cloud_both">Device + Cloud simultaneous save</string>
+    <string name="backup_device_only">Device only</string>
+    <string name="backup_cloud_desc">Backup to SAF-compatible cloud storage\nsuch as Google Drive or OneDrive.</string>
+    <string name="backup_location_fmt">Location: %1$s</string>
+    <string name="backup_location_default">Selected location</string>
+    <string name="backup_cloud_change">Change cloud location</string>
+    <string name="backup_cloud_select">Select cloud backup location</string>
+    <string name="backup_cloud_disable">Disable cloud backup (device only)</string>
+    <string name="backup_encrypt_desc">Current data is encrypted with AES-256-GCM.</string>
+    <string name="backup_save_location_cloud_fmt">Location: Documents/MyPhoneCheck/ + Cloud</string>
+    <string name="backup_save_location_local">Location: Documents/MyPhoneCheck/</string>
+    <string name="backup_now">Backup now</string>
+    <string name="backup_restore_file_desc">Select a .csb file to restore.\nAll current data will be replaced.</string>
+    <string name="backup_restore_file_btn">Select file to restore</string>
+    <string name="backup_total_size_fmt">Total %1$s</string>
+    <string name="backup_empty">No backup files</string>
+    <string name="backup_icon_restore">Restore</string>
+    <string name="backup_icon_delete">Delete</string>
+    <string name="backup_delete_title">Delete backup</string>
+    <string name="backup_delete_confirm_fmt">%1$s\nDelete this backup?</string>
+    <string name="backup_restore_dialog_title">Restore backup</string>
+    <string name="backup_restore_confirm_fmt">%1$s\n\nRestore from this backup?\nAll current data will be deleted and replaced.</string>
+    <string name="backup_restore_btn">Restore</string>
+    <string name="backup_footer">Backups are saved as .csb(v2) files encrypted with PBKDF2 and AES-256-GCM.\nRestore on another device with the same recovery password.\nUp to 5 backups are kept; oldest is auto-deleted.</string>
+    <string name="backup_section_cloud">Cloud backup location</string>
+    <string name="backup_section_create">Create new backup</string>
+    <string name="backup_section_file_restore">Restore from file</string>
+    <string name="backup_section_list">Backup list</string>
+
+    <!-- WeeklyReportWorker -->
+    <string name="weekly_report_channel_desc">Weekly security report notification</string>
+    <string name="weekly_report_title_fmt">Weekly security report (%1$s ~ %2$s)</string>
+    <string name="weekly_report_calls_fmt">Calls %1$d</string>
+    <string name="weekly_report_calls_risk_fmt"> (risk %1$d)</string>
+    <string name="weekly_report_push_fmt"> · Push %1$d</string>
+    <string name="weekly_report_push_risk_fmt"> (risk %1$d)</string>
+    <string name="weekly_report_privacy_fmt"> · Permission anomalies %1$d</string>
 </resources>

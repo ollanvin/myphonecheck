@@ -11,11 +11,12 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import app.myphonecheck.mobile.core.model.DecisionResult
 import app.myphonecheck.mobile.core.model.RingSystem
+import app.myphonecheck.mobile.feature.callintercept.R
 import javax.inject.Inject
 
 private const val TAG = "DecisionNotification"
 private const val CHANNEL_ID = "myphonecheck_decisions"
-private const val CHANNEL_NAME = "MyPhoneCheck 판정"
+// Channel name resolved at runtime via getString(R.string.notif_channel_name)
 private const val NOTIFICATION_ID_PREFIX = 1000
 private const val ACTION_REJECT = "action_reject"
 private const val ACTION_BLOCK = "action_block"
@@ -107,14 +108,14 @@ class DecisionNotificationManager @Inject constructor() {
         val stateLabel = RingSystem.labelKo(result.action)
 
         // 2-Phase UX: 위험 상승 시 강화 문구
-        val phaseTag = if (phaseUpgraded) " [추가 확인됨]" else ""
+        val phaseTag = if (phaseUpgraded) context.getString(R.string.notif_phase_upgraded_tag) else ""
 
         // 제목: 이모지 + 상태 + Phase 태그 + 번호
         val title = "$stateEmoji $stateLabel$phaseTag — $phoneNumber"
 
         // 내용: 한 줄 요약
         val contentText = if (phaseUpgraded) {
-            "${result.summary} (심층 분석 완료)"
+            context.getString(R.string.notif_phase_upgraded_content_fmt, result.summary)
         } else {
             result.summary
         }
@@ -123,7 +124,7 @@ class DecisionNotificationManager @Inject constructor() {
         val bigText = buildString {
             append(result.summary)
             if (phaseUpgraded) {
-                append("\n※ 추가 분석에서 위험도가 상승했습니다")
+                append(context.getString(R.string.notif_phase_upgraded_detail))
             }
             if (result.reasons.isNotEmpty()) {
                 result.reasons.forEachIndexed { index, reason ->
@@ -151,10 +152,10 @@ class DecisionNotificationManager @Inject constructor() {
             .setOngoing(true)
             .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
             .setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
-            .addAction(android.R.drawable.ic_menu_close_clear_cancel, "거절", rejectPI)
-            .addAction(android.R.drawable.ic_delete, "차단", blockPI)
-            .addAction(android.R.drawable.ic_menu_info_details, "자세히", detailPI)
-            .addAction(android.R.drawable.ic_menu_add, "중요표시", doNotMissPI)
+            .addAction(android.R.drawable.ic_menu_close_clear_cancel, context.getString(R.string.notif_action_reject), rejectPI)
+            .addAction(android.R.drawable.ic_delete, context.getString(R.string.notif_action_block), blockPI)
+            .addAction(android.R.drawable.ic_menu_info_details, context.getString(R.string.notif_action_detail), detailPI)
+            .addAction(android.R.drawable.ic_menu_add, context.getString(R.string.notif_action_important), doNotMissPI)
             .setColorized(true)
             .setColor(stateColor)
             .build()
@@ -169,8 +170,8 @@ class DecisionNotificationManager @Inject constructor() {
         val blockPI = createActionPI(context, ACTION_BLOCK, phoneNumber, notificationId + 2)
 
         return NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle("${RingSystem.emoji(app.myphonecheck.mobile.core.model.RiskLevel.UNKNOWN)} 판단 불가 — $phoneNumber")
-            .setContentText("판정 시간 초과 — 직접 확인하세요")
+            .setContentTitle(context.getString(R.string.notif_timeout_title_fmt, RingSystem.emoji(app.myphonecheck.mobile.core.model.RiskLevel.UNKNOWN), phoneNumber))
+            .setContentText(context.getString(R.string.notif_timeout_content))
             .setSubText("MyPhoneCheck")
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -178,8 +179,8 @@ class DecisionNotificationManager @Inject constructor() {
             .setAutoCancel(false)
             .setOngoing(true)
             .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
-            .addAction(android.R.drawable.ic_menu_close_clear_cancel, "거절", rejectPI)
-            .addAction(android.R.drawable.ic_delete, "차단", blockPI)
+            .addAction(android.R.drawable.ic_menu_close_clear_cancel, context.getString(R.string.notif_action_reject), rejectPI)
+            .addAction(android.R.drawable.ic_delete, context.getString(R.string.notif_action_block), blockPI)
             .setColorized(true)
             .setColor(RingSystem.COLOR_UNKNOWN)
             .build()
@@ -245,10 +246,10 @@ class DecisionNotificationManager @Inject constructor() {
 
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                CHANNEL_NAME,
+                context.getString(R.string.notif_channel_name),
                 NotificationManager.IMPORTANCE_HIGH,
             ).apply {
-                description = "수신 전화 판정 결과"
+                description = context.getString(R.string.notif_channel_desc)
                 enableVibration(true)
                 enableLights(true)
                 setShowBadge(true)

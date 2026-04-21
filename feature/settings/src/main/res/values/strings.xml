@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_section_account">Account</string>
+    <string name="settings_subscription_status">Subscription status</string>
+    <string name="settings_subscription_active">Active</string>
+    <string name="settings_subscription_manage">Manage subscription</string>
+    <string name="settings_subscription_manage_desc">Change subscription settings</string>
+    <string name="settings_section_general">General</string>
+    <string name="settings_section_privacy_permissions">Privacy &amp; Permissions</string>
+    <string name="settings_contacts_permission">Contacts permission</string>
+    <string name="settings_perm_approved">Approved</string>
+    <string name="settings_perm_not_approved">Not approved</string>
+    <string name="settings_call_log_permission">Call log permission</string>
+    <string name="settings_default_spam_filter">Default spam filter settings</string>
+    <string name="settings_open_system_settings">Open system settings</string>
+    <string name="settings_section_about">About</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_privacy_policy">Privacy policy</string>
+    <string name="settings_terms">Terms of service</string>
+    <string name="settings_feedback">Feedback</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_auto_detect">Auto detect</string>
+    <string name="settings_country_region">Country/Region</string>
+    <string name="settings_country_kr">South Korea</string>
+    <string name="settings_country_us">United States</string>
+    <string name="settings_country_jp">Japan</string>
+    <string name="settings_country_cn">China</string>
+</resources>

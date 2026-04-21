@@ -21,6 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import app.myphonecheck.mobile.feature.decisionui.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -124,7 +126,7 @@ fun FirstRunScreen(
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Text(
-                                text = "분석 중",
+                                text = stringResource(R.string.decision_analyzing),
                                 color = MyPhoneCheckTheme.colors.textPrimary,
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Bold,
@@ -132,7 +134,7 @@ fun FirstRunScreen(
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = "판단 근거 수집 중...",
+                                text = stringResource(R.string.decision_collecting_evidence),
                                 color = MyPhoneCheckTheme.colors.textSecondary,
                                 fontSize = 14.sp,
                                 textAlign = TextAlign.Center,

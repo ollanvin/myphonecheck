@@ -24,6 +24,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import app.myphonecheck.mobile.feature.decisionui.R
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -67,7 +69,7 @@ fun ExpandableDetailSection(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "상세 정보",
+                text = stringResource(R.string.decision_detail_header),
                 color = MyPhoneCheckTheme.colors.textPrimary,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -107,7 +109,7 @@ fun ExpandableDetailSection(
                 if (searchPending) {
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "웹 검색 진행 중...",
+                        text = stringResource(R.string.decision_web_search_pending),
                         color = MyPhoneCheckTheme.colors.textSecondary,
                         fontSize = 11.sp,
                         fontStyle = FontStyle.Italic,
@@ -121,7 +123,7 @@ fun ExpandableDetailSection(
 @Composable
 private fun DeviceEvidenceDetail(device: DeviceEvidence?) {
     Text(
-        text = "디바이스 이력",
+        text = stringResource(R.string.decision_device_history),
         color = MyPhoneCheckTheme.colors.textPrimary,
         fontSize = 12.sp,
         fontWeight = FontWeight.SemiBold,
@@ -176,7 +178,7 @@ private fun DeviceEvidenceDetail(device: DeviceEvidence?) {
 @Composable
 private fun SearchEvidenceDetail(search: SearchEvidence) {
     Text(
-        text = "웹 검색 결과",
+        text = stringResource(R.string.decision_web_search_result),
         color = MyPhoneCheckTheme.colors.textPrimary,
         fontSize = 12.sp,
         fontWeight = FontWeight.SemiBold,
@@ -193,7 +195,7 @@ private fun SearchEvidenceDetail(search: SearchEvidence) {
 
     if (search.signalSummaries.isNotEmpty()) {
         Text(
-            text = "의미 신호 (검색·커뮤니티)",
+            text = stringResource(R.string.decision_signal_summary),
             color = MyPhoneCheckTheme.colors.textPrimary,
             fontSize = 12.sp,
             fontWeight = FontWeight.SemiBold,

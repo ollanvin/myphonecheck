@@ -11,6 +11,7 @@ import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.util.Log
+import android.annotation.SuppressLint
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -158,6 +159,7 @@ class PrivacyScannerForegroundService : Service() {
         }
     }
 
+    @SuppressLint("NewApi") // guarded by Build.VERSION.SDK_INT check below
     private fun unregisterWatcher() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
         try {

@@ -14,38 +14,18 @@ class AndroidDeviceNumberScanSource(
     private val context: Context,
 ) : DeviceNumberScanSource {
 
-    /** v4.3: READ_CALL_LOG removed — always returns false */
     fun hasCallLogAccess(): Boolean = false
 
     fun hasContactsAccess(): Boolean = hasPermission(Manifest.permission.READ_CONTACTS)
 
-    /** v4.3: READ_SMS removed — always returns false */
     fun hasSmsAccess(): Boolean = false
 
     override suspend fun recentCallHistoryNumbers(limit: Int): List<String> = withContext(Dispatchers.IO) {
-        if (!hasCallLogAccess()) {
-            return@withContext emptyList()
-        }
-
-        queryStrings(
-            uri = CallLog.Calls.CONTENT_URI,
-            projection = arrayOf(CallLog.Calls.NUMBER),
-            columnName = CallLog.Calls.NUMBER,
-            sortOrder = "${CallLog.Calls.DATE} DESC LIMIT $limit",
-        )
+        emptyList()
     }
 
     override suspend fun recentSmsSenderNumbers(limit: Int): List<String> = withContext(Dispatchers.IO) {
-        if (!hasSmsAccess()) {
-            return@withContext emptyList()
-        }
-
-        queryStrings(
-            uri = Telephony.Sms.CONTENT_URI,
-            projection = arrayOf(Telephony.Sms.ADDRESS),
-            columnName = Telephony.Sms.ADDRESS,
-            sortOrder = "${Telephony.Sms.DATE} DESC LIMIT $limit",
-        )
+        emptyList()
     }
 
     override suspend fun contactNumbers(limit: Int): List<String> = withContext(Dispatchers.IO) {

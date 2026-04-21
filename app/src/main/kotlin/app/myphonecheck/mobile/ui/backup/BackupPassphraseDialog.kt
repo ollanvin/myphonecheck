@@ -1,5 +1,6 @@
 package app.myphonecheck.mobile.ui.backup
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,9 +21,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import app.myphonecheck.mobile.R
 
 private const val MIN_PASSPHRASE_LENGTH = 6
 private const val MAX_PASSPHRASE_LENGTH = 6
@@ -33,7 +36,7 @@ private fun BackupPassphraseInputColumn(
     onPassphraseChange: (String) -> Unit,
     confirmPassphrase: String,
     onConfirmPassphraseChange: (String) -> Unit,
-    validationError: String?,
+    @StringRes validationErrorResId: Int?,
 ) {
     Column(
         modifier = Modifier
@@ -41,13 +44,13 @@ private fun BackupPassphraseInputColumn(
             .verticalScroll(rememberScrollState()),
     ) {
         Text(
-            text = "비밀번호를 잊으면 복원할 수 없습니다. 반드시 다른곳에 안전하게 보관하세요",
+            text = stringResource(R.string.backup_passphrase_warning),
             style = MaterialTheme.typography.bodySmall,
             color = Color(0xFFB3B3B3),
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "숫자 6자리를 입력해 주세요",
+            text = stringResource(R.string.backup_passphrase_hint),
             style = MaterialTheme.typography.bodySmall,
             color = Color(0xFFB3B3B3),
         )
@@ -56,7 +59,7 @@ private fun BackupPassphraseInputColumn(
             value = passphrase,
             onValueChange = onPassphraseChange,
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("복구 비밀번호") },
+            label = { Text(stringResource(R.string.backup_passphrase_label)) },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
@@ -66,14 +69,18 @@ private fun BackupPassphraseInputColumn(
             value = confirmPassphrase,
             onValueChange = onConfirmPassphraseChange,
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("복구 비밀번호 확인") },
+            label = { Text(stringResource(R.string.backup_passphrase_confirm_label)) },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
         )
-        validationError?.let { err ->
+        validationErrorResId?.let { resId ->
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = err, style = MaterialTheme.typography.bodySmall, color = Color(0xFFEF5350))
+            Text(
+                text = stringResource(resId),
+                style = MaterialTheme.typography.bodySmall,
+                color = Color(0xFFEF5350),
+            )
         }
     }
 }
@@ -85,43 +92,42 @@ private fun BackupPassphraseInputColumn(
 fun BackupPassphraseDialog(
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
-    confirmButtonLabel: String = "백업",
+    @StringRes confirmButtonLabelResId: Int = R.string.backup_confirm_default,
 ) {
     var passphrase by remember { mutableStateOf("") }
     var confirmPassphrase by remember { mutableStateOf("") }
-    var validationError by remember { mutableStateOf<String?>(null) }
+    var validationErrorResId by remember { mutableStateOf<Int?>(null) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("복구 비밀번호") },
+        title = { Text(stringResource(R.string.backup_passphrase_title)) },
         text = {
             BackupPassphraseInputColumn(
                 passphrase = passphrase,
                 onPassphraseChange = {
                     passphrase = it.filter { ch -> ch.isDigit() }.take(MAX_PASSPHRASE_LENGTH)
-                    validationError = null
+                    validationErrorResId = null
                 },
                 confirmPassphrase = confirmPassphrase,
                 onConfirmPassphraseChange = {
                     confirmPassphrase = it.filter { ch -> ch.isDigit() }.take(MAX_PASSPHRASE_LENGTH)
-                    validationError = null
+                    validationErrorResId = null
                 },
-                validationError = validationError,
+                validationErrorResId = validationErrorResId,
             )
         },
         confirmButton = {
             TextButton(
                 onClick = {
-                    val err = when {
-                        passphrase.isBlank() -> "복구 비밀번호를 입력하세요"
-                        confirmPassphrase.isBlank() -> "복구 비밀번호 확인을 입력하세요"
-                        passphrase.length < MIN_PASSPHRASE_LENGTH ->
-                            "복구 비밀번호는 6자리 숫자여야 합니다"
-                        passphrase != confirmPassphrase -> "복구 비밀번호가 일치하지 않습니다"
+                    val errResId = when {
+                        passphrase.isBlank() -> R.string.backup_passphrase_error_empty
+                        confirmPassphrase.isBlank() -> R.string.backup_passphrase_error_confirm_empty
+                        passphrase.length < MIN_PASSPHRASE_LENGTH -> R.string.backup_passphrase_error_length
+                        passphrase != confirmPassphrase -> R.string.backup_passphrase_error_mismatch
                         else -> null
                     }
-                    validationError = err
-                    if (err == null) {
+                    validationErrorResId = errResId
+                    if (errResId == null) {
                         val p = passphrase
                         passphrase = ""
                         confirmPassphrase = ""
@@ -129,7 +135,7 @@ fun BackupPassphraseDialog(
                     }
                 },
             ) {
-                Text(confirmButtonLabel)
+                Text(stringResource(confirmButtonLabelResId))
             }
         },
         dismissButton = {
@@ -137,7 +143,7 @@ fun BackupPassphraseDialog(
                 onClick = onDismiss,
                 colors = ButtonDefaults.textButtonColors(contentColor = Color(0xFF808080)),
             ) {
-                Text("취소")
+                Text(stringResource(R.string.common_cancel))
             }
         },
     )

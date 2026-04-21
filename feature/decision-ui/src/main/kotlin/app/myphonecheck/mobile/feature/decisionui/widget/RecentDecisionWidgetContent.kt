@@ -13,6 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import app.myphonecheck.mobile.feature.decisionui.R
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -78,7 +80,7 @@ fun RecentDecisionWidgetContent(
         if (items.isEmpty()) {
             // 판단 이력 없음
             Text(
-                text = "아직 판단 이력이 없습니다",
+                text = stringResource(R.string.decision_no_history),
                 color = MyPhoneCheckTheme.colors.textTertiary,
                 fontSize = 12.sp,
                 textAlign = TextAlign.Center,

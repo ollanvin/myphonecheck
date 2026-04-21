@@ -3,6 +3,7 @@ package app.myphonecheck.mobile.core.security.tamper
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.security.MessageDigest
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -15,7 +16,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class RepackageDetector @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
 ) {
     companion object {
         /**

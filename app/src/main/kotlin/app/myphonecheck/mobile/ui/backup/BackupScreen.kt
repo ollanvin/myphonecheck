@@ -26,11 +26,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.documentfile.provider.DocumentFile
 import androidx.hilt.navigation.compose.hiltViewModel
+import app.myphonecheck.mobile.R
 import java.io.File
 
 // MyPhoneCheck 다크테마 색상
@@ -100,10 +102,10 @@ fun BackupScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("백업 및 복원", fontWeight = FontWeight.Bold, color = TextPrimary) },
+                title = { Text(stringResource(R.string.backup_screen_title), fontWeight = FontWeight.Bold, color = TextPrimary) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, "뒤로", tint = TextPrimary)
+                        Icon(Icons.Default.ArrowBack, stringResource(R.string.backup_nav_back), tint = TextPrimary)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = BackgroundDark),
@@ -165,7 +167,7 @@ fun BackupScreen(
                             )
                             if (operationState !is BackupViewModel.OperationState.InProgress) {
                                 TextButton(onClick = { viewModel.clearOperationState() }) {
-                                    Text("닫기", fontSize = 12.sp, color = TextSecondary)
+                                    Text(stringResource(R.string.backup_close), fontSize = 12.sp, color = TextSecondary)
                                 }
                             }
                         }
@@ -175,7 +177,7 @@ fun BackupScreen(
 
             // ─── 클라우드 백업 설정 ───
             item {
-                SectionHeader("클라우드 백업 위치")
+                SectionHeader(stringResource(R.string.backup_section_cloud))
             }
             item {
                 Card(
@@ -194,7 +196,7 @@ fun BackupScreen(
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    "디바이스 + 클라우드 동시 저장",
+                                    stringResource(R.string.backup_cloud_both),
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Medium,
                                     color = Green,
@@ -208,7 +210,7 @@ fun BackupScreen(
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    "디바이스에만 저장",
+                                    stringResource(R.string.backup_device_only),
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Medium,
                                     color = TextSecondary,
@@ -222,17 +224,21 @@ fun BackupScreen(
                                 try {
                                     val uri = Uri.parse(safTreeUri)
                                     val docFile = DocumentFile.fromTreeUri(context, uri)
-                                    docFile?.name ?: uri.lastPathSegment ?: "선택된 위치"
+                                    docFile?.name ?: uri.lastPathSegment ?: ""
                                 } catch (_: Exception) {
-                                    "선택된 위치"
+                                    ""
                                 }
                             }
-                            Text("위치: $displayPath", fontSize = 12.sp, color = TextTertiary)
+                            Text(
+                                stringResource(R.string.backup_location_fmt, displayPath.ifEmpty { stringResource(R.string.backup_location_default) }),
+                                fontSize = 12.sp,
+                                color = TextTertiary,
+                            )
                         }
 
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            "Google Drive, OneDrive 등\nSAF를 지원하는 클라우드 저장소에\n백업을 동시 저장할 수 있습니다.",
+                            stringResource(R.string.backup_cloud_desc),
                             fontSize = 12.sp,
                             color = TextTertiary,
                             lineHeight = 17.sp,
@@ -248,7 +254,7 @@ fun BackupScreen(
                             Icon(Icons.Default.FolderOpen, contentDescription = null, modifier = Modifier.size(18.dp))
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                if (safTreeUri != null) "클라우드 위치 변경" else "클라우드 백업 위치 선택",
+                                if (safTreeUri != null) stringResource(R.string.backup_cloud_change) else stringResource(R.string.backup_cloud_select),
                                 fontSize = 14.sp,
                             )
                         }
@@ -260,7 +266,7 @@ fun BackupScreen(
                                 modifier = Modifier.fillMaxWidth(),
                             ) {
                                 Text(
-                                    "클라우드 백업 해제 (디바이스만 사용)",
+                                    stringResource(R.string.backup_cloud_disable),
                                     fontSize = 13.sp,
                                     color = TextTertiary,
                                 )
@@ -271,7 +277,7 @@ fun BackupScreen(
             }
 
             // ─── 백업 생성 ───
-            item { SectionHeader("새 백업 생성") }
+            item { SectionHeader(stringResource(R.string.backup_section_create)) }
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -280,7 +286,7 @@ fun BackupScreen(
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            "현재 데이터를 AES-256-GCM으로 암호화하여 백업합니다.",
+                            stringResource(R.string.backup_encrypt_desc),
                             fontSize = 13.sp,
                             color = TextSecondary,
                             lineHeight = 18.sp,
@@ -288,9 +294,9 @@ fun BackupScreen(
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             if (safTreeUri != null)
-                                "저장 위치: Documents/MyPhoneCheck/ + 클라우드"
+                                stringResource(R.string.backup_save_location_cloud_fmt)
                             else
-                                "저장 위치: Documents/MyPhoneCheck/",
+                                stringResource(R.string.backup_save_location_local),
                             fontSize = 12.sp,
                             color = TextTertiary,
                         )
@@ -302,14 +308,14 @@ fun BackupScreen(
                             colors = ButtonDefaults.buttonColors(containerColor = Primary),
                             enabled = operationState !is BackupViewModel.OperationState.InProgress,
                         ) {
-                            Text("지금 백업", fontSize = 14.sp, color = Color(0xFF0D1B2A))
+                            Text(stringResource(R.string.backup_now), fontSize = 14.sp, color = Color(0xFF0D1B2A))
                         }
                     }
                 }
             }
 
             // ─── 파일에서 복원 ───
-            item { SectionHeader("파일에서 복원") }
+            item { SectionHeader(stringResource(R.string.backup_section_file_restore)) }
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -318,8 +324,7 @@ fun BackupScreen(
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            "백업 파일(.csb)을 선택하여 복원합니다.\n" +
-                                "복원 시 현재 데이터는 모두 삭제됩니다.",
+                            stringResource(R.string.backup_restore_file_desc),
                             fontSize = 13.sp,
                             color = TextSecondary,
                             lineHeight = 18.sp,
@@ -332,7 +337,7 @@ fun BackupScreen(
                             colors = ButtonDefaults.outlinedButtonColors(contentColor = Primary),
                             enabled = operationState !is BackupViewModel.OperationState.InProgress,
                         ) {
-                            Text("파일 선택하여 복원", fontSize = 14.sp)
+                            Text(stringResource(R.string.backup_restore_file_btn), fontSize = 14.sp)
                         }
                     }
                 }
@@ -345,10 +350,10 @@ fun BackupScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    SectionHeader("백업 목록")
+                    SectionHeader(stringResource(R.string.backup_section_list))
                     if (totalSize > 0) {
                         Text(
-                            "총 ${BackupViewModel.formatFileSize(totalSize)}",
+                            stringResource(R.string.backup_total_size_fmt, BackupViewModel.formatFileSize(totalSize)),
                             fontSize = 12.sp,
                             color = TextTertiary,
                         )
@@ -369,7 +374,7 @@ fun BackupScreen(
                                 .padding(32.dp),
                             contentAlignment = Alignment.Center,
                         ) {
-                            Text("백업 파일이 없습니다", fontSize = 14.sp, color = TextTertiary)
+                            Text(stringResource(R.string.backup_empty), fontSize = 14.sp, color = TextTertiary)
                         }
                     }
                 }
@@ -406,7 +411,7 @@ fun BackupScreen(
                                 IconButton(onClick = { restoreTarget = item }) {
                                     Icon(
                                         Icons.Default.Refresh,
-                                        contentDescription = "복원",
+                                        contentDescription = stringResource(R.string.backup_icon_restore),
                                         tint = Blue,
                                         modifier = Modifier.size(20.dp),
                                     )
@@ -414,7 +419,7 @@ fun BackupScreen(
                                 IconButton(onClick = { deleteTarget = item }) {
                                     Icon(
                                         Icons.Default.Delete,
-                                        contentDescription = "삭제",
+                                        contentDescription = stringResource(R.string.backup_icon_delete),
                                         tint = Red,
                                         modifier = Modifier.size(20.dp),
                                     )
@@ -429,9 +434,7 @@ fun BackupScreen(
             item {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    "백업은 복구 비밀번호와 PBKDF2·AES-256-GCM으로 암호화된 .csb(v2) 파일로 저장됩니다.\n" +
-                        "동일한 복구 비밀번호로 다른 기기에서도 복원할 수 있습니다.\n" +
-                        "최대 5개의 백업이 보관되며, 초과 시 오래된 백업이 자동 삭제됩니다.",
+                    stringResource(R.string.backup_footer),
                     fontSize = 12.sp,
                     color = TextTertiary,
                     lineHeight = 17.sp,
@@ -464,7 +467,7 @@ fun BackupScreen(
                 pendingRestoreFile = null
                 viewModel.restoreFromFile(file, passphrase)
             },
-            confirmButtonLabel = "복원",
+            confirmButtonLabelResId = R.string.backup_restore_btn,
         )
     }
 
@@ -472,9 +475,9 @@ fun BackupScreen(
     if (deleteTarget != null) {
         AlertDialog(
             onDismissRequest = { deleteTarget = null },
-            title = { Text("백업 삭제") },
+            title = { Text(stringResource(R.string.backup_delete_title)) },
             text = {
-                Text("${deleteTarget!!.name}\n이 백업을 삭제하시겠습니까?")
+                Text(stringResource(R.string.backup_delete_confirm_fmt, deleteTarget!!.name))
             },
             confirmButton = {
                 TextButton(
@@ -484,12 +487,12 @@ fun BackupScreen(
                     },
                     colors = ButtonDefaults.textButtonColors(contentColor = Red),
                 ) {
-                    Text("삭제")
+                    Text(stringResource(R.string.common_delete))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { deleteTarget = null }) {
-                    Text("취소")
+                    Text(stringResource(R.string.common_cancel))
                 }
             },
         )
@@ -499,13 +502,9 @@ fun BackupScreen(
     if (restoreTarget != null) {
         AlertDialog(
             onDismissRequest = { restoreTarget = null },
-            title = { Text("백업 복원") },
+            title = { Text(stringResource(R.string.backup_restore_dialog_title)) },
             text = {
-                Text(
-                    "${restoreTarget!!.name}\n\n" +
-                        "이 백업에서 복원하시겠습니까?\n" +
-                        "현재 데이터는 모두 삭제되고 백업 데이터로 교체됩니다."
-                )
+                Text(stringResource(R.string.backup_restore_confirm_fmt, restoreTarget!!.name))
             },
             confirmButton = {
                 TextButton(
@@ -515,12 +514,12 @@ fun BackupScreen(
                         showRestorePassphraseDialog = true
                     },
                 ) {
-                    Text("복원")
+                    Text(stringResource(R.string.backup_restore_btn))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { restoreTarget = null }) {
-                    Text("취소")
+                    Text(stringResource(R.string.common_cancel))
                 }
             },
         )

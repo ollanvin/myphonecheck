@@ -56,6 +56,12 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    lint {
+        // MissingTranslation: 5개 locale(ar/es/ja/ru/zh) 번역 적체 — 별도 트랙 관리
+        // error → warning 강등. 번역 추가 시 이 설정 제거 예정.
+        warning += "MissingTranslation"
+    }
 }
 
 dependencies {

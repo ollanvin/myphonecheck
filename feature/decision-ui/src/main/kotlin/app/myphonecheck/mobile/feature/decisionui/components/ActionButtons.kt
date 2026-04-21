@@ -16,6 +16,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import app.myphonecheck.mobile.feature.decisionui.R
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,7 +48,7 @@ fun ActionButtonRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         ActionButton(
-            label = "거절",
+            label = stringResource(R.string.decision_btn_reject),
             icon = {
                 Icon(
                     imageVector = Icons.Filled.Close,
@@ -60,7 +62,7 @@ fun ActionButtonRow(
         )
 
         ActionButton(
-            label = "차단",
+            label = stringResource(R.string.decision_btn_block),
             icon = {
                 Icon(
                     imageVector = Icons.Filled.Close,
@@ -74,7 +76,7 @@ fun ActionButtonRow(
         )
 
         ActionButton(
-            label = "자세히",
+            label = stringResource(R.string.decision_btn_details),
             icon = {
                 Icon(
                     imageVector = Icons.Filled.Info,

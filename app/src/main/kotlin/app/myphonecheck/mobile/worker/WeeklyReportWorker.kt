@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import app.myphonecheck.mobile.R
 import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
 import app.myphonecheck.mobile.data.localcache.dao.PrivacyHistoryDao
 import app.myphonecheck.mobile.data.localcache.dao.PushStatsDao
@@ -138,18 +139,19 @@ class WeeklyReportWorker @AssistedInject constructor(
                     "Weekly Security Report",
                     android.app.NotificationManager.IMPORTANCE_LOW,
                 ).apply {
-                    description = "주간 보안 리포트 알림"
+                    description = applicationContext.getString(R.string.weekly_report_channel_desc)
                 }
                 nm.createNotificationChannel(channel)
             }
 
+            val ctx = applicationContext
             val summaryText = buildString {
-                append("전화 ${report.totalCalls}건")
-                if (report.highRiskCalls > 0) append(" (위험 ${report.highRiskCalls})")
-                append(" · 알림 ${report.totalPush}건")
-                if (report.highRiskPush > 0) append(" (위험 ${report.highRiskPush})")
+                append(ctx.getString(R.string.weekly_report_calls_fmt, report.totalCalls))
+                if (report.highRiskCalls > 0) append(ctx.getString(R.string.weekly_report_calls_risk_fmt, report.highRiskCalls))
+                append(ctx.getString(R.string.weekly_report_push_fmt, report.totalPush))
+                if (report.highRiskPush > 0) append(ctx.getString(R.string.weekly_report_push_risk_fmt, report.highRiskPush))
                 if (report.privacyAnomalies > 0) {
-                    append(" · 권한 이상 ${report.privacyAnomalies}건")
+                    append(ctx.getString(R.string.weekly_report_privacy_fmt, report.privacyAnomalies))
                 }
             }
 
@@ -160,7 +162,7 @@ class WeeklyReportWorker @AssistedInject constructor(
                 android.app.Notification.Builder(applicationContext)
             }
                 .setSmallIcon(android.R.drawable.ic_menu_report_image)
-                .setContentTitle("주간 보안 리포트 (${report.periodStart} ~ ${report.periodEnd})")
+                .setContentTitle(ctx.getString(R.string.weekly_report_title_fmt, report.periodStart, report.periodEnd))
                 .setContentText(summaryText)
                 .setAutoCancel(true)
                 .build()

@@ -1,0 +1,959 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 11,
+    "identityHash": "0076570e55cd105d81d504c3a6dbaab7",
+    "entities": [
+      {
+        "tableName": "user_call_records",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `canonical_number` TEXT NOT NULL, `display_number` TEXT NOT NULL, `tag` TEXT, `memo` TEXT, `last_action` TEXT, `ai_risk_level` TEXT, `ai_category` TEXT, `call_count` INTEGER NOT NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "canonicalNumber",
+            "columnName": "canonical_number",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "displayNumber",
+            "columnName": "display_number",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tag",
+            "columnName": "tag",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "memo",
+            "columnName": "memo",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastAction",
+            "columnName": "last_action",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "aiRiskLevel",
+            "columnName": "ai_risk_level",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "aiCategory",
+            "columnName": "ai_category",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "callCount",
+            "columnName": "call_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_user_call_records_canonical_number",
+            "unique": true,
+            "columnNames": [
+              "canonical_number"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_user_call_records_canonical_number` ON `${TABLE_NAME}` (`canonical_number`)"
+          },
+          {
+            "name": "index_user_call_records_tag",
+            "unique": false,
+            "columnNames": [
+              "tag"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_user_call_records_tag` ON `${TABLE_NAME}` (`tag`)"
+          },
+          {
+            "name": "index_user_call_records_updated_at",
+            "unique": false,
+            "columnNames": [
+              "updated_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_user_call_records_updated_at` ON `${TABLE_NAME}` (`updated_at`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "pre_judge_cache",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `canonical_number` TEXT NOT NULL, `action` TEXT NOT NULL, `risk_score` REAL NOT NULL, `category` TEXT NOT NULL, `confidence` REAL NOT NULL, `summary` TEXT NOT NULL, `hit_count` INTEGER NOT NULL, `last_user_action` TEXT, `last_judged_at` INTEGER NOT NULL, `created_at` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "canonicalNumber",
+            "columnName": "canonical_number",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "action",
+            "columnName": "action",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "riskScore",
+            "columnName": "risk_score",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "confidence",
+            "columnName": "confidence",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "summary",
+            "columnName": "summary",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hitCount",
+            "columnName": "hit_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastUserAction",
+            "columnName": "last_user_action",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastJudgedAt",
+            "columnName": "last_judged_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_pre_judge_cache_canonical_number",
+            "unique": true,
+            "columnNames": [
+              "canonical_number"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_pre_judge_cache_canonical_number` ON `${TABLE_NAME}` (`canonical_number`)"
+          },
+          {
+            "name": "index_pre_judge_cache_last_judged_at",
+            "unique": false,
+            "columnNames": [
+              "last_judged_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_pre_judge_cache_last_judged_at` ON `${TABLE_NAME}` (`last_judged_at`)"
+          },
+          {
+            "name": "index_pre_judge_cache_hit_count",
+            "unique": false,
+            "columnNames": [
+              "hit_count"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_pre_judge_cache_hit_count` ON `${TABLE_NAME}` (`hit_count`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "backup_metadata",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `file_path` TEXT NOT NULL, `created_at` INTEGER NOT NULL, `size_bytes` INTEGER NOT NULL, `encrypted` INTEGER NOT NULL, `checksum` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "filePath",
+            "columnName": "file_path",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sizeBytes",
+            "columnName": "size_bytes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "encrypted",
+            "columnName": "encrypted",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "checksum",
+            "columnName": "checksum",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "number_profiles",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`normalized_number` TEXT NOT NULL, `last_interaction_at` INTEGER NOT NULL, `last_call_at` INTEGER, `last_sms_at` INTEGER, `quick_labels` TEXT NOT NULL, `do_not_miss_flag` INTEGER NOT NULL, `block_state` TEXT NOT NULL, `user_memo_short` TEXT, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`normalized_number`))",
+        "fields": [
+          {
+            "fieldPath": "normalizedNumber",
+            "columnName": "normalized_number",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastInteractionAt",
+            "columnName": "last_interaction_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastCallAt",
+            "columnName": "last_call_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastSmsAt",
+            "columnName": "last_sms_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "quickLabels",
+            "columnName": "quick_labels",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "doNotMissFlag",
+            "columnName": "do_not_miss_flag",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "blockState",
+            "columnName": "block_state",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userMemoShort",
+            "columnName": "user_memo_short",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "normalized_number"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_number_profiles_last_interaction_at",
+            "unique": false,
+            "columnNames": [
+              "last_interaction_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_number_profiles_last_interaction_at` ON `${TABLE_NAME}` (`last_interaction_at`)"
+          },
+          {
+            "name": "index_number_profiles_block_state",
+            "unique": false,
+            "columnNames": [
+              "block_state"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_number_profiles_block_state` ON `${TABLE_NAME}` (`block_state`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "detail_tags",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`normalized_number` TEXT NOT NULL, `tag_name` TEXT NOT NULL, `source` TEXT NOT NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`normalized_number`, `tag_name`))",
+        "fields": [
+          {
+            "fieldPath": "normalizedNumber",
+            "columnName": "normalized_number",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tagName",
+            "columnName": "tag_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "source",
+            "columnName": "source",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "normalized_number",
+            "tag_name"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_detail_tags_normalized_number",
+            "unique": false,
+            "columnNames": [
+              "normalized_number"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_detail_tags_normalized_number` ON `${TABLE_NAME}` (`normalized_number`)"
+          },
+          {
+            "name": "index_detail_tags_source",
+            "unique": false,
+            "columnNames": [
+              "source"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_detail_tags_source` ON `${TABLE_NAME}` (`source`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "message_hub",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `package_name` TEXT NOT NULL, `app_label` TEXT NOT NULL, `channel_id` TEXT, `title` TEXT, `text` TEXT, `detected_links` TEXT, `link_count` INTEGER NOT NULL, `risk_level` TEXT NOT NULL, `category` TEXT NOT NULL, `action` TEXT NOT NULL, `confidence` REAL NOT NULL, `importance_level` TEXT NOT NULL, `importance_reason` TEXT, `summary` TEXT NOT NULL, `reasons` TEXT, `promotion_keyword_hits` INTEGER NOT NULL, `is_night_time` INTEGER NOT NULL, `is_blocked` INTEGER NOT NULL, `user_memo` TEXT, `received_at` INTEGER NOT NULL, `created_at` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "packageName",
+            "columnName": "package_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "appLabel",
+            "columnName": "app_label",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "channelId",
+            "columnName": "channel_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "text",
+            "columnName": "text",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "detectedLinks",
+            "columnName": "detected_links",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "linkCount",
+            "columnName": "link_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "riskLevel",
+            "columnName": "risk_level",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "action",
+            "columnName": "action",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "confidence",
+            "columnName": "confidence",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "importanceLevel",
+            "columnName": "importance_level",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "importanceReason",
+            "columnName": "importance_reason",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "summary",
+            "columnName": "summary",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "reasons",
+            "columnName": "reasons",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "promotionKeywordHits",
+            "columnName": "promotion_keyword_hits",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isNightTime",
+            "columnName": "is_night_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isBlocked",
+            "columnName": "is_blocked",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userMemo",
+            "columnName": "user_memo",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "receivedAt",
+            "columnName": "received_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_message_hub_package_name",
+            "unique": false,
+            "columnNames": [
+              "package_name"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_message_hub_package_name` ON `${TABLE_NAME}` (`package_name`)"
+          },
+          {
+            "name": "index_message_hub_risk_level",
+            "unique": false,
+            "columnNames": [
+              "risk_level"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_message_hub_risk_level` ON `${TABLE_NAME}` (`risk_level`)"
+          },
+          {
+            "name": "index_message_hub_received_at",
+            "unique": false,
+            "columnNames": [
+              "received_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_message_hub_received_at` ON `${TABLE_NAME}` (`received_at`)"
+          },
+          {
+            "name": "index_message_hub_is_blocked",
+            "unique": false,
+            "columnNames": [
+              "is_blocked"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_message_hub_is_blocked` ON `${TABLE_NAME}` (`is_blocked`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "privacy_history",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `app_package` TEXT NOT NULL, `app_label` TEXT NOT NULL, `permission_type` TEXT NOT NULL, `used_at` INTEGER NOT NULL, `duration_sec` INTEGER NOT NULL, `is_anomaly` INTEGER NOT NULL, `anomaly_reasons` TEXT, `user_verified` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "appPackage",
+            "columnName": "app_package",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "appLabel",
+            "columnName": "app_label",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "permissionType",
+            "columnName": "permission_type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "usedAt",
+            "columnName": "used_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "durationSec",
+            "columnName": "duration_sec",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isAnomaly",
+            "columnName": "is_anomaly",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anomalyReasons",
+            "columnName": "anomaly_reasons",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userVerified",
+            "columnName": "user_verified",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_privacy_history_app_package",
+            "unique": false,
+            "columnNames": [
+              "app_package"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_privacy_history_app_package` ON `${TABLE_NAME}` (`app_package`)"
+          },
+          {
+            "name": "index_privacy_history_permission_type",
+            "unique": false,
+            "columnNames": [
+              "permission_type"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_privacy_history_permission_type` ON `${TABLE_NAME}` (`permission_type`)"
+          },
+          {
+            "name": "index_privacy_history_used_at",
+            "unique": false,
+            "columnNames": [
+              "used_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_privacy_history_used_at` ON `${TABLE_NAME}` (`used_at`)"
+          },
+          {
+            "name": "index_privacy_history_is_anomaly",
+            "unique": false,
+            "columnNames": [
+              "is_anomaly"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_privacy_history_is_anomaly` ON `${TABLE_NAME}` (`is_anomaly`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "push_stats",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`package_name` TEXT NOT NULL, `app_label` TEXT NOT NULL, `date_key` TEXT NOT NULL, `total_count` INTEGER NOT NULL, `night_count` INTEGER NOT NULL, `promotion_count` INTEGER NOT NULL, `link_count` INTEGER NOT NULL, `high_risk_count` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`package_name`, `date_key`))",
+        "fields": [
+          {
+            "fieldPath": "packageName",
+            "columnName": "package_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "appLabel",
+            "columnName": "app_label",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateKey",
+            "columnName": "date_key",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalCount",
+            "columnName": "total_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nightCount",
+            "columnName": "night_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "promotionCount",
+            "columnName": "promotion_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "linkCount",
+            "columnName": "link_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "highRiskCount",
+            "columnName": "high_risk_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "package_name",
+            "date_key"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_push_stats_date_key",
+            "unique": false,
+            "columnNames": [
+              "date_key"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_push_stats_date_key` ON `${TABLE_NAME}` (`date_key`)"
+          },
+          {
+            "name": "index_push_stats_package_name",
+            "unique": false,
+            "columnNames": [
+              "package_name"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_push_stats_package_name` ON `${TABLE_NAME}` (`package_name`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "sensor_scan_result",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sensor_type` TEXT NOT NULL, `granted_app_count` INTEGER NOT NULL, `recent_app_count` INTEGER NOT NULL, `last_used_at` INTEGER, `granted_apps_json` TEXT NOT NULL, `recent_apps_json` TEXT NOT NULL, `scanned_at` INTEGER NOT NULL, `status_level` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sensorType",
+            "columnName": "sensor_type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "grantedAppCount",
+            "columnName": "granted_app_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recentAppCount",
+            "columnName": "recent_app_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastUsedAt",
+            "columnName": "last_used_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "grantedAppsJson",
+            "columnName": "granted_apps_json",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "recentAppsJson",
+            "columnName": "recent_apps_json",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scannedAt",
+            "columnName": "scanned_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "statusLevel",
+            "columnName": "status_level",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_sensor_scan_result_sensor_type",
+            "unique": true,
+            "columnNames": [
+              "sensor_type"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_sensor_scan_result_sensor_type` ON `${TABLE_NAME}` (`sensor_type`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "initial_scan_meta",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `completed` INTEGER NOT NULL, `scan_version` INTEGER NOT NULL, `completed_at` INTEGER NOT NULL, `baseline_country` TEXT, `baseline_language` TEXT, `baseline_timezone` TEXT, `baseline_number_region` TEXT, `baseline_generated_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "completed",
+            "columnName": "completed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "scanVersion",
+            "columnName": "scan_version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "completedAt",
+            "columnName": "completed_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "baselineCountry",
+            "columnName": "baseline_country",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "baselineLanguage",
+            "columnName": "baseline_language",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "baselineTimezone",
+            "columnName": "baseline_timezone",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "baselineNumberRegion",
+            "columnName": "baseline_number_region",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "baselineGeneratedAt",
+            "columnName": "baseline_generated_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0076570e55cd105d81d504c3a6dbaab7')"
+    ]
+  }
+}

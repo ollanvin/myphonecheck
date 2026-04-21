@@ -5,4 +5,17 @@
     <string name="trial_countdown_remaining">Free trial ends in %1$d days</string>
     <string name="value_anchor_window_days">Last %1$d days</string>
     <string name="value_anchor_retention_note">This feature remains with a subscription.</string>
+    <string name="paywall_title">Subscribe</string>
+    <string name="paywall_subtitle">Check your protection status before subscribing with measured records</string>
+    <string name="paywall_feature_call_title">Real-time suspicious call check</string>
+    <string name="paywall_feature_call_desc">Check suspicious calls based on stored judgment records.</string>
+    <string name="paywall_feature_message_title">Risky link message check</string>
+    <string name="paywall_feature_message_desc">Shows only risky link messages stored locally.</string>
+    <string name="paywall_restore">Restore previous subscription</string>
+    <string name="paywall_privacy_policy">Privacy policy</string>
+    <string name="paywall_terms">Terms of service</string>
+    <string name="paywall_cancel">Cancel subscription</string>
+    <string name="value_anchor_period_fmt">During %1$s</string>
+    <string name="value_anchor_suspicious_calls_fmt">%1$d suspicious calls with search evidence confirmed</string>
+    <string name="value_anchor_risky_messages_fmt">%1$d risky link messages confirmed</string>
 </resources>

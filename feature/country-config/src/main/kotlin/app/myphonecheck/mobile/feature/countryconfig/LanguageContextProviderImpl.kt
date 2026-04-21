@@ -3,6 +3,7 @@ package app.myphonecheck.mobile.feature.countryconfig
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -24,7 +25,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class LanguageContextProviderImpl @Inject constructor(
-    private val context: Context,
+    @ApplicationContext private val context: Context,
 ) : LanguageContextProvider {
 
     private val prefs: SharedPreferences by lazy {

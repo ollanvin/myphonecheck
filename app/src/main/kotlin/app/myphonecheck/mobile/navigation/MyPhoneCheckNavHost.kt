@@ -39,6 +39,8 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Videocam
+import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Layers
 import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.Timeline
@@ -64,6 +66,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.ViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -94,7 +97,16 @@ import app.myphonecheck.mobile.feature.privacycheck.R as PrivacyR
 import app.myphonecheck.mobile.ui.backup.BackupScreen
 import app.myphonecheck.mobile.viewmodel.CallHistoryViewModel
 import app.myphonecheck.mobile.viewmodel.MessageHubViewModel
+import app.myphonecheck.mobile.viewmodel.CameraCheckViewModel
+import app.myphonecheck.mobile.viewmodel.InitialScanGuardViewModel
+import app.myphonecheck.mobile.viewmodel.MicCheckViewModel
 import app.myphonecheck.mobile.viewmodel.PrivacyHistoryViewModel
+import app.myphonecheck.mobile.feature.privacycheck.GuardResult
+import app.myphonecheck.mobile.feature.privacycheck.InitialScanGuard
+import app.myphonecheck.mobile.feature.privacycheck.ScanStatus
+import app.myphonecheck.mobile.feature.privacycheck.SensorAppInfo
+import app.myphonecheck.mobile.feature.privacycheck.SensorCheckState
+import app.myphonecheck.mobile.feature.privacycheck.StatusLevel
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -211,10 +223,16 @@ fun MyPhoneCheckNavHost(
                 )
             }
             composable("home") {
+                val cameraCheckViewModel: CameraCheckViewModel = hiltViewModel()
+                val micCheckViewModel: MicCheckViewModel = hiltViewModel()
+                val guardViewModel: InitialScanGuardViewModel = hiltViewModel()
                 HomeScreen(
                     languageProvider = languageProvider,
                     onPurchaseClick = { navController.navigate("purchase") },
                     viewModel = historyViewModel,
+                    cameraCheckViewModel = cameraCheckViewModel,
+                    micCheckViewModel = micCheckViewModel,
+                    guardViewModel = guardViewModel,
                     onEngineClick = { route -> navController.navigate(route) },
                 )
             }
@@ -229,6 +247,30 @@ fun MyPhoneCheckNavHost(
                 val privacyHistoryViewModel: PrivacyHistoryViewModel = hiltViewModel()
                 PrivacyHistoryScreen(
                     viewModel = privacyHistoryViewModel,
+                    onBack = { navController.popBackStack() },
+                )
+            }
+            composable("camera-check") {
+                val cameraVm: CameraCheckViewModel = hiltViewModel()
+                val guardVm: InitialScanGuardViewModel = hiltViewModel()
+                SensorCheckDetailScreen(
+                    title = stringResource(AppR.string.camera_check_title),
+                    icon = Icons.Filled.Videocam,
+                    color = Color(0xFFE57373),
+                    viewModel = cameraVm,
+                    guardViewModel = guardVm,
+                    onBack = { navController.popBackStack() },
+                )
+            }
+            composable("mic-check") {
+                val micVm: MicCheckViewModel = hiltViewModel()
+                val guardVm: InitialScanGuardViewModel = hiltViewModel()
+                SensorCheckDetailScreen(
+                    title = stringResource(AppR.string.mic_check_title),
+                    icon = Icons.Filled.Mic,
+                    color = Color(0xFFFFB74D),
+                    viewModel = micVm,
+                    guardViewModel = guardVm,
                     onBack = { navController.popBackStack() },
                 )
             }
@@ -983,10 +1025,40 @@ private fun HomeScreen(
     languageProvider: LanguageContextProvider,
     onPurchaseClick: () -> Unit,
     viewModel: CallHistoryViewModel,
+    cameraCheckViewModel: CameraCheckViewModel,
+    micCheckViewModel: MicCheckViewModel,
+    guardViewModel: InitialScanGuardViewModel,
     onEngineClick: (String) -> Unit = {},
 ) {
     languageProvider.resolveLanguage()
     val context = LocalContext.current
+
+    // Guard: baseline 유효성 확인 — FAIL이면 완료 UI 차단
+    val guardResult by guardViewModel.guardResult.collectAsState()
+    val guardPassed = guardResult.passed
+
+    // ViewModel 상태 수집
+    val cameraState by cameraCheckViewModel.state.collectAsState()
+    val micState by micCheckViewModel.state.collectAsState()
+
+    // Guard PASS이고 데이터가 STALE이면 백그라운드 refresh
+    // Guard FAIL이면 scan 호출하지 않음 (Application.onCreate에서 처리)
+    LaunchedEffect(guardPassed) {
+        if (guardPassed) {
+            cameraCheckViewModel.scan()
+            micCheckViewModel.scan()
+        }
+    }
+
+    // Guard 적용된 상태 — FAIL이면 강제 NOT_SCANNED/SCANNING 표시
+    val displayCameraState = if (guardPassed) cameraState else {
+        if (cameraState.scanStatus == ScanStatus.SCANNING) cameraState
+        else SensorCheckState(scanStatus = ScanStatus.NOT_SCANNED)
+    }
+    val displayMicState = if (guardPassed) micState else {
+        if (micState.scanStatus == ScanStatus.SCANNING) micState
+        else SensorCheckState(scanStatus = ScanStatus.NOT_SCANNED)
+    }
 
     Column(
         modifier = Modifier
@@ -1033,8 +1105,8 @@ private fun HomeScreen(
                     onClick = { onEngineClick("engine/call") },
                 )
                 EngineCard(
-                    question = "문자도 번호로 확인할까요?",
-                    description = "문자 발신 번호를 CallCheck 엔진으로 함께 확인합니다.",
+                    question = stringResource(AppR.string.engine_message_question),
+                    description = stringResource(AppR.string.engine_message_desc),
                     icon = Icons.Filled.Message,
                     color = Color(0xFF81C784),
                     modifier = Modifier.weight(1f),
@@ -1042,20 +1114,29 @@ private fun HomeScreen(
                 )
             }
 
-            // Row 2: PrivacyCheck
+            // Row 2: CameraCheck + MicCheck
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                EngineCard(
-                    question = stringResource(AppR.string.engine_privacy_question),
-                    description = stringResource(AppR.string.engine_privacy_desc),
-                    icon = Icons.Filled.Security,
+                SensorEngineCard(
+                    question = stringResource(AppR.string.engine_camera_question),
+                    description = stringResource(AppR.string.engine_camera_desc),
+                    icon = Icons.Filled.Videocam,
                     color = Color(0xFFE57373),
+                    scanState = displayCameraState,
                     modifier = Modifier.weight(1f),
-                    onClick = { onEngineClick("privacy-history") },
+                    onClick = { onEngineClick("camera-check") },
                 )
-                Spacer(modifier = Modifier.weight(1f))
+                SensorEngineCard(
+                    question = stringResource(AppR.string.engine_mic_question),
+                    description = stringResource(AppR.string.engine_mic_desc),
+                    icon = Icons.Filled.Mic,
+                    color = Color(0xFFFFB74D),
+                    scanState = displayMicState,
+                    modifier = Modifier.weight(1f),
+                    onClick = { onEngineClick("mic-check") },
+                )
             }
         }
 
@@ -1160,6 +1241,102 @@ private fun EngineCard(
     }
 }
 
+/**
+ * SensorEngineCard — Camera/Mic 전용 엔진 카드.
+ *
+ * EngineCard와 동일한 180dp 카드 레이아웃에
+ * ScanStatus 기반 실시간 상태 표시 추가.
+ *
+ * 상태 표시:
+ * - NOT_SCANNED → 회색 점 + "미스캔"
+ * - SCANNING → 노란색 점 + "스캔중"
+ * - SCANNED → 색상 점 + "N개 앱 허용" (grantedAppCount 기반)
+ */
+@Composable
+private fun SensorEngineCard(
+    question: String,
+    description: String,
+    icon: ImageVector,
+    color: Color,
+    scanState: SensorCheckState,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+) {
+    val context = LocalContext.current
+    Card(
+        modifier = modifier
+            .height(180.dp)
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A2A3A)),
+        shape = RoundedCornerShape(16.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = color,
+                modifier = Modifier.size(32.dp),
+            )
+
+            Text(
+                text = question,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                lineHeight = 22.sp,
+            )
+
+            Column {
+                Text(
+                    text = description,
+                    fontSize = 11.sp,
+                    color = Color(0xFF78909C),
+                    lineHeight = 14.sp,
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+
+                val (dotColor, statusText) = when (scanState.scanStatus) {
+                    ScanStatus.NOT_SCANNED -> Color(0xFF607D8B) to
+                        context.getString(AppR.string.scan_status_not_scanned)
+                    ScanStatus.SCANNING -> Color(0xFFFFD54F) to
+                        context.getString(AppR.string.scan_status_scanning)
+                    ScanStatus.SCANNED -> color to
+                        context.getString(
+                            AppR.string.scan_status_granted_count,
+                            scanState.grantedAppCount,
+                        )
+                    ScanStatus.STALE -> color.copy(alpha = 0.6f) to
+                        context.getString(
+                            AppR.string.scan_status_granted_count,
+                            scanState.grantedAppCount,
+                        )
+                    ScanStatus.FAILED -> Color(0xFFE57373) to
+                        context.getString(AppR.string.scan_status_failed)
+                }
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(6.dp)
+                            .background(dotColor, shape = RoundedCornerShape(3.dp)),
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = statusText,
+                        fontSize = 10.sp,
+                        color = dotColor.copy(alpha = 0.7f),
+                    )
+                }
+            }
+        }
+    }
+}
+
 // ═══════════════════════════════════════════════════════════
 // 엔진 상세 화면 — 4개 엔진 공통 레이아웃
 // ═══════════════════════════════════════════════════════════
@@ -1197,13 +1374,14 @@ private fun MessageHubProfileItem(
         shape = RoundedCornerShape(12.dp),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("번호  ${item.title ?: item.appLabel}", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.White)
+            val context = LocalContext.current
+            Text("${context.getString(AppR.string.detail_label_number)}  ${item.title ?: item.appLabel}", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.White)
             Spacer(modifier = Modifier.height(6.dp))
-            Text("시간  $timeText", fontSize = 13.sp, color = Color(0xFFB0BEC5))
+            Text("${context.getString(AppR.string.detail_label_time)}  $timeText", fontSize = 13.sp, color = Color(0xFFB0BEC5))
             Spacer(modifier = Modifier.height(6.dp))
-            Text("검색 요약  ${meta.searchSummary ?: item.summary}", fontSize = 13.sp, color = Color(0xFFFFCC80), maxLines = 1)
+            Text("${context.getString(AppR.string.detail_label_search_summary)}  ${meta.searchSummary ?: item.summary}", fontSize = 13.sp, color = Color(0xFFFFCC80), maxLines = 1)
             Spacer(modifier = Modifier.height(6.dp))
-            Text("유사번호 존재 여부  ${meta.similarNumberLabel ?: "확인 안 됨"}", fontSize = 13.sp, color = Color(0xFFB0BEC5), maxLines = 1)
+            Text("${context.getString(AppR.string.detail_label_similar_number)}  ${meta.similarNumberLabel ?: context.getString(AppR.string.detail_label_not_confirmed)}", fontSize = 13.sp, color = Color(0xFFB0BEC5), maxLines = 1)
             Spacer(modifier = Modifier.height(6.dp))
             Text(searchStatus, fontSize = 13.sp, color = Color(0xFF80CBC4))
             val importance = runCatching { ImportanceLevel.valueOf(item.importanceLevel) }
@@ -1211,7 +1389,7 @@ private fun MessageHubProfileItem(
             if (importance != ImportanceLevel.UNKNOWN) {
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    "중요도  ${importance.name} (${item.importanceReason ?: "-"})",
+                    "${context.getString(AppR.string.detail_label_importance)}  ${importance.name} (${item.importanceReason ?: "-"})",
                     fontSize = 13.sp,
                     color = Color(0xFFB39DDB),
                     maxLines = 1,
@@ -1237,13 +1415,13 @@ private fun MessageHubProfileItem(
                         modifier = Modifier.size(18.dp),
                     )
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text("링크 경고  ${meta.linkWarning ?: "링크 있음"}", fontSize = 13.sp, color = Color(0xFFFFB74D), maxLines = 1)
+                    Text("${context.getString(AppR.string.detail_label_link_warning)}  ${meta.linkWarning ?: context.getString(AppR.string.detail_label_link_exists)}", fontSize = 13.sp, color = Color(0xFFFFB74D), maxLines = 1)
                 }
             } else {
-                Text("링크 경고  없음", fontSize = 13.sp, color = Color(0xFFB0BEC5))
+                Text("${context.getString(AppR.string.detail_label_link_warning)}  ${context.getString(AppR.string.detail_label_link_none)}", fontSize = 13.sp, color = Color(0xFFB0BEC5))
             }
             Spacer(modifier = Modifier.height(12.dp))
-            Text("저장 없이 기억하기", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(0xFF81D4FA))
+            Text(context.getString(AppR.string.detail_action_remember), fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(0xFF81D4FA))
             Spacer(modifier = Modifier.height(8.dp))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 QuickLabel.entries.forEach { label ->
@@ -1259,8 +1437,8 @@ private fun MessageHubProfileItem(
                     numberProfile?.quickLabels?.forEach { add(it.displayName) }
                     numberProfile?.detailTags?.forEach { add(it.tagName) }
                     if (false) when (numberProfile?.actionState) {
-                        ActionState.BLOCKED -> add("차단 상태")
-                        ActionState.DO_NOT_BLOCK -> add("차단 금지")
+                        ActionState.BLOCKED -> add(context.getString(AppR.string.detail_state_blocked))
+                        ActionState.DO_NOT_BLOCK -> add(context.getString(AppR.string.detail_state_do_not_block))
                         else -> Unit
                     }
                 }
@@ -1293,7 +1471,7 @@ private fun MessageHubProfileItem(
                 value = detailTagInput,
                 onValueChange = { detailTagInput = it },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("상세 태그 추가") },
+                placeholder = { Text(context.getString(AppR.string.detail_tag_placeholder)) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = Color.White,
                     unfocusedTextColor = Color.White,
@@ -1310,17 +1488,17 @@ private fun MessageHubProfileItem(
                     },
                     enabled = detailTagInput.isNotBlank(),
                 ) {
-                    Text("태그 추가", color = Color(0xFF81C784))
+                    Text(context.getString(AppR.string.detail_tag_add), color = Color(0xFF81C784))
                 }
                 TextButton(onClick = onDoNotBlock) {
-                    Text("차단 금지", color = Color(0xFF64B5F6))
+                    Text(context.getString(AppR.string.detail_state_do_not_block), color = Color(0xFF64B5F6))
                 }
             }
             OutlinedTextField(
                 value = memoInput,
                 onValueChange = { memoInput = it },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("짧은 메모") },
+                placeholder = { Text(context.getString(AppR.string.detail_memo_placeholder)) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = Color.White,
                     unfocusedTextColor = Color.White,
@@ -1331,14 +1509,14 @@ private fun MessageHubProfileItem(
             )
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 TextButton(onClick = { onSaveShortMemo(memoInput) }) {
-                    Text("메모 저장", color = Color(0xFF81D4FA))
+                    Text(context.getString(AppR.string.detail_memo_save), color = Color(0xFF81D4FA))
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                TextButton(onClick = onDelete) { Text("삭제", color = Color(0xFFE57373)) }
-                TextButton(onClick = onBlock) { Text("차단", color = Color(0xFFFFB74D)) }
-                TextButton(onClick = onDeleteAndBlock) { Text("둘 다", color = Color(0xFF81C784)) }
+                TextButton(onClick = onDelete) { Text(context.getString(AppR.string.detail_action_delete), color = Color(0xFFE57373)) }
+                TextButton(onClick = onBlock) { Text(context.getString(AppR.string.detail_action_block), color = Color(0xFFFFB74D)) }
+                TextButton(onClick = onDeleteAndBlock) { Text(context.getString(AppR.string.detail_action_both), color = Color(0xFF81C784)) }
             }
         }
     }
@@ -3529,28 +3707,29 @@ private fun MessageHubListItem(
         shape = RoundedCornerShape(12.dp),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
+            val context = LocalContext.current
             Text(
-                text = "번호  ${item.title ?: item.appLabel}",
+                text = "${context.getString(AppR.string.detail_label_number)}  ${item.title ?: item.appLabel}",
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = "시간  $timeText",
+                text = "${context.getString(AppR.string.detail_label_time)}  $timeText",
                 fontSize = 13.sp,
                 color = Color(0xFFB0BEC5),
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = "검색 요약  ${meta.searchSummary ?: item.summary}",
+                text = "${context.getString(AppR.string.detail_label_search_summary)}  ${meta.searchSummary ?: item.summary}",
                 fontSize = 13.sp,
                 color = Color(0xFFFFCC80),
                 maxLines = 1,
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = "유사번호 존재 여부  ${meta.similarNumberLabel ?: "확인 안 됨"}",
+                text = "${context.getString(AppR.string.detail_label_similar_number)}  ${meta.similarNumberLabel ?: context.getString(AppR.string.detail_label_not_confirmed)}",
                 fontSize = 13.sp,
                 color = Color(0xFFB0BEC5),
                 maxLines = 1,
@@ -3560,7 +3739,7 @@ private fun MessageHubListItem(
                 .getOrDefault(ImportanceLevel.UNKNOWN)
             if (importance != ImportanceLevel.UNKNOWN) {
                 Text(
-                    text = "중요도  ${importance.name} (${item.importanceReason ?: "-"})",
+                    text = "${context.getString(AppR.string.detail_label_importance)}  ${importance.name} (${item.importanceReason ?: "-"})",
                     fontSize = 13.sp,
                     color = Color(0xFFB39DDB),
                     maxLines = 1,
@@ -3583,7 +3762,7 @@ private fun MessageHubListItem(
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = "링크 경고  ${meta.linkWarning ?: "링크 있음"}",
+                        text = "${context.getString(AppR.string.detail_label_link_warning)}  ${meta.linkWarning ?: context.getString(AppR.string.detail_label_link_exists)}",
                         fontSize = 13.sp,
                         color = Color(0xFFFFB74D),
                         maxLines = 1,
@@ -3591,7 +3770,7 @@ private fun MessageHubListItem(
                 }
             } else {
                 Text(
-                    text = "링크 경고  없음",
+                    text = "${context.getString(AppR.string.detail_label_link_warning)}  ${context.getString(AppR.string.detail_label_link_none)}",
                     fontSize = 13.sp,
                     color = Color(0xFFB0BEC5),
                 )
@@ -3602,13 +3781,13 @@ private fun MessageHubListItem(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 TextButton(onClick = onDelete) {
-                    Text("삭제", color = Color(0xFFE57373))
+                    Text(context.getString(AppR.string.detail_action_delete), color = Color(0xFFE57373))
                 }
                 TextButton(onClick = onBlock) {
-                    Text("차단", color = Color(0xFFFFB74D))
+                    Text(context.getString(AppR.string.detail_action_block), color = Color(0xFFFFB74D))
                 }
                 TextButton(onClick = onDeleteAndBlock) {
-                    Text("둘 다", color = Color(0xFF81C784))
+                    Text(context.getString(AppR.string.detail_action_both), color = Color(0xFF81C784))
                 }
             }
         }
@@ -3616,6 +3795,397 @@ private fun MessageHubListItem(
 }
 
 // ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// CameraCheck / MicCheck 상세 화면
+// ═══════════════════════════════════════════════════════════
+
+/**
+ * SensorCheckDetailScreen — Camera/Mic 공용 상세 화면.
+ *
+ * 구성:
+ * - 헤더: 아이콘 + 타이틀 + 스캔 상태 요약
+ * - 권한 보유 앱 목록 (grantedApps)
+ * - 최근 사용 앱 목록 (recentApps)
+ * - 마지막 사용 시각
+ *
+ * ViewModel은 CameraCheckViewModel 또는 MicCheckViewModel 중 하나를 전달받음.
+ * 둘 다 StateFlow<SensorCheckState>를 노출하므로 동일 UI로 처리.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SensorCheckDetailScreen(
+    title: String,
+    icon: ImageVector,
+    color: Color,
+    viewModel: ViewModel,
+    guardViewModel: InitialScanGuardViewModel,
+    onBack: () -> Unit,
+) {
+    val rawState by when (viewModel) {
+        is CameraCheckViewModel -> viewModel.state.collectAsState()
+        is MicCheckViewModel -> viewModel.state.collectAsState()
+        else -> remember { mutableStateOf(SensorCheckState()) }
+    }
+
+    // Guard: baseline 유효성 확인
+    val guardResult by guardViewModel.guardResult.collectAsState()
+    val guardPassed = guardResult.passed
+
+    // Guard FAIL이면 완료 데이터 표시 차단
+    val state = if (guardPassed) rawState else {
+        when (rawState.scanStatus) {
+            ScanStatus.SCANNING -> rawState.copy(
+                grantedApps = emptyList(),
+                recentApps = emptyList(),
+            )
+            else -> SensorCheckState(scanStatus = ScanStatus.NOT_SCANNED)
+        }
+    }
+
+    // Guard PASS이고 미스캔/STALE이면 백그라운드 refresh
+    LaunchedEffect(guardPassed) {
+        if (guardPassed && (rawState.scanStatus == ScanStatus.NOT_SCANNED || rawState.scanStatus == ScanStatus.STALE)) {
+            when (viewModel) {
+                is CameraCheckViewModel -> viewModel.scan()
+                is MicCheckViewModel -> viewModel.scan()
+            }
+        }
+    }
+
+    val context = LocalContext.current
+    val dateFormatter = remember {
+        DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+            .withZone(ZoneId.systemDefault())
+    }
+
+    Scaffold(
+        containerColor = Color(0xFF0D1B2A),
+        topBar = {
+            TopAppBar(
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = color,
+                            modifier = Modifier.size(24.dp),
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(title, color = Color.White)
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = null, tint = Color.White)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF0A1628)),
+            )
+        },
+    ) { innerPadding ->
+        when (state.scanStatus) {
+            ScanStatus.NOT_SCANNED -> {
+                // Guard FAIL 또는 baseline 미존재 — 초기화 필요 안내
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = Color(0xFF607D8B),
+                            modifier = Modifier.size(48.dp),
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = context.getString(AppR.string.scan_status_init_required),
+                            color = Color(0xFF78909C),
+                            fontSize = 14.sp,
+                        )
+                    }
+                }
+            }
+
+            ScanStatus.SCANNING -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        CircularProgressIndicator(color = color)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = context.getString(AppR.string.scan_status_scanning),
+                            color = Color(0xFF78909C),
+                            fontSize = 14.sp,
+                        )
+                    }
+                }
+            }
+
+            ScanStatus.FAILED -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            imageVector = Icons.Filled.Warning,
+                            contentDescription = null,
+                            tint = Color(0xFFE57373),
+                            modifier = Modifier.size(48.dp),
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = context.getString(AppR.string.scan_status_failed),
+                            color = Color(0xFFE57373),
+                            fontSize = 14.sp,
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        TextButton(onClick = {
+                            when (viewModel) {
+                                is CameraCheckViewModel -> viewModel.scan()
+                                is MicCheckViewModel -> viewModel.scan()
+                            }
+                        }) {
+                            Text(
+                                text = context.getString(AppR.string.scan_retry),
+                                color = color,
+                            )
+                        }
+                    }
+                }
+            }
+
+            ScanStatus.SCANNED,
+            ScanStatus.STALE -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(horizontal = 16.dp),
+                ) {
+                    // 요약 헤더
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        SensorSummaryCard(
+                            state = state,
+                            color = color,
+                            dateFormatter = dateFormatter,
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+                    }
+
+                    // 권한 보유 앱 섹션
+                    item {
+                        Text(
+                            text = context.getString(AppR.string.sensor_granted_apps_header),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    if (state.grantedApps.isEmpty()) {
+                        item {
+                            Text(
+                                text = context.getString(AppR.string.sensor_no_granted_apps),
+                                fontSize = 13.sp,
+                                color = Color(0xFF607D8B),
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                    } else {
+                        items(state.grantedApps.size) { index ->
+                            SensorAppItem(
+                                app = state.grantedApps[index],
+                                color = color,
+                                dateFormatter = dateFormatter,
+                            )
+                        }
+                        item { Spacer(modifier = Modifier.height(16.dp)) }
+                    }
+
+                    // 최근 사용 앱 섹션
+                    item {
+                        Text(
+                            text = context.getString(AppR.string.sensor_recent_apps_header),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    if (state.recentApps.isEmpty()) {
+                        item {
+                            Text(
+                                text = context.getString(AppR.string.sensor_no_recent_apps),
+                                fontSize = 13.sp,
+                                color = Color(0xFF607D8B),
+                            )
+                        }
+                    } else {
+                        items(state.recentApps.size) { index ->
+                            SensorAppItem(
+                                app = state.recentApps[index],
+                                color = color,
+                                dateFormatter = dateFormatter,
+                            )
+                        }
+                    }
+
+                    item { Spacer(modifier = Modifier.height(32.dp)) }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SensorSummaryCard(
+    state: SensorCheckState,
+    color: Color,
+    dateFormatter: DateTimeFormatter,
+) {
+    val context = LocalContext.current
+    Card(
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A2A3A)),
+        shape = RoundedCornerShape(16.dp),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(10.dp)
+                        .background(
+                            when (state.statusLevel) {
+                                StatusLevel.NORMAL -> Color(0xFF4FC3F7)
+                                StatusLevel.CAUTION -> Color(0xFFE57373)
+                                StatusLevel.UNKNOWN -> Color(0xFF607D8B)
+                            },
+                            shape = RoundedCornerShape(5.dp),
+                        ),
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = context.getString(
+                        AppR.string.scan_status_granted_count,
+                        state.grantedAppCount,
+                    ),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                )
+            }
+
+            if (state.recentAppCount > 0) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "${context.getString(AppR.string.sensor_recent_apps_header)}: ${state.recentAppCount}",
+                    fontSize = 14.sp,
+                    color = color,
+                )
+            }
+
+            if (state.lastUsedAt != null) {
+                Spacer(modifier = Modifier.height(4.dp))
+                val formatted = dateFormatter.format(Instant.ofEpochMilli(state.lastUsedAt!!))
+                Text(
+                    text = "${context.getString(AppR.string.sensor_last_used_label)}: $formatted",
+                    fontSize = 12.sp,
+                    color = Color(0xFF78909C),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SensorAppItem(
+    app: SensorAppInfo,
+    color: Color,
+    dateFormatter: DateTimeFormatter,
+) {
+    val context = LocalContext.current
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (app.isKnownSafe) Color(0xFF1A2A3A) else Color(0xFF2A1A1A),
+        ),
+        shape = RoundedCornerShape(12.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = app.appLabel,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.White,
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = app.packageName,
+                    fontSize = 11.sp,
+                    color = Color(0xFF607D8B),
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Row {
+                    Text(
+                        text = context.getString(AppR.string.sensor_days_installed, app.daysSinceInstall),
+                        fontSize = 11.sp,
+                        color = Color(0xFF78909C),
+                    )
+                    if (app.lastUsedAt != null) {
+                        Spacer(modifier = Modifier.width(12.dp))
+                        val formatted = dateFormatter.format(Instant.ofEpochMilli(app.lastUsedAt!!))
+                        Text(
+                            text = "${context.getString(AppR.string.sensor_last_used_label)}: $formatted",
+                            fontSize = 11.sp,
+                            color = Color(0xFF78909C),
+                        )
+                    }
+                }
+            }
+
+            if (app.isKnownSafe) {
+                Icon(
+                    imageVector = Icons.Filled.CheckCircle,
+                    contentDescription = context.getString(AppR.string.sensor_known_safe_badge),
+                    tint = Color(0xFF4FC3F7),
+                    modifier = Modifier.size(20.dp),
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Filled.Warning,
+                    contentDescription = null,
+                    tint = Color(0xFFE57373),
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+        }
+    }
+}
+
 // PrivacyCheck 히스토리 (작업9)
 // ═══════════════════════════════════════════════════════════
 

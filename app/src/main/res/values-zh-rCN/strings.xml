@@ -68,7 +68,7 @@
     <string name="onboarding_page1_threat">Scam calls, phishing messages, and noisy alerts\nare already targeting you.</string>
     <string name="onboarding_page1_card_title">Stop it before you answer.</string>
     <string name="onboarding_page1_card_desc">Real-time interception\ninstantly evaluates risk.</string>
-    <string name="onboarding_on_device_only">100% on-device · no server transmission</string>
+    <string name="onboarding_on_device_only">100%% on-device · no server transmission</string>
     <string name="onboarding_page2_title">Your phone is already under attack\nfrom 4 entry points</string>
     <string name="threat_call_title">Calls</string>
     <string name="threat_call_desc">Scam calls · voice phishing</string>
@@ -120,6 +120,12 @@
     <string name="engine_message_desc">打开前识别钓鱼与冒充</string>
     <string name="engine_privacy_question">手机现在\n安全吗？</string>
     <string name="engine_privacy_desc">监控隐藏的摄像头与麦克风访问</string>
+
+    <!-- CameraCheck / MicCheck engine cards -->
+    <string name="engine_camera_question">谁在通过\n你的摄像头看？</string>
+    <string name="engine_camera_desc">检测有摄像头权限的应用</string>
+    <string name="engine_mic_question">谁在\n偷听？</string>
+    <string name="engine_mic_desc">检测有麦克风权限的应用</string>
     <string name="message_hub_title">消息中心</string>
     <string name="message_hub_link_warning">此消息包含链接</string>
     <string name="message_hub_action_keep">保留</string>
@@ -158,7 +164,7 @@
     <string name="perm_status_granted">已授予</string>
     <string name="onboarding_permissions_later">稍后</string>
     <string name="onboarding_permissions_continue_home">开始使用</string>
-    <string name="home_security_trust_badge">🔒 100% 本机处理 · 无服务器 · 不收集数据</string>
+    <string name="home_security_trust_badge">🔒 100%% 本机处理 · 无服务器 · 不收集数据</string>
     <string name="settings_security_card_title">安全状态：正常</string>
     <string name="settings_security_bullet_no_server">无服务器连接</string>
     <string name="settings_security_bullet_no_transfer">无外向数据传输</string>

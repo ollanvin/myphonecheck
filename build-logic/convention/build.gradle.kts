@@ -32,5 +32,9 @@ gradlePlugin {
             id = "myphonecheck.android.compose"
             implementationClass = "AndroidComposeConventionPlugin"
         }
+        register("hardcodedStringDetector") {
+            id = "myphonecheck.hardcoded.detector"
+            implementationClass = "HardcodedStringDetectorPlugin"
+        }
     }
 }

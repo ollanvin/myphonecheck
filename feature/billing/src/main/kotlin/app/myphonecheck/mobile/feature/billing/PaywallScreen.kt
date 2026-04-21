@@ -34,12 +34,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import app.myphonecheck.mobile.feature.billing.R
 
 @Composable
 fun PaywallScreen(
@@ -113,7 +115,7 @@ fun PaywallContent(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "구독",
+                text = stringResource(R.string.paywall_title),
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color = textPrimary,
@@ -158,7 +160,7 @@ fun PaywallContent(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "실측된 보호 기록을 바탕으로 구독 전에도 상태를 확인합니다",
+                text = stringResource(R.string.paywall_subtitle),
                 fontSize = 14.sp,
                 color = textSecondary,
                 textAlign = TextAlign.Center,
@@ -175,14 +177,14 @@ fun PaywallContent(
             ) {
                 ValuePropositionItem(
                     icon = Icons.Default.Phone,
-                    title = "실시간 의심 전화 확인",
-                    description = "저장된 판단 기록을 바탕으로 의심 전화를 확인합니다.",
+                    title = stringResource(R.string.paywall_feature_call_title),
+                    description = stringResource(R.string.paywall_feature_call_desc),
                     iconTint = primary,
                 )
                 ValuePropositionItem(
                     icon = Icons.Default.Lock,
-                    title = "위험 링크 메시지 확인",
-                    description = "로컬에 저장된 위험 링크 메시지만 선별해 보여줍니다.",
+                    title = stringResource(R.string.paywall_feature_message_title),
+                    description = stringResource(R.string.paywall_feature_message_desc),
                     iconTint = Color(0xFF34C759),
                 )
             }
@@ -223,7 +225,7 @@ fun PaywallContent(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
-                    text = "이전 구독 복원",
+                    text = stringResource(R.string.paywall_restore),
                     fontSize = 14.sp,
                     color = primary,
                 )
@@ -252,7 +254,7 @@ fun PaywallContent(
             ) {
                 TextButton(onClick = onPrivacyClick) {
                     Text(
-                        text = "개인정보 처리방침",
+                        text = stringResource(R.string.paywall_privacy_policy),
                         fontSize = 12.sp,
                         color = textSecondary,
                     )
@@ -264,7 +266,7 @@ fun PaywallContent(
                 )
                 TextButton(onClick = onTermsClick) {
                     Text(
-                        text = "이용약관",
+                        text = stringResource(R.string.paywall_terms),
                         fontSize = 12.sp,
                         color = textSecondary,
                     )
@@ -286,7 +288,7 @@ fun PaywallContent(
             shape = RoundedCornerShape(18.dp),
         ) {
             Text(
-                text = "구독 취소",
+                text = stringResource(R.string.paywall_cancel),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
             )

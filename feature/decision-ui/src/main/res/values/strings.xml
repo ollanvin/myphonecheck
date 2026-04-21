@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="decision_analyzing">Analyzing</string>
+    <string name="decision_collecting_evidence">Collecting evidence…</string>
+    <string name="decision_error">Error occurred</string>
+    <string name="decision_btn_reject">Reject</string>
+    <string name="decision_btn_block">Block</string>
+    <string name="decision_btn_details">Details</string>
+    <string name="decision_detail_header">Details</string>
+    <string name="decision_web_search_pending">Web search in progress…</string>
+    <string name="decision_device_history">Device history</string>
+    <string name="decision_web_search_result">Web search results</string>
+    <string name="decision_signal_summary">Signal summary (search/community)</string>
+    <string name="decision_analyzing_dots">Analyzing…</string>
+    <string name="decision_confirm">OK</string>
+    <string name="decision_safe_estimate">Safe estimate</string>
+    <string name="decision_saved_contact">Saved contact number</string>
+    <string name="decision_scam_suspect">Scam suspect</string>
+    <string name="decision_phishing_report">Voice phishing report history</string>
+    <string name="decision_protecting">Protecting</string>
+    <string name="decision_no_history">No judgment history yet</string>
+    <string name="preview_delivery_likely">Likely delivery/shipping</string>
+    <string name="preview_scam_likely">Phone number likely to be a scam</string>
+</resources>

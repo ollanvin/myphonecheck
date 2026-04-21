@@ -7,10 +7,12 @@ import app.myphonecheck.mobile.core.security.DatabaseKeyProvider
 import app.myphonecheck.mobile.data.localcache.dao.BackupMetadataDao
 import app.myphonecheck.mobile.data.localcache.dao.DetailTagDao
 import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
+import app.myphonecheck.mobile.data.localcache.dao.InitialScanMetaDao
 import app.myphonecheck.mobile.data.localcache.dao.NumberProfileDao
 import app.myphonecheck.mobile.data.localcache.dao.PreJudgeCacheDao
 import app.myphonecheck.mobile.data.localcache.dao.PrivacyHistoryDao
 import app.myphonecheck.mobile.data.localcache.dao.PushStatsDao
+import app.myphonecheck.mobile.data.localcache.dao.SensorScanResultDao
 import app.myphonecheck.mobile.data.localcache.dao.UserCallRecordDao
 import app.myphonecheck.mobile.data.localcache.db.MyPhoneCheckDatabase
 import app.myphonecheck.mobile.data.localcache.repository.NumberProfileRepository
@@ -145,6 +147,22 @@ object LocalCacheModule {
         database: MyPhoneCheckDatabase,
     ): PushStatsDao {
         return database.pushStatsDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSensorScanResultDao(
+        database: MyPhoneCheckDatabase,
+    ): SensorScanResultDao {
+        return database.sensorScanResultDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideInitialScanMetaDao(
+        database: MyPhoneCheckDatabase,
+    ): InitialScanMetaDao {
+        return database.initialScanMetaDao()
     }
 
     @Provides

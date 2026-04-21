@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -76,7 +77,7 @@ fun SettingsScreen(
     ) {
         // Account Section
         SettingsSection(
-            title = "계정",
+            title = stringResource(R.string.settings_section_account),
             backgroundColor = backgroundColor,
             textPrimary = textPrimary,
             textSecondary = textSecondary,
@@ -84,8 +85,8 @@ fun SettingsScreen(
         ) {
             SettingsItem(
                 icon = Icons.Default.Phone,
-                title = "구독 상태",
-                subtitle = "활성화됨",
+                title = stringResource(R.string.settings_subscription_status),
+                subtitle = stringResource(R.string.settings_subscription_active),
                 onClick = {},
                 textPrimary = textPrimary,
                 textSecondary = textSecondary,
@@ -96,8 +97,8 @@ fun SettingsScreen(
 
             SettingsItem(
                 icon = Icons.Default.Settings,
-                title = "구독 관리",
-                subtitle = "구독 설정 변경",
+                title = stringResource(R.string.settings_subscription_manage),
+                subtitle = stringResource(R.string.settings_subscription_manage_desc),
                 onClick = {},
                 textPrimary = textPrimary,
                 textSecondary = textSecondary,
@@ -109,7 +110,7 @@ fun SettingsScreen(
 
         // General Section
         SettingsSection(
-            title = "일반",
+            title = stringResource(R.string.settings_section_general),
             backgroundColor = backgroundColor,
             textPrimary = textPrimary,
             textSecondary = textSecondary,
@@ -144,7 +145,7 @@ fun SettingsScreen(
 
         // Privacy & Permissions Section
         SettingsSection(
-            title = "개인정보 보호 및 권한",
+            title = stringResource(R.string.settings_section_privacy_permissions),
             backgroundColor = backgroundColor,
             textPrimary = textPrimary,
             textSecondary = textSecondary,
@@ -152,8 +153,8 @@ fun SettingsScreen(
         ) {
             PermissionItem(
                 icon = Icons.Default.Lock,
-                title = "연락처 권한",
-                subtitle = if (permissions.contactsPermission) "승인됨" else "승인되지 않음",
+                title = stringResource(R.string.settings_contacts_permission),
+                subtitle = if (permissions.contactsPermission) stringResource(R.string.settings_perm_approved) else stringResource(R.string.settings_perm_not_approved),
                 statusColor = if (permissions.contactsPermission) Color(0xFF4CAF50) else Color(0xFFFF9800),
                 onClick = {
                     if (!permissions.contactsPermission) {
@@ -169,8 +170,8 @@ fun SettingsScreen(
 
             PermissionItem(
                 icon = Icons.Default.Lock,
-                title = "통화 기록 권한",
-                subtitle = if (permissions.callLogPermission) "승인됨" else "승인되지 않음",
+                title = stringResource(R.string.settings_call_log_permission),
+                subtitle = if (permissions.callLogPermission) stringResource(R.string.settings_perm_approved) else stringResource(R.string.settings_perm_not_approved),
                 statusColor = if (permissions.callLogPermission) Color(0xFF4CAF50) else Color(0xFFFF9800),
                 onClick = {
                     if (!permissions.callLogPermission) {
@@ -186,8 +187,8 @@ fun SettingsScreen(
 
             SettingsItem(
                 icon = Icons.Default.Phone,
-                title = "기본 스팸 필터 설정",
-                subtitle = "시스템 설정 열기",
+                title = stringResource(R.string.settings_default_spam_filter),
+                subtitle = stringResource(R.string.settings_open_system_settings),
                 onClick = {
                     viewModel.setAsDefaultCallerIdApp()
                 },
@@ -201,7 +202,7 @@ fun SettingsScreen(
 
         // About Section
         SettingsSection(
-            title = "정보",
+            title = stringResource(R.string.settings_section_about),
             backgroundColor = backgroundColor,
             textPrimary = textPrimary,
             textSecondary = textSecondary,
@@ -209,7 +210,7 @@ fun SettingsScreen(
         ) {
             SettingsItem(
                 icon = Icons.Default.Info,
-                title = "버전",
+                title = stringResource(R.string.settings_version),
                 subtitle = "1.0.0",
                 onClick = {},
                 textPrimary = textPrimary,
@@ -221,7 +222,7 @@ fun SettingsScreen(
 
             SettingsItem(
                 icon = Icons.Default.Lock,
-                title = "개인정보 처리방침",
+                title = stringResource(R.string.settings_privacy_policy),
                 subtitle = "myphonecheck.app/privacy",
                 onClick = {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://myphonecheck.app/privacy"))
@@ -236,7 +237,7 @@ fun SettingsScreen(
 
             SettingsItem(
                 icon = Icons.Default.Info,
-                title = "이용약관",
+                title = stringResource(R.string.settings_terms),
                 subtitle = "myphonecheck.app/terms",
                 onClick = {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://myphonecheck.app/terms"))
@@ -251,7 +252,7 @@ fun SettingsScreen(
 
             SettingsItem(
                 icon = Icons.Default.Info,
-                title = "피드백",
+                title = stringResource(R.string.settings_feedback),
                 subtitle = "contact@myphonecheck.app",
                 onClick = {
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
@@ -433,7 +434,7 @@ private fun LanguageSelector(
     var expanded by remember { mutableStateOf(false) }
 
     val languageMap = mapOf(
-        "auto" to "자동 감지",
+        "auto" to stringResource(R.string.settings_auto_detect),
         "ko" to "한국어",
         "en" to "English",
     )
@@ -462,14 +463,14 @@ private fun LanguageSelector(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
-                    text = "언어",
+                    text = stringResource(R.string.settings_language),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
                     color = textPrimary,
                 )
 
                 Text(
-                    text = languageMap[currentLanguage] ?: "자동 감지",
+                    text = languageMap[currentLanguage] ?: stringResource(R.string.settings_auto_detect),
                     fontSize = 12.sp,
                     color = textSecondary,
                 )
@@ -528,11 +529,11 @@ private fun CountrySelector(
     var expanded by remember { mutableStateOf(false) }
 
     val countryMap = mapOf(
-        null to "자동 감지",
-        "KR" to "대한민국",
-        "US" to "미국",
-        "JP" to "일본",
-        "CN" to "중국",
+        null to stringResource(R.string.settings_auto_detect),
+        "KR" to stringResource(R.string.settings_country_kr),
+        "US" to stringResource(R.string.settings_country_us),
+        "JP" to stringResource(R.string.settings_country_jp),
+        "CN" to stringResource(R.string.settings_country_cn),
     )
 
     Row(
@@ -559,14 +560,14 @@ private fun CountrySelector(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
-                    text = "국가/지역",
+                    text = stringResource(R.string.settings_country_region),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
                     color = textPrimary,
                 )
 
                 Text(
-                    text = countryMap[currentCountry] ?: "자동 감지",
+                    text = countryMap[currentCountry] ?: stringResource(R.string.settings_auto_detect),
                     fontSize = 12.sp,
                     color = textSecondary,
                 )

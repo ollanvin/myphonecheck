@@ -4,19 +4,23 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import app.myphonecheck.mobile.data.localcache.dao.BackupMetadataDao
 import app.myphonecheck.mobile.data.localcache.dao.DetailTagDao
+import app.myphonecheck.mobile.data.localcache.dao.InitialScanMetaDao
 import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
 import app.myphonecheck.mobile.data.localcache.dao.NumberProfileDao
 import app.myphonecheck.mobile.data.localcache.dao.PreJudgeCacheDao
 import app.myphonecheck.mobile.data.localcache.dao.PrivacyHistoryDao
 import app.myphonecheck.mobile.data.localcache.dao.PushStatsDao
+import app.myphonecheck.mobile.data.localcache.dao.SensorScanResultDao
 import app.myphonecheck.mobile.data.localcache.dao.UserCallRecordDao
 import app.myphonecheck.mobile.data.localcache.entity.BackupMetadataEntity
 import app.myphonecheck.mobile.data.localcache.entity.DetailTagEntity
+import app.myphonecheck.mobile.data.localcache.entity.InitialScanMetaEntity
 import app.myphonecheck.mobile.data.localcache.entity.MessageHubEntity
 import app.myphonecheck.mobile.data.localcache.entity.NumberProfileEntity
 import app.myphonecheck.mobile.data.localcache.entity.PreJudgeCacheEntry
 import app.myphonecheck.mobile.data.localcache.entity.PrivacyHistoryEntity
 import app.myphonecheck.mobile.data.localcache.entity.PushStatsEntity
+import app.myphonecheck.mobile.data.localcache.entity.SensorScanResultEntity
 import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
 
 /**
@@ -42,8 +46,10 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
         MessageHubEntity::class,
         PrivacyHistoryEntity::class,
         PushStatsEntity::class,
+        SensorScanResultEntity::class,
+        InitialScanMetaEntity::class,
     ],
-    version = 9,
+    version = 11,
     exportSchema = true,
 )
 abstract class MyPhoneCheckDatabase : RoomDatabase() {
@@ -55,6 +61,8 @@ abstract class MyPhoneCheckDatabase : RoomDatabase() {
     abstract fun messageHubDao(): MessageHubDao
     abstract fun privacyHistoryDao(): PrivacyHistoryDao
     abstract fun pushStatsDao(): PushStatsDao
+    abstract fun sensorScanResultDao(): SensorScanResultDao
+    abstract fun initialScanMetaDao(): InitialScanMetaDao
 
     companion object {
         const val DATABASE_NAME = "myphonecheck.db"

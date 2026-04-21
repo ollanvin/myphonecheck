@@ -5,4 +5,17 @@
     <string name="trial_countdown_remaining">무료 체험 종료까지 %1$d일 남음</string>
     <string name="value_anchor_window_days">최근 %1$d일 동안</string>
     <string name="value_anchor_retention_note">이 기능은 구독 시 유지됩니다</string>
+    <string name="paywall_title">구독</string>
+    <string name="paywall_subtitle">실측된 보호 기록을 바탕으로 구독 전에도 상태를 확인합니다</string>
+    <string name="paywall_feature_call_title">실시간 의심 전화 확인</string>
+    <string name="paywall_feature_call_desc">저장된 판단 기록을 바탕으로 의심 전화를 확인합니다.</string>
+    <string name="paywall_feature_message_title">위험 링크 메시지 확인</string>
+    <string name="paywall_feature_message_desc">로컬에 저장된 위험 링크 메시지만 선별해 보여줍니다.</string>
+    <string name="paywall_restore">이전 구독 복원</string>
+    <string name="paywall_privacy_policy">개인정보 처리방침</string>
+    <string name="paywall_terms">이용약관</string>
+    <string name="paywall_cancel">구독 취소</string>
+    <string name="value_anchor_period_fmt">%1$s 동안</string>
+    <string name="value_anchor_suspicious_calls_fmt">검색 근거가 있는 의심 전화 %1$d건 확인</string>
+    <string name="value_anchor_risky_messages_fmt">위험 링크 메시지 %1$d건 확인</string>
 </resources>

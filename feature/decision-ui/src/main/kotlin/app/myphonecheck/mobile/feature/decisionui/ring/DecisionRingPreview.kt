@@ -10,6 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import app.myphonecheck.mobile.feature.decisionui.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,7 +54,7 @@ private fun DecisionRingLoadingPreview() {
                         textAlign = TextAlign.Center,
                     )
                     Text(
-                        text = "분석 중...",
+                        text = stringResource(R.string.decision_analyzing_dots),
                         color = MyPhoneCheckTheme.colors.textSecondary,
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center,
@@ -92,13 +94,13 @@ private fun DecisionRingSafePreview() {
                         fontWeight = FontWeight.Bold,
                     )
                     Text(
-                        text = "안전 추정",
+                        text = stringResource(R.string.decision_safe_estimate),
                         color = MyPhoneCheckTheme.colors.riskSafe,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Text(
-                        text = "연락처에 등록된 번호",
+                        text = stringResource(R.string.decision_saved_contact),
                         color = MyPhoneCheckTheme.colors.textSecondary,
                         fontSize = 12.sp,
                     )
@@ -137,13 +139,13 @@ private fun DecisionRingDangerPreview() {
                         fontWeight = FontWeight.Bold,
                     )
                     Text(
-                        text = "스캠 의심",
+                        text = stringResource(R.string.decision_scam_suspect),
                         color = MyPhoneCheckTheme.colors.riskCritical,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Text(
-                        text = "보이스피싱 신고 이력",
+                        text = stringResource(R.string.decision_phishing_report),
                         color = MyPhoneCheckTheme.colors.textSecondary,
                         fontSize = 12.sp,
                     )
@@ -215,7 +217,7 @@ private fun DecisionRingHomeDashboardPreview() {
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        text = "보호 중",
+                        text = stringResource(R.string.decision_protecting),
                         color = MyPhoneCheckTheme.colors.textPrimary,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,

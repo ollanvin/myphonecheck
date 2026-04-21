@@ -183,9 +183,12 @@ class PrivacyScannerEngine(
                 val uid = context.packageManager
                     .getApplicationInfo(holder.packageName, 0).uid
 
-                val mode = appOpsManager.unsafeCheckOpNoThrow(
-                    opStr, uid, holder.packageName
-                )
+                @Suppress("DEPRECATION")
+                val mode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    appOpsManager.unsafeCheckOpNoThrow(opStr, uid, holder.packageName)
+                } else {
+                    appOpsManager.checkOpNoThrow(opStr, uid, holder.packageName)
+                }
 
                 if (mode == AppOpsManager.MODE_ALLOWED) {
                     results.add(

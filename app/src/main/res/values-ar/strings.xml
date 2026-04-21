@@ -68,7 +68,7 @@
     <string name="onboarding_page1_threat">Scam calls, phishing messages, and noisy alerts\nare already targeting you.</string>
     <string name="onboarding_page1_card_title">Stop it before you answer.</string>
     <string name="onboarding_page1_card_desc">Real-time interception\ninstantly evaluates risk.</string>
-    <string name="onboarding_on_device_only">100% on-device · no server transmission</string>
+    <string name="onboarding_on_device_only">100%% on-device · no server transmission</string>
     <string name="onboarding_page2_title">Your phone is already under attack\nfrom 4 entry points</string>
     <string name="threat_call_title">Calls</string>
     <string name="threat_call_desc">Scam calls · voice phishing</string>
@@ -120,6 +120,12 @@
     <string name="engine_message_desc">اكتشاف التصيد قبل الفتح</string>
     <string name="engine_privacy_question">هل هاتفك\nآمن الآن؟</string>
     <string name="engine_privacy_desc">مراقبة الوصول الخفي للكاميرا والميكروفون</string>
+
+    <!-- CameraCheck / MicCheck engine cards -->
+    <string name="engine_camera_question">من يستطيع الرؤية\nعبر كاميرتك؟</string>
+    <string name="engine_camera_desc">كشف التطبيقات التي تصل إلى الكاميرا</string>
+    <string name="engine_mic_question">من يستمع\nإليك الآن؟</string>
+    <string name="engine_mic_desc">كشف التطبيقات التي تصل إلى الميكروفون</string>
     <string name="message_hub_title">مركز الرسائل</string>
     <string name="message_hub_link_warning">تحتوي الرسالة على رابط</string>
     <string name="message_hub_action_keep">احتفاظ</string>
@@ -158,7 +164,7 @@
     <string name="perm_status_granted">مُمنوح</string>
     <string name="onboarding_permissions_later">لاحقاً</string>
     <string name="onboarding_permissions_continue_home">ابدأ</string>
-    <string name="home_security_trust_badge">🔒 100% على الجهاز · بلا خوادم · بلا جمع بيانات</string>
+    <string name="home_security_trust_badge">🔒 100%% على الجهاز · بلا خوادم · بلا جمع بيانات</string>
     <string name="settings_security_card_title">حالة الأمان: طبيعي</string>
     <string name="settings_security_bullet_no_server">لا اتصال بالخوادم</string>
     <string name="settings_security_bullet_no_transfer">لا نقل بيانات خارجي</string>

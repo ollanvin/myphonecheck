@@ -68,7 +68,7 @@
     <string name="onboarding_page1_threat">Scam calls, phishing messages, and noisy alerts\nare already targeting you.</string>
     <string name="onboarding_page1_card_title">Stop it before you answer.</string>
     <string name="onboarding_page1_card_desc">Real-time interception\ninstantly evaluates risk.</string>
-    <string name="onboarding_on_device_only">100% on-device · no server transmission</string>
+    <string name="onboarding_on_device_only">100%% on-device · no server transmission</string>
     <string name="onboarding_page2_title">Your phone is already under attack\nfrom 4 entry points</string>
     <string name="threat_call_title">Calls</string>
     <string name="threat_call_desc">Scam calls · voice phishing</string>
@@ -120,6 +120,12 @@
     <string name="engine_message_desc">Обнаружение фишинга до открытия</string>
     <string name="engine_privacy_question">Ваш телефон\nсейчас в безопасности?</string>
     <string name="engine_privacy_desc">Контроль скрытого доступа к камере и микрофону</string>
+
+    <!-- CameraCheck / MicCheck engine cards -->
+    <string name="engine_camera_question">Кто может видеть\nчерез вашу камеру?</string>
+    <string name="engine_camera_desc">Обнаружение приложений с доступом к камере</string>
+    <string name="engine_mic_question">Кто вас\nслушает?</string>
+    <string name="engine_mic_desc">Обнаружение приложений с доступом к микрофону</string>
     <string name="message_hub_title">Центр сообщений</string>
     <string name="message_hub_link_warning">Сообщение содержит ссылку</string>
     <string name="message_hub_action_keep">Сохранить</string>
@@ -158,7 +164,7 @@
     <string name="perm_status_granted">Разрешено</string>
     <string name="onboarding_permissions_later">Позже</string>
     <string name="onboarding_permissions_continue_home">Начать</string>
-    <string name="home_security_trust_badge">🔒 100% на устройстве · Без серверов · Без сбора данных</string>
+    <string name="home_security_trust_badge">🔒 100%% на устройстве · Без серверов · Без сбора данных</string>
     <string name="settings_security_card_title">Безопасность: в норме</string>
     <string name="settings_security_bullet_no_server">Нет подключения к серверам</string>
     <string name="settings_security_bullet_no_transfer">Нет передачи данных наружу</string>

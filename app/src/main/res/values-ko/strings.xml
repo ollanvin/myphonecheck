@@ -68,7 +68,7 @@
     <string name="onboarding_page1_threat">사기 전화, 피싱 문자, 쓸데없는 알림\n이미 당신을 계속 노리고 있습니다.</string>
     <string name="onboarding_page1_card_title">받기 전에 끝냅니다.</string>
     <string name="onboarding_page1_card_desc">실시간 인터셉트로\n위험 여부를 즉시 판단합니다.</string>
-    <string name="onboarding_on_device_only">100% 온디바이스 · 서버 전송 없음</string>
+    <string name="onboarding_on_device_only">100%% 온디바이스 · 서버 전송 없음</string>
     <string name="onboarding_page2_title">당신의 폰은 이미\n4곳에서 공격받고 있습니다</string>
     <string name="threat_call_title">전화</string>
     <string name="threat_call_desc">사기 전화 · 보이스피싱</string>
@@ -120,6 +120,32 @@
     <string name="engine_message_desc">피싱/사칭 문자를 열기 전에 감지</string>
     <string name="engine_privacy_question">지금 내 폰,\n안전한가</string>
     <string name="engine_privacy_desc">카메라/마이크 몰래 접근 감시</string>
+
+    <!-- CameraCheck / MicCheck engine cards -->
+    <string name="engine_camera_question">내 카메라,\n누가 보고 있나</string>
+    <string name="engine_camera_desc">카메라 접근 앱 감지</string>
+    <string name="engine_mic_question">내 마이크,\n누가 듣고 있나</string>
+    <string name="engine_mic_desc">마이크 접근 앱 감지</string>
+
+    <!-- Sensor scan status -->
+    <string name="scan_status_not_scanned">미스캔</string>
+    <string name="scan_status_scanning">스캔중…</string>
+    <string name="scan_status_granted_count">%1$d개 앱 허용</string>
+    <string name="scan_status_init_required">초기화 필요</string>
+    <string name="scan_status_failed">스캔 실패</string>
+    <string name="scan_retry">재시도</string>
+
+    <!-- CameraCheck / MicCheck detail screen -->
+    <string name="camera_check_title">카메라 체크</string>
+    <string name="mic_check_title">마이크 체크</string>
+    <string name="sensor_granted_apps_header">권한 보유 앱</string>
+    <string name="sensor_recent_apps_header">최근 사용</string>
+    <string name="sensor_no_granted_apps">해당 권한을 가진 앱이 없습니다</string>
+    <string name="sensor_no_recent_apps">최근 접근 기록 없음</string>
+    <string name="sensor_last_used_label">마지막 사용</string>
+    <string name="sensor_known_safe_badge">안전한 앱</string>
+    <string name="sensor_days_installed">설치 후 %1$d일</string>
+
     <string name="message_hub_title">메시지 허브</string>
     <string name="message_hub_link_warning">링크가 포함된 메시지입니다</string>
     <string name="message_hub_action_keep">보관</string>
@@ -192,10 +218,83 @@
     <string name="settings_restart_onboarding_desc">5단계 설정 과정을 다시 진행</string>
     <string name="onboarding_permissions_later">나중에</string>
     <string name="onboarding_permissions_continue_home">시작하기</string>
-    <string name="home_security_trust_badge">🔒 100% 온디바이스 · 서버 없음 · 데이터 수집 없음</string>
+    <string name="home_security_trust_badge">🔒 100%% 온디바이스 · 서버 없음 · 데이터 수집 없음</string>
     <string name="settings_security_card_title">보안 상태: 정상</string>
     <string name="settings_security_bullet_no_server">서버 연결 없음</string>
     <string name="settings_security_bullet_no_transfer">데이터 외부 전송 없음</string>
     <string name="settings_security_bullet_aes">AES-256-GCM 백업 암호화</string>
     <string name="settings_security_bullet_on_device">온디바이스 전용 처리</string>
+
+    <!-- Call/Message detail screen -->
+    <string name="detail_label_number">번호</string>
+    <string name="detail_label_time">시간</string>
+    <string name="detail_label_search_summary">검색 요약</string>
+    <string name="detail_label_similar_number">유사번호 존재 여부</string>
+    <string name="detail_label_not_confirmed">확인 안 됨</string>
+    <string name="detail_label_importance">중요도</string>
+    <string name="detail_label_link_warning">링크 경고</string>
+    <string name="detail_label_link_exists">링크 있음</string>
+    <string name="detail_label_link_none">없음</string>
+    <string name="detail_action_remember">저장 없이 기억하기</string>
+    <string name="detail_state_blocked">차단 상태</string>
+    <string name="detail_state_do_not_block">차단 금지</string>
+    <string name="detail_tag_placeholder">상세 태그 추가</string>
+    <string name="detail_tag_add">태그 추가</string>
+    <string name="detail_memo_placeholder">짧은 메모</string>
+    <string name="detail_memo_save">메모 저장</string>
+    <string name="detail_action_delete">삭제</string>
+    <string name="detail_action_block">차단</string>
+    <string name="detail_action_both">둘 다</string>
+
+    <!-- Backup screen -->
+    <string name="backup_screen_title">백업 및 복원</string>
+    <string name="backup_passphrase_warning">비밀번호를 잊으면 복원할 수 없습니다. 반드시 다른곳에 안전하게 보관하세요</string>
+    <string name="backup_passphrase_hint">숫자 6자리를 입력해 주세요</string>
+    <string name="backup_passphrase_label">복구 비밀번호</string>
+    <string name="backup_passphrase_confirm_label">복구 비밀번호 확인</string>
+    <string name="backup_passphrase_title">복구 비밀번호</string>
+    <string name="backup_passphrase_error_empty">복구 비밀번호를 입력하세요</string>
+    <string name="backup_passphrase_error_confirm_empty">복구 비밀번호 확인을 입력하세요</string>
+    <string name="backup_passphrase_error_length">복구 비밀번호는 6자리 숫자여야 합니다</string>
+    <string name="backup_passphrase_error_mismatch">복구 비밀번호가 일치하지 않습니다</string>
+    <string name="backup_confirm_default">백업</string>
+    <string name="backup_nav_back">뒤로</string>
+    <string name="backup_close">닫기</string>
+    <string name="backup_cloud_both">디바이스 + 클라우드 동시 저장</string>
+    <string name="backup_device_only">디바이스에만 저장</string>
+    <string name="backup_cloud_desc">Google Drive, OneDrive 등\nSAF를 지원하는 클라우드 저장소에\n백업을 동시 저장할 수 있습니다.</string>
+    <string name="backup_location_fmt">위치: %1$s</string>
+    <string name="backup_location_default">선택된 위치</string>
+    <string name="backup_cloud_change">클라우드 위치 변경</string>
+    <string name="backup_cloud_select">클라우드 백업 위치 선택</string>
+    <string name="backup_cloud_disable">클라우드 백업 해제 (디바이스만 사용)</string>
+    <string name="backup_encrypt_desc">현재 데이터를 AES-256-GCM으로 암호화하여 백업합니다.</string>
+    <string name="backup_save_location_cloud_fmt">저장 위치: Documents/MyPhoneCheck/ + 클라우드</string>
+    <string name="backup_save_location_local">저장 위치: Documents/MyPhoneCheck/</string>
+    <string name="backup_now">지금 백업</string>
+    <string name="backup_restore_file_desc">백업 파일(.csb)을 선택하여 복원합니다.\n복원 시 현재 데이터는 모두 삭제됩니다.</string>
+    <string name="backup_restore_file_btn">파일 선택하여 복원</string>
+    <string name="backup_total_size_fmt">총 %1$s</string>
+    <string name="backup_empty">백업 파일이 없습니다</string>
+    <string name="backup_icon_restore">복원</string>
+    <string name="backup_icon_delete">삭제</string>
+    <string name="backup_delete_title">백업 삭제</string>
+    <string name="backup_delete_confirm_fmt">%1$s\n이 백업을 삭제하시겠습니까?</string>
+    <string name="backup_restore_dialog_title">백업 복원</string>
+    <string name="backup_restore_confirm_fmt">%1$s\n\n이 백업에서 복원하시겠습니까?\n현재 데이터는 모두 삭제되고 백업 데이터로 교체됩니다.</string>
+    <string name="backup_restore_btn">복원</string>
+    <string name="backup_footer">백업은 복구 비밀번호와 PBKDF2·AES-256-GCM으로 암호화된 .csb(v2) 파일로 저장됩니다.\n동일한 복구 비밀번호로 다른 기기에서도 복원할 수 있습니다.\n최대 5개의 백업이 보관되며, 초과 시 오래된 백업이 자동 삭제됩니다.</string>
+    <string name="backup_section_cloud">클라우드 백업 위치</string>
+    <string name="backup_section_create">새 백업 생성</string>
+    <string name="backup_section_file_restore">파일에서 복원</string>
+    <string name="backup_section_list">백업 목록</string>
+
+    <!-- WeeklyReportWorker -->
+    <string name="weekly_report_channel_desc">주간 보안 리포트 알림</string>
+    <string name="weekly_report_title_fmt">주간 보안 리포트 (%1$s ~ %2$s)</string>
+    <string name="weekly_report_calls_fmt">전화 %1$d건</string>
+    <string name="weekly_report_calls_risk_fmt"> (위험 %1$d)</string>
+    <string name="weekly_report_push_fmt"> · 알림 %1$d건</string>
+    <string name="weekly_report_push_risk_fmt"> (위험 %1$d)</string>
+    <string name="weekly_report_privacy_fmt"> · 권한 이상 %1$d건</string>
 </resources>

@@ -13,6 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import app.myphonecheck.mobile.feature.decisionui.R
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -125,7 +127,7 @@ private fun RingLoadingState(phoneNumber: String) {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = "분석 중",
+                    text = stringResource(R.string.decision_analyzing),
                     color = MyPhoneCheckTheme.colors.textPrimary,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
@@ -133,7 +135,7 @@ private fun RingLoadingState(phoneNumber: String) {
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "판단 근거 수집 중...",
+                    text = stringResource(R.string.decision_collecting_evidence),
                     color = MyPhoneCheckTheme.colors.textSecondary,
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
@@ -163,7 +165,7 @@ private fun RingErrorState(message: String) {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = "오류 발생",
+                    text = stringResource(R.string.decision_error),
                     color = MyPhoneCheckTheme.colors.error,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
