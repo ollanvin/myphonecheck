@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="push_trash_listener_label">MyPhoneCheck push trash</string>
+    <string name="push_trash_title">Push trash</string>
+    <string name="push_trash_permission_banner">Notification listener access is required to filter blocked notifications.</string>
+    <string name="push_trash_open_listener_settings">Open listener settings</string>
+    <string name="push_trash_collected_7d_fmt">Collected (7 days): %1$d</string>
+    <string name="push_trash_rules_fmt">Block rules: %1$d</string>
+    <string name="push_trash_view_bin">View trash</string>
+    <string name="push_trash_app_settings">Per-app settings</string>
+    <string name="push_trash_bin_title_fmt">Push trash (%1$d)</string>
+    <string name="push_trash_restore">Restore</string>
+    <string name="push_trash_delete">Delete</string>
+    <string name="push_trash_restore_done">Rules updated. New notifications from this source will appear normally.</string>
+    <string name="push_trash_deleted">Removed from trash.</string>
+    <string name="push_trash_app_settings_title">App notification rules</string>
+    <string name="push_trash_no_channels_hint">This app does not expose notification channels. Use allow or block for all notifications.</string>
+    <string name="push_trash_mode_all_allowed">Allow all</string>
+    <string name="push_trash_mode_all_blocked">Block all</string>
+    <string name="push_trash_mode_per_channel">Per-channel rules only</string>
+    <string name="push_trash_apps_title">Apps (last 7 days)</string>
+    <string name="push_trash_channel_block">Block this channel</string>
+    <string name="push_trash_notifications_7d_fmt">Notifications (7 days): %1$d</string>
+    <string name="push_trash_settings_entry_title">Push trash</string>
+    <string name="push_trash_settings_entry_desc">Filter promotions and view blocked notifications on-device.</string>
+    <string name="push_trash_back">Back</string>
+    <string name="push_trash_app_label_coupang">Coupang</string>
+    <string name="push_trash_app_label_baemin">Baemin</string>
+    <string name="push_trash_app_label_yogiyo">Yogiyo</string>
+    <string name="push_trash_app_label_toss">Toss</string>
+    <string name="push_trash_app_label_11st">11st</string>
+</resources>
