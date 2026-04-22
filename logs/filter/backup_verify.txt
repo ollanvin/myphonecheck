@@ -1,0 +1,5 @@
+﻿C:\Users\user\Dev\ollanvin\myphonecheck-backup-pre-filter-20260422
+True
+True
+file_count=19993
+size_MB=8492.33

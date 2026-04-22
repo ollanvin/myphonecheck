@@ -1,0 +1,22 @@
+﻿git : remote: error: Trace: 4443d589e0aaebdc8cc19ebbf4bdcfda00a4d1e24f6280b470a3820e0a161607        
+At line:1 char:1
++ git push origin HEAD 2>&1 | Out-File -Encoding utf8 $env:TEMP\push_re ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (remote: error: ...a161607        :String) [], RemoteExc 
+   eption
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+remote: error: See https://gh.io/lfs for more information.        
+remote: error: File java_pid397536.hprof is 692.87 MB; this exceeds GitHub's file size limit of 100.0
+0 MB        
+remote: error: File java_pid399920.hprof is 688.71 MB; this exceeds GitHub's file size limit of 100.0
+0 MB        
+remote: error: File java_pid415016.hprof is 692.36 MB; this exceeds GitHub's file size limit of 100.0
+0 MB        
+remote: error: File java_pid384076.hprof is 696.53 MB; this exceeds GitHub's file size limit of 100.0
+0 MB        
+remote: error: GH001: Large files detected. You may want to try Git Large File Storage - https://git-
+lfs.github.com.        
+To https://github.com/ollanvin/myphonecheck.git
+ ! [remote rejected] HEAD -> codex-global-single-core-snapshot (pre-receive hook declined)
+error: failed to push some refs to 'https://github.com/ollanvin/myphonecheck.git'

@@ -1,0 +1,5 @@
+﻿d470a73 Stage 0-hotfix: Java 17 migration + core:common freeze + repository hygiene
+7d1c71b build: gradlew check 수정 + docs/ARCHITECTURE.md 역설계도
+5ef0840 v4.3: structure refactor complete
+f7cbaa5 feat: rewrite overlay to 2-second decision UI + wire DO_NOT_MISS notification action
+0288803 feat: overlay 2s decision UX + DO_NOT_MISS integration

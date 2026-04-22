@@ -1,0 +1,128 @@
+﻿ .github/workflows/contract-freeze-check.yml        |   25 +
+ .gitignore                                         |    3 +
+ app/build.gradle.kts                               |    8 +-
+ build-logic/convention/build.gradle.kts            |    6 +-
+ .../kotlin/AndroidApplicationConventionPlugin.kt   |    4 +-
+ .../main/kotlin/AndroidLibraryConventionPlugin.kt  |    4 +-
+ build-logic/settings.gradle.kts                    |    4 +
+ build.gradle.kts                                   |   14 +-
+ core/common/FREEZE.md                              |   20 +
+ core/common/build.gradle.kts                       |   21 +
+ .../myphonecheck/core/common/checker/Checker.kt    |   33 +
+ .../core/common/engine/DecisionEngineContract.kt   |   54 +
+ .../core/common/identifier/IdentifierType.kt       |   61 +
+ .../core/common/risk/DamageEstimate.kt             |   24 +
+ .../myphonecheck/core/common/risk/DamageType.kt    |   14 +
+ .../myphonecheck/core/common/risk/RiskKnowledge.kt |   32 +
+ .../app/myphonecheck/core/common/risk/RiskLevel.kt |   25 +
+ .../core/common/risk/SearchEvidence.kt             |   12 +
+ .../core/common/CheckerContractTest.kt             |   33 +
+ .../myphonecheck/core/common/FreezeMarkerTest.kt   |   55 +
+ .../myphonecheck/core/common/IdentifierTypeTest.kt |   80 +
+ .../core/common/RiskKnowledgeContractTest.kt       |   73 +
+ core/model/build.gradle.kts                        |    6 +-
+ core/security/build.gradle.kts                     |    6 +-
+ core/util/build.gradle.kts                         |    6 +-
+ data/calllog/build.gradle.kts                      |    6 +-
+ data/contacts/build.gradle.kts                     |    6 +-
+ data/local-cache/build.gradle.kts                  |    6 +-
+ data/search/build.gradle.kts                       |    6 +-
+ data/sms/build.gradle.kts                          |    6 +-
+ .../_workorder_stage0_hotfix_java17_e3b05e.txt     |  266 +++
+ docs/00_governance/project-governance.md           |   62 +
+ .../audit_stage0_hotfix_java17_20260422.md         |  177 ++
+ feature/billing/build.gradle.kts                   |    6 +-
+ feature/call-intercept/build.gradle.kts            |    6 +-
+ feature/country-config/build.gradle.kts            |    6 +-
+ feature/decision-engine/build.gradle.kts           |    6 +-
+ feature/decision-ui/build.gradle.kts               |    6 +-
+ feature/device-evidence/build.gradle.kts           |    6 +-
+ feature/message-intercept/build.gradle.kts         |    6 +-
+ feature/privacy-check/build.gradle.kts             |    6 +-
+ feature/search-enrichment/build.gradle.kts         |    6 +-
+ feature/settings/build.gradle.kts                  |    6 +-
+ gradle.properties                                  |   10 +
+ gradle/libs.versions.toml                          |    5 +
+ logs/ci_android_lastcommit.txt                     |   10 +
+ logs/ci_freeze_allhistory.txt                      |    0
+ logs/ci_freeze_decoded.txt                         |   26 +
+ logs/ci_freeze_java_scan.txt                       |    2 +
+ logs/ci_freeze_lastcommit.txt                      |    0
+ logs/ci_java_version.txt                           |    4 +
+ logs/ci_java_version_v2.txt                        |    4 +
+ logs/ci_status.txt                                 |    1 +
+ logs/ci_tracked_files.txt                          |    1 +
+ logs/compileDebug_nodaemon.txt                     | 2159 ++++++++++++++++++++
+ logs/core_common_clean.txt                         |    0
+ logs/core_common_clean2.txt                        |   11 +
+ logs/core_common_compile_info.txt                  |  580 ++++++
+ logs/core_common_diff_1commit.txt                  |    0
+ logs/core_common_diff_working.txt                  |    0
+ logs/core_common_git_history.txt                   |    0
+ logs/core_common_kapt_plugin.txt                   |    0
+ logs/core_common_kapt_scan.txt                     |    0
+ logs/core_common_status.txt                        |    1 +
+ logs/core_common_tasks.txt                         |   72 +
+ logs/core_common_test.txt                          |  659 ++++++
+ logs/core_common_tracked.txt                       |    0
+ ...file_buildlogic_convention_build.gradle.kts.txt |   40 +
+ logs/file_buildlogic_settings.gradle.kts.txt       |   27 +
+ logs/file_core_common_build.gradle.kts.txt         |   21 +
+ logs/file_gradle.properties.txt                    |   15 +
+ logs/file_root_build.gradle.kts.txt                |   52 +
+ logs/file_settings.gradle.kts.txt                  |   51 +
+ logs/foojay_check.txt                              |   10 +
+ logs/freeze_hash.txt                               |    7 +
+ logs/git_head.txt                                  |    1 +
+ logs/git_log.txt                                   |    5 +
+ logs/git_status.txt                                |   91 +
+ logs/governance_update.txt                         |   11 +
+ logs/gradle_properties_keys.txt                    |    6 +
+ logs/gradlew_stop.txt                              |    1 +
+ logs/gradlew_stop_pre6.txt                         |    2 +
+ logs/grep_jvmtarget17.txt                          |   23 +
+ logs/grep_jvmtarget_old.txt                        |    0
+ logs/grep_toolchain17.txt                          |    7 +
+ logs/grep_toolchain21_leftover.txt                 |    0
+ logs/grep_version17.txt                            |   71 +
+ logs/grep_version_old.txt                          |    0
+ logs/hygiene/branch_status.txt                     |    3 +
+ logs/hygiene/categoryA_add.txt                     |   15 +
+ logs/hygiene/classification.md                     |  161 ++
+ logs/hygiene/core_common_add.txt                   |    0
+ logs/hygiene/core_common_inventory.txt             |   19 +
+ logs/hygiene/core_common_staged.txt                |   14 +
+ logs/hygiene/freeze_yml_add.txt                    |    0
+ logs/hygiene/freeze_yml_bom_check.txt              |    1 +
+ logs/hygiene/freeze_yml_staged.txt                 |    1 +
+ logs/hygiene/freeze_yml_syntax.txt                 |   26 +
+ logs/hygiene/git_fetch.txt                         |    0
+ logs/hygiene/git_head_before.txt                   |    1 +
+ logs/hygiene/git_log_before.txt                    |   10 +
+ logs/hygiene/git_status_before.txt                 |  104 +
+ logs/hygiene/git_status_porcelain_before.txt       |   92 +
+ logs/hygiene/gitignore_add.txt                     |    0
+ logs/hygiene/gitignore_core_check.txt              |    0
+ logs/hygiene/gitignore_logs_check.txt              |    0
+ logs/hygiene/logs_add.txt                          |  105 +
+ logs/hygiene/logs_hygiene_add.txt                  |   11 +
+ logs/hygiene/modified_files.txt                    |   50 +
+ logs/hygiene/remote_sync_before.txt                |   93 +
+ logs/hygiene/staged_files.txt                      |    0
+ logs/hygiene/untracked_after_stage.txt             |   38 +
+ logs/hygiene/untracked_files.txt                   |  115 ++
+ logs/javaToolchains.txt                            |   21 +
+ logs/java_processes_before.txt                     |    0
+ logs/lckfiles_before.txt                           |    0
+ logs/lockfiles_before.txt                          |   11 +
+ logs/openfiles_scan.txt                            |   17 +
+ logs/runtime_cp.txt                                |   32 +
+ logs/runtime_cp_android_scan.txt                   |    0
+ logs/test_results_xml.txt                          |    9 +
+ logs/toolchain_trace.txt                           |   31 +
+ logs/version_agp_kotlin.txt                        |    5 +
+ logs/version_gradle.txt                            |    5 +
+ logs/version_matrix.md                             |   13 +
+ logs/workorder_hash.txt                            |    6 +
+ settings.gradle.kts                                |    7 +-
+ 127 files changed, 6153 insertions(+), 67 deletions(-)

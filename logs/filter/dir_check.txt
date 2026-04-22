@@ -1,0 +1,5 @@
+﻿core/common/src/main/kotlin: True
+core/common/src/test/kotlin: True
+.github/workflows/contract-freeze-check.yml: True
+docs/05_quality/audit_stage0_hotfix_java17_20260422.md: True
+docs/00_governance/_workorder_stage0_hotfix_java17_e3b05e.txt: True

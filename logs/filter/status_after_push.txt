@@ -1,0 +1,13 @@
+﻿## codex-global-single-core-snapshot
+?? docs/01_architecture/stage1_research/
+?? docs/05_quality/hygiene_stage0_hotfix_20260422.md
+?? logs/filter/
+?? logs/hygiene/build_artifact_leak.txt
+?? logs/hygiene/categoryC_leak_check.txt
+?? logs/hygiene/git_head_final.txt
+?? logs/hygiene/git_status_final.txt
+?? logs/hygiene/hprof_history.txt
+?? logs/hygiene/push_result.txt
+?? logs/hygiene/staged_final.txt
+?? logs/hygiene/stash_contents.txt
+?? logs/hygiene/stash_list.txt

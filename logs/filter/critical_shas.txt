@@ -1,0 +1,15 @@
+# Critical SHAs (pre-filter-repo)
+
+## Before filter-repo
+HEAD        = a2eec04a1606bd93de6b9af3624851f85287fade  (hygiene commit, must be preserved by content)
+HEAD~1      = cca259cc92e88bb6ca4a8656726320d5f9d82d50  (contains .hprof, must be rewritten)
+origin/tip  = 5ef0840                                    (origin/codex-global-single-core-snapshot)
+
+## After filter-repo (expected)
+New commits replace both a2eec04 and cca259c. SHAs will change. Identification by:
+- hygiene: commit message "Stage 0-hotfix: Java 17 migration + core:common freeze + repository hygiene"
+- cca259c successor: commit message "build: gradlew check 수정 + docs/ARCHITECTURE.md 역설계도"
+
+## After force push
+Origin will match local new HEAD. Old SHAs (a2eec04, cca259c) will be unreachable on origin
+but preserved in local reflog and backup folder.
