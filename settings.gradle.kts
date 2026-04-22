@@ -42,6 +42,7 @@ include(":feature:country-config")
 // feature:push-intercept removed per v1.1 Architecture (PUSH REMOVED)
 include(":feature:message-intercept")
 include(":feature:privacy-check")
+include(":feature:push-trash")
 
 // Data modules
 include(":data:contacts")
