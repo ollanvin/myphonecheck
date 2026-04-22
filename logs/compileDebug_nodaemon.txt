@@ -1,0 +1,2159 @@
+﻿Initialized native services in: C:\Users\user\.gradle\native
+Initialized jansi services in: C:\Users\user\.gradle\native
+Received JVM installation metadata from 'C:\Program Files\Android\Android Studio\jbr': {JAVA_HOME=C:\Program Files\Android\Android Studio\jbr, JAVA_VERSION=21.0.10, JAVA_VENDOR=JetBrains s.r.o., RUNTIME_NAME=OpenJDK Runtime Environment, RUNTIME_VERSION=21.0.10+-14961533-b1163.108, VM_NAME=OpenJDK 64-Bit Server VM, VM_VERSION=21.0.10+-14961533-b1163.108, VM_VENDOR=JetBrains s.r.o., OS_ARCH=amd64}
+Checking if the launcher JVM can be re-used for build. To be re-used, the launcher JVM needs to match the parameters required for the build process: -XX:MaxMetaspaceSize=2g --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.prefs/java.util.prefs=ALL-UNNAMED --add-opens=java.base/java.nio.charset=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED -Xmx12g -Dfile.encoding=UTF-8 -Duser.country=KR -Duser.language=ko -Duser.variant
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.6/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Starting process 'Gradle build daemon'. Working directory: C:\Users\user\.gradle\daemon\8.6 Command: C:\Program Files\Android\Android Studio\jbr\bin\java.exe -XX:MaxMetaspaceSize=2g --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.prefs/java.util.prefs=ALL-UNNAMED --add-opens=java.base/java.nio.charset=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED -Xmx12g -Dfile.encoding=UTF-8 -Duser.country=KR -Duser.language=ko -Duser.variant -cp C:\Users\user\.gradle\wrapper\dists\gradle-8.6-bin\afr5mpiioh2wthjmwnkmdsd5w\gradle-8.6\lib\gradle-launcher-8.6.jar -javaagent:C:\Users\user\.gradle\wrapper\dists\gradle-8.6-bin\afr5mpiioh2wthjmwnkmdsd5w\gradle-8.6\lib\agents\gradle-instrumentation-agent-8.6.jar org.gradle.launcher.daemon.bootstrap.GradleDaemon 8.6
+Successfully started process 'Gradle build daemon'
+An attempt to start the daemon took 1.354 secs.
+The client will now receive all logging from the daemon (pid: 392176). The daemon log file: C:\Users\user\.gradle\daemon\8.6\daemon-392176.out.log
+Daemon will be stopped at the end of the build 
+Using 1 worker leases.
+Received JVM installation metadata from 'C:\Program Files\Android\Android Studio\jbr': {JAVA_HOME=C:\Program Files\Android\Android Studio\jbr, JAVA_VERSION=21.0.10, JAVA_VENDOR=JetBrains s.r.o., RUNTIME_NAME=OpenJDK Runtime Environment, RUNTIME_VERSION=21.0.10+-14961533-b1163.108, VM_NAME=OpenJDK 64-Bit Server VM, VM_VERSION=21.0.10+-14961533-b1163.108, VM_VENDOR=JetBrains s.r.o., OS_ARCH=amd64}
+Watching the file system is configured to be enabled if available
+Now considering [C:\Users\user\Dev\ollanvin\myphonecheck] as hierarchies to watch
+File system watching is active
+Starting Build
+Now considering [C:\Users\user\Dev\ollanvin\myphonecheck\build-logic, C:\Users\user\Dev\ollanvin\myphonecheck] as hierarchies to watch
+Transforming foojay-resolver-0.9.0.jar (org.gradle.toolchains:foojay-resolver:0.9.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming gson-2.10.1.jar (com.google.code.gson:gson:2.10.1) with ExternalDependencyInstrumentingArtifactTransform
+
+> Configure project :build-logic
+Evaluating project ':build-logic' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\build-logic\build.gradle'.
+
+> Configure project :build-logic:convention
+Evaluating project ':build-logic:convention' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\build-logic\convention\build.gradle.kts'.
+Using local directory build cache for build ':build-logic' (location = C:\Users\user\.gradle\caches\build-cache-1, removeUnusedEntriesAfter = 7 days).
+Transforming gradle-kotlin-dsl-plugins-4.2.1.jar (org.gradle.kotlin:gradle-kotlin-dsl-plugins:4.2.1) with ExternalDependencyInstrumentingArtifactTransform
+Transforming annotations-13.0.jar (org.jetbrains:annotations:13.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-sam-with-receiver-1.9.20-gradle81.jar (org.jetbrains.kotlin:kotlin-sam-with-receiver:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-assignment-1.9.20-gradle81.jar (org.jetbrains.kotlin:kotlin-assignment:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-model-1.9.20.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-model:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-api-1.9.20.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-api:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-api-1.9.20-gradle81.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-api:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-1.9.20-gradle81.jar (org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-idea-proto-1.9.20.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-idea-proto:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-idea-1.9.20.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-idea:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-klib-commonizer-api-1.9.20.jar (org.jetbrains.kotlin:kotlin-klib-commonizer-api:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-native-utils-1.9.20.jar (org.jetbrains.kotlin:kotlin-native-utils:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-util-klib-1.9.20.jar (org.jetbrains.kotlin:kotlin-util-klib:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-build-tools-api-1.9.20.jar (org.jetbrains.kotlin:kotlin-build-tools-api:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-android-extensions-1.9.20.jar (org.jetbrains.kotlin:kotlin-android-extensions:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-compiler-runner-1.9.20.jar (org.jetbrains.kotlin:kotlin-compiler-runner:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-compiler-embeddable-1.9.20.jar (org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-scripting-compiler-embeddable-1.9.20.jar (org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-scripting-compiler-impl-embeddable-1.9.20.jar (org.jetbrains.kotlin:kotlin-scripting-compiler-impl-embeddable:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-annotations-1.9.20.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-annotations:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-project-model-1.9.20.jar (org.jetbrains.kotlin:kotlin-project-model:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-tooling-core-1.9.20.jar (org.jetbrains.kotlin:kotlin-tooling-core:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-util-io-1.9.20.jar (org.jetbrains.kotlin:kotlin-util-io:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-daemon-embeddable-1.9.20.jar (org.jetbrains.kotlin:kotlin-daemon-embeddable:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming trove4j-1.0.20200330.jar (org.jetbrains.intellij.deps:trove4j:1.0.20200330) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-daemon-client-1.9.20.jar (org.jetbrains.kotlin:kotlin-daemon-client:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlinx-coroutines-core-jvm-1.5.0.jar (org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-scripting-jvm-1.9.20.jar (org.jetbrains.kotlin:kotlin-scripting-jvm:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-scripting-common-1.9.20.jar (org.jetbrains.kotlin:kotlin-scripting-common:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-stdlib-1.9.20.jar (org.jetbrains.kotlin:kotlin-stdlib:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Using Kotlin Gradle Plugin gradle81 variant
+kotlin scripting plugin: created the scripting discovery configuration: kotlinScriptDef
+kotlin scripting plugin: created the scripting discovery configuration: testKotlinScriptDef
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\build-logic\convention\src\main\java', not found
+Transforming foojay-resolver-0.9.0.jar (org.gradle.toolchains:foojay-resolver:0.9.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming gson-2.10.1.jar (com.google.code.gson:gson:2.10.1) with ExternalDependencyInstrumentingArtifactTransform
+Settings evaluated using settings file 'C:\Users\user\Dev\ollanvin\myphonecheck\settings.gradle.kts'.
+Using local directory build cache for the root build (location = C:\Users\user\.gradle\caches\build-cache-1, removeUnusedEntriesAfter = 7 days).
+Projects loaded. Root project using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\build.gradle.kts'.
+Included projects: [root project 'MyPhoneCheck', project ':app', project ':core', project ':data', project ':feature', project ':core:common', project ':core:model', project ':core:security', project ':core:util', project ':data:calllog', project ':data:contacts', project ':data:local-cache', project ':data:search', project ':data:sms', project ':feature:billing', project ':feature:call-intercept', project ':feature:country-config', project ':feature:decision-engine', project ':feature:decision-ui', project ':feature:device-evidence', project ':feature:message-intercept', project ':feature:privacy-check', project ':feature:search-enrichment', project ':feature:settings']
+
+> Task :build-logic:convention:checkKotlinGradlePluginConfigurationErrors
+Caching disabled for task ':build-logic:convention:checkKotlinGradlePluginConfigurationErrors' because:
+  This task renders reported diagnostics; caching this task will hide diagnostics and obscure issues in the build
+Task ':build-logic:convention:checkKotlinGradlePluginConfigurationErrors' is not up-to-date because:
+  Task has not declared any outputs despite executing actions.
+
+> Task :build-logic:convention:compileKotlin UP-TO-DATE
+Transforming gradle-api-8.6.jar with ClasspathEntrySnapshotTransform
+Transforming groovy-3.0.17.jar with ClasspathEntrySnapshotTransform
+Transforming groovy-ant-3.0.17.jar with ClasspathEntrySnapshotTransform
+Transforming groovy-astbuilder-3.0.17.jar with ClasspathEntrySnapshotTransform
+Transforming groovy-console-3.0.17.jar with ClasspathEntrySnapshotTransform
+Transforming groovy-datetime-3.0.17.jar with ClasspathEntrySnapshotTransform
+Transforming groovy-dateutil-3.0.17.jar with ClasspathEntrySnapshotTransform
+Transforming groovy-groovydoc-3.0.17.jar with ClasspathEntrySnapshotTransform
+Transforming groovy-json-3.0.17.jar with ClasspathEntrySnapshotTransform
+Transforming groovy-nio-3.0.17.jar with ClasspathEntrySnapshotTransform
+Transforming groovy-sql-3.0.17.jar with ClasspathEntrySnapshotTransform
+Transforming groovy-templates-3.0.17.jar with ClasspathEntrySnapshotTransform
+Transforming groovy-test-3.0.17.jar with ClasspathEntrySnapshotTransform
+Transforming groovy-xml-3.0.17.jar with ClasspathEntrySnapshotTransform
+Transforming javaparser-core-3.17.0.jar with ClasspathEntrySnapshotTransform
+Transforming kotlin-stdlib-1.9.20.jar with ClasspathEntrySnapshotTransform
+Transforming kotlin-reflect-1.9.20.jar with ClasspathEntrySnapshotTransform
+Transforming gradle-installation-beacon-8.6.jar with ClasspathEntrySnapshotTransform
+Transforming gradle-kotlin-dsl-extensions-8.6.jar with ClasspathEntrySnapshotTransform
+Transforming gradle-kotlin-dsl-8.6.jar with ClasspathEntrySnapshotTransform
+Transforming gradle-kotlin-dsl-shared-runtime-8.6.jar with ClasspathEntrySnapshotTransform
+Transforming gradle-kotlin-dsl-tooling-models-8.6.jar with ClasspathEntrySnapshotTransform
+Transforming gradle-8.4.0.jar with ClasspathEntrySnapshotTransform
+Transforming kotlin-gradle-plugin-model-2.0.0.jar with ClasspathEntrySnapshotTransform
+Transforming kotlin-gradle-plugin-api-2.0.0.jar with ClasspathEntrySnapshotTransform
+Transforming kotlin-gradle-plugin-2.0.0-gradle85.jar with ClasspathEntrySnapshotTransform
+Transforming kotlin-reflect-1.9.20.jar with ClasspathEntrySnapshotTransform
+Transforming kotlin-stdlib-1.9.20.jar with ClasspathEntrySnapshotTransform
+Transforming builder-8.4.0.jar with ClasspathEntrySnapshotTransform
+Transforming builder-model-8.4.0.jar with ClasspathEntrySnapshotTransform
+Transforming gradle-api-8.4.0.jar with ClasspathEntrySnapshotTransform
+Transforming annotations-13.0.jar with ClasspathEntrySnapshotTransform
+Transforming manifest-merger-31.4.0.jar with ClasspathEntrySnapshotTransform
+Transforming zipflinger-8.4.0.jar with ClasspathEntrySnapshotTransform
+Transforming apksig-8.4.0.jar with ClasspathEntrySnapshotTransform
+Transforming apkzlib-8.4.0.jar with ClasspathEntrySnapshotTransform
+Transforming javawriter-2.5.0.jar with ClasspathEntrySnapshotTransform
+Transforming asm-9.6.jar with ClasspathEntrySnapshotTransform
+Transforming kotlin-gradle-plugin-annotations-2.0.0.jar with ClasspathEntrySnapshotTransform
+Transforming kotlin-native-utils-2.0.0.jar with ClasspathEntrySnapshotTransform
+Transforming kotlin-tooling-core-2.0.0.jar with ClasspathEntrySnapshotTransform
+Transforming kotlin-util-klib-2.0.0.jar with ClasspathEntrySnapshotTransform
+Transforming kotlin-util-io-2.0.0.jar with ClasspathEntrySnapshotTransform
+Build cache key for task ':build-logic:convention:compileKotlin' is ab5e3ee5b9b0898a44dee3a8127c85c8
+Skipping task ':build-logic:convention:compileKotlin' as it is up-to-date.
+
+> Task :build-logic:convention:compileJava NO-SOURCE
+Skipping task ':build-logic:convention:compileJava' as it has no source files and no previous output files.
+
+> Task :build-logic:convention:pluginDescriptors UP-TO-DATE
+Caching disabled for task ':build-logic:convention:pluginDescriptors' because:
+  Not worth caching
+Skipping task ':build-logic:convention:pluginDescriptors' as it is up-to-date.
+
+> Task :build-logic:convention:processResources UP-TO-DATE
+Caching disabled for task ':build-logic:convention:processResources' because:
+  Not worth caching
+Skipping task ':build-logic:convention:processResources' as it is up-to-date.
+
+> Task :build-logic:convention:classes UP-TO-DATE
+Skipping task ':build-logic:convention:classes' as it has no actions.
+
+> Task :build-logic:convention:jar UP-TO-DATE
+Caching disabled for task ':build-logic:convention:jar' because:
+  Not worth caching
+Skipping task ':build-logic:convention:jar' as it is up-to-date.
+
+> Transform convention.jar (project :build-logic:convention) with ProjectDependencyInstrumentingArtifactTransform
+Transforming convention.jar (project :build-logic:convention) with ProjectDependencyInstrumentingArtifactTransform
+
+> Configure project :
+Evaluating root project 'MyPhoneCheck' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\build.gradle.kts'.
+Starting process 'command 'C:\Users\user\.gradle\jdks\eclipse_adoptium-17-amd64-windows\jdk-17.0.18+8\bin\java.exe''. Working directory: C:\Users\user\.gradle\.tmp\tmp-jvm78287278222180063probe Command: C:\Users\user\.gradle\jdks\eclipse_adoptium-17-amd64-windows\jdk-17.0.18+8\bin\java.exe -Xmx32m -Xms32m -cp . JavaProbe
+Successfully started process 'command 'C:\Users\user\.gradle\jdks\eclipse_adoptium-17-amd64-windows\jdk-17.0.18+8\bin\java.exe''
+Received JVM installation metadata from 'C:\Users\user\.gradle\jdks\eclipse_adoptium-17-amd64-windows\jdk-17.0.18+8': {JAVA_HOME=C:\Users\user\.gradle\jdks\eclipse_adoptium-17-amd64-windows\jdk-17.0.18+8, JAVA_VERSION=17.0.18, JAVA_VENDOR=Eclipse Adoptium, RUNTIME_NAME=OpenJDK Runtime Environment, RUNTIME_VERSION=17.0.18+8, VM_NAME=OpenJDK 64-Bit Server VM, VM_VERSION=17.0.18+8, VM_VENDOR=Eclipse Adoptium, OS_ARCH=amd64}
+Resolve mutations for :build-logic:convention:checkKotlinGradlePluginConfigurationErrors (Thread[#104,included builds,5,main]) started.
+:build-logic:convention:checkKotlinGradlePluginConfigurationErrors (Thread[#104,included builds,5,main]) started.
+Resolve mutations for :build-logic:convention:compileKotlin (Thread[#104,included builds,5,main]) started.
+:build-logic:convention:compileKotlin (Thread[#104,included builds,5,main]) started.
+Resolve mutations for :build-logic:convention:compileJava (Thread[#104,included builds,5,main]) started.
+:build-logic:convention:compileJava (Thread[#104,included builds,5,main]) started.
+Resolve mutations for :build-logic:convention:pluginDescriptors (Thread[#104,included builds,5,main]) started.
+:build-logic:convention:pluginDescriptors (Thread[#104,included builds,5,main]) started.
+Resolve mutations for :build-logic:convention:processResources (Thread[#104,included builds,5,main]) started.
+:build-logic:convention:processResources (Thread[#104,included builds,5,main]) started.
+Resolve mutations for :build-logic:convention:classes (Thread[#104,included builds,5,main]) started.
+:build-logic:convention:classes (Thread[#104,included builds,5,main]) started.
+Resolve mutations for :build-logic:convention:jar (Thread[#104,included builds,5,main]) started.
+:build-logic:convention:jar (Thread[#104,included builds,5,main]) started.
+Transforming gradle-8.4.0.jar (com.android.tools.build:gradle:8.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming builder-8.4.0.jar (com.android.tools.build:builder:8.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming manifest-merger-31.4.0.jar (com.android.tools.build:manifest-merger:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming builder-model-8.4.0.jar (com.android.tools.build:builder-model:8.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming gradle-api-8.4.0.jar (com.android.tools.build:gradle-api:8.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-reflect-1.9.20.jar (org.jetbrains.kotlin:kotlin-reflect:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-stdlib-1.9.20.jar (org.jetbrains.kotlin:kotlin-stdlib:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming annotations-13.0.jar (org.jetbrains:annotations:13.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-model-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-model:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-api-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-2.0.0-gradle85.jar (org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming asm-9.6.jar (org.ow2.asm:asm:9.6) with ExternalDependencyInstrumentingArtifactTransform
+Transforming apkzlib-8.4.0.jar (com.android.tools.build:apkzlib:8.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming gson-2.10.1.jar (com.google.code.gson:gson:2.10.1) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-native-utils-2.0.0.jar (org.jetbrains.kotlin:kotlin-native-utils:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-util-klib-2.0.0.jar (org.jetbrains.kotlin:kotlin-util-klib:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming trove4j-1.0.20200330.jar (org.jetbrains.intellij.deps:trove4j:1.0.20200330) with ExternalDependencyInstrumentingArtifactTransform
+Transforming zipflinger-8.4.0.jar (com.android:zipflinger:8.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming apksig-8.4.0.jar (com.android.tools.build:apksig:8.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming javawriter-2.5.0.jar (com.squareup:javawriter:2.5.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-annotations-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-annotations:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-tooling-core-2.0.0.jar (org.jetbrains.kotlin:kotlin-tooling-core:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlinx-coroutines-core-jvm-1.5.0.jar (org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-util-io-2.0.0.jar (org.jetbrains.kotlin:kotlin-util-io:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming gradle-settings-api-8.4.0.jar (com.android.tools.build:gradle-settings-api:8.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming lint-model-31.4.0.jar (com.android.tools.lint:lint-model:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming sdk-common-31.4.0.jar (com.android.tools:sdk-common:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming sdklib-31.4.0.jar (com.android.tools:sdklib:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming repository-31.4.0.jar (com.android.tools:repository:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming aaptcompiler-8.4.0.jar (com.android.tools.build:aaptcompiler:8.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming tracker-31.4.0.jar (com.android.tools.analytics-library:tracker:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming shared-31.4.0.jar (com.android.tools.analytics-library:shared:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming databinding-compiler-common-8.4.0.jar (androidx.databinding:databinding-compiler-common:8.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming android-test-plugin-host-emulator-control-proto-31.4.0.jar (com.android.tools.utp:android-test-plugin-host-emulator-control-proto:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming android-test-plugin-host-retention-proto-31.4.0.jar (com.android.tools.utp:android-test-plugin-host-retention-proto:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming builder-test-api-8.4.0.jar (com.android.tools.build:builder-test-api:8.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming ddmlib-31.4.0.jar (com.android.tools.ddms:ddmlib:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming layoutlib-api-31.4.0.jar (com.android.tools.layoutlib:layoutlib-api:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming dvlib-31.4.0.jar (com.android.tools:dvlib:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming common-31.4.0.jar (com.android.tools:common:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-stdlib-jdk8-1.9.20.jar (org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming jetifier-processor-1.0.0-beta10.jar (com.android.tools.build.jetifier:jetifier-processor:1.0.0-beta10) with ExternalDependencyInstrumentingArtifactTransform
+Transforming jetifier-core-1.0.0-beta10.jar (com.android.tools.build.jetifier:jetifier-core:1.0.0-beta10) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-stdlib-jdk7-1.9.20.jar (org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.20) with ExternalDependencyInstrumentingArtifactTransform
+Transforming bundletool-1.15.6.jar (com.android.tools.build:bundletool:1.15.6) with ExternalDependencyInstrumentingArtifactTransform
+Transforming aapt2-proto-8.4.0-11315950.jar (com.android.tools.build:aapt2-proto:8.4.0-11315950) with ExternalDependencyInstrumentingArtifactTransform
+Transforming crash-31.4.0.jar (com.android.tools.analytics-library:crash:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming lint-typedef-remover-31.4.0.jar (com.android.tools.lint:lint-typedef-remover:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming databinding-common-8.4.0.jar (androidx.databinding:databinding-common:8.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming baseLibrary-8.4.0.jar (com.android.databinding:baseLibrary:8.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming android-device-provider-ddmlib-proto-31.4.0.jar (com.android.tools.utp:android-device-provider-ddmlib-proto:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming android-device-provider-gradle-proto-31.4.0.jar (com.android.tools.utp:android-device-provider-gradle-proto:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming android-test-plugin-host-additional-test-output-proto-31.4.0.jar (com.android.tools.utp:android-test-plugin-host-additional-test-output-proto:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming android-test-plugin-host-coverage-proto-31.4.0.jar (com.android.tools.utp:android-test-plugin-host-coverage-proto:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming android-test-plugin-host-logcat-proto-31.4.0.jar (com.android.tools.utp:android-test-plugin-host-logcat-proto:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming android-test-plugin-host-apk-installer-proto-31.4.0.jar (com.android.tools.utp:android-test-plugin-host-apk-installer-proto:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming android-test-plugin-result-listener-gradle-proto-31.4.0.jar (com.android.tools.utp:android-test-plugin-result-listener-gradle-proto:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming transform-api-2.0.0-deprecated-use-gradle-api.jar (com.android.tools.build:transform-api:2.0.0-deprecated-use-gradle-api) with ExternalDependencyInstrumentingArtifactTransform
+Transforming httpmime-4.5.6.jar (org.apache.httpcomponents:httpmime:4.5.6) with ExternalDependencyInstrumentingArtifactTransform
+Transforming commons-io-2.13.0.jar (commons-io:commons-io:2.13.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming asm-commons-9.6.jar (org.ow2.asm:asm-commons:9.6) with ExternalDependencyInstrumentingArtifactTransform
+Transforming asm-util-9.6.jar (org.ow2.asm:asm-util:9.6) with ExternalDependencyInstrumentingArtifactTransform
+Transforming asm-analysis-9.6.jar (org.ow2.asm:asm-analysis:9.6) with ExternalDependencyInstrumentingArtifactTransform
+Transforming asm-tree-9.6.jar (org.ow2.asm:asm-tree:9.6) with ExternalDependencyInstrumentingArtifactTransform
+Transforming bcpkix-jdk18on-1.77.jar (org.bouncycastle:bcpkix-jdk18on:1.77) with ExternalDependencyInstrumentingArtifactTransform
+Transforming jaxb-runtime-2.3.2.jar (org.glassfish.jaxb:jaxb-runtime:2.3.2) with ExternalDependencyInstrumentingArtifactTransform
+Transforming jopt-simple-4.9.jar (net.sf.jopt-simple:jopt-simple:4.9) with ExternalDependencyInstrumentingArtifactTransform
+Transforming javapoet-1.13.0.jar (com.squareup:javapoet:1.13.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming protobuf-java-util-3.22.3.jar (com.google.protobuf:protobuf-java-util:3.22.3) with ExternalDependencyInstrumentingArtifactTransform
+Transforming grpc-protobuf-1.57.0.jar (io.grpc:grpc-protobuf:1.57.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming tink-1.7.0.jar (com.google.crypto.tink:tink:1.7.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming protos-31.4.0.jar (com.android.tools.analytics-library:protos:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming proto-google-common-protos-2.17.0.jar (com.google.api.grpc:proto-google-common-protos:2.17.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming protobuf-java-3.22.3.jar (com.google.protobuf:protobuf-java:3.22.3) with ExternalDependencyInstrumentingArtifactTransform
+Transforming grpc-netty-1.57.0.jar (io.grpc:grpc-netty:1.57.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming grpc-core-1.57.0.jar (io.grpc:grpc-core:1.57.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-build-statistics-2.0.0.jar (org.jetbrains.kotlin:kotlin-build-statistics:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming grpc-stub-1.57.0.jar (io.grpc:grpc-stub:1.57.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming core-proto-0.0.9-alpha02.jar (com.google.testing.platform:core-proto:0.0.9-alpha02) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kxml2-2.3.0.jar (net.sf.kxml:kxml2:2.3.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming tensorflow-lite-metadata-0.1.0-rc2.jar (org.tensorflow:tensorflow-lite-metadata:0.1.0-rc2) with ExternalDependencyInstrumentingArtifactTransform
+Transforming flatbuffers-java-1.12.0.jar (com.google.flatbuffers:flatbuffers-java:1.12.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-idea-proto-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-idea-proto:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-idea-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-idea:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-klib-commonizer-api-2.0.0.jar (org.jetbrains.kotlin:kotlin-klib-commonizer-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-build-tools-api-2.0.0.jar (org.jetbrains.kotlin:kotlin-build-tools-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-compiler-runner-2.0.0.jar (org.jetbrains.kotlin:kotlin-compiler-runner:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-compiler-embeddable-2.0.0.jar (org.jetbrains.kotlin:kotlin-compiler-embeddable:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming jimfs-1.1.jar (com.google.jimfs:jimfs:1.1) with ExternalDependencyInstrumentingArtifactTransform
+Transforming grpc-context-1.57.0.jar (io.grpc:grpc-context:1.57.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming grpc-protobuf-lite-1.57.0.jar (io.grpc:grpc-protobuf-lite:1.57.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming grpc-api-1.57.0.jar (io.grpc:grpc-api:1.57.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming guava-32.0.1-jre.jar (com.google.guava:guava:32.0.1-jre) with ExternalDependencyInstrumentingArtifactTransform
+Transforming dagger-2.28.3.jar (com.google.dagger:dagger:2.28.3) with ExternalDependencyInstrumentingArtifactTransform
+Transforming javax.inject-1.jar (javax.inject:javax.inject:1) with ExternalDependencyInstrumentingArtifactTransform
+Transforming bcutil-jdk18on-1.77.jar (org.bouncycastle:bcutil-jdk18on:1.77) with ExternalDependencyInstrumentingArtifactTransform
+Transforming bcprov-jdk18on-1.77.jar (org.bouncycastle:bcprov-jdk18on:1.77) with ExternalDependencyInstrumentingArtifactTransform
+Transforming commons-compress-1.21.jar (org.apache.commons:commons-compress:1.21) with ExternalDependencyInstrumentingArtifactTransform
+Transforming httpclient-4.5.14.jar (org.apache.httpcomponents:httpclient:4.5.14) with ExternalDependencyInstrumentingArtifactTransform
+Transforming httpcore-4.4.16.jar (org.apache.httpcomponents:httpcore:4.4.16) with ExternalDependencyInstrumentingArtifactTransform
+Transforming javax.activation-1.2.0.jar (com.sun.activation:javax.activation:1.2.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming signflinger-8.4.0.jar (com.android:signflinger:8.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming annotations-31.4.0.jar (com.android.tools:annotations:31.4.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming jna-platform-5.6.0.jar (net.java.dev.jna:jna-platform:5.6.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming juniversalchardet-1.0.3.jar (com.googlecode.juniversalchardet:juniversalchardet:1.0.3) with ExternalDependencyInstrumentingArtifactTransform
+Transforming javax.annotation-api-1.3.2.jar (javax.annotation:javax.annotation-api:1.3.2) with ExternalDependencyInstrumentingArtifactTransform
+Transforming stax-ex-1.8.1.jar (org.jvnet.staxex:stax-ex:1.8.1) with ExternalDependencyInstrumentingArtifactTransform
+Transforming jakarta.xml.bind-api-2.3.2.jar (jakarta.xml.bind:jakarta.xml.bind-api:2.3.2) with ExternalDependencyInstrumentingArtifactTransform
+Transforming txw2-2.3.2.jar (org.glassfish.jaxb:txw2:2.3.2) with ExternalDependencyInstrumentingArtifactTransform
+Transforming istack-commons-runtime-3.0.8.jar (com.sun.istack:istack-commons-runtime:3.0.8) with ExternalDependencyInstrumentingArtifactTransform
+Transforming FastInfoset-1.2.16.jar (com.sun.xml.fastinfoset:FastInfoset:1.2.16) with ExternalDependencyInstrumentingArtifactTransform
+Transforming jakarta.activation-api-1.2.1.jar (jakarta.activation:jakarta.activation-api:1.2.1) with ExternalDependencyInstrumentingArtifactTransform
+Transforming auto-value-annotations-1.6.2.jar (com.google.auto.value:auto-value-annotations:1.6.2) with ExternalDependencyInstrumentingArtifactTransform
+Transforming error_prone_annotations-2.18.0.jar (com.google.errorprone:error_prone_annotations:2.18.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming jose4j-0.7.0.jar (org.bitbucket.b_c:jose4j:0.7.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming slf4j-api-1.7.30.jar (org.slf4j:slf4j-api:1.7.30) with ExternalDependencyInstrumentingArtifactTransform
+Transforming jdom2-2.0.6.jar (org.jdom:jdom2:2.0.6) with ExternalDependencyInstrumentingArtifactTransform
+Transforming jsr305-3.0.2.jar (com.google.code.findbugs:jsr305:3.0.2) with ExternalDependencyInstrumentingArtifactTransform
+Transforming j2objc-annotations-2.8.jar (com.google.j2objc:j2objc-annotations:2.8) with ExternalDependencyInstrumentingArtifactTransform
+Transforming annotations-4.1.1.4.jar (com.google.android:annotations:4.1.1.4) with ExternalDependencyInstrumentingArtifactTransform
+Transforming animal-sniffer-annotations-1.23.jar (org.codehaus.mojo:animal-sniffer-annotations:1.23) with ExternalDependencyInstrumentingArtifactTransform
+Transforming perfmark-api-0.26.0.jar (io.perfmark:perfmark-api:0.26.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming netty-codec-http2-4.1.93.Final.jar (io.netty:netty-codec-http2:4.1.93.Final) with ExternalDependencyInstrumentingArtifactTransform
+Transforming netty-handler-proxy-4.1.93.Final.jar (io.netty:netty-handler-proxy:4.1.93.Final) with ExternalDependencyInstrumentingArtifactTransform
+Transforming netty-codec-http-4.1.93.Final.jar (io.netty:netty-codec-http:4.1.93.Final) with ExternalDependencyInstrumentingArtifactTransform
+Transforming netty-handler-4.1.93.Final.jar (io.netty:netty-handler:4.1.93.Final) with ExternalDependencyInstrumentingArtifactTransform
+Transforming netty-transport-native-unix-common-4.1.93.Final.jar (io.netty:netty-transport-native-unix-common:4.1.93.Final) with ExternalDependencyInstrumentingArtifactTransform
+Transforming checker-qual-3.33.0.jar (org.checkerframework:checker-qual:3.33.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming commons-codec-1.11.jar (commons-codec:commons-codec:1.11) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-daemon-client-2.0.0.jar (org.jetbrains.kotlin:kotlin-daemon-client:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-daemon-embeddable-2.0.0.jar (org.jetbrains.kotlin:kotlin-daemon-embeddable:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming failureaccess-1.0.1.jar (com.google.guava:failureaccess:1.0.1) with ExternalDependencyInstrumentingArtifactTransform
+Transforming listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar (com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava) with ExternalDependencyInstrumentingArtifactTransform
+Transforming commons-logging-1.2.jar (commons-logging:commons-logging:1.2) with ExternalDependencyInstrumentingArtifactTransform
+Transforming jna-5.6.0.jar (net.java.dev.jna:jna:5.6.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming netty-codec-socks-4.1.93.Final.jar (io.netty:netty-codec-socks:4.1.93.Final) with ExternalDependencyInstrumentingArtifactTransform
+Transforming netty-codec-4.1.93.Final.jar (io.netty:netty-codec:4.1.93.Final) with ExternalDependencyInstrumentingArtifactTransform
+Transforming netty-transport-4.1.93.Final.jar (io.netty:netty-transport:4.1.93.Final) with ExternalDependencyInstrumentingArtifactTransform
+Transforming netty-buffer-4.1.93.Final.jar (io.netty:netty-buffer:4.1.93.Final) with ExternalDependencyInstrumentingArtifactTransform
+Transforming netty-resolver-4.1.93.Final.jar (io.netty:netty-resolver:4.1.93.Final) with ExternalDependencyInstrumentingArtifactTransform
+Transforming netty-common-4.1.93.Final.jar (io.netty:netty-common:4.1.93.Final) with ExternalDependencyInstrumentingArtifactTransform
+Transforming hilt-android-gradle-plugin-2.51.1.jar (com.google.dagger:hilt-android-gradle-plugin:2.51.1) with ExternalDependencyInstrumentingArtifactTransform
+
+> Configure project :app
+Evaluating project ':app' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\app\build.gradle.kts'.
+Transforming kotlin-gradle-plugin-2.0.0-gradle85.jar (org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-model-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-model:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-api-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-idea-proto-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-idea-proto:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-idea-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-idea:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-annotations-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-annotations:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-klib-commonizer-api-2.0.0.jar (org.jetbrains.kotlin:kotlin-klib-commonizer-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-native-utils-2.0.0.jar (org.jetbrains.kotlin:kotlin-native-utils:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-tooling-core-2.0.0.jar (org.jetbrains.kotlin:kotlin-tooling-core:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-build-statistics-2.0.0.jar (org.jetbrains.kotlin:kotlin-build-statistics:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-build-tools-api-2.0.0.jar (org.jetbrains.kotlin:kotlin-build-tools-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-compiler-runner-2.0.0.jar (org.jetbrains.kotlin:kotlin-compiler-runner:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-util-klib-2.0.0.jar (org.jetbrains.kotlin:kotlin-util-klib:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-compiler-embeddable-2.0.0.jar (org.jetbrains.kotlin:kotlin-compiler-embeddable:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-util-io-2.0.0.jar (org.jetbrains.kotlin:kotlin-util-io:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-daemon-client-2.0.0.jar (org.jetbrains.kotlin:kotlin-daemon-client:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlinx-coroutines-core-jvm-1.5.0.jar (org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-daemon-embeddable-2.0.0.jar (org.jetbrains.kotlin:kotlin-daemon-embeddable:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming trove4j-1.0.20200330.jar (org.jetbrains.intellij.deps:trove4j:1.0.20200330) with ExternalDependencyInstrumentingArtifactTransform
+Transforming compose-compiler-gradle-plugin-2.0.0-gradle85.jar (org.jetbrains.kotlin:compose-compiler-gradle-plugin:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming gson-2.8.9.jar (com.google.code.gson:gson:2.8.9) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-api-2.0.0-gradle85.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+Parsed shrinker version: 8.4.22
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+
+> Configure project :core
+Evaluating project ':core' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\core\build.gradle'.
+
+> Configure project :data
+Evaluating project ':data' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\data\build.gradle'.
+
+> Configure project :feature
+Evaluating project ':feature' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\feature\build.gradle'.
+
+> Configure project :core:common
+Evaluating project ':core:common' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\core\common\build.gradle.kts'.
+Using Kotlin Gradle Plugin gradle85 variant
+kotlin scripting plugin: created the scripting discovery configuration: kotlinScriptDef
+kotlin scripting plugin: created the scripting discovery configuration: testKotlinScriptDef
+
+> Configure project :core:model
+Evaluating project ':core:model' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\core\model\build.gradle.kts'.
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+
+> Configure project :core:security
+Evaluating project ':core:security' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\core\security\build.gradle.kts'.
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+
+> Configure project :core:util
+Evaluating project ':core:util' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\core\util\build.gradle.kts'.
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+
+> Configure project :data:calllog
+Evaluating project ':data:calllog' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\data\calllog\build.gradle.kts'.
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+
+> Configure project :data:contacts
+Evaluating project ':data:contacts' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\data\contacts\build.gradle.kts'.
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+
+> Configure project :data:local-cache
+Evaluating project ':data:local-cache' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\data\local-cache\build.gradle.kts'.
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+
+> Configure project :data:search
+Evaluating project ':data:search' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\data\search\build.gradle.kts'.
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+
+> Configure project :data:sms
+Evaluating project ':data:sms' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\data\sms\build.gradle.kts'.
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+
+> Configure project :feature:billing
+Evaluating project ':feature:billing' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\feature\billing\build.gradle.kts'.
+Transforming kotlin-gradle-plugin-2.0.0-gradle85.jar (org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-model-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-model:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-api-2.0.0-gradle85.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-api-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming compose-compiler-gradle-plugin-2.0.0-gradle85.jar (org.jetbrains.kotlin:compose-compiler-gradle-plugin:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-idea-proto-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-idea-proto:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-idea-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-idea:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-annotations-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-annotations:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-klib-commonizer-api-2.0.0.jar (org.jetbrains.kotlin:kotlin-klib-commonizer-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-native-utils-2.0.0.jar (org.jetbrains.kotlin:kotlin-native-utils:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-tooling-core-2.0.0.jar (org.jetbrains.kotlin:kotlin-tooling-core:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-build-statistics-2.0.0.jar (org.jetbrains.kotlin:kotlin-build-statistics:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-build-tools-api-2.0.0.jar (org.jetbrains.kotlin:kotlin-build-tools-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-compiler-runner-2.0.0.jar (org.jetbrains.kotlin:kotlin-compiler-runner:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-util-klib-2.0.0.jar (org.jetbrains.kotlin:kotlin-util-klib:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-compiler-embeddable-2.0.0.jar (org.jetbrains.kotlin:kotlin-compiler-embeddable:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-util-io-2.0.0.jar (org.jetbrains.kotlin:kotlin-util-io:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming gson-2.8.9.jar (com.google.code.gson:gson:2.8.9) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-daemon-client-2.0.0.jar (org.jetbrains.kotlin:kotlin-daemon-client:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlinx-coroutines-core-jvm-1.5.0.jar (org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-daemon-embeddable-2.0.0.jar (org.jetbrains.kotlin:kotlin-daemon-embeddable:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming trove4j-1.0.20200330.jar (org.jetbrains.intellij.deps:trove4j:1.0.20200330) with ExternalDependencyInstrumentingArtifactTransform
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+
+> Configure project :feature:call-intercept
+Evaluating project ':feature:call-intercept' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\feature\call-intercept\build.gradle.kts'.
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+
+> Configure project :feature:country-config
+Evaluating project ':feature:country-config' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\feature\country-config\build.gradle.kts'.
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+
+> Configure project :feature:decision-engine
+Evaluating project ':feature:decision-engine' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\feature\decision-engine\build.gradle.kts'.
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+
+> Configure project :feature:decision-ui
+Evaluating project ':feature:decision-ui' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\feature\decision-ui\build.gradle.kts'.
+Transforming kotlin-gradle-plugin-2.0.0-gradle85.jar (org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-model-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-model:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-api-2.0.0-gradle85.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-api-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming compose-compiler-gradle-plugin-2.0.0-gradle85.jar (org.jetbrains.kotlin:compose-compiler-gradle-plugin:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-idea-proto-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-idea-proto:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-idea-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-idea:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-annotations-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-annotations:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-klib-commonizer-api-2.0.0.jar (org.jetbrains.kotlin:kotlin-klib-commonizer-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-native-utils-2.0.0.jar (org.jetbrains.kotlin:kotlin-native-utils:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-tooling-core-2.0.0.jar (org.jetbrains.kotlin:kotlin-tooling-core:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-build-statistics-2.0.0.jar (org.jetbrains.kotlin:kotlin-build-statistics:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-build-tools-api-2.0.0.jar (org.jetbrains.kotlin:kotlin-build-tools-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-compiler-runner-2.0.0.jar (org.jetbrains.kotlin:kotlin-compiler-runner:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-util-klib-2.0.0.jar (org.jetbrains.kotlin:kotlin-util-klib:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-compiler-embeddable-2.0.0.jar (org.jetbrains.kotlin:kotlin-compiler-embeddable:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-util-io-2.0.0.jar (org.jetbrains.kotlin:kotlin-util-io:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming gson-2.8.9.jar (com.google.code.gson:gson:2.8.9) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-daemon-client-2.0.0.jar (org.jetbrains.kotlin:kotlin-daemon-client:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlinx-coroutines-core-jvm-1.5.0.jar (org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-daemon-embeddable-2.0.0.jar (org.jetbrains.kotlin:kotlin-daemon-embeddable:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming trove4j-1.0.20200330.jar (org.jetbrains.intellij.deps:trove4j:1.0.20200330) with ExternalDependencyInstrumentingArtifactTransform
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+
+> Configure project :feature:device-evidence
+Evaluating project ':feature:device-evidence' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\feature\device-evidence\build.gradle.kts'.
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+
+> Configure project :feature:message-intercept
+Evaluating project ':feature:message-intercept' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\feature\message-intercept\build.gradle.kts'.
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+
+> Configure project :feature:privacy-check
+Evaluating project ':feature:privacy-check' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\feature\privacy-check\build.gradle.kts'.
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+
+> Configure project :feature:search-enrichment
+Evaluating project ':feature:search-enrichment' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\feature\search-enrichment\build.gradle.kts'.
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+
+> Configure project :feature:settings
+Evaluating project ':feature:settings' using build file 'C:\Users\user\Dev\ollanvin\myphonecheck\feature\settings\build.gradle.kts'.
+Transforming kotlin-gradle-plugin-2.0.0-gradle85.jar (org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-model-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-model:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-api-2.0.0-gradle85.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-api-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming compose-compiler-gradle-plugin-2.0.0-gradle85.jar (org.jetbrains.kotlin:compose-compiler-gradle-plugin:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-idea-proto-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-idea-proto:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-idea-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-idea:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-gradle-plugin-annotations-2.0.0.jar (org.jetbrains.kotlin:kotlin-gradle-plugin-annotations:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-klib-commonizer-api-2.0.0.jar (org.jetbrains.kotlin:kotlin-klib-commonizer-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-native-utils-2.0.0.jar (org.jetbrains.kotlin:kotlin-native-utils:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-tooling-core-2.0.0.jar (org.jetbrains.kotlin:kotlin-tooling-core:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-build-statistics-2.0.0.jar (org.jetbrains.kotlin:kotlin-build-statistics:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-build-tools-api-2.0.0.jar (org.jetbrains.kotlin:kotlin-build-tools-api:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-compiler-runner-2.0.0.jar (org.jetbrains.kotlin:kotlin-compiler-runner:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-util-klib-2.0.0.jar (org.jetbrains.kotlin:kotlin-util-klib:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-compiler-embeddable-2.0.0.jar (org.jetbrains.kotlin:kotlin-compiler-embeddable:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-util-io-2.0.0.jar (org.jetbrains.kotlin:kotlin-util-io:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming gson-2.8.9.jar (com.google.code.gson:gson:2.8.9) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-daemon-client-2.0.0.jar (org.jetbrains.kotlin:kotlin-daemon-client:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlinx-coroutines-core-jvm-1.5.0.jar (org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming kotlin-daemon-embeddable-2.0.0.jar (org.jetbrains.kotlin:kotlin-daemon-embeddable:2.0.0) with ExternalDependencyInstrumentingArtifactTransform
+Transforming trove4j-1.0.20200330.jar (org.jetbrains.intellij.deps:trove4j:1.0.20200330) with ExternalDependencyInstrumentingArtifactTransform
+Using default execution profile
+Using Kotlin Gradle Plugin gradle85 variant
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+All projects evaluated.
+Task path ':data:local-cache:compileDebugKotlin' matched project ':data:local-cache'
+Task name matched 'compileDebugKotlin'
+Selected primary task 'compileDebugKotlin' from project :data:local-cache
+.\gradlew.bat : Warning: SDK processing. This version only understands SDK XML versio
+ns up to 3 but an SDK XML file of version 4 was encountered. This can happen if you u
+se versions of Android Studio and the command-line tools that were released at differ
+ent times.
+At line:1 char:1
++ .\gradlew.bat :data:local-cache:compileDebugKotlin --no-daemon --info ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Warning: SDK pr...ifferent times.:Strin 
+   g) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Tasks to be executed: [task ':core:model:checkKotlinGradlePluginConfigurationErrors', task ':core:model:preBuild', task ':core:model:preDebugBuild', task ':core:model:generateDebugResValues', task ':core:model:generateDebugResources', task ':core:model:packageDebugResources', task ':core:model:parseDebugLocalResources', task ':core:model:generateDebugRFile', task ':core:model:compileDebugKotlin', task ':core:model:javaPreCompileDebug', task ':core:model:compileDebugJavaWithJavac', task ':core:model:bundleLibCompileToJarDebug', task ':core:security:preBuild', task ':core:security:preDebugBuild', task ':core:security:generateDebugResValues', task ':core:security:generateDebugResources', task ':core:security:packageDebugResources', task ':core:security:parseDebugLocalResources', task ':core:security:generateDebugRFile', task ':core:security:checkKotlinGradlePluginConfigurationErrors', task ':core:security:kaptGenerateStubsDebugKotlin', task ':core:security:kaptDebugKotlin', task ':core:security:compileDebugKotlin', task ':core:security:javaPreCompileDebug', task ':core:security:compileDebugJavaWithJavac', task ':core:security:transformDebugClassesWithAsm', task ':core:security:bundleLibCompileToJarDebug', task ':core:util:checkKotlinGradlePluginConfigurationErrors', task ':core:util:preBuild', task ':core:util:preDebugBuild', task ':core:util:generateDebugResValues', task ':core:util:generateDebugResources', task ':core:util:packageDebugResources', task ':core:util:parseDebugLocalResources', task ':core:util:generateDebugRFile', task ':core:util:compileDebugKotlin', task ':core:util:javaPreCompileDebug', task ':core:util:compileDebugJavaWithJavac', task ':core:util:bundleLibCompileToJarDebug', task ':data:local-cache:checkKotlinGradlePluginConfigurationErrors', task ':data:local-cache:preBuild', task ':data:local-cache:preDebugBuild', task ':data:local-cache:generateDebugResValues', task ':data:local-cache:generateDebugResources', task ':data:local-cache:packageDebugResources', task ':data:local-cache:parseDebugLocalResources', task ':data:local-cache:generateDebugRFile', task ':data:local-cache:kaptGenerateStubsDebugKotlin', task ':data:local-cache:kaptDebugKotlin', task ':data:local-cache:compileDebugKotlin']
+Tasks that were excluded: []
+Resolve mutations for :core:model:checkKotlinGradlePluginConfigurationErrors (Thread[#104,included builds,5,main]) started.
+:core:model:checkKotlinGradlePluginConfigurationErrors (Thread[#104,included builds,5,main]) started.
+
+> Task :core:model:checkKotlinGradlePluginConfigurationErrors SKIPPED
+Skipping task ':core:model:checkKotlinGradlePluginConfigurationErrors' as task onlyIf 'errorDiagnostics are present' is false.
+Resolve mutations for :core:model:preBuild (Thread[#104,included builds,5,main]) started.
+:core:model:preBuild (Thread[#104,included builds,5,main]) started.
+
+> Task :core:model:preBuild UP-TO-DATE
+Skipping task ':core:model:preBuild' as it has no actions.
+Resolve mutations for :core:model:preDebugBuild (Thread[#104,included builds,5,main]) started.
+:core:model:preDebugBuild (Thread[#104,included builds,5,main]) started.
+
+> Task :core:model:preDebugBuild UP-TO-DATE
+Skipping task ':core:model:preDebugBuild' as it has no actions.
+Resolve mutations for :core:model:generateDebugResValues (Thread[#104,included builds,5,main]) started.
+:core:model:generateDebugResValues (Thread[#104,included builds,5,main]) started.
+
+> Task :core:model:generateDebugResValues UP-TO-DATE
+Build cache key for task ':core:model:generateDebugResValues' is 0fcb0d70ef97ff751faf6f3853529051
+Skipping task ':core:model:generateDebugResValues' as it is up-to-date.
+Resolve mutations for :core:model:generateDebugResources (Thread[#104,included builds,5,main]) started.
+:core:model:generateDebugResources (Thread[#104,included builds,5,main]) started.
+
+> Task :core:model:generateDebugResources UP-TO-DATE
+Build cache key for task ':core:model:generateDebugResources' is 7853705fd22891d7a7fb976565497146
+Skipping task ':core:model:generateDebugResources' as it is up-to-date.
+Resolve mutations for :core:model:packageDebugResources (Thread[#104,included builds,5,main]) started.
+:core:model:packageDebugResources (Thread[#104,included builds,5,main]) started.
+
+> Task :core:model:packageDebugResources UP-TO-DATE
+Build cache key for task ':core:model:packageDebugResources' is 9f6e25b3bdf51bc599be520fa8244552
+Skipping task ':core:model:packageDebugResources' as it is up-to-date.
+Resolve mutations for :core:model:parseDebugLocalResources (Thread[#104,included builds,5,main]) started.
+:core:model:parseDebugLocalResources (Thread[#104,included builds,5,main]) started.
+
+> Task :core:model:parseDebugLocalResources UP-TO-DATE
+Transforming android.jar with PlatformAttrTransform
+Transforming android.jar with PlatformAttrTransform
+Build cache key for task ':core:model:parseDebugLocalResources' is eafacb0de71cdea8b395164ccafdc42e
+Skipping task ':core:model:parseDebugLocalResources' as it is up-to-date.
+Resolve mutations for :core:model:generateDebugRFile (Thread[#104,included builds,5,main]) started.
+:core:model:generateDebugRFile (Thread[#104,included builds,5,main]) started.
+
+> Task :core:model:generateDebugRFile UP-TO-DATE
+Transforming android.jar with PlatformAttrTransform
+Build cache key for task ':core:model:generateDebugRFile' is b78290a119db48203140b726e30f0a47
+Skipping task ':core:model:generateDebugRFile' as it is up-to-date.
+Resolve mutations for :core:model:compileDebugKotlin (Thread[#104,included builds,5,main]) started.
+:core:model:compileDebugKotlin (Thread[#104,included builds,5,main]) started.
+
+> Task :core:model:compileDebugKotlin UP-TO-DATE
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with JetifyTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with AarToClassTransform
+Transforming lifecycle-runtime-2.6.2.aar (androidx.lifecycle:lifecycle-runtime:2.6.2) with JetifyTransform
+Transforming lifecycle-runtime-2.6.2.aar (androidx.lifecycle:lifecycle-runtime:2.6.2) with AarToClassTransform
+Transforming lifecycle-common-2.6.2.jar (androidx.lifecycle:lifecycle-common:2.6.2) with JetifyTransform
+Transforming lifecycle-common-2.6.2.jar (androidx.lifecycle:lifecycle-common:2.6.2) with IdentityTransform
+Transforming kotlinx-coroutines-android-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1) with JetifyTransform
+Transforming kotlinx-coroutines-android-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1) with IdentityTransform
+Transforming kotlinx-coroutines-core-jvm-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1) with JetifyTransform
+Transforming kotlinx-coroutines-core-jvm-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1) with IdentityTransform
+Transforming versionedparcelable-1.1.1.aar (androidx.versionedparcelable:versionedparcelable:1.1.1) with JetifyTransform
+Transforming versionedparcelable-1.1.1.aar (androidx.versionedparcelable:versionedparcelable:1.1.1) with AarToClassTransform
+Transforming core-common-2.2.0.jar (androidx.arch.core:core-common:2.2.0) with JetifyTransform
+Transforming core-common-2.2.0.jar (androidx.arch.core:core-common:2.2.0) with IdentityTransform
+Transforming collection-1.0.0.jar (androidx.collection:collection:1.0.0) with JetifyTransform
+Transforming collection-1.0.0.jar (androidx.collection:collection:1.0.0) with IdentityTransform
+Transforming annotation-jvm-1.6.0.jar (androidx.annotation:annotation-jvm:1.6.0) with JetifyTransform
+Transforming annotation-jvm-1.6.0.jar (androidx.annotation:annotation-jvm:1.6.0) with IdentityTransform
+Transforming annotation-experimental-1.4.0.aar (androidx.annotation:annotation-experimental:1.4.0) with JetifyTransform
+Transforming annotation-experimental-1.4.0.aar (androidx.annotation:annotation-experimental:1.4.0) with AarToClassTransform
+Transforming kotlin-stdlib-2.0.0.jar (org.jetbrains.kotlin:kotlin-stdlib:2.0.0) with JetifyTransform
+Transforming kotlin-stdlib-2.0.0.jar (org.jetbrains.kotlin:kotlin-stdlib:2.0.0) with IdentityTransform
+Transforming annotations-23.0.0.jar (org.jetbrains:annotations:23.0.0) with JetifyTransform
+Transforming annotations-23.0.0.jar (org.jetbrains:annotations:23.0.0) with IdentityTransform
+Transforming core-ktx-1.13.1.aar (androidx.core:core-ktx:1.13.1) with JetifyTransform
+Transforming core-ktx-1.13.1.aar (androidx.core:core-ktx:1.13.1) with AarToClassTransform
+Transforming R.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-core-ktx-1.13.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-1.13.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-runtime-2.6.2-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-common-2.6.2.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-kotlinx-coroutines-android-1.8.1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-kotlinx-coroutines-core-jvm-1.8.1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming versionedparcelable-1.1.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-common-2.2.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming collection-1.0.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-annotation-jvm-1.6.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-annotation-experimental-1.4.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-kotlin-stdlib-2.0.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-annotations-23.0.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming android.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-lambda-stubs.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Build cache key for task ':core:model:compileDebugKotlin' is 51071d26aa52981e859ed42972a75b2d
+Skipping task ':core:model:compileDebugKotlin' as it is up-to-date.
+Resolve mutations for :core:model:javaPreCompileDebug (Thread[#104,included builds,5,main]) started.
+:core:model:javaPreCompileDebug (Thread[#104,included builds,5,main]) started.
+
+> Task :core:model:javaPreCompileDebug UP-TO-DATE
+Build cache key for task ':core:model:javaPreCompileDebug' is 36a7a1865cdd5e7e70d0e30aff737688
+Skipping task ':core:model:javaPreCompileDebug' as it is up-to-date.
+Resolve mutations for :core:model:compileDebugJavaWithJavac (Thread[#104,included builds,5,main]) started.
+:core:model:compileDebugJavaWithJavac (Thread[#104,included builds,5,main]) started.
+
+> Task :core:model:compileDebugJavaWithJavac NO-SOURCE
+Skipping task ':core:model:compileDebugJavaWithJavac' as it has no source files and no previous output files.
+Resolve mutations for :core:model:bundleLibCompileToJarDebug (Thread[#104,included builds,5,main]) started.
+:core:model:bundleLibCompileToJarDebug (Thread[#104,included builds,5,main]) started.
+
+> Task :core:model:bundleLibCompileToJarDebug UP-TO-DATE
+Caching disabled for task ':core:model:bundleLibCompileToJarDebug' because:
+  Simple merging task
+Skipping task ':core:model:bundleLibCompileToJarDebug' as it is up-to-date.
+work action resolve classes.jar (project :core:model) (Thread[#104,included builds,5,main]) started.
+Resolve mutations for :core:security:preBuild (Thread[#104,included builds,5,main]) started.
+:core:security:preBuild (Thread[#104,included builds,5,main]) started.
+
+> Task :core:security:preBuild UP-TO-DATE
+Skipping task ':core:security:preBuild' as it has no actions.
+Resolve mutations for :core:security:preDebugBuild (Thread[#104,included builds,5,main]) started.
+:core:security:preDebugBuild (Thread[#104,included builds,5,main]) started.
+
+> Task :core:security:preDebugBuild UP-TO-DATE
+Skipping task ':core:security:preDebugBuild' as it has no actions.
+Resolve mutations for :core:security:generateDebugResValues (Thread[#104,included builds,5,main]) started.
+:core:security:generateDebugResValues (Thread[#104,included builds,5,main]) started.
+
+> Task :core:security:generateDebugResValues UP-TO-DATE
+Build cache key for task ':core:security:generateDebugResValues' is 0fcb0d70ef97ff751faf6f3853529051
+Skipping task ':core:security:generateDebugResValues' as it is up-to-date.
+Resolve mutations for :core:security:generateDebugResources (Thread[#104,included builds,5,main]) started.
+:core:security:generateDebugResources (Thread[#104,included builds,5,main]) started.
+
+> Task :core:security:generateDebugResources UP-TO-DATE
+Build cache key for task ':core:security:generateDebugResources' is c922a16be9a0c77222c4a2fd3e05a071
+Skipping task ':core:security:generateDebugResources' as it is up-to-date.
+Resolve mutations for :core:security:packageDebugResources (Thread[#104,included builds,5,main]) started.
+:core:security:packageDebugResources (Thread[#104,included builds,5,main]) started.
+
+> Task :core:security:packageDebugResources UP-TO-DATE
+Build cache key for task ':core:security:packageDebugResources' is 5196c198b9d97be13482d3c761c77c21
+Skipping task ':core:security:packageDebugResources' as it is up-to-date.
+Resolve mutations for :core:security:parseDebugLocalResources (Thread[#104,included builds,5,main]) started.
+:core:security:parseDebugLocalResources (Thread[#104,included builds,5,main]) started.
+
+> Task :core:security:parseDebugLocalResources UP-TO-DATE
+Transforming android.jar with PlatformAttrTransform
+Transforming android.jar with PlatformAttrTransform
+Build cache key for task ':core:security:parseDebugLocalResources' is 990a9c9b8b0c1695adfeec056d2c32aa
+Skipping task ':core:security:parseDebugLocalResources' as it is up-to-date.
+Resolve mutations for :core:security:generateDebugRFile (Thread[#104,included builds,5,main]) started.
+:core:security:generateDebugRFile (Thread[#104,included builds,5,main]) started.
+
+> Task :core:security:generateDebugRFile UP-TO-DATE
+Transforming android.jar with PlatformAttrTransform
+Build cache key for task ':core:security:generateDebugRFile' is 2a0092b29f8c523e7d96157dfb3a40e3
+Skipping task ':core:security:generateDebugRFile' as it is up-to-date.
+Resolve mutations for :core:security:checkKotlinGradlePluginConfigurationErrors (Thread[#104,included builds,5,main]) started.
+:core:security:checkKotlinGradlePluginConfigurationErrors (Thread[#104,included builds,5,main]) started.
+
+> Task :core:security:checkKotlinGradlePluginConfigurationErrors SKIPPED
+Skipping task ':core:security:checkKotlinGradlePluginConfigurationErrors' as task onlyIf 'errorDiagnostics are present' is false.
+Resolve mutations for :core:security:kaptGenerateStubsDebugKotlin (Thread[#104,included builds,5,main]) started.
+:core:security:kaptGenerateStubsDebugKotlin (Thread[#104,included builds,5,main]) started.
+
+> Task :core:security:kaptGenerateStubsDebugKotlin UP-TO-DATE
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with JetifyTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with AarToClassTransform
+Transforming lifecycle-runtime-2.6.2.aar (androidx.lifecycle:lifecycle-runtime:2.6.2) with JetifyTransform
+Transforming lifecycle-runtime-2.6.2.aar (androidx.lifecycle:lifecycle-runtime:2.6.2) with AarToClassTransform
+Transforming lifecycle-common-2.6.2.jar (androidx.lifecycle:lifecycle-common:2.6.2) with JetifyTransform
+Transforming lifecycle-common-2.6.2.jar (androidx.lifecycle:lifecycle-common:2.6.2) with IdentityTransform
+Transforming core-ktx-1.13.1.aar (androidx.core:core-ktx:1.13.1) with JetifyTransform
+Transforming core-ktx-1.13.1.aar (androidx.core:core-ktx:1.13.1) with AarToClassTransform
+Transforming kotlinx-coroutines-core-jvm-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1) with JetifyTransform
+Transforming kotlinx-coroutines-core-jvm-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1) with IdentityTransform
+Transforming kotlinx-coroutines-android-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1) with JetifyTransform
+Transforming kotlinx-coroutines-android-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1) with IdentityTransform
+Transforming annotation-experimental-1.4.0.aar (androidx.annotation:annotation-experimental:1.4.0) with JetifyTransform
+Transforming annotation-experimental-1.4.0.aar (androidx.annotation:annotation-experimental:1.4.0) with AarToClassTransform
+Transforming versionedparcelable-1.1.1.aar (androidx.versionedparcelable:versionedparcelable:1.1.1) with JetifyTransform
+Transforming versionedparcelable-1.1.1.aar (androidx.versionedparcelable:versionedparcelable:1.1.1) with AarToClassTransform
+Transforming core-common-2.2.0.jar (androidx.arch.core:core-common:2.2.0) with JetifyTransform
+Transforming core-common-2.2.0.jar (androidx.arch.core:core-common:2.2.0) with IdentityTransform
+Transforming annotation-jvm-1.6.0.jar (androidx.annotation:annotation-jvm:1.6.0) with JetifyTransform
+Transforming annotation-jvm-1.6.0.jar (androidx.annotation:annotation-jvm:1.6.0) with IdentityTransform
+Transforming kotlin-stdlib-2.0.0.jar (org.jetbrains.kotlin:kotlin-stdlib:2.0.0) with JetifyTransform
+Transforming kotlin-stdlib-2.0.0.jar (org.jetbrains.kotlin:kotlin-stdlib:2.0.0) with IdentityTransform
+Transforming annotations-23.0.0.jar (org.jetbrains:annotations:23.0.0) with JetifyTransform
+Transforming annotations-23.0.0.jar (org.jetbrains:annotations:23.0.0) with IdentityTransform
+Transforming javax.inject-1.jar (javax.inject:javax.inject:1) with JetifyTransform
+Transforming jsr305-3.0.2.jar (com.google.code.findbugs:jsr305:3.0.2) with JetifyTransform
+Transforming fragment-1.5.1.aar (androidx.fragment:fragment:1.5.1) with JetifyTransform
+Transforming fragment-1.5.1.aar (androidx.fragment:fragment:1.5.1) with AarToClassTransform
+Transforming activity-1.5.1.aar (androidx.activity:activity:1.5.1) with JetifyTransform
+Transforming activity-1.5.1.aar (androidx.activity:activity:1.5.1) with AarToClassTransform
+Transforming loader-1.0.0.aar (androidx.loader:loader:1.0.0) with JetifyTransform
+Transforming loader-1.0.0.aar (androidx.loader:loader:1.0.0) with AarToClassTransform
+Transforming viewpager-1.0.0.aar (androidx.viewpager:viewpager:1.0.0) with JetifyTransform
+Transforming viewpager-1.0.0.aar (androidx.viewpager:viewpager:1.0.0) with AarToClassTransform
+Transforming customview-1.0.0.aar (androidx.customview:customview:1.0.0) with JetifyTransform
+Transforming customview-1.0.0.aar (androidx.customview:customview:1.0.0) with AarToClassTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with JetifyTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with AarToClassTransform
+Transforming lifecycle-livedata-2.6.2.aar (androidx.lifecycle:lifecycle-livedata:2.6.2) with JetifyTransform
+Transforming lifecycle-livedata-2.6.2.aar (androidx.lifecycle:lifecycle-livedata:2.6.2) with AarToClassTransform
+Transforming lifecycle-livedata-core-2.6.2.aar (androidx.lifecycle:lifecycle-livedata-core:2.6.2) with JetifyTransform
+Transforming lifecycle-livedata-core-2.6.2.aar (androidx.lifecycle:lifecycle-livedata-core:2.6.2) with AarToClassTransform
+Transforming lifecycle-viewmodel-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel:2.6.2) with JetifyTransform
+Transforming lifecycle-viewmodel-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel:2.6.2) with AarToClassTransform
+Transforming lifecycle-viewmodel-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel:2.6.2) with JetifyTransform
+Transforming lifecycle-viewmodel-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel:2.6.2) with AarToClassTransform
+Transforming lifecycle-viewmodel-savedstate-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2) with JetifyTransform
+Transforming lifecycle-viewmodel-savedstate-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2) with AarToClassTransform
+Transforming sqlite-2.4.0.aar (androidx.sqlite:sqlite:2.4.0) with JetifyTransform
+Transforming sqlite-2.4.0.aar (androidx.sqlite:sqlite:2.4.0) with AarToClassTransform
+Transforming sqlite-ktx-2.4.0.aar (androidx.sqlite:sqlite-ktx:2.4.0) with JetifyTransform
+Transforming sqlite-ktx-2.4.0.aar (androidx.sqlite:sqlite-ktx:2.4.0) with AarToClassTransform
+Transforming savedstate-1.2.1.aar (androidx.savedstate:savedstate:1.2.1) with JetifyTransform
+Transforming savedstate-1.2.1.aar (androidx.savedstate:savedstate:1.2.1) with AarToClassTransform
+Transforming security-crypto-1.1.0-alpha06.aar (androidx.security:security-crypto:1.1.0-alpha06) with JetifyTransform
+Transforming security-crypto-1.1.0-alpha06.aar (androidx.security:security-crypto:1.1.0-alpha06) with AarToClassTransform
+Transforming collection-1.1.0.jar (androidx.collection:collection:1.1.0) with JetifyTransform
+Transforming collection-1.1.0.jar (androidx.collection:collection:1.1.0) with IdentityTransform
+Transforming core-runtime-2.2.0.aar (androidx.arch.core:core-runtime:2.2.0) with JetifyTransform
+Transforming core-runtime-2.2.0.aar (androidx.arch.core:core-runtime:2.2.0) with AarToClassTransform
+Transforming sqlcipher-android-4.6.1.aar (net.zetetic:sqlcipher-android:4.6.1) with JetifyTransform
+Transforming sqlcipher-android-4.6.1.aar (net.zetetic:sqlcipher-android:4.6.1) with AarToClassTransform
+Transforming hilt-core-2.51.1.jar (com.google.dagger:hilt-core:2.51.1) with JetifyTransform
+Transforming hilt-core-2.51.1.jar (com.google.dagger:hilt-core:2.51.1) with IdentityTransform
+Transforming dagger-2.51.1.jar (com.google.dagger:dagger:2.51.1) with JetifyTransform
+Transforming dagger-2.51.1.jar (com.google.dagger:dagger:2.51.1) with IdentityTransform
+Transforming javax.inject-1.jar (javax.inject:javax.inject:1) with IdentityTransform
+Transforming dagger-lint-aar-2.51.1.aar (com.google.dagger:dagger-lint-aar:2.51.1) with JetifyTransform
+Transforming dagger-lint-aar-2.51.1.aar (com.google.dagger:dagger-lint-aar:2.51.1) with AarToClassTransform
+Transforming jsr305-3.0.2.jar (com.google.code.findbugs:jsr305:3.0.2) with IdentityTransform
+Transforming hilt-android-2.51.1.aar (com.google.dagger:hilt-android:2.51.1) with JetifyTransform
+Transforming hilt-android-2.51.1.aar (com.google.dagger:hilt-android:2.51.1) with AarToClassTransform
+Transforming dagger-2.51.1.jar (com.google.dagger:dagger:2.51.1) with JetifyTransform
+Transforming jsr305-3.0.2.jar (com.google.code.findbugs:jsr305:3.0.2) with JetifyTransform
+Transforming javapoet-1.13.0.jar (com.squareup:javapoet:1.13.0) with JetifyTransform
+Transforming javax.inject-1.jar (javax.inject:javax.inject:1) with JetifyTransform
+Transforming kotlin-reflect-1.6.10.jar (org.jetbrains.kotlin:kotlin-reflect:1.6.10) with JetifyTransform
+Transforming kotlin-stdlib-1.9.20.jar (org.jetbrains.kotlin:kotlin-stdlib:1.9.20) with JetifyTransform
+Transforming listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar (com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava) with JetifyTransform
+Transforming annotations-13.0.jar (org.jetbrains:annotations:13.0) with JetifyTransform
+Transforming dagger-compiler-2.51.1.jar (com.google.dagger:dagger-compiler:2.51.1) with JetifyTransform
+Transforming dagger-spi-2.51.1.jar (com.google.dagger:dagger-spi:2.51.1) with JetifyTransform
+Transforming google-java-format-1.5.jar (com.google.googlejavaformat:google-java-format:1.5) with JetifyTransform
+Transforming guava-33.0.0-jre.jar (com.google.guava:guava:33.0.0-jre) with JetifyTransform
+Transforming symbol-processing-api-1.9.20-1.0.14.jar (com.google.devtools.ksp:symbol-processing-api:1.9.20-1.0.14) with JetifyTransform
+Transforming failureaccess-1.0.2.jar (com.google.guava:failureaccess:1.0.2) with JetifyTransform
+Transforming incap-0.2.jar (net.ltgt.gradle.incap:incap:0.2) with JetifyTransform
+Transforming kotlinpoet-1.11.0.jar (com.squareup:kotlinpoet:1.11.0) with JetifyTransform
+Transforming kotlin-stdlib-jdk8-1.9.0.jar (org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.0) with JetifyTransform
+Transforming kotlin-stdlib-jdk7-1.9.0.jar (org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.0) with JetifyTransform
+Transforming checker-compat-qual-2.5.5.jar (org.checkerframework:checker-compat-qual:2.5.5) with JetifyTransform
+Transforming checker-qual-3.41.0.jar (org.checkerframework:checker-qual:3.41.0) with JetifyTransform
+Transforming error_prone_annotations-2.23.0.jar (com.google.errorprone:error_prone_annotations:2.23.0) with JetifyTransform
+Transforming javac-shaded-9-dev-r4023-3.jar (com.google.errorprone:javac-shaded:9-dev-r4023-3) with JetifyTransform
+Transforming hilt-compiler-2.51.1.jar (com.google.dagger:hilt-compiler:2.51.1) with JetifyTransform
+Transforming R.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-hilt-android-2.51.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming fragment-1.5.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-activity-1.5.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming loader-1.0.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming viewpager-1.0.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming customview-1.0.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-1.13.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-livedata-2.6.2-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-livedata-core-2.6.2-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-runtime-2.6.2-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-viewmodel-2.6.2-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-common-2.6.2.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-lifecycle-viewmodel-savedstate-2.6.2-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-core-ktx-1.13.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-kotlinx-coroutines-core-jvm-1.8.1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-kotlinx-coroutines-android-1.8.1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming sqlite-2.4.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-sqlite-ktx-2.4.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-annotation-experimental-1.4.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-savedstate-1.2.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-security-crypto-1.1.0-alpha06-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming versionedparcelable-1.1.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming collection-1.1.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-runtime-2.2.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-common-2.2.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-annotation-jvm-1.6.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-kotlin-stdlib-2.0.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-sqlcipher-android-4.6.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-annotations-23.0.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-hilt-core-2.51.1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-dagger-2.51.1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-javax.inject-1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-dagger-lint-aar-2.51.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-jsr305-3.0.2.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming android.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-lambda-stubs.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Build cache key for task ':core:security:kaptGenerateStubsDebugKotlin' is b3af57171bdf4611ea3cf9c1dd1a899b
+Skipping task ':core:security:kaptGenerateStubsDebugKotlin' as it is up-to-date.
+Resolve mutations for :core:security:kaptDebugKotlin (Thread[#104,included builds,5,main]) started.
+:core:security:kaptDebugKotlin (Thread[#104,included builds,5,main]) started.
+
+> Task :core:security:kaptDebugKotlin UP-TO-DATE
+Transforming R.jar with StructureTransformAction
+Transforming jetified-hilt-android-2.51.1-api.jar with StructureTransformAction
+Transforming fragment-1.5.1-api.jar with StructureTransformAction
+Transforming jetified-activity-1.5.1-api.jar with StructureTransformAction
+Transforming loader-1.0.0-api.jar with StructureTransformAction
+Transforming viewpager-1.0.0-api.jar with StructureTransformAction
+Transforming customview-1.0.0-api.jar with StructureTransformAction
+Transforming core-1.13.1-api.jar with StructureTransformAction
+Transforming lifecycle-livedata-2.6.2-api.jar with StructureTransformAction
+Transforming lifecycle-livedata-core-2.6.2-api.jar with StructureTransformAction
+Transforming lifecycle-runtime-2.6.2-api.jar with StructureTransformAction
+Transforming lifecycle-viewmodel-2.6.2-api.jar with StructureTransformAction
+Transforming lifecycle-common-2.6.2.jar with StructureTransformAction
+Transforming jetified-lifecycle-viewmodel-savedstate-2.6.2-api.jar with StructureTransformAction
+Transforming jetified-core-ktx-1.13.1-api.jar with StructureTransformAction
+Transforming jetified-kotlinx-coroutines-core-jvm-1.8.1.jar with StructureTransformAction
+Transforming jetified-kotlinx-coroutines-android-1.8.1.jar with StructureTransformAction
+Transforming sqlite-2.4.0-api.jar with StructureTransformAction
+Transforming jetified-sqlite-ktx-2.4.0-api.jar with StructureTransformAction
+Transforming jetified-annotation-experimental-1.4.0-api.jar with StructureTransformAction
+Transforming jetified-savedstate-1.2.1-api.jar with StructureTransformAction
+Transforming jetified-security-crypto-1.1.0-alpha06-api.jar with StructureTransformAction
+Transforming versionedparcelable-1.1.1-api.jar with StructureTransformAction
+Transforming collection-1.1.0.jar with StructureTransformAction
+Transforming core-runtime-2.2.0-api.jar with StructureTransformAction
+Transforming core-common-2.2.0.jar with StructureTransformAction
+Transforming jetified-annotation-jvm-1.6.0.jar with StructureTransformAction
+Transforming jetified-kotlin-stdlib-2.0.0.jar with StructureTransformAction
+Transforming jetified-sqlcipher-android-4.6.1-api.jar with StructureTransformAction
+Transforming jetified-annotations-23.0.0.jar with StructureTransformAction
+Transforming jetified-hilt-core-2.51.1.jar with StructureTransformAction
+Transforming jetified-dagger-2.51.1.jar with StructureTransformAction
+Transforming jetified-javax.inject-1.jar with StructureTransformAction
+Transforming jetified-dagger-lint-aar-2.51.1-api.jar with StructureTransformAction
+Transforming jetified-jsr305-3.0.2.jar with StructureTransformAction
+Transforming android.jar with StructureTransformAction
+Transforming core-lambda-stubs.jar with StructureTransformAction
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\core\security\src\debug\kotlin', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\core\security\src\debug\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\core\security\src\debug\kotlin', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\core\security\src\debug\kotlin', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\core\security\src\debug\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\core\security\src\main\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\core\security\src\main\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\core\security\src\main\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\core\security\src\main\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\core\security\src\debug\kotlin', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\core\security\src\debug\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\core\security\src\debug\kotlin', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\core\security\src\debug\kotlin', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\core\security\src\debug\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\core\security\src\main\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\core\security\src\debug\java', not found
+Build cache key for task ':core:security:kaptDebugKotlin' is 170dd0cfa337b4f867148483a3b6f905
+Skipping task ':core:security:kaptDebugKotlin' as it is up-to-date.
+Resolve mutations for :core:security:compileDebugKotlin (Thread[#104,included builds,5,main]) started.
+:core:security:compileDebugKotlin (Thread[#104,included builds,5,main]) started.
+
+> Task :core:security:compileDebugKotlin UP-TO-DATE
+Transforming R.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-hilt-android-2.51.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming fragment-1.5.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-activity-1.5.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming loader-1.0.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming viewpager-1.0.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming customview-1.0.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-1.13.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-livedata-2.6.2-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-livedata-core-2.6.2-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-runtime-2.6.2-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-viewmodel-2.6.2-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-common-2.6.2.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-lifecycle-viewmodel-savedstate-2.6.2-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-core-ktx-1.13.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-kotlinx-coroutines-core-jvm-1.8.1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-kotlinx-coroutines-android-1.8.1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming sqlite-2.4.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-sqlite-ktx-2.4.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-annotation-experimental-1.4.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-savedstate-1.2.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-security-crypto-1.1.0-alpha06-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming versionedparcelable-1.1.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming collection-1.1.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-runtime-2.2.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-common-2.2.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-annotation-jvm-1.6.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-kotlin-stdlib-2.0.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-sqlcipher-android-4.6.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-annotations-23.0.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-hilt-core-2.51.1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-dagger-2.51.1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-javax.inject-1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-dagger-lint-aar-2.51.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-jsr305-3.0.2.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming android.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-lambda-stubs.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming debug with BuildToolsApiClasspathEntrySnapshotTransform
+Build cache key for task ':core:security:compileDebugKotlin' is 3769485d609acd18c91109a72810e846
+Skipping task ':core:security:compileDebugKotlin' as it is up-to-date.
+Resolve mutations for :core:security:javaPreCompileDebug (Thread[#104,included builds,5,main]) started.
+:core:security:javaPreCompileDebug (Thread[#104,included builds,5,main]) started.
+
+> Task :core:security:javaPreCompileDebug UP-TO-DATE
+Build cache key for task ':core:security:javaPreCompileDebug' is 190c8d3b59e4541ead1869540e403ac8
+Skipping task ':core:security:javaPreCompileDebug' as it is up-to-date.
+Resolve mutations for :core:security:compileDebugJavaWithJavac (Thread[#104,included builds,5,main]) started.
+:core:security:compileDebugJavaWithJavac (Thread[#104,included builds,5,main]) started.
+
+> Task :core:security:compileDebugJavaWithJavac UP-TO-DATE
+Transforming core-for-system-modules.jar with JdkImageTransform
+Transforming core-for-system-modules.jar with JdkImageTransform
+Transforming core-for-system-modules.jar with JdkImageTransform
+Transforming core-for-system-modules.jar with JdkImageTransform
+Transforming core-for-system-modules.jar with JdkImageTransform
+Transforming core-for-system-modules.jar with JdkImageTransform
+Custom actions are attached to task ':core:security:compileDebugJavaWithJavac'.
+Build cache key for task ':core:security:compileDebugJavaWithJavac' is 78606e2447d6a746a0fee32bc38fef9e
+Skipping task ':core:security:compileDebugJavaWithJavac' as it is up-to-date.
+No compile result for :core:security:compileDebugJavaWithJavac
+No compile result for :core:security:compileDebugJavaWithJavac
+Resolve mutations for :core:security:transformDebugClassesWithAsm (Thread[#104,included builds,5,main]) started.
+:core:security:transformDebugClassesWithAsm (Thread[#104,included builds,5,main]) started.
+
+> Task :core:security:transformDebugClassesWithAsm UP-TO-DATE
+Transforming hilt-android-2.51.1.aar (com.google.dagger:hilt-android:2.51.1) with JetifyTransform
+Transforming hilt-android-2.51.1.aar (com.google.dagger:hilt-android:2.51.1) with AarToClassTransform
+Transforming fragment-1.5.1.aar (androidx.fragment:fragment:1.5.1) with JetifyTransform
+Transforming fragment-1.5.1.aar (androidx.fragment:fragment:1.5.1) with AarToClassTransform
+Transforming activity-1.5.1.aar (androidx.activity:activity:1.5.1) with JetifyTransform
+Transforming activity-1.5.1.aar (androidx.activity:activity:1.5.1) with AarToClassTransform
+Transforming loader-1.0.0.aar (androidx.loader:loader:1.0.0) with JetifyTransform
+Transforming loader-1.0.0.aar (androidx.loader:loader:1.0.0) with AarToClassTransform
+Transforming viewpager-1.0.0.aar (androidx.viewpager:viewpager:1.0.0) with JetifyTransform
+Transforming viewpager-1.0.0.aar (androidx.viewpager:viewpager:1.0.0) with AarToClassTransform
+Transforming customview-1.0.0.aar (androidx.customview:customview:1.0.0) with JetifyTransform
+Transforming customview-1.0.0.aar (androidx.customview:customview:1.0.0) with AarToClassTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with JetifyTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with AarToClassTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with JetifyTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with AarToClassTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with JetifyTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with AarToClassTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with JetifyTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with AarToClassTransform
+Transforming lifecycle-livedata-2.6.2.aar (androidx.lifecycle:lifecycle-livedata:2.6.2) with JetifyTransform
+Transforming lifecycle-livedata-2.6.2.aar (androidx.lifecycle:lifecycle-livedata:2.6.2) with AarToClassTransform
+Transforming lifecycle-viewmodel-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel:2.6.2) with JetifyTransform
+Transforming lifecycle-viewmodel-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel:2.6.2) with AarToClassTransform
+Transforming lifecycle-viewmodel-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel:2.6.2) with JetifyTransform
+Transforming lifecycle-viewmodel-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel:2.6.2) with AarToClassTransform
+Transforming lifecycle-livedata-core-2.6.2.aar (androidx.lifecycle:lifecycle-livedata-core:2.6.2) with JetifyTransform
+Transforming lifecycle-livedata-core-2.6.2.aar (androidx.lifecycle:lifecycle-livedata-core:2.6.2) with AarToClassTransform
+Transforming savedstate-1.2.1.aar (androidx.savedstate:savedstate:1.2.1) with JetifyTransform
+Transforming savedstate-1.2.1.aar (androidx.savedstate:savedstate:1.2.1) with AarToClassTransform
+Transforming lifecycle-common-2.6.2.jar (androidx.lifecycle:lifecycle-common:2.6.2) with JetifyTransform
+Transforming lifecycle-common-2.6.2.jar (androidx.lifecycle:lifecycle-common:2.6.2) with IdentityTransform
+Transforming lifecycle-runtime-2.6.2.aar (androidx.lifecycle:lifecycle-runtime:2.6.2) with JetifyTransform
+Transforming lifecycle-runtime-2.6.2.aar (androidx.lifecycle:lifecycle-runtime:2.6.2) with AarToClassTransform
+Transforming lifecycle-viewmodel-savedstate-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2) with JetifyTransform
+Transforming lifecycle-viewmodel-savedstate-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2) with AarToClassTransform
+Transforming core-ktx-1.13.1.aar (androidx.core:core-ktx:1.13.1) with JetifyTransform
+Transforming core-ktx-1.13.1.aar (androidx.core:core-ktx:1.13.1) with AarToClassTransform
+Transforming kotlinx-coroutines-core-jvm-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1) with JetifyTransform
+Transforming kotlinx-coroutines-core-jvm-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1) with IdentityTransform
+Transforming kotlinx-coroutines-android-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1) with JetifyTransform
+Transforming kotlinx-coroutines-android-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1) with IdentityTransform
+Transforming sqlcipher-android-4.6.1.aar (net.zetetic:sqlcipher-android:4.6.1) with JetifyTransform
+Transforming sqlcipher-android-4.6.1.aar (net.zetetic:sqlcipher-android:4.6.1) with AarToClassTransform
+Transforming sqlite-2.4.0.aar (androidx.sqlite:sqlite:2.4.0) with JetifyTransform
+Transforming sqlite-2.4.0.aar (androidx.sqlite:sqlite:2.4.0) with AarToClassTransform
+Transforming sqlite-ktx-2.4.0.aar (androidx.sqlite:sqlite-ktx:2.4.0) with JetifyTransform
+Transforming sqlite-ktx-2.4.0.aar (androidx.sqlite:sqlite-ktx:2.4.0) with AarToClassTransform
+Transforming annotation-experimental-1.4.0.aar (androidx.annotation:annotation-experimental:1.4.0) with JetifyTransform
+Transforming annotation-experimental-1.4.0.aar (androidx.annotation:annotation-experimental:1.4.0) with AarToClassTransform
+Transforming security-crypto-1.1.0-alpha06.aar (androidx.security:security-crypto:1.1.0-alpha06) with JetifyTransform
+Transforming security-crypto-1.1.0-alpha06.aar (androidx.security:security-crypto:1.1.0-alpha06) with AarToClassTransform
+Transforming versionedparcelable-1.1.1.aar (androidx.versionedparcelable:versionedparcelable:1.1.1) with JetifyTransform
+Transforming versionedparcelable-1.1.1.aar (androidx.versionedparcelable:versionedparcelable:1.1.1) with AarToClassTransform
+Transforming collection-1.1.0.jar (androidx.collection:collection:1.1.0) with JetifyTransform
+Transforming collection-1.1.0.jar (androidx.collection:collection:1.1.0) with IdentityTransform
+Transforming core-runtime-2.2.0.aar (androidx.arch.core:core-runtime:2.2.0) with JetifyTransform
+Transforming core-runtime-2.2.0.aar (androidx.arch.core:core-runtime:2.2.0) with AarToClassTransform
+Transforming core-common-2.2.0.jar (androidx.arch.core:core-common:2.2.0) with JetifyTransform
+Transforming core-common-2.2.0.jar (androidx.arch.core:core-common:2.2.0) with IdentityTransform
+Transforming annotation-jvm-1.6.0.jar (androidx.annotation:annotation-jvm:1.6.0) with JetifyTransform
+Transforming annotation-jvm-1.6.0.jar (androidx.annotation:annotation-jvm:1.6.0) with IdentityTransform
+Transforming kotlin-stdlib-2.0.0.jar (org.jetbrains.kotlin:kotlin-stdlib:2.0.0) with JetifyTransform
+Transforming kotlin-stdlib-2.0.0.jar (org.jetbrains.kotlin:kotlin-stdlib:2.0.0) with IdentityTransform
+Transforming annotations-23.0.0.jar (org.jetbrains:annotations:23.0.0) with JetifyTransform
+Transforming annotations-23.0.0.jar (org.jetbrains:annotations:23.0.0) with IdentityTransform
+Transforming hilt-core-2.51.1.jar (com.google.dagger:hilt-core:2.51.1) with JetifyTransform
+Transforming hilt-core-2.51.1.jar (com.google.dagger:hilt-core:2.51.1) with IdentityTransform
+Transforming dagger-2.51.1.jar (com.google.dagger:dagger:2.51.1) with JetifyTransform
+Transforming dagger-2.51.1.jar (com.google.dagger:dagger:2.51.1) with IdentityTransform
+Transforming dagger-lint-aar-2.51.1.aar (com.google.dagger:dagger-lint-aar:2.51.1) with JetifyTransform
+Transforming dagger-lint-aar-2.51.1.aar (com.google.dagger:dagger-lint-aar:2.51.1) with AarToClassTransform
+Transforming jsr305-3.0.2.jar (com.google.code.findbugs:jsr305:3.0.2) with JetifyTransform
+Transforming jsr305-3.0.2.jar (com.google.code.findbugs:jsr305:3.0.2) with IdentityTransform
+Transforming javax.inject-1.jar (javax.inject:javax.inject:1) with JetifyTransform
+Transforming javax.inject-1.jar (javax.inject:javax.inject:1) with IdentityTransform
+Transforming gson-2.8.9.jar (com.google.code.gson:gson:2.8.9) with JetifyTransform
+Transforming interpolator-1.0.0.aar (androidx.interpolator:interpolator:1.0.0) with JetifyTransform
+Transforming interpolator-1.0.0.aar (androidx.interpolator:interpolator:1.0.0) with AarToClassTransform
+Transforming profileinstaller-1.3.0.aar (androidx.profileinstaller:profileinstaller:1.3.0) with JetifyTransform
+Transforming profileinstaller-1.3.0.aar (androidx.profileinstaller:profileinstaller:1.3.0) with AarToClassTransform
+Transforming startup-runtime-1.1.1.aar (androidx.startup:startup-runtime:1.1.1) with JetifyTransform
+Transforming startup-runtime-1.1.1.aar (androidx.startup:startup-runtime:1.1.1) with AarToClassTransform
+Transforming tracing-1.0.0.aar (androidx.tracing:tracing:1.0.0) with JetifyTransform
+Transforming tracing-1.0.0.aar (androidx.tracing:tracing:1.0.0) with AarToClassTransform
+Transforming concurrent-futures-1.1.0.jar (androidx.concurrent:concurrent-futures:1.1.0) with JetifyTransform
+Transforming concurrent-futures-1.1.0.jar (androidx.concurrent:concurrent-futures:1.1.0) with IdentityTransform
+Transforming tink-android-1.8.0.jar (com.google.crypto.tink:tink-android:1.8.0) with JetifyTransform
+Transforming tink-android-1.8.0.jar (com.google.crypto.tink:tink-android:1.8.0) with IdentityTransform
+Transforming gson-2.8.9.jar (com.google.code.gson:gson:2.8.9) with IdentityTransform
+Transforming listenablefuture-1.0.jar (com.google.guava:listenablefuture:1.0) with JetifyTransform
+Transforming listenablefuture-1.0.jar (com.google.guava:listenablefuture:1.0) with IdentityTransform
+Build cache key for task ':core:security:transformDebugClassesWithAsm' is 53c797f776cacc2f234eac36f53286b7
+Skipping task ':core:security:transformDebugClassesWithAsm' as it is up-to-date.
+Resolve mutations for :core:security:bundleLibCompileToJarDebug (Thread[#104,included builds,5,main]) started.
+:core:security:bundleLibCompileToJarDebug (Thread[#104,included builds,5,main]) started.
+
+> Task :core:security:bundleLibCompileToJarDebug UP-TO-DATE
+Caching disabled for task ':core:security:bundleLibCompileToJarDebug' because:
+  Simple merging task
+Skipping task ':core:security:bundleLibCompileToJarDebug' as it is up-to-date.
+work action resolve classes.jar (project :core:security) (Thread[#104,included builds,5,main]) started.
+Resolve mutations for :core:util:checkKotlinGradlePluginConfigurationErrors (Thread[#104,included builds,5,main]) started.
+:core:util:checkKotlinGradlePluginConfigurationErrors (Thread[#104,included builds,5,main]) started.
+
+> Task :core:util:checkKotlinGradlePluginConfigurationErrors SKIPPED
+Skipping task ':core:util:checkKotlinGradlePluginConfigurationErrors' as task onlyIf 'errorDiagnostics are present' is false.
+Resolve mutations for :core:util:preBuild (Thread[#104,included builds,5,main]) started.
+:core:util:preBuild (Thread[#104,included builds,5,main]) started.
+
+> Task :core:util:preBuild UP-TO-DATE
+Skipping task ':core:util:preBuild' as it has no actions.
+Resolve mutations for :core:util:preDebugBuild (Thread[#104,included builds,5,main]) started.
+:core:util:preDebugBuild (Thread[#104,included builds,5,main]) started.
+
+> Task :core:util:preDebugBuild UP-TO-DATE
+Skipping task ':core:util:preDebugBuild' as it has no actions.
+Resolve mutations for :core:util:generateDebugResValues (Thread[#104,included builds,5,main]) started.
+:core:util:generateDebugResValues (Thread[#104,included builds,5,main]) started.
+
+> Task :core:util:generateDebugResValues UP-TO-DATE
+Build cache key for task ':core:util:generateDebugResValues' is 0fcb0d70ef97ff751faf6f3853529051
+Skipping task ':core:util:generateDebugResValues' as it is up-to-date.
+Resolve mutations for :core:util:generateDebugResources (Thread[#104,included builds,5,main]) started.
+:core:util:generateDebugResources (Thread[#104,included builds,5,main]) started.
+
+> Task :core:util:generateDebugResources UP-TO-DATE
+Build cache key for task ':core:util:generateDebugResources' is c922a16be9a0c77222c4a2fd3e05a071
+Skipping task ':core:util:generateDebugResources' as it is up-to-date.
+Resolve mutations for :core:util:packageDebugResources (Thread[#104,included builds,5,main]) started.
+:core:util:packageDebugResources (Thread[#104,included builds,5,main]) started.
+
+> Task :core:util:packageDebugResources UP-TO-DATE
+Build cache key for task ':core:util:packageDebugResources' is 7bfb7712da21ff22c86a6accfe759d1d
+Skipping task ':core:util:packageDebugResources' as it is up-to-date.
+Resolve mutations for :core:util:parseDebugLocalResources (Thread[#104,included builds,5,main]) started.
+:core:util:parseDebugLocalResources (Thread[#104,included builds,5,main]) started.
+
+> Task :core:util:parseDebugLocalResources UP-TO-DATE
+Transforming android.jar with PlatformAttrTransform
+Transforming android.jar with PlatformAttrTransform
+Build cache key for task ':core:util:parseDebugLocalResources' is 990a9c9b8b0c1695adfeec056d2c32aa
+Skipping task ':core:util:parseDebugLocalResources' as it is up-to-date.
+Resolve mutations for :core:util:generateDebugRFile (Thread[#104,included builds,5,main]) started.
+:core:util:generateDebugRFile (Thread[#104,included builds,5,main]) started.
+
+> Task :core:util:generateDebugRFile UP-TO-DATE
+Transforming android.jar with PlatformAttrTransform
+Build cache key for task ':core:util:generateDebugRFile' is 407a3525565cf68934a625c1f0b7e426
+Skipping task ':core:util:generateDebugRFile' as it is up-to-date.
+Resolve mutations for :core:util:compileDebugKotlin (Thread[#104,included builds,5,main]) started.
+:core:util:compileDebugKotlin (Thread[#104,included builds,5,main]) started.
+
+> Task :core:util:compileDebugKotlin UP-TO-DATE
+Transforming core-ktx-1.13.1.aar (androidx.core:core-ktx:1.13.1) with JetifyTransform
+Transforming core-ktx-1.13.1.aar (androidx.core:core-ktx:1.13.1) with AarToClassTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with JetifyTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with AarToClassTransform
+Transforming lifecycle-runtime-2.6.2.aar (androidx.lifecycle:lifecycle-runtime:2.6.2) with JetifyTransform
+Transforming lifecycle-runtime-2.6.2.aar (androidx.lifecycle:lifecycle-runtime:2.6.2) with AarToClassTransform
+Transforming lifecycle-common-2.6.2.jar (androidx.lifecycle:lifecycle-common:2.6.2) with JetifyTransform
+Transforming lifecycle-common-2.6.2.jar (androidx.lifecycle:lifecycle-common:2.6.2) with IdentityTransform
+Transforming kotlinx-coroutines-android-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1) with JetifyTransform
+Transforming kotlinx-coroutines-android-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1) with IdentityTransform
+Transforming kotlinx-coroutines-core-jvm-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1) with JetifyTransform
+Transforming kotlinx-coroutines-core-jvm-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1) with IdentityTransform
+Transforming versionedparcelable-1.1.1.aar (androidx.versionedparcelable:versionedparcelable:1.1.1) with JetifyTransform
+Transforming versionedparcelable-1.1.1.aar (androidx.versionedparcelable:versionedparcelable:1.1.1) with AarToClassTransform
+Transforming core-common-2.2.0.jar (androidx.arch.core:core-common:2.2.0) with JetifyTransform
+Transforming core-common-2.2.0.jar (androidx.arch.core:core-common:2.2.0) with IdentityTransform
+Transforming collection-1.0.0.jar (androidx.collection:collection:1.0.0) with JetifyTransform
+Transforming collection-1.0.0.jar (androidx.collection:collection:1.0.0) with IdentityTransform
+Transforming annotation-jvm-1.6.0.jar (androidx.annotation:annotation-jvm:1.6.0) with JetifyTransform
+Transforming annotation-jvm-1.6.0.jar (androidx.annotation:annotation-jvm:1.6.0) with IdentityTransform
+Transforming annotation-experimental-1.4.0.aar (androidx.annotation:annotation-experimental:1.4.0) with JetifyTransform
+Transforming annotation-experimental-1.4.0.aar (androidx.annotation:annotation-experimental:1.4.0) with AarToClassTransform
+Transforming kotlin-stdlib-2.0.0.jar (org.jetbrains.kotlin:kotlin-stdlib:2.0.0) with JetifyTransform
+Transforming kotlin-stdlib-2.0.0.jar (org.jetbrains.kotlin:kotlin-stdlib:2.0.0) with IdentityTransform
+Transforming annotations-23.0.0.jar (org.jetbrains:annotations:23.0.0) with JetifyTransform
+Transforming annotations-23.0.0.jar (org.jetbrains:annotations:23.0.0) with IdentityTransform
+Transforming libphonenumber-8.13.49.jar (com.googlecode.libphonenumber:libphonenumber:8.13.49) with JetifyTransform
+Transforming libphonenumber-8.13.49.jar (com.googlecode.libphonenumber:libphonenumber:8.13.49) with IdentityTransform
+Transforming R.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-core-ktx-1.13.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming classes.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-1.13.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-runtime-2.6.2-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-common-2.6.2.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-kotlinx-coroutines-android-1.8.1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-kotlinx-coroutines-core-jvm-1.8.1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming versionedparcelable-1.1.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-common-2.2.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming collection-1.0.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-annotation-jvm-1.6.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-annotation-experimental-1.4.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-kotlin-stdlib-2.0.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-libphonenumber-8.13.49.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-annotations-23.0.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming android.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-lambda-stubs.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Build cache key for task ':core:util:compileDebugKotlin' is 34a1fadd03bd7f2284d53a8987b9e3f0
+Skipping task ':core:util:compileDebugKotlin' as it is up-to-date.
+Resolve mutations for :core:util:javaPreCompileDebug (Thread[#104,included builds,5,main]) started.
+:core:util:javaPreCompileDebug (Thread[#104,included builds,5,main]) started.
+
+> Task :core:util:javaPreCompileDebug UP-TO-DATE
+Build cache key for task ':core:util:javaPreCompileDebug' is 36a7a1865cdd5e7e70d0e30aff737688
+Skipping task ':core:util:javaPreCompileDebug' as it is up-to-date.
+Resolve mutations for :core:util:compileDebugJavaWithJavac (Thread[#104,included builds,5,main]) started.
+:core:util:compileDebugJavaWithJavac (Thread[#104,included builds,5,main]) started.
+
+> Task :core:util:compileDebugJavaWithJavac NO-SOURCE
+Skipping task ':core:util:compileDebugJavaWithJavac' as it has no source files and no previous output files.
+Resolve mutations for :core:util:bundleLibCompileToJarDebug (Thread[#104,included builds,5,main]) started.
+:core:util:bundleLibCompileToJarDebug (Thread[#104,included builds,5,main]) started.
+
+> Task :core:util:bundleLibCompileToJarDebug UP-TO-DATE
+Caching disabled for task ':core:util:bundleLibCompileToJarDebug' because:
+  Simple merging task
+Skipping task ':core:util:bundleLibCompileToJarDebug' as it is up-to-date.
+work action resolve classes.jar (project :core:util) (Thread[#104,included builds,5,main]) started.
+Resolve mutations for :data:local-cache:checkKotlinGradlePluginConfigurationErrors (Thread[#104,included builds,5,main]) started.
+:data:local-cache:checkKotlinGradlePluginConfigurationErrors (Thread[#104,included builds,5,main]) started.
+
+> Task :data:local-cache:checkKotlinGradlePluginConfigurationErrors SKIPPED
+Skipping task ':data:local-cache:checkKotlinGradlePluginConfigurationErrors' as task onlyIf 'errorDiagnostics are present' is false.
+Resolve mutations for :data:local-cache:preBuild (Thread[#104,included builds,5,main]) started.
+:data:local-cache:preBuild (Thread[#104,included builds,5,main]) started.
+
+> Task :data:local-cache:preBuild UP-TO-DATE
+Skipping task ':data:local-cache:preBuild' as it has no actions.
+Resolve mutations for :data:local-cache:preDebugBuild (Thread[#104,included builds,5,main]) started.
+:data:local-cache:preDebugBuild (Thread[#104,included builds,5,main]) started.
+
+> Task :data:local-cache:preDebugBuild UP-TO-DATE
+Skipping task ':data:local-cache:preDebugBuild' as it has no actions.
+Resolve mutations for :data:local-cache:generateDebugResValues (Thread[#104,included builds,5,main]) started.
+:data:local-cache:generateDebugResValues (Thread[#104,included builds,5,main]) started.
+
+> Task :data:local-cache:generateDebugResValues UP-TO-DATE
+Build cache key for task ':data:local-cache:generateDebugResValues' is 0fcb0d70ef97ff751faf6f3853529051
+Skipping task ':data:local-cache:generateDebugResValues' as it is up-to-date.
+Resolve mutations for :data:local-cache:generateDebugResources (Thread[#104,included builds,5,main]) started.
+:data:local-cache:generateDebugResources (Thread[#104,included builds,5,main]) started.
+
+> Task :data:local-cache:generateDebugResources UP-TO-DATE
+Build cache key for task ':data:local-cache:generateDebugResources' is c922a16be9a0c77222c4a2fd3e05a071
+Skipping task ':data:local-cache:generateDebugResources' as it is up-to-date.
+Resolve mutations for :data:local-cache:packageDebugResources (Thread[#104,included builds,5,main]) started.
+:data:local-cache:packageDebugResources (Thread[#104,included builds,5,main]) started.
+
+> Task :data:local-cache:packageDebugResources UP-TO-DATE
+Build cache key for task ':data:local-cache:packageDebugResources' is bb316f6f94a2d07f896186abe51dc1f3
+Skipping task ':data:local-cache:packageDebugResources' as it is up-to-date.
+Resolve mutations for :data:local-cache:parseDebugLocalResources (Thread[#104,included builds,5,main]) started.
+:data:local-cache:parseDebugLocalResources (Thread[#104,included builds,5,main]) started.
+
+> Task :data:local-cache:parseDebugLocalResources UP-TO-DATE
+Transforming android.jar with PlatformAttrTransform
+Transforming android.jar with PlatformAttrTransform
+Build cache key for task ':data:local-cache:parseDebugLocalResources' is 990a9c9b8b0c1695adfeec056d2c32aa
+Skipping task ':data:local-cache:parseDebugLocalResources' as it is up-to-date.
+Resolve mutations for :data:local-cache:generateDebugRFile (Thread[#104,included builds,5,main]) started.
+:data:local-cache:generateDebugRFile (Thread[#104,included builds,5,main]) started.
+
+> Task :data:local-cache:generateDebugRFile UP-TO-DATE
+Transforming android.jar with PlatformAttrTransform
+Build cache key for task ':data:local-cache:generateDebugRFile' is bca275be3c894ef099a07fd9ab2fa3da
+Skipping task ':data:local-cache:generateDebugRFile' as it is up-to-date.
+Resolve mutations for :data:local-cache:kaptGenerateStubsDebugKotlin (Thread[#104,included builds,5,main]) started.
+:data:local-cache:kaptGenerateStubsDebugKotlin (Thread[#104,included builds,5,main]) started.
+
+> Task :data:local-cache:kaptGenerateStubsDebugKotlin UP-TO-DATE
+Transforming hilt-android-2.51.1.aar (com.google.dagger:hilt-android:2.51.1) with JetifyTransform
+Transforming hilt-android-2.51.1.aar (com.google.dagger:hilt-android:2.51.1) with AarToClassTransform
+Transforming fragment-1.5.1.aar (androidx.fragment:fragment:1.5.1) with JetifyTransform
+Transforming fragment-1.5.1.aar (androidx.fragment:fragment:1.5.1) with AarToClassTransform
+Transforming activity-1.5.1.aar (androidx.activity:activity:1.5.1) with JetifyTransform
+Transforming activity-1.5.1.aar (androidx.activity:activity:1.5.1) with AarToClassTransform
+Transforming loader-1.0.0.aar (androidx.loader:loader:1.0.0) with JetifyTransform
+Transforming loader-1.0.0.aar (androidx.loader:loader:1.0.0) with AarToClassTransform
+Transforming viewpager-1.0.0.aar (androidx.viewpager:viewpager:1.0.0) with JetifyTransform
+Transforming viewpager-1.0.0.aar (androidx.viewpager:viewpager:1.0.0) with AarToClassTransform
+Transforming customview-1.0.0.aar (androidx.customview:customview:1.0.0) with JetifyTransform
+Transforming customview-1.0.0.aar (androidx.customview:customview:1.0.0) with AarToClassTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with JetifyTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with AarToClassTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with JetifyTransform
+Transforming core-1.13.1.aar (androidx.core:core:1.13.1) with AarToClassTransform
+Transforming lifecycle-livedata-2.6.2.aar (androidx.lifecycle:lifecycle-livedata:2.6.2) with JetifyTransform
+Transforming lifecycle-livedata-2.6.2.aar (androidx.lifecycle:lifecycle-livedata:2.6.2) with AarToClassTransform
+Transforming lifecycle-livedata-core-2.6.2.aar (androidx.lifecycle:lifecycle-livedata-core:2.6.2) with JetifyTransform
+Transforming lifecycle-livedata-core-2.6.2.aar (androidx.lifecycle:lifecycle-livedata-core:2.6.2) with AarToClassTransform
+Transforming lifecycle-runtime-2.6.2.aar (androidx.lifecycle:lifecycle-runtime:2.6.2) with JetifyTransform
+Transforming lifecycle-runtime-2.6.2.aar (androidx.lifecycle:lifecycle-runtime:2.6.2) with AarToClassTransform
+Transforming lifecycle-viewmodel-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel:2.6.2) with JetifyTransform
+Transforming lifecycle-viewmodel-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel:2.6.2) with AarToClassTransform
+Transforming lifecycle-viewmodel-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel:2.6.2) with JetifyTransform
+Transforming lifecycle-viewmodel-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel:2.6.2) with AarToClassTransform
+Transforming lifecycle-common-2.6.2.jar (androidx.lifecycle:lifecycle-common:2.6.2) with JetifyTransform
+Transforming lifecycle-common-2.6.2.jar (androidx.lifecycle:lifecycle-common:2.6.2) with IdentityTransform
+Transforming lifecycle-viewmodel-savedstate-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2) with JetifyTransform
+Transforming lifecycle-viewmodel-savedstate-2.6.2.aar (androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2) with AarToClassTransform
+Transforming core-ktx-1.13.1.aar (androidx.core:core-ktx:1.13.1) with JetifyTransform
+Transforming core-ktx-1.13.1.aar (androidx.core:core-ktx:1.13.1) with AarToClassTransform
+Transforming kotlinx-coroutines-core-jvm-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1) with JetifyTransform
+Transforming kotlinx-coroutines-core-jvm-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.1) with IdentityTransform
+Transforming kotlinx-coroutines-android-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1) with JetifyTransform
+Transforming kotlinx-coroutines-android-1.8.1.jar (org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1) with IdentityTransform
+Transforming sqlite-2.4.0.aar (androidx.sqlite:sqlite:2.4.0) with JetifyTransform
+Transforming sqlite-2.4.0.aar (androidx.sqlite:sqlite:2.4.0) with AarToClassTransform
+Transforming sqlite-ktx-2.4.0.aar (androidx.sqlite:sqlite-ktx:2.4.0) with JetifyTransform
+Transforming sqlite-ktx-2.4.0.aar (androidx.sqlite:sqlite-ktx:2.4.0) with AarToClassTransform
+Transforming annotation-experimental-1.4.0.aar (androidx.annotation:annotation-experimental:1.4.0) with JetifyTransform
+Transforming annotation-experimental-1.4.0.aar (androidx.annotation:annotation-experimental:1.4.0) with AarToClassTransform
+Transforming savedstate-1.2.1.aar (androidx.savedstate:savedstate:1.2.1) with JetifyTransform
+Transforming savedstate-1.2.1.aar (androidx.savedstate:savedstate:1.2.1) with AarToClassTransform
+Transforming versionedparcelable-1.1.1.aar (androidx.versionedparcelable:versionedparcelable:1.1.1) with JetifyTransform
+Transforming versionedparcelable-1.1.1.aar (androidx.versionedparcelable:versionedparcelable:1.1.1) with AarToClassTransform
+Transforming collection-1.1.0.jar (androidx.collection:collection:1.1.0) with JetifyTransform
+Transforming collection-1.1.0.jar (androidx.collection:collection:1.1.0) with IdentityTransform
+Transforming core-runtime-2.2.0.aar (androidx.arch.core:core-runtime:2.2.0) with JetifyTransform
+Transforming core-runtime-2.2.0.aar (androidx.arch.core:core-runtime:2.2.0) with AarToClassTransform
+Transforming core-common-2.2.0.jar (androidx.arch.core:core-common:2.2.0) with JetifyTransform
+Transforming core-common-2.2.0.jar (androidx.arch.core:core-common:2.2.0) with IdentityTransform
+Transforming annotation-jvm-1.6.0.jar (androidx.annotation:annotation-jvm:1.6.0) with JetifyTransform
+Transforming annotation-jvm-1.6.0.jar (androidx.annotation:annotation-jvm:1.6.0) with IdentityTransform
+Transforming kotlin-stdlib-2.0.0.jar (org.jetbrains.kotlin:kotlin-stdlib:2.0.0) with JetifyTransform
+Transforming kotlin-stdlib-2.0.0.jar (org.jetbrains.kotlin:kotlin-stdlib:2.0.0) with IdentityTransform
+Transforming sqlcipher-android-4.6.1.aar (net.zetetic:sqlcipher-android:4.6.1) with JetifyTransform
+Transforming sqlcipher-android-4.6.1.aar (net.zetetic:sqlcipher-android:4.6.1) with AarToClassTransform
+Transforming annotations-23.0.0.jar (org.jetbrains:annotations:23.0.0) with JetifyTransform
+Transforming annotations-23.0.0.jar (org.jetbrains:annotations:23.0.0) with IdentityTransform
+Transforming hilt-core-2.51.1.jar (com.google.dagger:hilt-core:2.51.1) with JetifyTransform
+Transforming hilt-core-2.51.1.jar (com.google.dagger:hilt-core:2.51.1) with IdentityTransform
+Transforming dagger-2.51.1.jar (com.google.dagger:dagger:2.51.1) with JetifyTransform
+Transforming dagger-2.51.1.jar (com.google.dagger:dagger:2.51.1) with IdentityTransform
+Transforming javax.inject-1.jar (javax.inject:javax.inject:1) with JetifyTransform
+Transforming javax.inject-1.jar (javax.inject:javax.inject:1) with IdentityTransform
+Transforming dagger-lint-aar-2.51.1.aar (com.google.dagger:dagger-lint-aar:2.51.1) with JetifyTransform
+Transforming dagger-lint-aar-2.51.1.aar (com.google.dagger:dagger-lint-aar:2.51.1) with AarToClassTransform
+Transforming jsr305-3.0.2.jar (com.google.code.findbugs:jsr305:3.0.2) with JetifyTransform
+Transforming jsr305-3.0.2.jar (com.google.code.findbugs:jsr305:3.0.2) with IdentityTransform
+Transforming room-runtime-2.6.1.aar (androidx.room:room-runtime:2.6.1) with JetifyTransform
+Transforming room-runtime-2.6.1.aar (androidx.room:room-runtime:2.6.1) with AarToClassTransform
+Transforming room-ktx-2.6.1.aar (androidx.room:room-ktx:2.6.1) with JetifyTransform
+Transforming room-ktx-2.6.1.aar (androidx.room:room-ktx:2.6.1) with AarToClassTransform
+Transforming sqlite-framework-2.4.0.aar (androidx.sqlite:sqlite-framework:2.4.0) with JetifyTransform
+Transforming sqlite-framework-2.4.0.aar (androidx.sqlite:sqlite-framework:2.4.0) with AarToClassTransform
+Transforming kotlin-stdlib-jdk8-1.8.22.jar (org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22) with JetifyTransform
+Transforming kotlin-stdlib-jdk8-1.8.22.jar (org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22) with IdentityTransform
+Transforming kotlin-stdlib-jdk7-1.8.22.jar (org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22) with JetifyTransform
+Transforming kotlin-stdlib-jdk7-1.8.22.jar (org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22) with IdentityTransform
+Transforming room-common-2.6.1.jar (androidx.room:room-common:2.6.1) with JetifyTransform
+Transforming room-common-2.6.1.jar (androidx.room:room-common:2.6.1) with IdentityTransform
+Transforming room-common-2.6.1.jar (androidx.room:room-common:2.6.1) with JetifyTransform
+Transforming hilt-compiler-2.51.1.jar (com.google.dagger:hilt-compiler:2.51.1) with JetifyTransform
+Transforming dagger-compiler-2.51.1.jar (com.google.dagger:dagger-compiler:2.51.1) with JetifyTransform
+Transforming dagger-spi-2.51.1.jar (com.google.dagger:dagger-spi:2.51.1) with JetifyTransform
+Transforming symbol-processing-api-1.9.20-1.0.14.jar (com.google.devtools.ksp:symbol-processing-api:1.9.20-1.0.14) with JetifyTransform
+Transforming javapoet-1.13.0.jar (com.squareup:javapoet:1.13.0) with JetifyTransform
+Transforming kotlin-stdlib-jdk8-1.9.0.jar (org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.0) with JetifyTransform
+Transforming kotlin-stdlib-jdk7-1.9.0.jar (org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.0) with JetifyTransform
+Transforming kotlin-stdlib-1.9.20.jar (org.jetbrains.kotlin:kotlin-stdlib:1.9.20) with JetifyTransform
+Transforming dagger-2.51.1.jar (com.google.dagger:dagger:2.51.1) with JetifyTransform
+Transforming google-java-format-1.5.jar (com.google.googlejavaformat:google-java-format:1.5) with JetifyTransform
+Transforming guava-33.0.0-jre.jar (com.google.guava:guava:33.0.0-jre) with JetifyTransform
+Transforming jsr305-3.0.2.jar (com.google.code.findbugs:jsr305:3.0.2) with JetifyTransform
+Transforming failureaccess-1.0.2.jar (com.google.guava:failureaccess:1.0.2) with JetifyTransform
+Transforming javax.inject-1.jar (javax.inject:javax.inject:1) with JetifyTransform
+Transforming incap-0.2.jar (net.ltgt.gradle.incap:incap:0.2) with JetifyTransform
+Transforming annotations-13.0.jar (org.jetbrains:annotations:13.0) with JetifyTransform
+Transforming checker-compat-qual-2.5.5.jar (org.checkerframework:checker-compat-qual:2.5.5) with JetifyTransform
+Transforming listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar (com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava) with JetifyTransform
+Transforming checker-qual-3.41.0.jar (org.checkerframework:checker-qual:3.41.0) with JetifyTransform
+Transforming error_prone_annotations-2.23.0.jar (com.google.errorprone:error_prone_annotations:2.23.0) with JetifyTransform
+Transforming javac-shaded-9-dev-r4023-3.jar (com.google.errorprone:javac-shaded:9-dev-r4023-3) with JetifyTransform
+Transforming room-compiler-processing-2.6.1.jar (androidx.room:room-compiler-processing:2.6.1) with JetifyTransform
+Transforming room-compiler-2.6.1.jar (androidx.room:room-compiler:2.6.1) with JetifyTransform
+Transforming auto-common-0.11.jar (com.google.auto:auto-common:0.11) with JetifyTransform
+Transforming auto-value-annotations-1.6.3.jar (com.google.auto.value:auto-value-annotations:1.6.3) with JetifyTransform
+Transforming annotations-12.0.jar (com.intellij:annotations:12.0) with JetifyTransform
+Transforming kotlinpoet-javapoet-1.14.2.jar (com.squareup:kotlinpoet-javapoet:1.14.2) with JetifyTransform
+Transforming kotlinpoet-1.14.2.jar (com.squareup:kotlinpoet:1.14.2) with JetifyTransform
+Transforming commons-codec-1.15.jar (commons-codec:commons-codec:1.15) with JetifyTransform
+Transforming kotlin-reflect-1.8.21.jar (org.jetbrains.kotlin:kotlin-reflect:1.8.21) with JetifyTransform
+Transforming sqlite-jdbc-3.41.2.2.jar (org.xerial:sqlite-jdbc:3.41.2.2) with JetifyTransform
+Transforming annotation-1.3.0.jar (androidx.annotation:annotation:1.3.0) with JetifyTransform
+Transforming gson-2.9.0.jar (com.google.code.gson:gson:2.9.0) with JetifyTransform
+Transforming room-migration-2.6.1.jar (androidx.room:room-migration:2.6.1) with JetifyTransform
+Transforming R.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-hilt-android-2.51.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming fragment-1.5.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-activity-1.5.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming loader-1.0.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming viewpager-1.0.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming customview-1.0.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-1.13.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-livedata-2.6.2-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-livedata-core-2.6.2-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-runtime-2.6.2-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-viewmodel-2.6.2-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming lifecycle-common-2.6.2.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-lifecycle-viewmodel-savedstate-2.6.2-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-core-ktx-1.13.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming room-common-2.6.1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming room-runtime-2.6.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-room-ktx-2.6.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-kotlinx-coroutines-core-jvm-1.8.1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-kotlinx-coroutines-android-1.8.1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming sqlite-framework-2.4.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming sqlite-2.4.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-sqlite-ktx-2.4.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming classes.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming classes.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming classes.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-annotation-experimental-1.4.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-savedstate-1.2.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming versionedparcelable-1.1.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming collection-1.1.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-runtime-2.2.0-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-common-2.2.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-annotation-jvm-1.6.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-kotlin-stdlib-jdk8-1.8.22.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-kotlin-stdlib-jdk7-1.8.22.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-kotlin-stdlib-2.0.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-sqlcipher-android-4.6.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-annotations-23.0.0.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-hilt-core-2.51.1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-dagger-2.51.1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-javax.inject-1.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-dagger-lint-aar-2.51.1-api.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming jetified-jsr305-3.0.2.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming android.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Transforming core-lambda-stubs.jar with BuildToolsApiClasspathEntrySnapshotTransform
+Build cache key for task ':data:local-cache:kaptGenerateStubsDebugKotlin' is 961e1fea7a22d4d62f3ded5087da3a83
+Skipping task ':data:local-cache:kaptGenerateStubsDebugKotlin' as it is up-to-date.
+Resolve mutations for :data:local-cache:kaptDebugKotlin (Thread[#104,included builds,5,main]) started.
+:data:local-cache:kaptDebugKotlin (Thread[#104,included builds,5,main]) started.
+This JVM does not support getting OS memory, so no OS memory status updates will be broadcast
+
+> Task :data:local-cache:kaptDebugKotlin
+Transforming R.jar with StructureTransformAction
+Transforming jetified-hilt-android-2.51.1-api.jar with StructureTransformAction
+Transforming fragment-1.5.1-api.jar with StructureTransformAction
+Transforming jetified-activity-1.5.1-api.jar with StructureTransformAction
+Transforming loader-1.0.0-api.jar with StructureTransformAction
+Transforming viewpager-1.0.0-api.jar with StructureTransformAction
+Transforming customview-1.0.0-api.jar with StructureTransformAction
+Transforming core-1.13.1-api.jar with StructureTransformAction
+Transforming lifecycle-livedata-2.6.2-api.jar with StructureTransformAction
+Transforming lifecycle-livedata-core-2.6.2-api.jar with StructureTransformAction
+Transforming lifecycle-runtime-2.6.2-api.jar with StructureTransformAction
+Transforming lifecycle-viewmodel-2.6.2-api.jar with StructureTransformAction
+Transforming lifecycle-common-2.6.2.jar with StructureTransformAction
+Transforming jetified-lifecycle-viewmodel-savedstate-2.6.2-api.jar with StructureTransformAction
+Transforming jetified-core-ktx-1.13.1-api.jar with StructureTransformAction
+Transforming room-common-2.6.1.jar with StructureTransformAction
+Transforming room-runtime-2.6.1-api.jar with StructureTransformAction
+Transforming jetified-room-ktx-2.6.1-api.jar with StructureTransformAction
+Transforming jetified-kotlinx-coroutines-core-jvm-1.8.1.jar with StructureTransformAction
+Transforming jetified-kotlinx-coroutines-android-1.8.1.jar with StructureTransformAction
+Transforming sqlite-framework-2.4.0-api.jar with StructureTransformAction
+Transforming sqlite-2.4.0-api.jar with StructureTransformAction
+Transforming jetified-sqlite-ktx-2.4.0-api.jar with StructureTransformAction
+Transforming classes.jar with StructureTransformAction
+Transforming classes.jar with StructureTransformAction
+Transforming classes.jar with StructureTransformAction
+Transforming jetified-annotation-experimental-1.4.0-api.jar with StructureTransformAction
+Transforming jetified-savedstate-1.2.1-api.jar with StructureTransformAction
+Transforming versionedparcelable-1.1.1-api.jar with StructureTransformAction
+Transforming collection-1.1.0.jar with StructureTransformAction
+Transforming core-runtime-2.2.0-api.jar with StructureTransformAction
+Transforming core-common-2.2.0.jar with StructureTransformAction
+Transforming jetified-annotation-jvm-1.6.0.jar with StructureTransformAction
+Transforming jetified-kotlin-stdlib-jdk8-1.8.22.jar with StructureTransformAction
+Transforming jetified-kotlin-stdlib-jdk7-1.8.22.jar with StructureTransformAction
+Transforming jetified-kotlin-stdlib-2.0.0.jar with StructureTransformAction
+Transforming jetified-sqlcipher-android-4.6.1-api.jar with StructureTransformAction
+Transforming jetified-annotations-23.0.0.jar with StructureTransformAction
+Transforming jetified-hilt-core-2.51.1.jar with StructureTransformAction
+Transforming jetified-dagger-2.51.1.jar with StructureTransformAction
+Transforming jetified-javax.inject-1.jar with StructureTransformAction
+Transforming jetified-dagger-lint-aar-2.51.1-api.jar with StructureTransformAction
+Transforming jetified-jsr305-3.0.2.jar with StructureTransformAction
+Transforming android.jar with StructureTransformAction
+Transforming core-lambda-stubs.jar with StructureTransformAction
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\data\local-cache\src\debug\kotlin', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\data\local-cache\src\debug\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\data\local-cache\src\debug\kotlin', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\data\local-cache\src\debug\kotlin', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\data\local-cache\src\debug\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\data\local-cache\src\main\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\data\local-cache\src\main\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\data\local-cache\src\main\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\data\local-cache\src\main\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\data\local-cache\src\debug\kotlin', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\data\local-cache\src\debug\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\data\local-cache\src\debug\kotlin', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\data\local-cache\src\debug\kotlin', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\data\local-cache\src\debug\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\data\local-cache\src\main\java', not found
+file or directory 'C:\Users\user\Dev\ollanvin\myphonecheck\data\local-cache\src\debug\java', not found
+Build cache key for task ':data:local-cache:kaptDebugKotlin' is cdca2b3c472525edd68313e1e6fb0612
+Task ':data:local-cache:kaptDebugKotlin' is not up-to-date because:
+  Task has failed previously.
+The input changes require a full rebuild for incremental task ':data:local-cache:kaptDebugKotlin'.
+Running kapt annotation processing using the Gradle Worker API
+Using workers PROCESS isolation mode to run kapt
+Kapt worker classpath: [C:\Users\user\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-annotation-processing-gradle\2.0.0\b2f080063f1c8ccdb722ace0eb9ddcec6d3e25ab\kotlin-annotation-processing-gradle-2.0.0.jar, C:\Users\user\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib\2.0.0\b48df2c4aede9586cc931ead433bc02d6fd7879e\kotlin-stdlib-2.0.0.jar, C:\Users\user\.gradle\caches\modules-2\files-2.1\org.jetbrains\annotations\13.0\919f0dfe192fb4e063e7dacadee7f8bb9a2672a9\annotations-13.0.jar]
+Starting process 'Gradle Worker Daemon 1'. Working directory: C:\Users\user\.gradle\workers Command: C:\Users\user\.gradle\jdks\eclipse_adoptium-17-amd64-windows\jdk-17.0.18+8\bin\java.exe @C:\Users\user\.gradle\.tmp\gradle-worker-classpath10450146656048267885txt -Xmx512m -Dfile.encoding=UTF-8 -Duser.country=KR -Duser.language=ko -Duser.variant worker.org.gradle.process.internal.worker.GradleWorkerMain 'Gradle Worker Daemon 1'
+Successfully started process 'Gradle Worker Daemon 1'
+Started Gradle worker daemon (0.497 secs) with fork options DaemonForkOptions{executable=C:\Users\user\.gradle\jdks\eclipse_adoptium-17-amd64-windows\jdk-17.0.18+8\bin\java.exe, minHeapSize=null, maxHeapSize=null, jvmArgs=[], keepAliveMode=SESSION}.
+java.nio.file.AccessDeniedException: C:\WINDOWS\sqlite-3.41.2.2-a2b8bd31-cf16-43cb-a0
+1a-ff430a69dc85-sqlitejdbc.dll.lck
+	at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.jav
+a:89)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:
+103)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:
+108)
+	at java.base/sun.nio.fs.WindowsFileSystemProvider.newByteChannel(WindowsFileSystemPr
+ovider.java:236)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:380)
+	at java.base/java.nio.file.Files.createFile(Files.java:658)
+	at org.sqlite.SQLiteJDBCLoader.extractAndLoadLibraryFile(SQLiteJDBCLoader.java:214)
+	at org.sqlite.SQLiteJDBCLoader.loadSQLiteNativeLibrary(SQLiteJDBCLoader.java:338)
+	at org.sqlite.SQLiteJDBCLoader.initialize(SQLiteJDBCLoader.java:72)
+	at androidx.room.verifier.DatabaseVerifier.<clinit>(DatabaseVerifier.kt:79)
+	at androidx.room.processor.DatabaseProcessor.doProcess(DatabaseProcessor.kt:81)
+	at androidx.room.processor.DatabaseProcessor.process(DatabaseProcessor.kt:60)
+	at androidx.room.DatabaseProcessingStep$process$databases$1$1.invoke(DatabaseProcess
+ingStep.kt:68)
+	at androidx.room.DatabaseProcessingStep$process$databases$1$1.invoke(DatabaseProcess
+ingStep.kt:64)
+	at androidx.room.processor.Context.collectLogs(Context.kt:192)
+	at androidx.room.DatabaseProcessingStep.process(DatabaseProcessingStep.kt:64)
+	at androidx.room.compiler.processing.CommonProcessorDelegate.processRound(XBasicAnno
+tationProcessor.kt:130)
+	at androidx.room.compiler.processing.javac.JavacBasicAnnotationProcessor.process(Jav
+acBasicAnnotationProcessor.kt:73)
+	at org.jetbrains.kotlin.kapt3.base.incremental.IncrementalProcessor.process(incremen
+talProcessors.kt:90)
+	at org.jetbrains.kotlin.kapt3.base.ProcessorWrapper.process(annotationProcessing.kt:
+216)
+	at jdk.compiler/com.sun.tools.javac.processing.JavacProcessingEnvironment.callProces
+sor(JavacProcessingEnvironment.java:1023)
+	at jdk.compiler/com.sun.tools.javac.processing.JavacProcessingEnvironment.discoverAn
+dRunProcs(JavacProcessingEnvironment.java:939)
+	at jdk.compiler/com.sun.tools.javac.processing.JavacProcessingEnvironment$Round.run(
+JavacProcessingEnvironment.java:1267)
+	at jdk.compiler/com.sun.tools.javac.processing.JavacProcessingEnvironment.doProcessi
+ng(JavacProcessingEnvironment.java:1382)
+	at jdk.compiler/com.sun.tools.javac.main.JavaCompiler.processAnnotations(JavaCompile
+r.java:1234)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccess
+orImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMeth
+odAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.jetbrains.kotlin.kapt3.base.AnnotationProcessingKt.doAnnotationProcessing(ann
+otationProcessing.kt:97)
+	at org.jetbrains.kotlin.kapt3.base.AnnotationProcessingKt.doAnnotationProcessing(ann
+otationProcessing.kt:36)
+	at org.jetbrains.kotlin.kapt3.base.Kapt.kapt(Kapt.kt:46)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccess
+orImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMeth
+odAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.jetbrains.kotlin.gradle.internal.KaptExecution.run(KaptWithoutKotlincTask.kt:
+325)
+	at org.jetbrains.kotlin.gradle.internal.KaptWithoutKotlincTask$KaptExecutionWorkActi
+on.execute(KaptWithoutKotlincTask.kt:266)
+	at org.gradle.workers.internal.DefaultWorkerServer.execute(DefaultWorkerServer.java:
+63)
+	at org.gradle.workers.internal.AbstractClassLoaderWorker$1.create(AbstractClassLoade
+rWorker.java:54)
+	at org.gradle.workers.internal.AbstractClassLoaderWorker$1.create(AbstractClassLoade
+rWorker.java:48)
+	at org.gradle.internal.classloader.ClassLoaderUtils.executeInClassloader(ClassLoader
+Utils.java:100)
+	at org.gradle.workers.internal.AbstractClassLoaderWorker.executeInClassLoader(Abstra
+ctClassLoaderWorker.java:48)
+	at org.gradle.workers.internal.IsolatedClassloaderWorker.run(IsolatedClassloaderWork
+er.java:49)
+	at org.gradle.workers.internal.IsolatedClassloaderWorker.run(IsolatedClassloaderWork
+er.java:30)
+	at org.gradle.workers.internal.WorkerDaemonServer.run(WorkerDaemonServer.java:96)
+	at org.gradle.workers.internal.WorkerDaemonServer.run(WorkerDaemonServer.java:65)
+	at org.gradle.process.internal.worker.request.WorkerAction$1.call(WorkerAction.java:
+146)
+	at org.gradle.process.internal.worker.child.WorkerLogEventListener.withWorkerLogging
+Protocol(WorkerLogEventListener.java:41)
+	at org.gradle.process.internal.worker.request.WorkerAction.lambda$run$0(WorkerAction
+.java:143)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperatio
+nRef.java:80)
+	at org.gradle.process.internal.worker.request.WorkerAction.run(WorkerAction.java:135
+)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccess
+orImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMeth
+odAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:
+36)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:
+24)
+	at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$Dispatch
+Wrapper.dispatch(MessageHubBackedObjectConnection.java:182)
+	at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$Dispatch
+Wrapper.dispatch(MessageHubBackedObjectConnection.java:164)
+	at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:41
+4)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(Ex
+ecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecu
+tor.java:47)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.ja
+va:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.j
+ava:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+
+> Task :data:local-cache:kaptDebugKotlin FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':data:local-cache:kaptDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.gradle.internal.KaptWithout
+KotlincTask$KaptExecutionWorkAction
+
+* Try:
+> Run with --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':data:local-c
+ache:kaptDebugKotlin'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$execute
+IfValid$1(ExecuteActionsTaskExecuter.java:148)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:282)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid
+(ExecuteActionsTaskExecuter.java:146)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(Execut
+eActionsTaskExecuter.java:134)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(Fi
+nalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(
+ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(Ski
+pTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIf
+TaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchE
+xceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(Eve
+ntFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFirin
+gTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFirin
+gTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperation
+Worker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperation
+Worker.execute(DefaultBuildOperationRunner.java:199)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuild
+OperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuild
+OperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOp
+erationRunner.java:157)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOp
+erationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOpera
+tionRunner.java:53)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.call(DefaultBuildOpe
+rationExecutor.java:73)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiri
+ngTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.jav
+a:42)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsActio
+n.execute(DefaultTaskExecutionGraph.java:331)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsActio
+n.execute(DefaultTaskExecutionGraph.java:318)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecu
+tionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:314)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperatio
+nRef.java:80)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecu
+tionAction.execute(DefaultTaskExecutionGraph.java:314)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecu
+tionAction.execute(DefaultTaskExecutionGraph.java:303)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanE
+xecutor.java:463)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecu
+tor.java:380)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:11
+6)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(Defa
+ultTaskExecutionGraph.java:138)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecu
+tionGraph.java:123)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAct
+ion.java:35)
+	at org.gradle.execution.DryRunBuildExecutionAction.execute(DryRunBuildExecutionActio
+n.java:51)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(Bu
+ildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(Bu
+ildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperation
+Worker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperation
+Worker.execute(DefaultBuildOperationRunner.java:199)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuild
+OperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuild
+OperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOp
+erationRunner.java:157)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOp
+erationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOpera
+tionRunner.java:53)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.call(DefaultBuildOpe
+rationExecutor.java:73)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperati
+onFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(
+DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionC
+ontroller.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateT
+ransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:44
+)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransition
+Controller.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBui
+ldLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.r
+unWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseSe
+rvice.java:264)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorke
+rLeaseService.java:128)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController
+.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildContr
+oller.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0
+(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperatio
+nRef.java:80)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultB
+uildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(Ex
+ecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecu
+tor.java:47)
+Caused by: org.gradle.workers.internal.DefaultWorkerExecutor$WorkExecutionException: 
+A failure occurred while executing org.jetbrains.kotlin.gradle.internal.KaptWithoutKo
+tlincTask$KaptExecutionWorkAction
+	at org.gradle.workers.internal.DefaultWorkerExecutor$WorkItemExecution.waitForComple
+tion(DefaultWorkerExecutor.java:283)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.lambda$waitForItemsAndGatherFail
+ures$2(DefaultAsyncWorkTracker.java:130)
+	at org.gradle.internal.Factories$1.create(Factories.java:31)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withoutLocks(DefaultWorkerLeas
+eService.java:336)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withoutLocks(DefaultWorkerLeas
+eService.java:319)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withoutLock(DefaultWorkerLease
+Service.java:324)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.waitForItemsAndGatherFailures(De
+faultAsyncWorkTracker.java:126)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.waitForItemsAndGatherFailures(De
+faultAsyncWorkTracker.java:92)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.waitForAll(DefaultAsyncWorkTrack
+er.java:78)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.waitForCompletion(DefaultAsyncWo
+rkTracker.java:66)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:25
+5)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuild
+OperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuild
+OperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuild
+OperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuild
+OperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOp
+erationRunner.java:157)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOp
+erationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperat
+ionRunner.java:47)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.run(DefaultBuildOper
+ationExecutor.java:68)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution
+.java:232)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecutio
+n.java:215)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFi
+les(TaskExecution.java:198)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:
+165)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:
+105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperation
+Worker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperation
+Worker.execute(DefaultBuildOperationRunner.java:199)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuild
+OperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuild
+OperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOp
+erationRunner.java:157)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOp
+erationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOpera
+tionRunner.java:53)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.call(DefaultBuildOpe
+rationExecutor.java:73)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionSt
+ep.java:41)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep
+.java:74)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateO
+utputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateO
+utputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePrevi
+ousOutputsStep.java:67)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePrevi
+ousOutputsStep.java:37)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(Broadcas
+tChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(Broadcas
+tChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(Capt
+ureOutputsAfterExecutionStep.java:64)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(Capt
+ureOutputsAfterExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputC
+hangesStep.java:40)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputC
+hangesStep.java:29)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCache
+Step.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeAndStoreInCache(BuildCa
+cheStep.java:145)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$executeWithCache$4(Buil
+dCacheStep.java:101)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$executeWithCache$5(Buil
+dCacheStep.java:101)
+	at org.gradle.internal.Try$Success.map(Try.java:164)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithCache(BuildCacheSte
+p.java:85)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$0(BuildCacheSte
+p.java:74)
+	at org.gradle.internal.Either$Left.fold(Either.java:115)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:59)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73
+)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48
+)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutio
+nStateStep.java:44)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutio
+nStateStep.java:33)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateS
+tep.java:76)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDat
+eStep.java:54)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.jav
+a:54)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.jav
+a:36)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep
+.java:65)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep
+.java:36)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.exe
+cute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.exe
+cute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveCachingStateStep.execute(ResolveCachin
+gStateStep.java:76)
+	at org.gradle.internal.execution.steps.ResolveCachingStateStep.execute(ResolveCachin
+gStateStep.java:37)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:106)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:55)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execu
+te(AbstractCaptureStateBeforeExecutionStep.java:64)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execu
+te(AbstractCaptureStateBeforeExecutionStep.java:43)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmpty
+Sources(AbstractSkipEmptyWorkStep.java:125)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSki
+pEmptyWorkStep.java:56)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSki
+pEmptyWorkStep.java:36)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.exec
+ute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPr
+eviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPr
+eviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOut
+putsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOut
+putsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(A
+ssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecuti
+on.java:292)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMuta
+bleWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMuta
+bleWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep
+.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep
+.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$ex
+ecute$2(ExecuteWorkBuildOperationFiringStep.java:66)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(E
+xecuteWorkBuildOperationFiringStep.java:66)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(E
+xecuteWorkBuildOperationFiringStep.java:38)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.j
+ava:36)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.j
+ava:26)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecut
+ionEngine.java:61)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid
+(ExecuteActionsTaskExecuter.java:145)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(Execut
+eActionsTaskExecuter.java:134)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(Fi
+nalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(
+ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(Ski
+pTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIf
+TaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchE
+xceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(Eve
+ntFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFirin
+gTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFirin
+gTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperation
+Worker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperation
+Worker.execute(DefaultBuildOperationRunner.java:199)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuild
+OperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuild
+OperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOp
+erationRunner.java:157)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOp
+erationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOpera
+tionRunner.java:53)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.call(DefaultBuildOpe
+rationExecutor.java:73)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiri
+ngTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.jav
+a:42)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsActio
+n.execute(DefaultTaskExecutionGraph.java:331)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsActio
+n.execute(DefaultTaskExecutionGraph.java:318)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecu
+tionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:314)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperatio
+nRef.java:80)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecu
+tionAction.execute(DefaultTaskExecutionGraph.java:314)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecu
+tionAction.execute(DefaultTaskExecutionGraph.java:303)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanE
+xecutor.java:463)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecu
+tor.java:380)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:11
+6)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(Defa
+ultTaskExecutionGraph.java:138)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecu
+tionGraph.java:123)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAct
+ion.java:35)
+	at org.gradle.execution.DryRunBuildExecutionAction.execute(DryRunBuildExecutionActio
+n.java:51)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(Bu
+ildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(Bu
+ildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperation
+Worker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperation
+Worker.execute(DefaultBuildOperationRunner.java:199)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuild
+OperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuild
+OperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOp
+erationRunner.java:157)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOp
+erationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOpera
+tionRunner.java:53)
+	at org.gradle.internal.operations.DefaultBuildOperationExecutor.call(DefaultBuildOpe
+rationExecutor.java:73)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperati
+onFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(
+DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionC
+ontroller.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateT
+ransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:44
+)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransition
+Controller.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBui
+ldLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.r
+unWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseSe
+rvice.java:264)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorke
+rLeaseService.java:128)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController
+.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildContr
+oller.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0
+(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperatio
+nRef.java:80)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultB
+uildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(Ex
+ecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecu
+tor.java:47)
+Caused by: java.lang.reflect.InvocationTargetException
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccess
+orImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMeth
+odAccessorImpl.java:43)
+	at org.jetbrains.kotlin.gradle.internal.KaptExecution.run(KaptWithoutKotlincTask.kt:
+325)
+	at org.jetbrains.kotlin.gradle.internal.KaptWithoutKotlincTask$KaptExecutionWorkActi
+on.execute(KaptWithoutKotlincTask.kt:266)
+	at org.gradle.workers.internal.DefaultWorkerServer.execute(DefaultWorkerServer.java:
+63)
+	at org.gradle.workers.internal.AbstractClassLoaderWorker$1.create(AbstractClassLoade
+rWorker.java:54)
+	at org.gradle.workers.internal.AbstractClassLoaderWorker$1.create(AbstractClassLoade
+rWorker.java:48)
+	at org.gradle.internal.classloader.ClassLoaderUtils.executeInClassloader(ClassLoader
+Utils.java:100)
+	at org.gradle.workers.internal.AbstractClassLoaderWorker.executeInClassLoader(Abstra
+ctClassLoaderWorker.java:48)
+	at org.gradle.workers.internal.IsolatedClassloaderWorker.run(IsolatedClassloaderWork
+er.java:49)
+	at org.gradle.workers.internal.IsolatedClassloaderWorker.run(IsolatedClassloaderWork
+er.java:30)
+	at org.gradle.workers.internal.WorkerDaemonServer.run(WorkerDaemonServer.java:96)
+	at org.gradle.workers.internal.WorkerDaemonServer.run(WorkerDaemonServer.java:65)
+	at org.gradle.process.internal.worker.request.WorkerAction$1.call(WorkerAction.java:
+146)
+	at org.gradle.process.internal.worker.child.WorkerLogEventListener.withWorkerLogging
+Protocol(WorkerLogEventListener.java:41)
+	at org.gradle.process.internal.worker.request.WorkerAction.lambda$run$0(WorkerAction
+.java:143)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperatio
+nRef.java:80)
+	at org.gradle.process.internal.worker.request.WorkerAction.run(WorkerAction.java:135
+)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccess
+orImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMeth
+odAccessorImpl.java:43)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:
+36)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:
+24)
+	at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$Dispatch
+Wrapper.dispatch(MessageHubBackedObjectConnection.java:182)
+	at org.gradle.internal.remote.internal.hub.MessageHubBackedObjectConnection$Dispatch
+Wrapper.dispatch(MessageHubBackedObjectConnection.java:164)
+	at org.gradle.internal.remote.internal.hub.MessageHub$Handler.run(MessageHub.java:41
+4)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(Ex
+ecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecu
+tor.java:47)
+Caused by: java.lang.reflect.InvocationTargetException
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccess
+orImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMeth
+odAccessorImpl.java:43)
+	at org.jetbrains.kotlin.kapt3.base.AnnotationProcessingKt.doAnnotationProcessing(ann
+otationProcessing.kt:97)
+	at org.jetbrains.kotlin.kapt3.base.AnnotationProcessingKt.doAnnotationProcessing(ann
+otationProcessing.kt:36)
+	at org.jetbrains.kotlin.kapt3.base.Kapt.kapt(Kapt.kt:46)
+	... 29 more
+Caused by: com.sun.tools.javac.processing.AnnotationProcessingError: java.lang.Except
+ionInInitializerError
+40 actionable tasks: 2 executed, 38 up-to-date
+Watched directory hierarchies: [C:\Users\user\Dev\ollanvin\myphonecheck]
+	at jdk.compiler/com.sun.tools.javac.processing.JavacProcessingEnvironment.callProces
+sor(JavacProcessingEnvironment.java:1035)
+	at jdk.compiler/com.sun.tools.javac.processing.JavacProcessingEnvironment.discoverAn
+dRunProcs(JavacProcessingEnvironment.java:939)
+	at jdk.compiler/com.sun.tools.javac.processing.JavacProcessingEnvironment$Round.run(
+JavacProcessingEnvironment.java:1267)
+	at jdk.compiler/com.sun.tools.javac.processing.JavacProcessingEnvironment.doProcessi
+ng(JavacProcessingEnvironment.java:1382)
+	at jdk.compiler/com.sun.tools.javac.main.JavaCompiler.processAnnotations(JavaCompile
+r.java:1234)
+	... 35 more
+Caused by: java.lang.ExceptionInInitializerError
+	at androidx.room.processor.DatabaseProcessor.doProcess(DatabaseProcessor.kt:81)
+	at androidx.room.processor.DatabaseProcessor.process(DatabaseProcessor.kt:60)
+	at androidx.room.DatabaseProcessingStep$process$databases$1$1.invoke(DatabaseProcess
+ingStep.kt:68)
+	at androidx.room.DatabaseProcessingStep$process$databases$1$1.invoke(DatabaseProcess
+ingStep.kt:64)
+	at androidx.room.processor.Context.collectLogs(Context.kt:192)
+	at androidx.room.DatabaseProcessingStep.process(DatabaseProcessingStep.kt:64)
+	at androidx.room.compiler.processing.CommonProcessorDelegate.processRound(XBasicAnno
+tationProcessor.kt:130)
+	at androidx.room.compiler.processing.javac.JavacBasicAnnotationProcessor.process(Jav
+acBasicAnnotationProcessor.kt:73)
+	at org.jetbrains.kotlin.kapt3.base.incremental.IncrementalProcessor.process(incremen
+talProcessors.kt:90)
+	at org.jetbrains.kotlin.kapt3.base.ProcessorWrapper.process(annotationProcessing.kt:
+216)
+	at jdk.compiler/com.sun.tools.javac.processing.JavacProcessingEnvironment.callProces
+sor(JavacProcessingEnvironment.java:1023)
+	... 39 more
+Caused by: java.lang.Exception: No native library found for os.name=Windows, os.arch=
+x86_64, paths=[/org/sqlite/native/Windows/x86_64;C:\Users\user\.gradle\jdks\eclipse_a
+doptium-17-amd64-windows\jdk-17.0.18+8\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system3
+2;C:\WINDOWS;.]
+	at org.sqlite.SQLiteJDBCLoader.loadSQLiteNativeLibrary(SQLiteJDBCLoader.java:363)
+	at org.sqlite.SQLiteJDBCLoader.initialize(SQLiteJDBCLoader.java:72)
+	at androidx.room.verifier.DatabaseVerifier.<clinit>(DatabaseVerifier.kt:79)
+	... 50 more
+
+
+BUILD FAILED in 21s
+Stopped 1 worker daemon(s).

@@ -1,0 +1,71 @@
+﻿
+app\build.gradle.kts:42:        sourceCompatibility = JavaVersion.VERSION_17
+app\build.gradle.kts:43:        targetCompatibility = JavaVersion.VERSION_17
+build-logic\convention\build.gradle.kts:8:    sourceCompatibility = JavaVersion.VERSI
+ON_17
+build-logic\convention\build.gradle.kts:9:    targetCompatibility = JavaVersion.VERSI
+ON_17
+core\model\build.gradle.kts:28:        sourceCompatibility = JavaVersion.VERSION_17
+core\model\build.gradle.kts:29:        targetCompatibility = JavaVersion.VERSION_17
+core\security\build.gradle.kts:26:        sourceCompatibility = JavaVersion.VERSION_1
+7
+core\security\build.gradle.kts:27:        targetCompatibility = JavaVersion.VERSION_1
+7
+core\util\build.gradle.kts:28:        sourceCompatibility = JavaVersion.VERSION_17
+core\util\build.gradle.kts:29:        targetCompatibility = JavaVersion.VERSION_17
+data\calllog\build.gradle.kts:29:        sourceCompatibility = JavaVersion.VERSION_17
+data\calllog\build.gradle.kts:30:        targetCompatibility = JavaVersion.VERSION_17
+data\contacts\build.gradle.kts:29:        sourceCompatibility = JavaVersion.VERSION_1
+7
+data\contacts\build.gradle.kts:30:        targetCompatibility = JavaVersion.VERSION_1
+7
+data\local-cache\build.gradle.kts:29:        sourceCompatibility = JavaVersion.VERSIO
+N_17
+data\local-cache\build.gradle.kts:30:        targetCompatibility = JavaVersion.VERSIO
+N_17
+data\search\build.gradle.kts:29:        sourceCompatibility = JavaVersion.VERSION_17
+data\search\build.gradle.kts:30:        targetCompatibility = JavaVersion.VERSION_17
+data\sms\build.gradle.kts:29:        sourceCompatibility = JavaVersion.VERSION_17
+data\sms\build.gradle.kts:30:        targetCompatibility = JavaVersion.VERSION_17
+feature\billing\build.gradle.kts:30:        sourceCompatibility = JavaVersion.VERSION
+_17
+feature\billing\build.gradle.kts:31:        targetCompatibility = JavaVersion.VERSION
+_17
+feature\call-intercept\build.gradle.kts:29:        sourceCompatibility = JavaVersion.
+VERSION_17
+feature\call-intercept\build.gradle.kts:30:        targetCompatibility = JavaVersion.
+VERSION_17
+feature\country-config\build.gradle.kts:29:        sourceCompatibility = JavaVersion.
+VERSION_17
+feature\country-config\build.gradle.kts:30:        targetCompatibility = JavaVersion.
+VERSION_17
+feature\decision-engine\build.gradle.kts:29:        sourceCompatibility = JavaVersion
+.VERSION_17
+feature\decision-engine\build.gradle.kts:30:        targetCompatibility = JavaVersion
+.VERSION_17
+feature\decision-ui\build.gradle.kts:30:        sourceCompatibility = JavaVersion.VER
+SION_17
+feature\decision-ui\build.gradle.kts:31:        targetCompatibility = JavaVersion.VER
+SION_17
+feature\device-evidence\build.gradle.kts:29:        sourceCompatibility = JavaVersion
+.VERSION_17
+feature\device-evidence\build.gradle.kts:30:        targetCompatibility = JavaVersion
+.VERSION_17
+feature\message-intercept\build.gradle.kts:29:        sourceCompatibility = JavaVersi
+on.VERSION_17
+feature\message-intercept\build.gradle.kts:30:        targetCompatibility = JavaVersi
+on.VERSION_17
+feature\privacy-check\build.gradle.kts:29:        sourceCompatibility = JavaVersion.V
+ERSION_17
+feature\privacy-check\build.gradle.kts:30:        targetCompatibility = JavaVersion.V
+ERSION_17
+feature\search-enrichment\build.gradle.kts:29:        sourceCompatibility = JavaVersi
+on.VERSION_17
+feature\search-enrichment\build.gradle.kts:30:        targetCompatibility = JavaVersi
+on.VERSION_17
+feature\settings\build.gradle.kts:30:        sourceCompatibility = JavaVersion.VERSIO
+N_17
+feature\settings\build.gradle.kts:31:        targetCompatibility = JavaVersion.VERSIO
+N_17
+
+

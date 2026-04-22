@@ -1,0 +1,17 @@
+﻿
+INFO: The system global flag 'maintain objects list' needs
+      to be enabled to see local opened files.
+      See Openfiles /? for more information.
+
+
+Files opened remotely via local share points:
+---------------------------------------------
+openfiles : ERROR: Access is denied.
+At line:1 char:7
++ try { openfiles /query 2>&1 | Out-File -Encoding utf8 logs\openfiles_ ...
++       ~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (ERROR: Access is denied.:String) [], Re 
+   moteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+

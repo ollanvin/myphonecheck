@@ -1,0 +1,91 @@
+﻿## codex-global-single-core-snapshot...origin/codex-global-single-core-snapshot [ahead 1]
+ M app/build.gradle.kts
+ M app/src/main/AndroidManifest.xml
+ M app/src/main/kotlin/app/myphonecheck/mobile/legacy/ForcePhoneListener.kt
+ M app/src/main/kotlin/app/myphonecheck/mobile/navigation/MyPhoneCheckNavHost.kt
+ M app/src/main/kotlin/app/myphonecheck/mobile/worker/WeeklyReportWorker.kt
+ M build-logic/convention/build.gradle.kts
+ M build-logic/convention/src/main/kotlin/AndroidApplicationConventionPlugin.kt
+ M build-logic/convention/src/main/kotlin/AndroidLibraryConventionPlugin.kt
+ M build-logic/settings.gradle.kts
+ M build.gradle.kts
+ M core/model/build.gradle.kts
+ M core/model/src/main/kotlin/app/myphonecheck/mobile/core/model/ConclusionCategory.kt
+ M core/model/src/main/kotlin/app/myphonecheck/mobile/core/model/InterceptEventType.kt
+ D core/model/src/main/kotlin/app/myphonecheck/mobile/core/model/PushEvidence.kt
+ M core/security/build.gradle.kts
+ M core/util/build.gradle.kts
+ M data/calllog/build.gradle.kts
+ M data/contacts/build.gradle.kts
+ M data/local-cache/build.gradle.kts
+ D data/local-cache/src/main/kotlin/app/myphonecheck/mobile/data/localcache/dao/PushStatsDao.kt
+ M data/local-cache/src/main/kotlin/app/myphonecheck/mobile/data/localcache/db/MyPhoneCheckDatabase.kt
+ M data/local-cache/src/main/kotlin/app/myphonecheck/mobile/data/localcache/di/LocalCacheModule.kt
+ M data/local-cache/src/main/kotlin/app/myphonecheck/mobile/data/localcache/entity/MessageHubEntity.kt
+ D data/local-cache/src/main/kotlin/app/myphonecheck/mobile/data/localcache/entity/PushStatsEntity.kt
+ M data/search/build.gradle.kts
+ M data/sms/build.gradle.kts
+ M docs/00_governance/project-governance.md
+ M feature/billing/build.gradle.kts
+ M feature/call-intercept/build.gradle.kts
+ M feature/call-intercept/src/main/kotlin/app/myphonecheck/mobile/feature/callintercept/MyPhoneCheckScreeningService.kt
+ M feature/country-config/build.gradle.kts
+ M feature/country-config/src/main/kotlin/app/myphonecheck/mobile/feature/countryconfig/PricingPolicy.kt
+ M feature/country-config/src/test/kotlin/app/myphonecheck/mobile/feature/countryconfig/Global190CountryPricingTest.kt
+ M feature/country-config/src/test/kotlin/app/myphonecheck/mobile/feature/countryconfig/RuntimeConnectionEvidenceCountryConfigTest.kt
+ M feature/decision-engine/build.gradle.kts
+ M feature/decision-engine/src/main/kotlin/app/myphonecheck/mobile/feature/decisionengine/ActionMapper.kt
+ M feature/decision-ui/build.gradle.kts
+ M feature/device-evidence/build.gradle.kts
+ M feature/message-intercept/build.gradle.kts
+ M feature/privacy-check/build.gradle.kts
+ D feature/push-intercept/build.gradle.kts
+ D feature/push-intercept/proguard-rules.pro
+ D feature/push-intercept/src/main/AndroidManifest.xml
+ D feature/push-intercept/src/main/kotlin/app/myphonecheck/mobile/feature/pushintercept/PushCheckEngine.kt
+ D feature/push-intercept/src/main/kotlin/app/myphonecheck/mobile/feature/pushintercept/PushInterceptService.kt
+ M feature/search-enrichment/build.gradle.kts
+ M feature/settings/build.gradle.kts
+ M gradle.properties
+ M gradle/libs.versions.toml
+ M settings.gradle.kts
+?? .github/workflows/contract-freeze-check.yml
+?? core/common/
+?? data/local-cache/schemas/app.myphonecheck.mobile.data.localcache.db.MyPhoneCheckDatabase/12.json
+?? docs/00_governance/MyPhoneCheck_Architecture_v1.3_extracted.md
+?? docs/00_governance/MyPhoneCheck_Architecture_v1.4_full.md
+?? docs/00_governance/MyPhoneCheck_Architecture_v1.5.1_7d23b4.docx
+?? docs/00_governance/MyPhoneCheck_Architecture_v1.5.1_draft.md
+?? docs/00_governance/MyPhoneCheck_Architecture_v1.5.1_fd908b.docx
+?? docs/00_governance/MyPhoneCheck_Architecture_v1.5.2_9f1d43.docx
+?? docs/00_governance/MyPhoneCheck_Architecture_v1.5.2_draft.md
+?? docs/00_governance/MyPhoneCheck_Architecture_v1.5.3_758158.docx
+?? docs/00_governance/MyPhoneCheck_Architecture_v1.5.3_draft.md
+?? docs/00_governance/MyPhoneCheck_Architecture_v1.6.0_b7bb60.docx
+?? docs/00_governance/MyPhoneCheck_Architecture_v1.6.0_draft.md
+?? docs/00_governance/MyPhoneCheck_Architecture_v1.6.1_630dda.docx
+?? docs/00_governance/MyPhoneCheck_Architecture_v1.6.1_draft.md
+?? docs/00_governance/MyPhoneCheck_Architecture_v4.1_final.md
+?? docs/00_governance/MyPhoneCheck_Patches_v1.5.3-patch_6bb29e.docx
+?? docs/00_governance/MyPhoneCheck_Patches_v1.6.0-patch_03b734.docx
+?? docs/00_governance/MyPhoneCheck_Patches_v1.6.1-patch_61225a.docx
+?? docs/00_governance/_build_v41.py
+?? docs/00_governance/_extract_docx.py
+?? docs/00_governance/_extracted_workorders_v15.txt
+?? docs/00_governance/_rebuild_workorder_b1b980.txt
+?? docs/00_governance/_rebuild_workorder_v152_435ef4.txt
+?? docs/00_governance/_v152_patches_extracted.txt
+?? docs/00_governance/_v15_patches_extracted.txt
+?? docs/00_governance/_workorder_stage0_contracts_f1a85c.txt
+?? docs/00_governance/_workorder_stage0_hotfix_java17_e3b05e.txt
+?? docs/00_governance/_workorder_v153_4cad42.txt
+?? docs/00_governance/_workorder_v160_four_surfaces_212359.txt
+?? docs/00_governance/_workorder_v161_patch_cursor_6827a2.txt
+?? docs/00_governance/build_architecture_v151.py
+?? docs/00_governance/build_architecture_v152.py
+?? docs/00_governance/build_architecture_v153.py
+?? docs/00_governance/build_architecture_v160.py
+?? docs/00_governance/build_architecture_v161.py
+?? docs/00_governance/md_normalizer.py
+?? docs/00_governance/v1.4_disc_final_full.md
+?? logs/

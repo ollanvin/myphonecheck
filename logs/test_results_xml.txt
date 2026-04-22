@@ -1,0 +1,9 @@
+﻿
+Name                                                            Length
+----                                                            ------
+TEST-app.myphonecheck.core.common.CheckerContractTest.xml          580
+TEST-app.myphonecheck.core.common.FreezeMarkerTest.xml             887
+TEST-app.myphonecheck.core.common.IdentifierTypeTest.xml          1504
+TEST-app.myphonecheck.core.common.RiskKnowledgeContractTest.xml   1046
+
+
