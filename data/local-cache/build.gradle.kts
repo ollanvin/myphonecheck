@@ -1,8 +1,26 @@
+import java.io.File
+import org.jetbrains.kotlin.gradle.internal.KaptWithoutKotlincTask
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
+}
+
+// Room's annotation processor loads sqlite-jdbc, which extracts native DLLs. Gradle KAPT
+// workers do not inherit org.gradle.jvmargs, so point tmp/native dirs at the build tree.
+tasks.withType<KaptWithoutKotlincTask>().configureEach {
+    val tmpRoot = layout.buildDirectory.dir("kapt-tmp").get().asFile
+    val sqliteDir = File(tmpRoot, "sqlite-native")
+    tmpRoot.mkdirs()
+    sqliteDir.mkdirs()
+    val rootPath = tmpRoot.absolutePath.replace('\\', '/')
+    val sqlitePath = sqliteDir.absolutePath.replace('\\', '/')
+    kaptProcessJvmArgs.addAll(
+        "-Djava.io.tmpdir=$rootPath",
+        "-Dorg.sqlite.tmpdir=$sqlitePath",
+    )
 }
 
 android {

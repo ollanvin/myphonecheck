@@ -3,24 +3,32 @@ package app.myphonecheck.mobile.data.localcache.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import app.myphonecheck.mobile.data.localcache.dao.BackupMetadataDao
+import app.myphonecheck.mobile.data.localcache.dao.BlockedAppDao
+import app.myphonecheck.mobile.data.localcache.dao.BlockedChannelDao
 import app.myphonecheck.mobile.data.localcache.dao.DetailTagDao
 import app.myphonecheck.mobile.data.localcache.dao.InitialScanMetaDao
 import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
 import app.myphonecheck.mobile.data.localcache.dao.NumberProfileDao
 import app.myphonecheck.mobile.data.localcache.dao.PreJudgeCacheDao
 import app.myphonecheck.mobile.data.localcache.dao.PrivacyHistoryDao
+import app.myphonecheck.mobile.data.localcache.dao.PushNotificationObservationDao
 import app.myphonecheck.mobile.data.localcache.dao.PushStatsDao
 import app.myphonecheck.mobile.data.localcache.dao.SensorScanResultDao
+import app.myphonecheck.mobile.data.localcache.dao.TrashedNotificationDao
 import app.myphonecheck.mobile.data.localcache.dao.UserCallRecordDao
 import app.myphonecheck.mobile.data.localcache.entity.BackupMetadataEntity
+import app.myphonecheck.mobile.data.localcache.entity.BlockedAppEntity
+import app.myphonecheck.mobile.data.localcache.entity.BlockedChannelEntity
 import app.myphonecheck.mobile.data.localcache.entity.DetailTagEntity
 import app.myphonecheck.mobile.data.localcache.entity.InitialScanMetaEntity
 import app.myphonecheck.mobile.data.localcache.entity.MessageHubEntity
 import app.myphonecheck.mobile.data.localcache.entity.NumberProfileEntity
 import app.myphonecheck.mobile.data.localcache.entity.PreJudgeCacheEntry
 import app.myphonecheck.mobile.data.localcache.entity.PrivacyHistoryEntity
+import app.myphonecheck.mobile.data.localcache.entity.PushNotificationObservationEntity
 import app.myphonecheck.mobile.data.localcache.entity.PushStatsEntity
 import app.myphonecheck.mobile.data.localcache.entity.SensorScanResultEntity
+import app.myphonecheck.mobile.data.localcache.entity.TrashedNotificationEntity
 import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
 
 /**
@@ -33,6 +41,7 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
  *  - MessageHubEntity: MessageCheck 허브 메시지 기록
  *  - PrivacyHistoryEntity: PrivacyCheck 카메라/마이크 접근 히스토리
  *  - PushStatsEntity: PushCheck 앱별 일간 알림 통계
+ *  - BlockedChannelEntity / BlockedAppEntity / TrashedNotificationEntity / PushNotificationObservationEntity: 푸시 휴지통(Stage 1)
  *
  * 서버 동기화: 없음 (온디바이스 전용)
  */
@@ -48,8 +57,12 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
         PushStatsEntity::class,
         SensorScanResultEntity::class,
         InitialScanMetaEntity::class,
+        BlockedChannelEntity::class,
+        BlockedAppEntity::class,
+        TrashedNotificationEntity::class,
+        PushNotificationObservationEntity::class,
     ],
-    version = 11,
+    version = 12,
     exportSchema = true,
 )
 abstract class MyPhoneCheckDatabase : RoomDatabase() {
@@ -63,6 +76,10 @@ abstract class MyPhoneCheckDatabase : RoomDatabase() {
     abstract fun pushStatsDao(): PushStatsDao
     abstract fun sensorScanResultDao(): SensorScanResultDao
     abstract fun initialScanMetaDao(): InitialScanMetaDao
+    abstract fun blockedChannelDao(): BlockedChannelDao
+    abstract fun blockedAppDao(): BlockedAppDao
+    abstract fun trashedNotificationDao(): TrashedNotificationDao
+    abstract fun pushNotificationObservationDao(): PushNotificationObservationDao
 
     companion object {
         const val DATABASE_NAME = "myphonecheck.db"

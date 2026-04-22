@@ -5,14 +5,18 @@ import android.util.Log
 import androidx.room.Room
 import app.myphonecheck.mobile.core.security.DatabaseKeyProvider
 import app.myphonecheck.mobile.data.localcache.dao.BackupMetadataDao
+import app.myphonecheck.mobile.data.localcache.dao.BlockedAppDao
+import app.myphonecheck.mobile.data.localcache.dao.BlockedChannelDao
 import app.myphonecheck.mobile.data.localcache.dao.DetailTagDao
 import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
 import app.myphonecheck.mobile.data.localcache.dao.InitialScanMetaDao
 import app.myphonecheck.mobile.data.localcache.dao.NumberProfileDao
 import app.myphonecheck.mobile.data.localcache.dao.PreJudgeCacheDao
 import app.myphonecheck.mobile.data.localcache.dao.PrivacyHistoryDao
+import app.myphonecheck.mobile.data.localcache.dao.PushNotificationObservationDao
 import app.myphonecheck.mobile.data.localcache.dao.PushStatsDao
 import app.myphonecheck.mobile.data.localcache.dao.SensorScanResultDao
+import app.myphonecheck.mobile.data.localcache.dao.TrashedNotificationDao
 import app.myphonecheck.mobile.data.localcache.dao.UserCallRecordDao
 import app.myphonecheck.mobile.data.localcache.db.MyPhoneCheckDatabase
 import app.myphonecheck.mobile.data.localcache.repository.NumberProfileRepository
@@ -180,4 +184,25 @@ object LocalCacheModule {
     ): UserCallRecordRepository {
         return UserCallRecordRepository(dao)
     }
+
+    @Provides
+    @Singleton
+    fun provideBlockedChannelDao(database: MyPhoneCheckDatabase): BlockedChannelDao =
+        database.blockedChannelDao()
+
+    @Provides
+    @Singleton
+    fun provideBlockedAppDao(database: MyPhoneCheckDatabase): BlockedAppDao =
+        database.blockedAppDao()
+
+    @Provides
+    @Singleton
+    fun provideTrashedNotificationDao(database: MyPhoneCheckDatabase): TrashedNotificationDao =
+        database.trashedNotificationDao()
+
+    @Provides
+    @Singleton
+    fun providePushNotificationObservationDao(
+        database: MyPhoneCheckDatabase,
+    ): PushNotificationObservationDao = database.pushNotificationObservationDao()
 }
