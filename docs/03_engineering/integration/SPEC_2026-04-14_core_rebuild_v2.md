@@ -282,82 +282,39 @@ suspend fun countBlockedEventsForNumber(number: String): Int
 
 ---
 
-### 3.3 P6 PushCheck — 통계 → 행동 CTA 연결
+### 3.3 P6 PushCheck — 푸시 휴지통 (2026-04-22 재정의)
 
-#### 3.3.1 변경 전 (v1)
+#### 3.3.1 기존 v2.1 P6 (폐기)
 
-- 통계만 표시: 일/주/월 세그먼트, 송신자 상위 N
-- 분류 3종: 광고 / 할인 / 정보
-- 앱 차단 기능은 있었으나 별도 화면
+통계 표시 + 1클릭 차단 모델. 2026-04-22 대표님 판단으로 "통계만 보여주는 반쪽 기능"이라 폐기. 본 문서에 이력으로만 남김.
 
-#### 3.3.2 변경 후 (v2 추가분)
+#### 3.3.2 신규 모델: 푸시 휴지통
 
-**① 각 앱 카드 하단에 "이 앱 알림 차단" 버튼 상시 노출**
+**핵심 사상**: 스팸 알림은 시스템 차원에서 완전 격리하되, 사용자가 나중에 되돌아볼 수 있는 "휴지통"에 보관.
 
-```
-┌─────────────────────────────────────────┐
-│ [앱 아이콘]  앱 이름                        │
-│                                          │
-│ 이 앱은 지난 30일간                         │
-│ 120건의 광고 알림을 보냈습니다               │
-│                                          │
-│            [ 이 앱 알림 차단 (CTA 버튼) ]  │
-└─────────────────────────────────────────┘
-```
+**대형 플랫폼 처리 (Notification Channel ID 기반)**:
+- 앱별로 Android Notification Channel ID 목록 자동 수집
+- 사용자가 채널 단위로 허용/차단 (체크박스 UI)
+- 차단된 채널의 알림은 수신 즉시 `NotificationListenerService.cancelNotification()` + Room DB에 저장
+- 앱 내장 매핑 테이블(상위 30~50개 앱)로 채널 ID → 한글 라벨 변환
 
-- 카드는 Composable: `PushStatsAppCard`
-- 기간·카운트 문구는 반드시 병기
-- CTA 버튼 탭 → 즉시 `blocked_apps` insert → 다음 알림부터 `cancelNotification()`
-- 이미 차단된 앱은 버튼 텍스트 "차단 해제"로 자동 전환
+**중소형 앱 처리 (앱 단위)**:
+- 채널 분리 안 한 앱 또는 단일 채널 앱: "전체 허용" 또는 "전체 차단" 2선택
+- 기본값: "전체 허용" (사용자 명시적 차단 전까지 개입 안 함)
+- 알림 본문 파싱 금지. 메타데이터만 사용.
 
-**② 문구 분기**
+**기술 요구사항**:
+- `NotificationListenerService` 권한 (런타임 수동 허용 필요)
+- `cancelNotification()`이 채널 ID 기반으로 정확히 작동하는지 기술 검증 필요 (Stage 1 초기에 수행)
+- 차단 알림은 시스템 노출 0 (소리·진동·상단바·락스크린 전부 제로)
+- 휴지통 UI는 MyPhoneCheck 앱 내부에만 존재
 
-- 광고 카테고리 N건 ≥ 다른 카테고리 → "N건의 광고 알림"
-- 할인 우세 → "N건의 할인·프로모션 알림"
-- 정보 우세 → "N건의 알림 (대부분 안내·공지)"
-- 카테고리 무관 총량만 표시할 경우 → "총 N건의 알림"
+**유지보수성 원칙**:
+- 알림 본문 파싱 금지 (다국어·오탐 리스크)
+- 앱 내장 매핑 테이블은 앱 업데이트로 갱신 (원격 서버 없음)
+- 채널 매핑 없는 앱은 원본 채널 이름 그대로 표시
 
-#### 3.3.3 추가 쿼리
-
-```kotlin
-// data/local-cache/.../dao/PushStatsDao.kt
-@Query("""
-    SELECT COUNT(*) FROM push_stats
-    WHERE packageName = :pkg
-      AND category = :category
-      AND timestamp >= :sinceEpochMs
-""")
-suspend fun countByCategoryAndPackageSince(
-    pkg: String,
-    category: String,
-    sinceEpochMs: Long
-): Int
-
-@Query("""
-    SELECT category, COUNT(*) AS cnt FROM push_stats
-    WHERE packageName = :pkg
-      AND timestamp >= :sinceEpochMs
-    GROUP BY category
-    ORDER BY cnt DESC
-    LIMIT 1
-""")
-suspend fun dominantCategoryForPackageSince(
-    pkg: String,
-    sinceEpochMs: Long
-): CategoryCount?
-
-data class CategoryCount(val category: String, val cnt: Int)
-```
-
-#### 3.3.4 영향 파일
-
-- `feature/push-intercept/src/main/kotlin/.../PushStatsScreen.kt` — `PushStatsAppCard` 재설계, CTA 버튼 삽입
-- `feature/push-intercept/src/main/kotlin/.../PushStatsViewModel.kt` — `blockApp(pkg)` / `unblockApp(pkg)` 액션, `observeDominantCategory(pkg)` Flow
-- `feature/push-intercept/src/main/kotlin/.../BlockedAppsRepository.kt` (신규 또는 확장) — `insert()`, `delete()`, `isBlocked()` API
-- `data/local-cache/src/main/kotlin/.../dao/PushStatsDao.kt` — `countByCategoryAndPackageSince()`, `dominantCategoryForPackageSince()` 추가
-- `data/local-cache/src/main/kotlin/.../entity/BlockedAppEntity.kt` (신규) — 차단 대상 앱 저장
-- `feature/push-intercept/src/main/kotlin/.../PushListenerService.kt` — `blocked_apps` 조회 후 `cancelNotification()` 분기 확인 (기존 로직 있으면 재검증)
-- `feature/push-intercept/src/main/res/values/strings.xml` + values-XX — `push_cta_*`, `push_card_copy_*` 키 추가
+**서버 의존성**: 0. 디바이스 완결형.
 
 ---
 

@@ -331,12 +331,7 @@ Single app, 190 countries. Country-specific behavior via configuration only.
 
 ## 13. Pricing
 
-- USD 1/month
-- Global uniform pricing
-- Single plan (no tiers)
-- No free tier complexity for v1.0
-- No ads ever
-- Google Play Billing integration
+**Pricing**: $2.49/month (monthly only, no annual plan). Global uniform pricing. See `myphonecheck_base_architecture_v1.md §11` for latest authoritative pricing.
 
 ---
 
