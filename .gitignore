@@ -22,3 +22,6 @@ __pycache__/
 
 # Claude Code local session state
 .claude/
+
+# JVM heap dumps (Stage 0-hotfix 2026-04-22: 재발 방지)
+*.hprof
