@@ -132,6 +132,7 @@ dependencies {
     // feature:push-intercept removed per v1.1 Architecture (PUSH REMOVED)
     implementation(project(":feature:message-intercept"))
     implementation(project(":feature:privacy-check"))
+    implementation(project(":feature:push-trash"))
 
     // Data modules
     implementation(project(":data:contacts"))

@@ -94,6 +94,11 @@ import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter
 import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter.Lang
 import app.myphonecheck.mobile.feature.decisionui.components.FullEngineReasoningSection
 import app.myphonecheck.mobile.feature.privacycheck.R as PrivacyR
+import app.myphonecheck.mobile.feature.pushtrash.R as PushTrashR
+import app.myphonecheck.mobile.feature.pushtrash.ui.AppBlockSettingsRoute
+import app.myphonecheck.mobile.feature.pushtrash.ui.PushTrashAppsRoute
+import app.myphonecheck.mobile.feature.pushtrash.ui.PushTrashBinRoute
+import app.myphonecheck.mobile.feature.pushtrash.ui.PushTrashMainRoute
 import app.myphonecheck.mobile.ui.backup.BackupScreen
 import app.myphonecheck.mobile.viewmodel.CallHistoryViewModel
 import app.myphonecheck.mobile.viewmodel.MessageHubViewModel
@@ -336,6 +341,7 @@ fun MyPhoneCheckNavHost(
                     languageProvider = languageProvider,
                     onBack = { navController.popBackStack() },
                     onNavigateToBackup = { navController.navigate("backup") },
+                    onNavigateToPushTrash = { navController.navigate("push-trash") },
                     onRestartOnboarding = {
                         // 온보딩 완료 플래그 동기 제거 → 네비게이션 → 뒤로가기 스택 초기화
                         appPrefs.edit()
@@ -358,6 +364,31 @@ fun MyPhoneCheckNavHost(
                 BackupScreen(
                     onNavigateBack = { navController.popBackStack() }
                 )
+            }
+            composable("push-trash") {
+                PushTrashMainRoute(
+                    onBack = { navController.popBackStack() },
+                    onOpenBin = { navController.navigate("push-trash/bin") },
+                    onOpenApps = { navController.navigate("push-trash/apps") },
+                )
+            }
+            composable("push-trash/bin") {
+                PushTrashBinRoute(onBack = { navController.popBackStack() })
+            }
+            composable("push-trash/apps") {
+                PushTrashAppsRoute(
+                    onBack = { navController.popBackStack() },
+                    onOpenApp = { pkg ->
+                        val enc = URLEncoder.encode(pkg, StandardCharsets.UTF_8)
+                        navController.navigate("push-trash/app/$enc")
+                    },
+                )
+            }
+            composable(
+                route = "push-trash/app/{packageName}",
+                arguments = listOf(navArgument("packageName") { type = NavType.StringType }),
+            ) {
+                AppBlockSettingsRoute(onBack = { navController.popBackStack() })
             }
         }
     }
@@ -2152,6 +2183,7 @@ private fun SettingsScreen(
     languageProvider: LanguageContextProvider,
     onBack: () -> Unit,
     onNavigateToBackup: () -> Unit = {},
+    onNavigateToPushTrash: () -> Unit = {},
     onRestartOnboarding: () -> Unit = {},
 ) {
     val language = languageProvider.resolveLanguage()
@@ -2406,6 +2438,56 @@ private fun SettingsScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = context.getString(AppR.string.backup_restore_desc),
+                                fontSize = 12.sp,
+                                color = Color(0xFFB0BEC5),
+                            )
+                        }
+                    }
+                    Icon(
+                        Icons.Filled.ChevronRight,
+                        contentDescription = null,
+                        tint = Color(0xFFB0BEC5),
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onNavigateToPushTrash() },
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1B2838)),
+                shape = RoundedCornerShape(16.dp),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            Icons.Filled.Notifications,
+                            contentDescription = null,
+                            tint = Color(0xFF4FC3F7),
+                            modifier = Modifier.size(24.dp),
+                        )
+                        Column {
+                            Text(
+                                text = context.getString(PushTrashR.string.push_trash_settings_entry_title),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = context.getString(PushTrashR.string.push_trash_settings_entry_desc),
                                 fontSize = 12.sp,
                                 color = Color(0xFFB0BEC5),
                             )
