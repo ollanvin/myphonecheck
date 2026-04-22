@@ -25,3 +25,7 @@ __pycache__/
 
 # JVM heap dumps (Stage 0-hotfix 2026-04-22: 재발 방지)
 *.hprof
+
+# Working logs (WO-CLEANUP-002, 2026-04-22): 도구·워크오더 실행 중간 산출물
+# 최종 보고서는 docs/05_quality/에 정리하므로 logs/ 하위는 git 추적 제외
+logs/

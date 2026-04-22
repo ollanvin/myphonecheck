@@ -1,7 +1,0 @@
-﻿* codex-global-single-core-snapshot                a2eec04 [origin/codex-global-single-core-snapshot: ahead 2] Stage 0-hotfix: Java 17 migration + core:common freeze + repository hygiene
-  main                                             759b4d2 [origin/main] snapshot: Codex takeover after Claude Cowork global error, continue implementation
-  refactor/structure-v4.3                          f7cbaa5 feat: rewrite overlay to 2-second decision UI + wire DO_NOT_MISS notification action
-  remotes/origin/HEAD                              -> origin/main
-  remotes/origin/codex-global-single-core-snapshot 5ef0840 v4.3: structure refactor complete
-  remotes/origin/main                              759b4d2 snapshot: Codex takeover after Claude Cowork global error, continue implementation
-  remotes/origin/refactor/structure-v4.3           f7cbaa5 feat: rewrite overlay to 2-second decision UI + wire DO_NOT_MISS notification action

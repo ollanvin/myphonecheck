@@ -1,5 +1,0 @@
-﻿Collecting git-filter-repo
-  Downloading git_filter_repo-2.47.0-py3-none-any.whl.metadata (31 kB)
-Downloading git_filter_repo-2.47.0-py3-none-any.whl (76 kB)
-Installing collected packages: git-filter-repo
-Successfully installed git-filter-repo-2.47.0

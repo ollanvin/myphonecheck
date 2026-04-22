@@ -1,9 +1,0 @@
-﻿git : To https://github.com/ollanvin/myphonecheck.git
-At line:1 char:38
-+ ... lease ==="; git push origin HEAD:codex-global-single-core-snapshot -- ...
-+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (To https://gith...yphonecheck.git:String) [], RemoteExc 
-   eption
-    + FullyQualifiedErrorId : NativeCommandError
- 
-   5ef0840..d470a73  HEAD -> codex-global-single-core-snapshot
