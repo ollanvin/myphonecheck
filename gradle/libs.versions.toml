@@ -29,6 +29,8 @@ sqlite-ktx = "2.4.0"
 security-crypto = "1.1.0-alpha06"
 
 junit = "4.13.2"
+junit-jupiter = "5.10.2"
+kotest = "5.8.0"
 androidx-test-ext-junit = "1.1.5"
 androidx-test-espresso = "3.5.1"
 mockk = "1.13.10"
@@ -66,6 +68,8 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 play-services-base = { group = "com.google.android.gms", name = "play-services-base", version.ref = "play-services-base" }
 play-billing = { group = "com.android.billingclient", name = "billing", version.ref = "play-billing" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit-jupiter" }
+kotest-assertions = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-test-espresso" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
@@ -101,6 +105,7 @@ hilt = [
 ]
 
 [plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

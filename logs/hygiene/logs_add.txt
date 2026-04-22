@@ -1,0 +1,105 @@
+﻿git : warning: in the working copy of 'logs/ci_android_lastcommit.txt', CRLF will be replaced by LF t
+he next time Git touches it
+At line:1 char:1
++ git add logs/ 2>&1 | Out-File -Encoding utf8 logs\hygiene\logs_add.tx ...
++ ~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (warning: in the... Git touches it:String) [], RemoteExc 
+   eption
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+warning: in the working copy of 'logs/ci_freeze_decoded.txt', CRLF will be replaced by LF the next ti
+me Git touches it
+warning: in the working copy of 'logs/ci_freeze_java_scan.txt', CRLF will be replaced by LF the next 
+time Git touches it
+warning: in the working copy of 'logs/ci_java_version.txt', CRLF will be replaced by LF the next time
+ Git touches it
+warning: in the working copy of 'logs/ci_java_version_v2.txt', CRLF will be replaced by LF the next t
+ime Git touches it
+warning: in the working copy of 'logs/ci_status.txt', CRLF will be replaced by LF the next time Git t
+ouches it
+warning: in the working copy of 'logs/ci_tracked_files.txt', CRLF will be replaced by LF the next tim
+e Git touches it
+warning: in the working copy of 'logs/compileDebug_nodaemon.txt', CRLF will be replaced by LF the nex
+t time Git touches it
+warning: in the working copy of 'logs/core_common_clean2.txt', CRLF will be replaced by LF the next t
+ime Git touches it
+warning: in the working copy of 'logs/core_common_compile_info.txt', CRLF will be replaced by LF the 
+next time Git touches it
+warning: in the working copy of 'logs/core_common_status.txt', CRLF will be replaced by LF the next t
+ime Git touches it
+warning: in the working copy of 'logs/core_common_tasks.txt', CRLF will be replaced by LF the next ti
+me Git touches it
+warning: in the working copy of 'logs/core_common_test.txt', CRLF will be replaced by LF the next tim
+e Git touches it
+warning: in the working copy of 'logs/file_gradle.properties.txt', CRLF will be replaced by LF the ne
+xt time Git touches it
+warning: in the working copy of 'logs/foojay_check.txt', CRLF will be replaced by LF the next time Gi
+t touches it
+warning: in the working copy of 'logs/freeze_hash.txt', CRLF will be replaced by LF the next time Git
+ touches it
+warning: in the working copy of 'logs/git_head.txt', CRLF will be replaced by LF the next time Git to
+uches it
+warning: in the working copy of 'logs/git_log.txt', CRLF will be replaced by LF the next time Git tou
+ches it
+warning: in the working copy of 'logs/git_status.txt', CRLF will be replaced by LF the next time Git 
+touches it
+warning: in the working copy of 'logs/governance_update.txt', CRLF will be replaced by LF the next ti
+me Git touches it
+warning: in the working copy of 'logs/gradle_properties_keys.txt', CRLF will be replaced by LF the ne
+xt time Git touches it
+warning: in the working copy of 'logs/gradlew_stop.txt', CRLF will be replaced by LF the next time Gi
+t touches it
+warning: in the working copy of 'logs/gradlew_stop_pre6.txt', CRLF will be replaced by LF the next ti
+me Git touches it
+warning: in the working copy of 'logs/grep_jvmtarget17.txt', CRLF will be replaced by LF the next tim
+e Git touches it
+warning: in the working copy of 'logs/grep_toolchain17.txt', CRLF will be replaced by LF the next tim
+e Git touches it
+warning: in the working copy of 'logs/grep_version17.txt', CRLF will be replaced by LF the next time 
+Git touches it
+warning: in the working copy of 'logs/hygiene/branch_status.txt', CRLF will be replaced by LF the nex
+t time Git touches it
+warning: in the working copy of 'logs/hygiene/categoryA_add.txt', CRLF will be replaced by LF the nex
+t time Git touches it
+warning: in the working copy of 'logs/hygiene/core_common_inventory.txt', CRLF will be replaced by LF
+ the next time Git touches it
+warning: in the working copy of 'logs/hygiene/core_common_staged.txt', CRLF will be replaced by LF th
+e next time Git touches it
+warning: in the working copy of 'logs/hygiene/freeze_yml_bom_check.txt', CRLF will be replaced by LF 
+the next time Git touches it
+warning: in the working copy of 'logs/hygiene/freeze_yml_staged.txt', CRLF will be replaced by LF the
+ next time Git touches it
+warning: in the working copy of 'logs/hygiene/freeze_yml_syntax.txt', CRLF will be replaced by LF the
+ next time Git touches it
+warning: in the working copy of 'logs/hygiene/git_head_before.txt', CRLF will be replaced by LF the n
+ext time Git touches it
+warning: in the working copy of 'logs/hygiene/git_log_before.txt', CRLF will be replaced by LF the ne
+xt time Git touches it
+warning: in the working copy of 'logs/hygiene/git_status_before.txt', CRLF will be replaced by LF the
+ next time Git touches it
+warning: in the working copy of 'logs/hygiene/git_status_porcelain_before.txt', CRLF will be replaced
+ by LF the next time Git touches it
+warning: in the working copy of 'logs/hygiene/modified_files.txt', CRLF will be replaced by LF the ne
+xt time Git touches it
+warning: in the working copy of 'logs/hygiene/remote_sync_before.txt', CRLF will be replaced by LF th
+e next time Git touches it
+warning: in the working copy of 'logs/hygiene/untracked_files.txt', CRLF will be replaced by LF the n
+ext time Git touches it
+warning: in the working copy of 'logs/javaToolchains.txt', CRLF will be replaced by LF the next time 
+Git touches it
+warning: in the working copy of 'logs/lockfiles_before.txt', CRLF will be replaced by LF the next tim
+e Git touches it
+warning: in the working copy of 'logs/openfiles_scan.txt', CRLF will be replaced by LF the next time 
+Git touches it
+warning: in the working copy of 'logs/runtime_cp.txt', CRLF will be replaced by LF the next time Git 
+touches it
+warning: in the working copy of 'logs/test_results_xml.txt', CRLF will be replaced by LF the next tim
+e Git touches it
+warning: in the working copy of 'logs/toolchain_trace.txt', CRLF will be replaced by LF the next time
+ Git touches it
+warning: in the working copy of 'logs/version_agp_kotlin.txt', CRLF will be replaced by LF the next t
+ime Git touches it
+warning: in the working copy of 'logs/version_gradle.txt', CRLF will be replaced by LF the next time 
+Git touches it
+warning: in the working copy of 'logs/workorder_hash.txt', CRLF will be replaced by LF the next time 
+Git touches it

@@ -1,0 +1,3 @@
+﻿* codex-global-single-core-snapshot cca259c [origin/codex-global-single-core-snapshot: ahead 1] build: gradlew check 수정 + docs/ARCHITECTURE.md 역설계도
+  main                              759b4d2 [origin/main] snapshot: Codex takeover after Claude Cowork global error, continue implementation
+  refactor/structure-v4.3           f7cbaa5 feat: rewrite overlay to 2-second decision UI + wire DO_NOT_MISS notification action

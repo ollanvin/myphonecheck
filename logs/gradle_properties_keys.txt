@@ -1,0 +1,6 @@
+﻿FOUND: org.gradle.java.installations.auto-download=true
+FOUND: org.gradle.java.installations.auto-detect=true
+FOUND: kotlin.code.style
+FOUND: kotlin.incremental
+FOUND: android.useAndroidX
+FOUND: android.nonTransitiveRClass

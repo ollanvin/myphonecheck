@@ -1,0 +1,4 @@
+﻿--- android-ci.yml ---
+          java-version: '17'
+          distribution: 'temurin'
+--- contract-freeze-check.yml ---

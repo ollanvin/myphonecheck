@@ -1,0 +1,104 @@
+﻿On branch codex-global-single-core-snapshot
+Your branch is ahead of 'origin/codex-global-single-core-snapshot' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   app/build.gradle.kts
+	modified:   app/src/main/AndroidManifest.xml
+	modified:   app/src/main/kotlin/app/myphonecheck/mobile/legacy/ForcePhoneListener.kt
+	modified:   app/src/main/kotlin/app/myphonecheck/mobile/navigation/MyPhoneCheckNavHost.kt
+	modified:   app/src/main/kotlin/app/myphonecheck/mobile/worker/WeeklyReportWorker.kt
+	modified:   build-logic/convention/build.gradle.kts
+	modified:   build-logic/convention/src/main/kotlin/AndroidApplicationConventionPlugin.kt
+	modified:   build-logic/convention/src/main/kotlin/AndroidLibraryConventionPlugin.kt
+	modified:   build-logic/settings.gradle.kts
+	modified:   build.gradle.kts
+	modified:   core/model/build.gradle.kts
+	modified:   core/model/src/main/kotlin/app/myphonecheck/mobile/core/model/ConclusionCategory.kt
+	modified:   core/model/src/main/kotlin/app/myphonecheck/mobile/core/model/InterceptEventType.kt
+	deleted:    core/model/src/main/kotlin/app/myphonecheck/mobile/core/model/PushEvidence.kt
+	modified:   core/security/build.gradle.kts
+	modified:   core/util/build.gradle.kts
+	modified:   data/calllog/build.gradle.kts
+	modified:   data/contacts/build.gradle.kts
+	modified:   data/local-cache/build.gradle.kts
+	deleted:    data/local-cache/src/main/kotlin/app/myphonecheck/mobile/data/localcache/dao/PushStatsDao.kt
+	modified:   data/local-cache/src/main/kotlin/app/myphonecheck/mobile/data/localcache/db/MyPhoneCheckDatabase.kt
+	modified:   data/local-cache/src/main/kotlin/app/myphonecheck/mobile/data/localcache/di/LocalCacheModule.kt
+	modified:   data/local-cache/src/main/kotlin/app/myphonecheck/mobile/data/localcache/entity/MessageHubEntity.kt
+	deleted:    data/local-cache/src/main/kotlin/app/myphonecheck/mobile/data/localcache/entity/PushStatsEntity.kt
+	modified:   data/search/build.gradle.kts
+	modified:   data/sms/build.gradle.kts
+	modified:   docs/00_governance/project-governance.md
+	modified:   feature/billing/build.gradle.kts
+	modified:   feature/call-intercept/build.gradle.kts
+	modified:   feature/call-intercept/src/main/kotlin/app/myphonecheck/mobile/feature/callintercept/MyPhoneCheckScreeningService.kt
+	modified:   feature/country-config/build.gradle.kts
+	modified:   feature/country-config/src/main/kotlin/app/myphonecheck/mobile/feature/countryconfig/PricingPolicy.kt
+	modified:   feature/country-config/src/test/kotlin/app/myphonecheck/mobile/feature/countryconfig/Global190CountryPricingTest.kt
+	modified:   feature/country-config/src/test/kotlin/app/myphonecheck/mobile/feature/countryconfig/RuntimeConnectionEvidenceCountryConfigTest.kt
+	modified:   feature/decision-engine/build.gradle.kts
+	modified:   feature/decision-engine/src/main/kotlin/app/myphonecheck/mobile/feature/decisionengine/ActionMapper.kt
+	modified:   feature/decision-ui/build.gradle.kts
+	modified:   feature/device-evidence/build.gradle.kts
+	modified:   feature/message-intercept/build.gradle.kts
+	modified:   feature/privacy-check/build.gradle.kts
+	deleted:    feature/push-intercept/build.gradle.kts
+	deleted:    feature/push-intercept/proguard-rules.pro
+	deleted:    feature/push-intercept/src/main/AndroidManifest.xml
+	deleted:    feature/push-intercept/src/main/kotlin/app/myphonecheck/mobile/feature/pushintercept/PushCheckEngine.kt
+	deleted:    feature/push-intercept/src/main/kotlin/app/myphonecheck/mobile/feature/pushintercept/PushInterceptService.kt
+	modified:   feature/search-enrichment/build.gradle.kts
+	modified:   feature/settings/build.gradle.kts
+	modified:   gradle.properties
+	modified:   gradle/libs.versions.toml
+	modified:   settings.gradle.kts
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.claude/
+	.github/workflows/contract-freeze-check.yml
+	core/common/
+	data/local-cache/schemas/app.myphonecheck.mobile.data.localcache.db.MyPhoneCheckDatabase/12.json
+	docs/00_governance/MyPhoneCheck_Architecture_v1.3_extracted.md
+	docs/00_governance/MyPhoneCheck_Architecture_v1.4_full.md
+	docs/00_governance/MyPhoneCheck_Architecture_v1.5.1_7d23b4.docx
+	docs/00_governance/MyPhoneCheck_Architecture_v1.5.1_draft.md
+	docs/00_governance/MyPhoneCheck_Architecture_v1.5.1_fd908b.docx
+	docs/00_governance/MyPhoneCheck_Architecture_v1.5.2_9f1d43.docx
+	docs/00_governance/MyPhoneCheck_Architecture_v1.5.2_draft.md
+	docs/00_governance/MyPhoneCheck_Architecture_v1.5.3_758158.docx
+	docs/00_governance/MyPhoneCheck_Architecture_v1.5.3_draft.md
+	docs/00_governance/MyPhoneCheck_Architecture_v1.6.0_b7bb60.docx
+	docs/00_governance/MyPhoneCheck_Architecture_v1.6.0_draft.md
+	docs/00_governance/MyPhoneCheck_Architecture_v1.6.1_630dda.docx
+	docs/00_governance/MyPhoneCheck_Architecture_v1.6.1_draft.md
+	docs/00_governance/MyPhoneCheck_Architecture_v4.1_final.md
+	docs/00_governance/MyPhoneCheck_Patches_v1.5.3-patch_6bb29e.docx
+	docs/00_governance/MyPhoneCheck_Patches_v1.6.0-patch_03b734.docx
+	docs/00_governance/MyPhoneCheck_Patches_v1.6.1-patch_61225a.docx
+	docs/00_governance/_build_v41.py
+	docs/00_governance/_extract_docx.py
+	docs/00_governance/_extracted_workorders_v15.txt
+	docs/00_governance/_rebuild_workorder_b1b980.txt
+	docs/00_governance/_rebuild_workorder_v152_435ef4.txt
+	docs/00_governance/_v152_patches_extracted.txt
+	docs/00_governance/_v15_patches_extracted.txt
+	docs/00_governance/_workorder_stage0_contracts_f1a85c.txt
+	docs/00_governance/_workorder_stage0_hotfix_java17_e3b05e.txt
+	docs/00_governance/_workorder_v153_4cad42.txt
+	docs/00_governance/_workorder_v160_four_surfaces_212359.txt
+	docs/00_governance/_workorder_v161_patch_cursor_6827a2.txt
+	docs/00_governance/build_architecture_v151.py
+	docs/00_governance/build_architecture_v152.py
+	docs/00_governance/build_architecture_v153.py
+	docs/00_governance/build_architecture_v160.py
+	docs/00_governance/build_architecture_v161.py
+	docs/00_governance/md_normalizer.py
+	docs/00_governance/v1.4_disc_final_full.md
+	docs/05_quality/audit_stage0_hotfix_java17_20260422.md
+	logs/
+
+no changes added to commit (use "git add" and/or "git commit -a")

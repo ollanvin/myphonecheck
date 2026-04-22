@@ -1,0 +1,11 @@
+﻿> Task :build-logic:convention:checkKotlinGradlePluginConfigurationErrors
+> Task :build-logic:convention:compileKotlin UP-TO-DATE
+> Task :build-logic:convention:compileJava NO-SOURCE
+> Task :build-logic:convention:pluginDescriptors UP-TO-DATE
+> Task :build-logic:convention:processResources UP-TO-DATE
+> Task :build-logic:convention:classes UP-TO-DATE
+> Task :build-logic:convention:jar UP-TO-DATE
+> Task :core:common:clean
+
+BUILD SUCCESSFUL in 3s
+6 actionable tasks: 2 executed, 4 up-to-date

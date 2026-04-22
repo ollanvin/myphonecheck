@@ -1,0 +1,266 @@
+MyPhoneCheck
+Stage 0-hotfix Work Order
+Java 17 Toolchain Restoration (빅테크 정석)
+대표님 직접 지시 — 우회/땜방 금지
+ 
+작성자
+비전 (Vision) — 자기 타협 철회 후 재작성
+작성일
+2026-04-22
+수임자
+Cursor
+베이스
+Stage 0 완료본 (워크오더 f1a85c) + Java 11 타협 상태
+목표
+리포 전체 Java 17 승격 + JDK 17 toolchain 자동 해결
+기간
+0.5~1일 (Day 3.5)
+원칙
+빅테크 정석 / 우회 금지 / 전체 리포 일괄 승격
+
+0. 비전 자기 오류 인정
+0-1. 이전 판단 오류
+비전이 Stage 0 검수에서 "Java 11 승인"이라 판정한 것은 **대표님 철칙 "랜덤/임시/땜방/우회/부분/강제 금지" 위반**이었음. "기존 리포 일관성"을 이유로 타협 제안한 것은 정확히 **우회**였음.
+대표님이 2026-04-22 직접 정정: "자바 17로 가라고. 17이 빅테크 방식이라며"
+0-2. 빅테크 정석 재확인
+Android Gradle Plugin 8.0+ (2023-04 이후): Java 17 JDK 빌드 필수
+Android Studio Hedgehog (2023.1)+ 번들 JDK = 17
+Kotlin 2.0.0: JVM target 17 권장
+Room 2.6+, Compose 1.6+, WorkManager 2.9+: Java 17 요구
+Google 공식 (developer.android.com): 신규 프로젝트 Java 17 기본
+0-3. 결정: Stage 0-hotfix로 전체 리포 승격
+개별 core/common 모듈만 Java 17 바꾸면 기존 서브프로젝트(Java 11)와 빌드 경로 분리되어 또 다른 땜방. **리포 전체를 Java 17로 일괄 승격**하는 것이 빅테크 정석.
+
+1. 작업 범위
+1-1. 수정 대상 4개
+#
+파일
+Before
+After
+1
+core/common/build.gradle.kts
+sourceCompatibility/targetCompatibility = JavaVersion.VERSION_11
+kotlin { jvmToolchain(17) } + java 블록 삭제
+2
+기존 서브프로젝트 build.gradle.kts 전수
+Java 11
+동일 (jvmToolchain(17)로 통일)
+3
+루트 build.gradle.kts 또는 gradle.properties
+Java 버전 분산
+subprojects { } 블록에서 일괄 toolchain 설정
+4
+.github/workflows/*.yml
+java-version: &apos;17&apos; (이미 설정된 경우 유지)
+JAVA_HOME / toolchain 경로 일관성 확인
+1-2. 건드리지 않는 것
+Kotlin 2.0.0 / Coroutines 1.8.1 유지 (Stage 0 승인 상태)
+4 계약 Kotlin 소스 코드 (IdentifierType, RiskKnowledge, Checker, DecisionEngineContract) — 변경 0
+21개 테스트 — 변경 0 (Java 17에서 그대로 PASS 해야 함)
+FREEZE.md — 변경 0
+CI workflow 내용 — 검증만, Java 17 이미 사용 중이면 유지
+
+2. 사전 작업 — JDK 17 설치
+2-1. 개발 환경 (대표님 로컬)
+로컬 경로: `C:\Users\user\Dev\ollanvin\myphonecheck`
+권장: Temurin JDK 17 (Eclipse Adoptium) — CI와 동일 배포판 사용이 정석
+# Windows (대표님 환경)
+# 1. https://adoptium.net/temurin/releases/?version=17 접속
+# 2. "Windows x64 MSI" 다운로드 (Temurin 17 LTS)
+# 3. 설치 시 "Set JAVA_HOME" + "Add to PATH" 체크
+
+# 설치 확인
+java -version
+# 출력 예:
+# openjdk version "17.0.x" 2024-xx-xx
+# OpenJDK Runtime Environment Temurin-17.0.x
+2-2. Gradle Toolchain 자동 해결 (설치 실패 시 대안)
+**이게 빅테크 진짜 정석**: 개발자마다 JDK 설치 다를 수 있으므로 Gradle toolchain이 **자동 다운로드**하게 설정. `jvmToolchain(17)`만 쓰면 Gradle이 JDK 없으면 자동 설치.
+# gradle.properties 추가
+org.gradle.java.installations.auto-download=true
+org.gradle.java.installations.auto-detect=true
+이렇게 하면 JDK 17 수동 설치 없이도 빌드 성공. CI와 개발 환경 모두 일관.
+
+3. core/common/build.gradle.kts 정정
+3-1. Before (Stage 0 완료본, Java 11 타협 상태)
+plugins {
+    alias(libs.plugins.kotlin.jvm)
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+dependencies {
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.kotlinx.coroutines.core)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.kotest.assertions)
+    testImplementation(libs.kotlinx.coroutines.test)
+}
+
+tasks.test { useJUnitPlatform() }
+3-2. After (빅테크 정석)
+plugins {
+    alias(libs.plugins.kotlin.jvm)
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+dependencies {
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.kotlinx.coroutines.core)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.kotest.assertions)
+    testImplementation(libs.kotlinx.coroutines.test)
+}
+
+tasks.test { useJUnitPlatform() }
+3-3. 변경 요점
+`java { sourceCompatibility / targetCompatibility }` 블록 **완전 삭제**
+`kotlin { jvmToolchain(17) }` 블록 **신설**
+Kotlin Gradle plugin 2.0+가 toolchain(17) 설정을 Java + Kotlin 양쪽에 자동 적용
+결과: sourceCompatibility=17 / targetCompatibility=17 / jvmTarget=17 자동 일관화
+
+4. 기존 서브프로젝트 일괄 승격 (전체 리포 통일)
+4-1. 현황 파악
+커서 작업 (Day 3.5-1):
+리포 전체에서 `JavaVersion.VERSION_11` 사용하는 build.gradle.kts 전수 탐색
+결과 파일 목록을 보고서에 포함
+# 명령 예
+grep -rn "VERSION_11" --include="*.gradle.kts" .
+grep -rn "sourceCompatibility" --include="*.gradle.kts" .
+4-2. 루트 build.gradle.kts에 subprojects 블록 추가
+개별 모듈 모두 수정하는 대신 루트에서 일괄 적용 = 빅테크 정석
+// 루트 build.gradle.kts
+
+plugins {
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+}
+
+subprojects {
+    plugins.withId("org.jetbrains.kotlin.jvm") {
+        extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
+            jvmToolchain(17)
+        }
+    }
+    plugins.withId("org.jetbrains.kotlin.android") {
+        extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension> {
+            jvmToolchain(17)
+        }
+    }
+}
+4-3. 개별 모듈 build.gradle.kts 정리
+루트에서 toolchain을 일괄 적용하므로, 개별 모듈의 `java { sourceCompatibility / targetCompatibility }` 블록은 **전부 삭제**.
+단, Android 모듈(android { compileOptions { ... } })의 Java 설정은 AGP 요구사항에 따라 VERSION_17로 명시
+// 안드로이드 모듈 예 (app, feature/*)
+android {
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    // kotlinOptions { jvmTarget = "17" } 는 jvmToolchain이 자동 처리
+}
+
+5. gradle.properties 표준화
+# gradle.properties 필수 항목
+
+# JVM 메모리
+org.gradle.jvmargs=-Xmx4g -Dfile.encoding=UTF-8
+
+# Gradle Toolchain 자동 프로비저닝 (빅테크 정석)
+org.gradle.java.installations.auto-download=true
+org.gradle.java.installations.auto-detect=true
+
+# 병렬 빌드 + 캐시
+org.gradle.parallel=true
+org.gradle.caching=true
+org.gradle.configuration-cache=true
+
+# Kotlin
+kotlin.code.style=official
+kotlin.incremental=true
+
+# AndroidX (안드로이드 모듈 있으면)
+android.useAndroidX=true
+android.nonTransitiveRClass=true
+핵심: `org.gradle.java.installations.auto-download=true`가 있으면 개발자가 JDK 17 없어도 Gradle이 자동 설치. **CI/개발 환경 일관성 정석.**
+
+6. CI Workflow 검증
+6-1. .github/workflows/contract-freeze-check.yml 확인
+Stage 0에서 이미 Temurin 17 사용 중임이 보고됨. 재확인만:
+- uses: actions/setup-java@v4
+  with:
+    distribution: &apos;temurin&apos;
+    java-version: &apos;17&apos;    # ← 17 확인
+6-2. 다른 CI workflow도 전수 점검
+android-ci.yml, android-release.yml 등 다른 워크플로도 Java 17 사용하는지 확인.
+grep -rn "java-version" .github/workflows/
+**전부 17이어야 함**. 11 섞여 있으면 CI-로컬 불일치 발생.
+
+7. 검증 (빌드 성공 + 기존 테스트 무손실)
+7-1. 순서
+Gradle clean: `./gradlew clean`
+전체 빌드: `./gradlew build`
+core/common 테스트: `./gradlew :core:common:test`
+기존 서브프로젝트 테스트 전수: `./gradlew test`
+의존성 트리 Java 17 확인: `./gradlew :core:common:dependencies --configuration compileClasspath`
+7-2. 기대 결과
+21 test 전부 PASS 유지 (Stage 0에서 확인된 상태 그대로)
+기존 서브프로젝트 빌드 + 테스트 무손실
+빌드 로그에 "JDK 17" 또는 "Java 17" 표시
+`JavaVersion.VERSION_11` 문자열 리포 전체에서 **0건**
+7-3. 실패 시 롤백 정책
+만약 기존 서브프로젝트에서 Java 17 호환성 문제 발생 시:
+**land and fix** 방식 금지 (Google 정책)
+빌드 실패한 서브프로젝트 목록 + 구체 에러를 비전에 보고
+비전이 해당 서브프로젝트별 hotfix 워크오더 발행
+core/common만 Java 17로 두고 나머지 Java 11 유지하는 "부분 마이그레이션" 금지 (대표님 철칙)
+
+8. 완료 보고 포맷
+[Stage 0-hotfix 완료]
+
+수정된 파일:
+  build.gradle.kts (루트) — subprojects toolchain 블록 추가
+  core/common/build.gradle.kts — java 블록 삭제, kotlin.jvmToolchain(17)
+  <기존 서브프로젝트 build.gradle.kts 목록 전부>
+  gradle.properties — toolchain auto-download 추가
+
+빌드 결과:
+  ./gradlew clean build
+  BUILD SUCCESSFUL
+
+테스트 결과:
+  ./gradlew test
+  <N tests PASSED, 0 FAILED>
+  core/common: 21/21 PASS
+
+Java 버전 검증:
+  grep -rn &apos;VERSION_11&apos; --include=&apos;*.gradle*&apos; .
+  → 0건
+
+  ./gradlew :core:common:compileKotlin --info | grep &apos;target&apos;
+  → jvmTarget=17 확인
+
+CI 워크플로:
+  .github/workflows/*.yml 전체 java-version: &apos;17&apos; 확인
+
+9. 금지 사항
+core/common만 Java 17, 기존 서브프로젝트 Java 11 유지 (부분 마이그레이션 = 우회)
+individual 모듈마다 `java { sourceCompatibility = VERSION_17 }` 중복 선언 (루트 subprojects에서 일괄)
+JDK 17 toolchain 설정 없이 로컬에 JDK 17 수동 설치 가정 (auto-download가 정석)
+`JavaVersion.VERSION_11` 문자열 어떤 파일에도 남기기
+테스트 21개 중 하나라도 깨진 상태로 완료 보고 (전부 PASS 필수)
+기존 서브프로젝트 빌드 실패 시 "일단 core/common만 먼저" 식 부분 완료 보고
+FREEZE.md 수정 (계약 자체는 변경 없음, Java 버전은 빌드 설정이지 계약 아님)
+
+— Stage 0-hotfix 워크오더 종료 —
+작성: 비전 (Java 11 타협 철회)
+지시: 대표님 (2026-04-22) / 수임: Cursor
+빅테크 정석: 전체 리포 일괄 승격 + toolchain 자동 프로비저닝
