@@ -1,0 +1,71 @@
+﻿git : warning: in the working copy of 'logs/filter/backup_verify.txt', CRLF will be replaced by LF th
+e next time Git touches it
+At line:1 char:27
++ ... aging ==="; git add docs/05_quality/filter_repo_stage0_hotfix_2026042 ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (warning: in the... Git touches it:String) [], RemoteExc 
+   eption
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+warning: in the working copy of 'logs/filter/branches_before.txt', CRLF will be replaced by LF the ne
+xt time Git touches it
+warning: in the working copy of 'logs/filter/current_branch.txt', CRLF will be replaced by LF the nex
+t time Git touches it
+warning: in the working copy of 'logs/filter/dir_check.txt', CRLF will be replaced by LF the next tim
+e Git touches it
+warning: in the working copy of 'logs/filter/fetch_before_push.txt', CRLF will be replaced by LF the 
+next time Git touches it
+warning: in the working copy of 'logs/filter/filter_dryrun.txt', CRLF will be replaced by LF the next
+ time Git touches it
+warning: in the working copy of 'logs/filter/filter_repo_check.txt', CRLF will be replaced by LF the 
+next time Git touches it
+warning: in the working copy of 'logs/filter/filter_run.txt', CRLF will be replaced by LF the next ti
+me Git touches it
+warning: in the working copy of 'logs/filter/freeze_sha_after.txt', CRLF will be replaced by LF the n
+ext time Git touches it
+warning: in the working copy of 'logs/filter/freeze_sha_before.txt', CRLF will be replaced by LF the 
+next time Git touches it
+warning: in the working copy of 'logs/filter/head_before.txt', CRLF will be replaced by LF the next t
+ime Git touches it
+warning: in the working copy of 'logs/filter/hprof_before.txt', CRLF will be replaced by LF the next 
+time Git touches it
+warning: in the working copy of 'logs/filter/hygiene_commit_check.txt', CRLF will be replaced by LF t
+he next time Git touches it
+warning: in the working copy of 'logs/filter/log_before.txt', CRLF will be replaced by LF the next ti
+me Git touches it
+warning: in the working copy of 'logs/filter/pip_install.txt', CRLF will be replaced by LF the next t
+ime Git touches it
+warning: in the working copy of 'logs/filter/push_attempt1.txt', CRLF will be replaced by LF the next
+ time Git touches it
+warning: in the working copy of 'logs/filter/reflog_before.txt', CRLF will be replaced by LF the next
+ time Git touches it
+warning: in the working copy of 'logs/filter/remote_check.txt', CRLF will be replaced by LF the next 
+time Git touches it
+warning: in the working copy of 'logs/filter/remote_core_common.txt', CRLF will be replaced by LF the
+ next time Git touches it
+warning: in the working copy of 'logs/filter/remote_freeze_yml.txt', CRLF will be replaced by LF the 
+next time Git touches it
+warning: in the working copy of 'logs/filter/remote_log.txt', CRLF will be replaced by LF the next ti
+me Git touches it
+warning: in the working copy of 'logs/filter/robocopy.txt', CRLF will be replaced by LF the next time
+ Git touches it
+warning: in the working copy of 'logs/filter/set_upstream.txt', CRLF will be replaced by LF the next 
+time Git touches it
+warning: in the working copy of 'logs/filter/status_after_push.txt', CRLF will be replaced by LF the 
+next time Git touches it
+warning: in the working copy of 'logs/filter/status_preview.txt', CRLF will be replaced by LF the nex
+t time Git touches it
+warning: in the working copy of 'logs/hygiene/git_head_final.txt', CRLF will be replaced by LF the ne
+xt time Git touches it
+warning: in the working copy of 'logs/hygiene/git_status_final.txt', CRLF will be replaced by LF the 
+next time Git touches it
+warning: in the working copy of 'logs/hygiene/hprof_history.txt', CRLF will be replaced by LF the nex
+t time Git touches it
+warning: in the working copy of 'logs/hygiene/push_result.txt', CRLF will be replaced by LF the next 
+time Git touches it
+warning: in the working copy of 'logs/hygiene/staged_final.txt', CRLF will be replaced by LF the next
+ time Git touches it
+warning: in the working copy of 'logs/hygiene/stash_contents.txt', CRLF will be replaced by LF the ne
+xt time Git touches it
+warning: in the working copy of 'logs/hygiene/stash_list.txt', CRLF will be replaced by LF the next t
+ime Git touches it
