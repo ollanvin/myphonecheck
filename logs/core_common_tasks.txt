@@ -1,0 +1,72 @@
+﻿Starting a Gradle Daemon, 1 stopped Daemon could not be reused, use --status for details
+> Task :build-logic:convention:checkKotlinGradlePluginConfigurationErrors
+> Task :build-logic:convention:compileKotlin UP-TO-DATE
+> Task :build-logic:convention:compileJava NO-SOURCE
+> Task :build-logic:convention:pluginDescriptors UP-TO-DATE
+> Task :build-logic:convention:processResources UP-TO-DATE
+> Task :build-logic:convention:classes UP-TO-DATE
+> Task :build-logic:convention:jar UP-TO-DATE
+
+> Task :core:common:tasks
+
+------------------------------------------------------------
+Tasks runnable from project ':core:common'
+------------------------------------------------------------
+
+Build tasks
+-----------
+assemble - Assembles the outputs of this project.
+build - Assembles and tests this project.
+buildDependents - Assembles and tests this project and all projects that depend on it.
+buildKotlinToolingMetadata - Build metadata json file containing information about the used Kotlin tooling
+buildNeeded - Assembles and tests this project and all projects it depends on.
+classes - Assembles main classes.
+clean - Deletes the build directory.
+jar - Assembles a jar archive containing the classes of the 'main' feature.
+kotlinSourcesJar - Assembles a jar archive containing the sources of target 'kotlin'.
+testClasses - Assembles test classes.
+
+Documentation tasks
+-------------------
+javadoc - Generates Javadoc API documentation for the 'main' feature.
+
+Help tasks
+----------
+buildEnvironment - Displays all buildscript dependencies declared in project ':core:common'.
+dependencies - Displays all dependencies declared in project ':core:common'.
+dependencyInsight - Displays the insight into a specific dependency in project ':core:common'.
+help - Displays a help message.
+javaToolchains - Displays the detected java toolchains.
+kotlinDslAccessorsReport - Prints the Kotlin code for accessing the currently available project extensions and conventions.
+outgoingVariants - Displays the outgoing variants of project ':core:common'.
+projects - Displays the sub-projects of project ':core:common'.
+properties - Displays the properties of project ':core:common'.
+resolvableConfigurations - Displays the configurations that can be resolved in project ':core:common'.
+tasks - Displays the tasks runnable from project ':core:common'.
+
+Verification tasks
+------------------
+check - Runs all checks.
+checkKotlinGradlePluginConfigurationErrors - Checks that Kotlin Gradle Plugin hasn't reported project configuration errors, failing otherwise. This task always runs before compileKotlin* or similar tasks.
+test - Runs the test suite.
+
+Other tasks
+-----------
+compileJava - Compiles main Java source.
+compileKotlin - Compiles the compilation 'main' in target ''.
+compileTestJava - Compiles test Java source.
+compileTestKotlin - Compiles the compilation 'test' in target ''.
+components - Displays the components produced by project ':core:common'. [deprecated]
+dependentComponents - Displays the dependent components of components in project ':core:common'. [deprecated]
+mainClasses
+model - Displays the configuration model of project ':core:common'. [deprecated]
+processResources - Processes main resources.
+processTestResources - Processes test resources.
+
+Rules
+-----
+Pattern: clean<TaskName>: Cleans the output files of a task.
+Pattern: build<ConfigurationName>: Assembles the artifacts of a configuration.
+
+BUILD SUCCESSFUL in 16s
+6 actionable tasks: 2 executed, 4 up-to-date

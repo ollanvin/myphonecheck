@@ -4,15 +4,13 @@ package app.myphonecheck.mobile.feature.countryconfig
  * MyPhoneCheck 프리미엄 가격 정책.
  *
  * ┌──────────────────────────────────────────────────────────────┐
- * │ 3-Tier 가격 구조 (월간 단일, USD 환산)                        │
+ * │ v1.1 단일 가격 구조                                           │
  * ├──────────────────────────────────────────────────────────────┤
- * │ Tier 1: $9.9/월  — 고소득 선진국 (대표: 미국, 한국)           │
- * │ Tier 2: $6.9/월  — 중소득 국가                               │
- * │ Tier 3: $3.9/월  — 저소득 국가 (대표: 인도)                   │
+ * │ $1.99/월  — 전 세계 동일 가격                                 │
  * │                                                              │
  * │ 연간 플랜 없음 — 월간 단일 구독만 제공                        │
  * │                                                              │
- * │ 무료 체험: 첫 구매 시 1개월 무료 (전 티어 동일)               │
+ * │ 무료 체험: 첫 구매 시 1개월 무료                              │
  * │                                                              │
  * │ 해지 정책:                                                    │
  * │ - 리펀드 없음                                                 │
@@ -22,7 +20,6 @@ package app.myphonecheck.mobile.feature.countryconfig
  * │ Google Play Console:                                          │
  * │ - base-plan ID: monthly                                      │
  * │ - offer ID: free-trial-1month                                │
- * │ - 국가별 가격은 Play Console에서 "국가별 가격 설정" 사용      │
  * └──────────────────────────────────────────────────────────────┘
  */
 data class PricingTier(
@@ -33,90 +30,40 @@ data class PricingTier(
     val playOfferIdTrial: String,
 ) {
     companion object {
-        val TIER_1 = PricingTier(
+        /** v1.1: 단일 가격 $1.99/월 — 전 세계 동일 */
+        val SINGLE = PricingTier(
             tierId = 1,
-            monthlyPriceUsd = "$9.9",
+            monthlyPriceUsd = "$1.99",
             freeTrialDays = 30,
             playBasePlanMonthly = "myphonecheck-premium-monthly",
             playOfferIdTrial = "free-trial-1month",
         )
-        val TIER_2 = PricingTier(
-            tierId = 2,
-            monthlyPriceUsd = "$6.9",
-            freeTrialDays = 30,
-            playBasePlanMonthly = "myphonecheck-premium-monthly",
-            playOfferIdTrial = "free-trial-1month",
-        )
-        val TIER_3 = PricingTier(
-            tierId = 3,
-            monthlyPriceUsd = "$3.9",
-            freeTrialDays = 30,
-            playBasePlanMonthly = "myphonecheck-premium-monthly",
-            playOfferIdTrial = "free-trial-1month",
-        )
+
+        // 하위호환: 기존 3-Tier 참조 → 전부 SINGLE로 매핑
+        @Deprecated("v1.1: 단일 가격 정책으로 전환. SINGLE 사용")
+        val TIER_1 = SINGLE
+        @Deprecated("v1.1: 단일 가격 정책으로 전환. SINGLE 사용")
+        val TIER_2 = SINGLE
+        @Deprecated("v1.1: 단일 가격 정책으로 전환. SINGLE 사용")
+        val TIER_3 = SINGLE
     }
 }
 
 /**
  * 국가별 Pricing Tier 매핑.
  *
- * 분류 기준: World Bank income group + 통신 시장 성숙도.
- * Google Play Console 국가 코드(ISO 3166-1 alpha-2) 기준.
+ * v1.1: 단일 가격 $1.99/월 — 국가 무관.
+ * 기존 3-Tier 분류 로직은 제거하고 단일 반환.
  */
 object CountryPricingMapper {
 
     /**
      * 국가 코드 → PricingTier 반환.
-     * 미매핑 국가는 Tier 3 (가장 저렴) 적용.
+     * v1.1: 전 세계 동일 $1.99/월.
      */
     fun getTier(countryCode: String?): PricingTier {
-        if (countryCode == null) return PricingTier.TIER_1  // 탐지 실패 시 최고가 (보수적)
-        return when (countryCode.uppercase()) {
-            in TIER_1_COUNTRIES -> PricingTier.TIER_1
-            in TIER_2_COUNTRIES -> PricingTier.TIER_2
-            else -> PricingTier.TIER_3
-        }
+        return PricingTier.SINGLE
     }
-
-    // ══════════════════════════════════════
-    // Tier 1: $9.99 — 고소득 선진국 (약 35개국)
-    // ══════════════════════════════════════
-    private val TIER_1_COUNTRIES = setOf(
-        // North America
-        "US", "CA",
-        // Western Europe
-        "GB", "DE", "FR", "IT", "ES", "NL", "BE", "AT", "CH", "IE",
-        "LU", "FI", "DK", "SE", "NO", "IS",
-        // Asia-Pacific (고소득)
-        "JP", "KR", "AU", "NZ", "SG", "HK", "TW",
-        // Middle East (고소득)
-        "AE", "SA", "QA", "KW", "BH", "IL",
-        // Other
-        "PT", "CZ", "PL",
-    )
-
-    // ══════════════════════════════════════
-    // Tier 2: $6.99 — 중소득 국가 (약 55개국)
-    // ══════════════════════════════════════
-    private val TIER_2_COUNTRIES = setOf(
-        // Eastern Europe
-        "RU", "UA", "RO", "HU", "SK", "BG", "HR", "SI", "RS", "BA",
-        "ME", "MK", "AL", "GE", "AM", "AZ", "BY", "MD",
-        // Latin America (중소득)
-        "BR", "MX", "AR", "CL", "CO", "PE", "UY", "CR", "PA", "DO",
-        "EC", "GT", "SV",
-        // Asia (중소득)
-        "CN", "MY", "TH", "ID", "PH", "VN",
-        // Middle East / Africa (중소득)
-        "TR", "EG", "MA", "TN", "ZA", "NG", "KE", "GH",
-        // Central Asia
-        "KZ", "UZ",
-    )
-
-    // ══════════════════════════════════════
-    // Tier 3: $3.99 — 나머지 전체 (~100+ 국가)
-    // 명시적 매핑 불필요: getTier() default = TIER_3
-    // ══════════════════════════════════════
 }
 
 /**
@@ -165,9 +112,9 @@ data class PricingUiMessages(
             cancellationNote = "언제든 Google Play에서 구독을 취소할 수 있습니다.",
             noRefundNotice = "구독 취소 시 환불은 제공되지 않으며, 남은 결제 기간까지 서비스가 유지됩니다.",
             monthlyPriceLabel = "월 {price}",
-            regionalPricingNote = "모든 플랜의 기능은 동일하며, 지역에 따라 가격만 다릅니다.",
+            regionalPricingNote = "전 세계 동일 가격입니다.",
             trialCancelNote = "체험 기간 중 언제든 해지 가능. 해지해도 남은 기간까지 사용 가능.",
-            valueProposition = "전화·알림·문자·프라이버시, 4가지 위협을 하나의 앱이 판단합니다. 데이터는 기기 밖으로 나가지 않습니다.",
+            valueProposition = "전화·문자·프라이버시, 3가지 위협을 하나의 앱이 판단합니다. 데이터는 기기 밖으로 나가지 않습니다.",
         )
 
         private val EN = PricingUiMessages(
@@ -177,9 +124,9 @@ data class PricingUiMessages(
             cancellationNote = "You can cancel your subscription anytime on Google Play.",
             noRefundNotice = "No refunds on cancellation. Your service remains active until the end of the current billing period.",
             monthlyPriceLabel = "{price}/mo",
-            regionalPricingNote = "All plans include the same features. Pricing varies by region.",
+            regionalPricingNote = "Same price worldwide.",
             trialCancelNote = "Cancel anytime during your trial. Service continues until the end of the period.",
-            valueProposition = "Calls, notifications, messages, and privacy — one app judges all four threats. Your data never leaves the device.",
+            valueProposition = "Calls, messages, and privacy — one app judges all three threats. Your data never leaves the device.",
         )
 
         private val JA = PricingUiMessages(
@@ -189,9 +136,9 @@ data class PricingUiMessages(
             cancellationNote = "いつでもGoogle Playでサブスクリプションをキャンセルできます。",
             noRefundNotice = "キャンセル時の返金はありません。現在の請求期間の終了までサービスは継続されます。",
             monthlyPriceLabel = "月額 {price}",
-            regionalPricingNote = "すべてのプランは同じ機能を提供します。価格は地域によって異なります。",
+            regionalPricingNote = "世界中同一価格です。",
             trialCancelNote = "体験期間中いつでも解約可能。解約後も期間終了まで利用できます。",
-            valueProposition = "通話・通知・メッセージ・プライバシー、4つの脅威を1つのアプリが判断。データは端末の外に出ません。",
+            valueProposition = "通話・メッセージ・プライバシー、3つの脅威を1つのアプリが判断。データは端末の外に出ません。",
         )
 
         private val ZH = PricingUiMessages(
@@ -201,9 +148,9 @@ data class PricingUiMessages(
             cancellationNote = "您可以随时在Google Play取消订阅。",
             noRefundNotice = "取消订阅不予退款。服务将持续到当前计费周期结束。",
             monthlyPriceLabel = "每月 {price}",
-            regionalPricingNote = "所有计划功能相同，价格因地区而异。",
+            regionalPricingNote = "全球统一价格。",
             trialCancelNote = "试用期间随时可取消。取消后服务持续到期末。",
-            valueProposition = "电话、通知、短信、隐私——一个应用判断四种威胁。数据绝不离开设备。",
+            valueProposition = "电话、短信、隐私——一个应用判断三种威胁。数据绝不离开设备。",
         )
 
         private val RU = PricingUiMessages(
@@ -213,9 +160,9 @@ data class PricingUiMessages(
             cancellationNote = "Вы можете отменить подписку в любое время через Google Play.",
             noRefundNotice = "Возврат средств при отмене не предусмотрен. Сервис будет доступен до конца текущего расчётного периода.",
             monthlyPriceLabel = "{price}/мес",
-            regionalPricingNote = "Все тарифы включают одинаковые функции. Цена зависит от региона.",
+            regionalPricingNote = "Единая цена по всему миру.",
             trialCancelNote = "Отмена возможна в любой момент пробного периода. Сервис доступен до конца периода.",
-            valueProposition = "Звонки, уведомления, сообщения и конфиденциальность — одно приложение оценивает все 4 угрозы. Данные не покидают устройство.",
+            valueProposition = "Звонки, сообщения и конфиденциальность — одно приложение оценивает все 3 угрозы. Данные не покидают устройство.",
         )
 
         private val ES = PricingUiMessages(
@@ -225,9 +172,9 @@ data class PricingUiMessages(
             cancellationNote = "Puedes cancelar tu suscripción en cualquier momento desde Google Play.",
             noRefundNotice = "No se realizan reembolsos al cancelar. El servicio se mantiene activo hasta el final del período de facturación actual.",
             monthlyPriceLabel = "{price}/mes",
-            regionalPricingNote = "Todos los planes incluyen las mismas funciones. El precio varía según la región.",
+            regionalPricingNote = "Mismo precio en todo el mundo.",
             trialCancelNote = "Cancela en cualquier momento durante la prueba. El servicio continúa hasta el final del período.",
-            valueProposition = "Llamadas, notificaciones, mensajes y privacidad: una app evalúa las 4 amenazas. Tus datos nunca salen del dispositivo.",
+            valueProposition = "Llamadas, mensajes y privacidad: una app evalúa las 3 amenazas. Tus datos nunca salen del dispositivo.",
         )
 
         private val AR = PricingUiMessages(
@@ -237,9 +184,9 @@ data class PricingUiMessages(
             cancellationNote = "يمكنك إلغاء اشتراكك في أي وقت من Google Play.",
             noRefundNotice = "لا يتم استرداد المبلغ عند الإلغاء. تستمر الخدمة حتى نهاية فترة الفوترة الحالية.",
             monthlyPriceLabel = "{price}/شهر",
-            regionalPricingNote = "جميع الخطط تتضمن نفس الميزات. تختلف الأسعار حسب المنطقة.",
+            regionalPricingNote = "نفس السعر في جميع أنحاء العالم.",
             trialCancelNote = "يمكنك الإلغاء في أي وقت خلال الفترة التجريبية. تستمر الخدمة حتى نهاية الفترة.",
-            valueProposition = "المكالمات والإشعارات والرسائل والخصوصية — تطبيق واحد يقيّم التهديدات الأربعة. بياناتك لا تغادر الجهاز أبداً.",
+            valueProposition = "المكالمات والرسائل والخصوصية — تطبيق واحد يقيّم التهديدات الثلاثة. بياناتك لا تغادر الجهاز أبداً.",
         )
     }
 }

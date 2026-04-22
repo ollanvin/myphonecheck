@@ -50,6 +50,10 @@ private const val SKIP_UI_COMPLETELY = true
 /**
  * Android CallScreeningService implementation.
  *
+ * v1.1 DEPRECATED: PhoneStateListener(ForcePhoneListener)로 전환 예정.
+ * CallScreeningService는 기본 전화 앱 설정이 필요하여 UX 마찰이 큼.
+ * 전환 완료 시 이 클래스 제거.
+ *
  * 제품 철학: MyPhoneCheck는 행동 대행 앱이 아니라 행동 결정 보조 앱입니다.
  *
  * 동작 원칙:
@@ -72,6 +76,7 @@ private const val SKIP_UI_COMPLETELY = true
  * - 긴급번호(911, 119 등): 판정 없이 즉시 ALLOW
  * - 시스템 에러/타임아웃: fail-safe ALLOW
  */
+@Deprecated("v1.1: PhoneStateListener(ForcePhoneListener)로 전환 예정")
 class MyPhoneCheckScreeningService : CallScreeningService() {
 
     @EntryPoint

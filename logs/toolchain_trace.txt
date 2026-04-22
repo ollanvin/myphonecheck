@@ -1,0 +1,31 @@
+﻿
+logs\core_common_compile_info.txt:3:Received JVM installation metadata from 'C:\Progr
+am Files\Android\Android Studio\jbr': {JAVA_HOME=C:\Program Files\Android\Android Stu
+dio\jbr, JAVA_VERSION=21.0.10, JAVA_VENDOR=JetBrains s.r.o., RUNTIME_NAME=OpenJDK Run
+time Environment, RUNTIME_VERSION=21.0.10+-14961533-b1163.108, VM_NAME=OpenJDK 64-Bit
+ Server VM, VM_VERSION=21.0.10+-14961533-b1163.108, VM_VENDOR=JetBrains s.r.o., OS_AR
+CH=amd64}
+logs\core_common_compile_info.txt:12:Transforming foojay-resolver-0.9.0.jar (org.grad
+le.toolchains:foojay-resolver:0.9.0) with ExternalDependencyInstrumentingArtifactTran
+sform
+logs\core_common_compile_info.txt:55:Transforming foojay-resolver-0.9.0.jar (org.grad
+le.toolchains:foojay-resolver:0.9.0) with ExternalDependencyInstrumentingArtifactTran
+sform
+logs\core_common_compile_info.txt:131:[KOTLIN] Kotlin compilation 'jdkHome' argument:
+ C:\Users\user\.gradle\jdks\eclipse_adoptium-17-amd64-windows\jdk-17.0.18+8
+logs\core_common_compile_info.txt:221:Transforming kotlin-stdlib-jdk8-1.9.20.jar (org
+.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.20) with ExternalDependencyInstrumentingArti
+factTransform
+logs\core_common_compile_info.txt:224:Transforming kotlin-stdlib-jdk7-1.9.20.jar (org
+.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.20) with ExternalDependencyInstrumentingArti
+factTransform
+logs\core_common_compile_info.txt:245:Transforming bcpkix-jdk18on-1.77.jar (org.bounc
+ycastle:bcpkix-jdk18on:1.77) with ExternalDependencyInstrumentingArtifactTransform
+logs\core_common_compile_info.txt:276:Transforming bcutil-jdk18on-1.77.jar (org.bounc
+ycastle:bcutil-jdk18on:1.77) with ExternalDependencyInstrumentingArtifactTransform
+logs\core_common_compile_info.txt:277:Transforming bcprov-jdk18on-1.77.jar (org.bounc
+ycastle:bcprov-jdk18on:1.77) with ExternalDependencyInstrumentingArtifactTransform
+logs\core_common_compile_info.txt:572:[KOTLIN] Kotlin compilation 'jdkHome' argument:
+ C:\Users\user\.gradle\jdks\eclipse_adoptium-17-amd64-windows\jdk-17.0.18+8
+
+

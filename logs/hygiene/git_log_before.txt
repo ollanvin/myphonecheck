@@ -1,0 +1,10 @@
+﻿cca259c build: gradlew check 수정 + docs/ARCHITECTURE.md 역설계도
+5ef0840 v4.3: structure refactor complete
+f7cbaa5 feat: rewrite overlay to 2-second decision UI + wire DO_NOT_MISS notification action
+0288803 feat: overlay 2s decision UX + DO_NOT_MISS integration
+fb2ca8b feat: global number engine + device adaptive scan + persistence + refresh policy
+0a2dc55 Restore tracked engineering build reports
+1426473 Organize docs standard and record global core branchpoint
+0ecd4ab docs: add global single core architecture docs and governance structure
+9489754 Snapshot global single-core architecture pivot
+759b4d2 snapshot: Codex takeover after Claude Cowork global error, continue implementation

@@ -1,0 +1,14 @@
+﻿core/common/FREEZE.md
+core/common/build.gradle.kts
+core/common/src/main/kotlin/app/myphonecheck/core/common/checker/Checker.kt
+core/common/src/main/kotlin/app/myphonecheck/core/common/engine/DecisionEngineContract.kt
+core/common/src/main/kotlin/app/myphonecheck/core/common/identifier/IdentifierType.kt
+core/common/src/main/kotlin/app/myphonecheck/core/common/risk/DamageEstimate.kt
+core/common/src/main/kotlin/app/myphonecheck/core/common/risk/DamageType.kt
+core/common/src/main/kotlin/app/myphonecheck/core/common/risk/RiskKnowledge.kt
+core/common/src/main/kotlin/app/myphonecheck/core/common/risk/RiskLevel.kt
+core/common/src/main/kotlin/app/myphonecheck/core/common/risk/SearchEvidence.kt
+core/common/src/test/kotlin/app/myphonecheck/core/common/CheckerContractTest.kt
+core/common/src/test/kotlin/app/myphonecheck/core/common/FreezeMarkerTest.kt
+core/common/src/test/kotlin/app/myphonecheck/core/common/IdentifierTypeTest.kt
+core/common/src/test/kotlin/app/myphonecheck/core/common/RiskKnowledgeContractTest.kt

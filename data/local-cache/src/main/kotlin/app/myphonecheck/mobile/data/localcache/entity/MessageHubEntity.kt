@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey
  *
  * ┌──────────────────────────────────────────────────────────────┐
  * │ 핵심 설계 원칙:                                              │
- * │  • 출처 = 푸시 알림(NotificationListenerService)              │
+ * │  • 출처 = SMS BroadcastReceiver (v1.1: PUSH 제거됨)           │
  * │  • 메시지 원문 + 판단 결과 + 탐지된 링크 저장                  │
  * │  • 서버 전송 절대 없음 — 온디바이스 전용                      │
  * │  • 차단된 발신자 자동 식별 지원                                │

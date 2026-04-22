@@ -34,13 +34,7 @@ class ActionMapper @Inject constructor() {
 
             ConclusionCategory.INSUFFICIENT_EVIDENCE -> ActionRecommendation.HOLD
 
-            // ═══════════════════════════════════════
-            // PushCheck 엔진
-            // ═══════════════════════════════════════
-            ConclusionCategory.PUSH_CRITICAL -> ActionRecommendation.ANSWER
-            ConclusionCategory.PUSH_PROMOTION -> ActionRecommendation.ANSWER_WITH_CAUTION
-            ConclusionCategory.PUSH_NOISE -> ActionRecommendation.REJECT
-            ConclusionCategory.PUSH_NIGHT_DISTURB -> ActionRecommendation.REJECT
+            // PushCheck: REMOVED per v1.1 Architecture
 
             // ═══════════════════════════════════════
             // MessageCheck 엔진

@@ -8,7 +8,6 @@ import androidx.work.WorkerParameters
 import app.myphonecheck.mobile.R
 import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
 import app.myphonecheck.mobile.data.localcache.dao.PrivacyHistoryDao
-import app.myphonecheck.mobile.data.localcache.dao.PushStatsDao
 import app.myphonecheck.mobile.data.localcache.dao.UserCallRecordDao
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -25,11 +24,10 @@ private const val TAG = "WeeklyReportWorker"
  * 지난 7일간의 4대 지표를 집계하여 로컬 저장.
  *
  * ═══════════════════════════════════════════════
- * 4대 집계 지표:
+ * 3대 집계 지표 (v1.1: PushCheck 제거):
  * 1. CallCheck: 위험/주의/낮은위험 판정 건수
- * 2. PushCheck: 총 알림/야간/프로모션/링크포함/고위험 건수
- * 3. PrivacyCheck: 이상 탐지 건수 + 미확인 건수
- * 4. MessageCheck: 링크 포함 메시지/고위험 메시지 건수
+ * 2. PrivacyCheck: 이상 탐지 건수 + 미확인 건수
+ * 3. MessageCheck: 링크 포함 메시지/고위험 메시지 건수
  * ═══════════════════════════════════════════════
  *
  * 출력:
@@ -43,7 +41,6 @@ class WeeklyReportWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val userCallRecordDao: UserCallRecordDao,
-    private val pushStatsDao: PushStatsDao,
     private val privacyHistoryDao: PrivacyHistoryDao,
     private val messageHubDao: MessageHubDao,
 ) : CoroutineWorker(context, params) {
@@ -81,15 +78,9 @@ class WeeklyReportWorker @AssistedInject constructor(
         val lowRiskCalls = recentCalls.count { it.aiRiskLevel == "LOW" }
         val blockedCalls = recentCalls.count { it.lastAction == "blocked" }
 
-        // 2. PushCheck 집계
-        val pushTotal = pushStatsDao.getTotalAggregation(startDate, endDate)
-        val totalPush = pushTotal?.totalCount ?: 0
-        val nightPush = pushTotal?.nightCount ?: 0
-        val promotionPush = pushTotal?.promotionCount ?: 0
-        val linkPush = pushTotal?.linkCount ?: 0
-        val highRiskPush = pushTotal?.highRiskCount ?: 0
+        // PushCheck: REMOVED per v1.1 Architecture
 
-        // 3. PrivacyCheck 집계
+        // 2. PrivacyCheck 집계
         val privacyAll = privacyHistoryDao.getAllOnce()
         val recentPrivacy = privacyAll.filter { it.usedAt >= startMillis }
         val anomalyCount = recentPrivacy.count { it.isAnomaly }
@@ -97,7 +88,7 @@ class WeeklyReportWorker @AssistedInject constructor(
             it.isAnomaly && it.userVerified == "UNVERIFIED"
         }
 
-        // 4. MessageCheck 집계
+        // 3. MessageCheck 집계
         val messagesAll = messageHubDao.getAllOnce()
         val recentMessages = messagesAll.filter { it.receivedAt >= startMillis }
         val linkMessages = recentMessages.count { it.linkCount > 0 }
@@ -112,12 +103,6 @@ class WeeklyReportWorker @AssistedInject constructor(
             mediumRiskCalls = mediumRiskCalls,
             lowRiskCalls = lowRiskCalls,
             blockedCalls = blockedCalls,
-            // PushCheck
-            totalPush = totalPush,
-            nightPush = nightPush,
-            promotionPush = promotionPush,
-            linkPush = linkPush,
-            highRiskPush = highRiskPush,
             // PrivacyCheck
             privacyAnomalies = anomalyCount,
             privacyUnverified = unverifiedCount,
@@ -148,8 +133,7 @@ class WeeklyReportWorker @AssistedInject constructor(
             val summaryText = buildString {
                 append(ctx.getString(R.string.weekly_report_calls_fmt, report.totalCalls))
                 if (report.highRiskCalls > 0) append(ctx.getString(R.string.weekly_report_calls_risk_fmt, report.highRiskCalls))
-                append(ctx.getString(R.string.weekly_report_push_fmt, report.totalPush))
-                if (report.highRiskPush > 0) append(ctx.getString(R.string.weekly_report_push_risk_fmt, report.highRiskPush))
+                // PushCheck notification removed per v1.1
                 if (report.privacyAnomalies > 0) {
                     append(ctx.getString(R.string.weekly_report_privacy_fmt, report.privacyAnomalies))
                 }
@@ -194,12 +178,7 @@ data class WeeklyReport(
     val mediumRiskCalls: Int,
     val lowRiskCalls: Int,
     val blockedCalls: Int,
-    // PushCheck
-    val totalPush: Int,
-    val nightPush: Int,
-    val promotionPush: Int,
-    val linkPush: Int,
-    val highRiskPush: Int,
+    // PushCheck: REMOVED per v1.1
     // PrivacyCheck
     val privacyAnomalies: Int,
     val privacyUnverified: Int,

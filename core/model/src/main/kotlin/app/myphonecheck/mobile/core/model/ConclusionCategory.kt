@@ -3,9 +3,8 @@ package app.myphonecheck.mobile.core.model
 /**
  * 판단 결론 카테고리.
  *
- * 4엔진 통합 구조:
- * - CALL 엔진: KNOWN_CONTACT ~ INSUFFICIENT_EVIDENCE (기존)
- * - PUSH 엔진: PUSH_* 카테고리
+ * 3엔진 통합 구조 (v1.1: PUSH 엔진 제거):
+ * - CALL 엔진: KNOWN_CONTACT ~ INSUFFICIENT_EVIDENCE
  * - MESSAGE 엔진: MSG_* 카테고리
  * - PRIVACY 엔진: PRIV_* 카테고리
  *
@@ -48,29 +47,7 @@ enum class ConclusionCategory(
         summaryKo = "판단 근거 부족",
     ),
 
-    // ═══════════════════════════════════════
-    // PushCheck 엔진
-    // ═══════════════════════════════════════
-    PUSH_CRITICAL(
-        summaryEn = "Important notification",
-        summaryKo = "핵심 알림",
-        eventType = InterceptEventType.PUSH,
-    ),
-    PUSH_PROMOTION(
-        summaryEn = "Promotional notification",
-        summaryKo = "프로모션/광고 알림",
-        eventType = InterceptEventType.PUSH,
-    ),
-    PUSH_NOISE(
-        summaryEn = "Noise notification",
-        summaryKo = "소음 알림 (반복/무의미)",
-        eventType = InterceptEventType.PUSH,
-    ),
-    PUSH_NIGHT_DISTURB(
-        summaryEn = "Night-time disturbance",
-        summaryKo = "야간 방해 알림",
-        eventType = InterceptEventType.PUSH,
-    ),
+    // PushCheck 엔진: REMOVED per v1.1 Architecture
 
     // ═══════════════════════════════════════
     // MessageCheck 엔진

@@ -296,17 +296,7 @@ fun MyPhoneCheckNavHost(
                     onBack = { navController.popBackStack() },
                 )
             }
-            composable("engine/privacy") {
-                EngineDetailScreen(
-                    engineName = context.getString(AppR.string.engine_name_privacycheck),
-                    engineNameKo = context.getString(AppR.string.engine_title_privacy),
-                    eventType = InterceptEventType.PRIVACY,
-                    color = Color(0xFFE57373),
-                    icon = Icons.Filled.Security,
-                    languageProvider = languageProvider,
-                    onBack = { navController.popBackStack() },
-                )
-            }
+            // engine/privacy: REMOVED per v1.1 — mic-check/camera-check로 분리됨
             composable("timeline") {
                 TimelineScreen(
                     languageProvider = languageProvider,
@@ -1708,11 +1698,7 @@ private fun getSampleEventsForEngine(eventType: InterceptEventType): List<Sample
             SampleEvent("1:42 PM", "Allowed", "Contact in phone", Color(0xFF2E7D32)),
             SampleEvent("12:08 PM", "Blocked", "Scam pattern detected", Color(0xFFD32F2F)),
         )
-        InterceptEventType.PUSH -> listOf(
-            SampleEvent("3:45 PM", "Blocked", "Suspicious notification", Color(0xFFD32F2F)),
-            SampleEvent("2:30 PM", "Allowed", "Trusted app notification", Color(0xFF2E7D32)),
-            SampleEvent("1:15 PM", "Blocked", "Malware signature match", Color(0xFFD32F2F)),
-        )
+        // InterceptEventType.PUSH: REMOVED per v1.1 Architecture
         InterceptEventType.MESSAGE -> listOf(
             SampleEvent("4:20 PM", "Blocked", "Phishing SMS detected", Color(0xFFD32F2F)),
             SampleEvent("3:00 PM", "Allowed", "Normal message", Color(0xFF2E7D32)),

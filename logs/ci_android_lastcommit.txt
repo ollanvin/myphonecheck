@@ -1,0 +1,10 @@
+﻿commit 656abfae574459588cc99c73d527a70a816d699e
+Author: ITSALLDONE <founder@idolab.ai>
+Date:   Thu Apr 9 07:25:52 2026 +0900
+
+    ci: align Android CI with build+test; fix unit tests for Context localizer and decision engine
+    
+    Made-with: Cursor
+
+ .github/workflows/android-ci.yml | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)

@@ -9,7 +9,6 @@ import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
 import app.myphonecheck.mobile.data.localcache.dao.NumberProfileDao
 import app.myphonecheck.mobile.data.localcache.dao.PreJudgeCacheDao
 import app.myphonecheck.mobile.data.localcache.dao.PrivacyHistoryDao
-import app.myphonecheck.mobile.data.localcache.dao.PushStatsDao
 import app.myphonecheck.mobile.data.localcache.dao.SensorScanResultDao
 import app.myphonecheck.mobile.data.localcache.dao.UserCallRecordDao
 import app.myphonecheck.mobile.data.localcache.entity.BackupMetadataEntity
@@ -19,7 +18,6 @@ import app.myphonecheck.mobile.data.localcache.entity.MessageHubEntity
 import app.myphonecheck.mobile.data.localcache.entity.NumberProfileEntity
 import app.myphonecheck.mobile.data.localcache.entity.PreJudgeCacheEntry
 import app.myphonecheck.mobile.data.localcache.entity.PrivacyHistoryEntity
-import app.myphonecheck.mobile.data.localcache.entity.PushStatsEntity
 import app.myphonecheck.mobile.data.localcache.entity.SensorScanResultEntity
 import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
 
@@ -32,7 +30,7 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
  *  - BackupMetadataEntity: 백업 이력 메타데이터
  *  - MessageHubEntity: MessageCheck 허브 메시지 기록
  *  - PrivacyHistoryEntity: PrivacyCheck 카메라/마이크 접근 히스토리
- *  - PushStatsEntity: PushCheck 앱별 일간 알림 통계
+ *  (PushStatsEntity: REMOVED per v1.1 Architecture)
  *
  * 서버 동기화: 없음 (온디바이스 전용)
  */
@@ -45,11 +43,11 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
         DetailTagEntity::class,
         MessageHubEntity::class,
         PrivacyHistoryEntity::class,
-        PushStatsEntity::class,
+        // PushStatsEntity removed per v1.1
         SensorScanResultEntity::class,
         InitialScanMetaEntity::class,
     ],
-    version = 11,
+    version = 12, // v1.1: PushStatsEntity removed
     exportSchema = true,
 )
 abstract class MyPhoneCheckDatabase : RoomDatabase() {
@@ -60,7 +58,7 @@ abstract class MyPhoneCheckDatabase : RoomDatabase() {
     abstract fun detailTagDao(): DetailTagDao
     abstract fun messageHubDao(): MessageHubDao
     abstract fun privacyHistoryDao(): PrivacyHistoryDao
-    abstract fun pushStatsDao(): PushStatsDao
+    // pushStatsDao(): REMOVED per v1.1
     abstract fun sensorScanResultDao(): SensorScanResultDao
     abstract fun initialScanMetaDao(): InitialScanMetaDao
 

@@ -39,12 +39,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 
     buildFeatures {
@@ -129,7 +129,7 @@ dependencies {
     implementation(project(":feature:settings"))
     implementation(project(":feature:billing"))
     implementation(project(":feature:country-config"))
-    implementation(project(":feature:push-intercept"))
+    // feature:push-intercept removed per v1.1 Architecture (PUSH REMOVED)
     implementation(project(":feature:message-intercept"))
     implementation(project(":feature:privacy-check"))
 

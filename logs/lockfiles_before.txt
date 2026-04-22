@@ -1,0 +1,11 @@
+﻿
+FullName                                                                             
+--------                                                                             
+C:\Users\user\Dev\ollanvin\myphonecheck\.gradle\8.6\checksums\checksums.lock         
+C:\Users\user\Dev\ollanvin\myphonecheck\.gradle\8.6\executionHistory\executionHist...
+C:\Users\user\Dev\ollanvin\myphonecheck\.gradle\8.6\fileHashes\fileHashes.lock       
+C:\Users\user\Dev\ollanvin\myphonecheck\.gradle\buildOutputCleanup\buildOutputClea...
+C:\Users\user\Dev\ollanvin\myphonecheck\.gradle\expanded\expanded.lock               
+C:\Users\user\Dev\ollanvin\myphonecheck\.gradle\noVersion\buildLogic.lock            
+
+

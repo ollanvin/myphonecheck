@@ -1,0 +1,15 @@
+﻿git : warning: in the working copy of 'build-logic/convention/src/main/kotlin/AndroidApplicationConve
+ntionPlugin.kt', CRLF will be replaced by LF the next time Git touches it
+At line:32 char:4
++ ); git add -- $filesA 2>&1 | Out-File -Encoding utf8 logs\hygiene\cat ...
++    ~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (warning: in the... Git touches it:String) [], RemoteExc 
+   eption
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+warning: in the working copy of 'build-logic/convention/src/main/kotlin/AndroidLibraryConventionPlugi
+n.kt', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'gradle.properties', CRLF will be replaced by LF the next time Git to
+uches it
+warning: in the working copy of 'docs/00_governance/_workorder_stage0_hotfix_java17_e3b05e.txt', CRLF
+ will be replaced by LF the next time Git touches it
