@@ -18,7 +18,7 @@ Complete production-ready implementation of three critical feature modules for t
 **Path**: `feature/billing/src/main/kotlin/app/callcheck/mobile/feature/billing/BillingManager.kt`
 
 Complete Google Play Billing implementation with:
-- **Subscription Plan**: Single "myphonecheck_monthly" at USD 1/month
+- **Subscription Plan**: Single "myphonecheck_monthly" at USD 2.49/month (per PRD §13 / memory #11)
 - **BillingClient Connection**: Full lifecycle management with state listener
 - **Purchase Flow**: Launch billing flow for subscription purchase
 - **Purchase Acknowledgment**: Automatic acknowledgment handling
@@ -63,7 +63,7 @@ Jetpack Compose paywall UI with:
   - Intelligent filtering
   - Call protection
   - Privacy preservation
-- **Pricing Display**: "$1/month" with "1st month free" callout
+- **Pricing Display**: Store `formattedPrice` (target list ~$2.49/month) with "1st month free" callout where applicable
 - **Subscribe Button**: Full-featured with loading state
 - **Restore Purchases**: Link for account recovery
 - **Links**: Privacy policy and terms of service
