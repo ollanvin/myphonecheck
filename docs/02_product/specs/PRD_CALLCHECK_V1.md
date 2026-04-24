@@ -7,7 +7,7 @@
 **Package:** app.myphonecheck.mobile
 **Platform:** Android only (iOS excluded)
 **Tagline:** "Decide before you answer"
-**Price:** USD 1/month, single global plan, no ads
+**Price:** USD 2.49/month, single global plan, no ads, no annual tier
 **Scope:** 190 countries simultaneous launch
 
 MyPhoneCheck is an Android-only incoming-call decision app.
@@ -40,7 +40,7 @@ This is a **decision-support app**.
 8. Product UX target: 3 seconds
 9. Never claim certainty when evidence is weak — use possibility-based wording
 10. Global launch across 190 countries from day 1
-11. Single global pricing: USD 1/month
+11. Single global pricing: USD 2.49/month (monthly only; no annual plan)
 12. No ad-based model
 13. No B2B features
 
@@ -244,8 +244,8 @@ data class DecisionResult(
 
 ### Paywall Screen
 - Minimal
-- USD 1/month
-- Single plan
+- USD 2.49/month
+- Single plan (no annual)
 
 ---
 
@@ -331,7 +331,10 @@ Single app, 190 countries. Country-specific behavior via configuration only.
 
 ## 13. Pricing
 
-**Pricing**: $2.49/month (monthly only, no annual plan). Global uniform pricing. See `myphonecheck_base_architecture_v1.md §11` for latest authoritative pricing.
+**Pricing**: USD 2.49/month (monthly only, no annual plan). Global uniform pricing. See `myphonecheck_base_architecture_v1.md §11` for architecture alignment.
+
+> **가격 정책 근거:** 메모리 #11, `docs/07_relay/done/WO-GOV-005__claudecode__done.md` (2026-04-22), Boot Must Paper §3.1 (비전 판정: Rule 1 후시간 우선).  
+> 이전 **USD 1/month** 문서 조항(본 PRD 상단·Non-Negotiable·Paywall 초안)은 **폐기**되었다.
 
 ---
 

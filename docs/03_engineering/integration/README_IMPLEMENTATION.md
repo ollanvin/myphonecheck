@@ -16,7 +16,7 @@ This implementation provides three complete, production-ready feature modules fo
 ### 1. Billing Module (feature/billing/)
 
 **Complete Google Play Billing integration** with:
-- Single subscription: "myphonecheck_monthly" at USD 1/month
+- Single subscription: "myphonecheck_monthly" at USD 2.49/month (Play Console sets display price; see PRD §13 / memory #11)
 - BillingClient 7.x (latest API)
 - Purchase flow, acknowledgment, restore
 - Reactive state management (StateFlow)
@@ -149,7 +149,7 @@ decisionEngine.updateConfig(countryConfig)
 ### 3. Configure in Google Play Console
 
 1. Add product "myphonecheck_monthly" (subscription)
-2. Set price to $1/month
+2. Set price to $2.49/month (single monthly SKU; no annual)
 3. Add to your app's internal testing
 
 ### 4. Add Manifest Permissions
