@@ -1,0 +1,18 @@
+{
+  "fetchedAt": "2026-04-24T17:40:00+09:00",
+  "source": "GitHub REST API (no gh CLI in PATH)",
+  "repo": "ollanvin/myphonecheck",
+  "pulls": [
+    {
+      "number": 1,
+      "title": "docs(prd): update pricing to USD 2.49/month",
+      "state": "closed",
+      "merged_at": "2026-04-24T03:49:42Z",
+      "body_summary": "PRD/implementation docs USD 2.49/month; references memory #11, WO-GOV-005, Boot Must Paper v1.0.1 3.1; excludes local summary_myphonecheck_full.md from commit.",
+      "issue_comments": [],
+      "review_comments_count": 0
+    }
+  ],
+  "issues_non_pull": [],
+  "notes": "issues?state=all returned only #1 which is a pull_request. No standalone issues in first 100 results."
+}
