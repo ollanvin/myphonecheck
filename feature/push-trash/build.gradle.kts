@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
+    implementation(project(":core:global-engine"))
     implementation(project(":data:local-cache"))
 
     testImplementation(libs.junit)

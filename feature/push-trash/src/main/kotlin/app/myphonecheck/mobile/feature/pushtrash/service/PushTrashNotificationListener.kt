@@ -1,8 +1,8 @@
 package app.myphonecheck.mobile.feature.pushtrash.service
 
-import android.os.Build
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
+import app.myphonecheck.mobile.core.globalengine.parsing.notification.NotificationSourceParser
 import app.myphonecheck.mobile.feature.pushtrash.repository.PushTrashRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +17,9 @@ class PushTrashNotificationListener : NotificationListenerService() {
     @Inject
     lateinit var repository: PushTrashRepository
 
+    @Inject
+    lateinit var sourceParser: NotificationSourceParser
+
     private val job = SupervisorJob()
     private val scope = CoroutineScope(job + Dispatchers.Main.immediate)
 
@@ -26,18 +29,14 @@ class PushTrashNotificationListener : NotificationListenerService() {
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
-        val pkg = sbn.packageName
-        if (pkg == applicationContext.packageName) return
+        val source = sourceParser.parseSource(sbn)
+        if (source.packageName == applicationContext.packageName) return
 
-        val channelId = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            sbn.notification.channelId?.takeIf { it.isNotBlank() }
-        } else {
-            null
-        }
+        val channelId = source.channelId.takeIf { it.isNotBlank() }
 
         scope.launch {
-            repository.recordNotificationObserved(pkg, channelId, sbn.postTime)
-            when (repository.decide(pkg, channelId)) {
+            repository.recordNotificationObserved(source.packageName, channelId, source.postTime)
+            when (repository.decide(source.packageName, channelId)) {
                 PushTrashRepository.Decision.Allow -> Unit
                 PushTrashRepository.Decision.Block -> {
                     repository.recordTrashed(sbn)
