@@ -29,3 +29,46 @@ __pycache__/
 # Working logs (WO-CLEANUP-002, 2026-04-22): 도구·워크오더 실행 중간 산출물
 # 최종 보고서는 docs/05_quality/에 정리하므로 logs/ 하위는 git 추적 제외
 logs/
+
+# === Governance cleanup 2026-04-27 (WO-009-A): big-tech standard categories ===
+
+# --- Python ---
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# --- OS ---
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# --- IDE ---
+.idea/
+*.swp
+*.swo
+*~
+
+# --- Build ---
+build/
+dist/
+out/
+*.class
+
+# --- Gradle ---
+/build/
+/captures
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+
+# --- Logs ---
+*.log
+
+# --- Temp ---
+*.tmp
+*.bak
+*.swp
