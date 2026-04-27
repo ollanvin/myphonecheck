@@ -1,0 +1,7 @@
+﻿289126a docs(governance): apply architecture patch v1.7
+96471c6 chore(stage0-cleanup): preserve stage1 research + ignore hprof
+d470a73 Stage 0-hotfix: Java 17 migration + core:common freeze + repository hygiene
+f1934ff index on codex-global-single-core-snapshot: 7d1c71b build: gradlew check ?섏젙 + docs/ARCHITECTURE.md ??꽕怨꾨룄
+7d1c71b build: gradlew check ?섏젙 + docs/ARCHITECTURE.md ??꽕怨꾨룄
+1426473 Organize docs standard and record global core branchpoint
+0ecd4ab docs: add global single core architecture docs and governance structure

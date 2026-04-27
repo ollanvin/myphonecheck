@@ -1,0 +1,28 @@
+﻿9b172e86d287eb7ce2b48212952daf3fa353b81c|2026-04-24 10:33:06 +0900|鍮꾩쟾 (AI Agent)|docs(prd): update pricing to USD 2.49/month per memory #11
+df664ecc086decfe8a02fea032d8e92c9226297e|2026-04-23 10:41:39 +0900|鍮꾩쟾 (AI Agent)|fix(queue): WO-DISCOVERY-005 UTF-8 BOM-less LF (was UTF-16 LE)
+f6b7bc8d6f39065d0822688cc741ab56ac01e214|2026-04-23 10:35:38 +0900|鍮꾩쟾 (AI Agent)|discovery(executing-OS): WO-DISCOVERY-002 ??443 .md ?꾩닔 ?붿빟
+d8260413e98f5e83e7bb816f3867abf64752ede3|2026-04-23 10:33:27 +0900|鍮꾩쟾 (AI Agent)|queue: WO-DISCOVERY-002 in_progress
+d80087da643286c2cebe3da5a5633a90f4d6722c|2026-04-23 10:33:17 +0900|鍮꾩쟾 (AI Agent)|queue: WO-DISCOVERY-002~005 諛쒓뎬 5異?媛??6c31af970132ed1588909c5336fcc36e12938ceb|2026-04-23 09:09:47 +0900|鍮꾩쟾 (AI Agent)|docs(discovery): Cursor inventory of myphonecheck repo + local
+f0b08634424afb497863b8005d35305acfcf9044|2026-04-23 08:01:48 +0900|鍮꾩쟾 (AI Agent)|chore(relay): close WO-CLEANUP-003 (queue -> done) + report + snapshot
+ea0c4da1aa7f032aba4d3890601777f186739db9|2026-04-23 08:00:17 +0900|鍮꾩쟾 (AI Agent)|chore(archive): import historical architecture docs from C:\Users\user\Scripts\
+b7b15ba5b1cd72e68608b21e3e64c634df43f5cc|2026-04-23 07:58:27 +0900|鍮꾩쟾 (AI Agent)|chore(relay): close WO-GOV-005 (queue -> done) + report
+289126a94a66389412c514a6f690f5918f7484e7|2026-04-23 07:57:40 +0900|鍮꾩쟾 (AI Agent)|docs(governance): apply architecture patch v1.7
+744139014424d798d922b8503b8c9a1e85718ca7|2026-04-23 07:53:28 +0900|鍮꾩쟾 (AI Agent)|audit(relay): formally reject WO-AUDIT-001 ALERT as false positive
+eabfffa62cad248d1fc8751ee38a67b1da52b868|2026-04-23 07:42:52 +0900|鍮꾩쟾 (AI Agent)|docs(stage1): record WO-STAGE1-001 completion
+f9b918de61f91f3525782a9e47db87973aad8e7c|2026-04-23 07:31:10 +0900|鍮꾩쟾 (AI Agent)|chore(relay): bootstrap relay v1 + first audit
+96471c6d8c1c09a871befbfd511674bda334e79e|2026-04-22 21:11:46 +0900|鍮꾩쟾 (AI Agent)|chore(stage0-cleanup): preserve stage1 research + ignore hprof
+2ec1c2f92cd3fefca4155e9cd19c568bc06a587d|2026-04-22 21:00:46 +0900|鍮꾩쟾 (AI Agent)|Stage 0-hotfix: git filter-repo .hprof removal + force push completion
+d470a739631cf663e731509db780e929062fa276|2026-04-22 20:01:30 +0900|鍮꾩쟾 (AI Agent)|Stage 0-hotfix: Java 17 migration + core:common freeze + repository hygiene
+f1934ff3f70c94d2d57e0c0b838c0d9eb62455dd|2026-04-22 19:29:11 +0900|鍮꾩쟾 (AI Agent)|index on codex-global-single-core-snapshot: 7d1c71b build: gradlew check ?섏젙 + docs/ARCHITECTURE.md ??꽕怨꾨룄
+7d1c71b3fa1cb8939dc36dcdbb3af8271ddda85b|2026-04-21 17:14:46 +0900|鍮꾩쟾 (AI Agent)|build: gradlew check ?섏젙 + docs/ARCHITECTURE.md ??꽕怨꾨룄
+028880372188bb1ce709d1d6adf5f3aafe11350a|2026-04-15 22:44:41 +0900|ollanvin|feat: overlay 2s decision UX + DO_NOT_MISS integration
+0a2dc555ace94f25cb91d67ced5ef141b9af1e40|2026-04-15 07:20:50 +0900|ollanvin|Restore tracked engineering build reports
+1426473569e76a7c81af68ae208e2ebf32e770cd|2026-04-15 07:13:01 +0900|ollanvin|Organize docs standard and record global core branchpoint
+0ecd4abaf33792fc6ddc80ef5953affcc4581d2b|2026-04-15 07:05:21 +0900|ollanvin|docs: add global single core architecture docs and governance structure
+9489754552c9755847941268ae712ac3fde54e61|2026-04-15 06:51:28 +0900|ollanvin|Snapshot global single-core architecture pivot
+ea95a19ebcf54d31428d31fa902073121a711892|2026-04-14 11:55:51 +0900|ollanvin|docs: add SPEC 2026-04-14 core rebuild (v1 + v2.1)
+09cb1d405afccea514e99114e08580dea704ea6d|2026-04-13 12:01:42 +0900|ollanvin|feat: [蹂댁븞] ?щ옉諛??깊뙥?좊━ 蹂댁븞 紐⑤뱢 ??SQLCipher + 猷⑦똿/?꾪궧 ?먯? + ?ㅽ듃?뚰겕 蹂댁븞 + Billing Hardening
+9f2e9cb93000f356aa19b3c99586d0349397b72f|2026-04-09 10:13:50 +0900|ITSALLDONE|refactor: CallCheck ??MyPhoneCheck ?꾩껜 由щ꽕?대컢
+3cd7eabb4017f5242c81e92d48ea0e817c00d9ed|2026-03-31 12:55:23 +0900|itsalldone-dev|援ъ“ ?듭씪: android/ ?쒕툕?대뜑 ?쒓굅 ??猷⑦듃 Gradle ?꾨줈?앺듃 (CardSpend ?쒖?)
+b298f3ffa47d23a32ccdb5ca495cc89751ca3508|2026-03-27 15:42:14 +0900|itsalldone-dev|feat: QA ?꾩닔 留ㅽ듃由?뒪 ?듦낵 ??action 湲곕컲 ?묒젏 ?듭씪
+c430ec96728a426ea36acf326160e6b95aadbb1a|2026-03-27 12:09:31 +0900|idolab|feat: CALLCHECK.APP initial commit

@@ -1,0 +1,85 @@
+﻿ebcd6f5 Merge pull request #1 from ollanvin/feature/prd-pricing-patch
+9b172e8 docs(prd): update pricing to USD 2.49/month per memory #11
+df664ec fix(queue): WO-DISCOVERY-005 UTF-8 BOM-less LF (was UTF-16 LE)
+f6b7bc8 discovery(executing-OS): WO-DISCOVERY-002 ??443 .md ?꾩닔 ?붿빟
+d826041 queue: WO-DISCOVERY-002 in_progress
+d80087d queue: WO-DISCOVERY-002~005 諛쒓뎬 5異?媛??6c31af9 docs(discovery): Cursor inventory of myphonecheck repo + local
+f0b0863 chore(relay): close WO-CLEANUP-003 (queue -> done) + report + snapshot
+ea0c4da chore(archive): import historical architecture docs from C:\Users\user\Scripts\
+b7b15ba chore(relay): close WO-GOV-005 (queue -> done) + report
+289126a docs(governance): apply architecture patch v1.7
+7441390 audit(relay): formally reject WO-AUDIT-001 ALERT as false positive
+eabfffa docs(stage1): record WO-STAGE1-001 completion
+4d28515 chore(push-trash): wire into app, remove stale push-intercept
+72b8a5f feat(push-trash): implement NLS, repository, UI
+529c410 feat(push-trash): add Room v12 entities and DAOs
+e5242d4 feat(push-trash): scaffold :feature:push-trash module
+f9b918d chore(relay): bootstrap relay v1 + first audit
+f7b0411 chore(cleanup): stop tracking logs/ and ignore going forward
+96471c6 chore(stage0-cleanup): preserve stage1 research + ignore hprof
+2ec1c2f Stage 0-hotfix: git filter-repo .hprof removal + force push completion
+d470a73 Stage 0-hotfix: Java 17 migration + core:common freeze + repository hygiene
+dc2f7af On codex-global-single-core-snapshot: stage0-hotfix-hygiene: category C residue (push-removal refactor + other governance docs/scripts)
+f1934ff index on codex-global-single-core-snapshot: 7d1c71b build: gradlew check ?섏젙 + docs/ARCHITECTURE.md ??꽕怨꾨룄
+25bc7ce untracked files on codex-global-single-core-snapshot: 7d1c71b build: gradlew check ?섏젙 + docs/ARCHITECTURE.md ??꽕怨꾨룄
+7d1c71b build: gradlew check ?섏젙 + docs/ARCHITECTURE.md ??꽕怨꾨룄
+5ef0840 v4.3: structure refactor complete
+f7cbaa5 feat: rewrite overlay to 2-second decision UI + wire DO_NOT_MISS notification action
+0288803 feat: overlay 2s decision UX + DO_NOT_MISS integration
+fb2ca8b feat: global number engine + device adaptive scan + persistence + refresh policy
+0a2dc55 Restore tracked engineering build reports
+1426473 Organize docs standard and record global core branchpoint
+0ecd4ab docs: add global single core architecture docs and governance structure
+9489754 Snapshot global single-core architecture pivot
+759b4d2 snapshot: Codex takeover after Claude Cowork global error, continue implementation
+ea95a19 docs: add SPEC 2026-04-14 core rebuild (v1 + v2.1)
+e65d938 chore: add .gitattributes + normalize line endings
+14f5f7b feat(message-intercept): SMS ?섏떊 ?명꽣?됲듃 ??MessageHub ????붿쭊
+873dd83 feat(settings): 沅뚰븳 愿由??뱀뀡 + ?⑤낫???ъ쭊??援ы쁽
+2a5e28b fix(security): SQLCipher HMAC ?щ옒??洹쇰낯 ?닿껐 ??Auto Backup 李⑤떒 + ??愿由?媛뺥솕
+88d3e79 feat: ???꾩씠肄?援먯껜 (?뚮? 諛⑺뙣+泥댄겕留덊겕) + ???대쫫 MyPhoneCheck濡?蹂寃?259c71a feat: [.99 媛移? ?좎궗踰덊샇寃??+ ?쒓렇/硫붾え + 沅뚰븳紐⑸줉 + ?몄떆?듦퀎 + 二쇨컙由ы룷??+ 留곹겕?덉쟾??+ ?⑥씪?좊ː?꾩젏??+ 濡쒖뺄?숈뒿?붿쭊
+09cb1d4 feat: [蹂댁븞] ?щ옉諛??깊뙥?좊━ 蹂댁븞 紐⑤뱢 ??SQLCipher + 猷⑦똿/?꾪궧 ?먯? + ?ㅽ듃?뚰겕 蹂댁븞 + Billing Hardening
+60b8f77 fix: ?⑤낫???ъ쭊???쒖뼱 諛????쒖옉 ?덉젙??398c991 feat: MyPhoneCheck Ring Shield ?꾩씠肄??곸슜 + Debug APK 鍮뚮뱶
+9f2e9cb refactor: CallCheck ??MyPhoneCheck ?꾩껜 由щ꽕?대컢
+2f5842d fix: PrivacyScannerForegroundService Hilt DI 諛붿씤???섏젙
+c9ee14f fix: ?⑥쐞 ?뚯뒪???꾩껜 ?듦낵 ??CI 鍮뚮뱶 ?덉젙??ab3a1c7 ci: retrigger Actions
+69687c9 feat: [?묒뾽10] 沅뚰븳 ?⑤낫??+ PrivacyScannerService ?곌껐 + 蹂댁븞 ?좊ː UX
+7cd58b1 feat: [?묒뾽7蹂댁셿+?묒뾽8+?묒뾽9] MessageCheck ?덈툕 UI + PrivacyCheck ?덉뒪?좊━ UI + ?붿뿬 ?섎뱶肄붾뵫 ?쒓굅
+656abfa ci: align Android CI with build+test; fix unit tests for Context localizer and decision engine
+86b019f ci: add GitHub Actions workflow for compileDebugKotlin
+84ba0d1 feat: [?묒뾽7] CallCheckNavHost ?섎뱶肄붾뵫 臾몄옄???꾨㈃ ?쒓굅 ??strings.xml 由ъ냼???꾪솚
+89171da feat: [?묒뾽6] SMS ?곸꽭 ?곕룞 ??smsTotalCount/smsIncomingCount/smsOutgoingCount/smsLastContent ?꾩꽦
+2685a76 fix: [?묒뾽5] PrivacyCheckCollector companion object 以묐났 ?쒓굅
+4fc6627 fix: [?묒뾽5] strings.xml ???섏젙 + ?몄뼱??蹂寃?(FR/DE?뭃U/AR)
+e8f6953 feat: [?묒뾽5] ?꾨씪?대쾭?쒖껜??移대찓??留덉씠???덉뒪?좊━ Room DB + Collector 援ы쁽
+d8e90c4 feat: [?묒뾽4] 硫붿꽭吏泥댄겕 ?덈툕 Room DB + PushInterceptService ?곕룞
+9d68d8f fix: [?묒뾽1] SettingsScreen/PurchaseScreen language 蹂??蹂듭썝
+1696246 feat: [?묒뾽1] ?몄뼱 ?섎뱶肄붾뵫 ?쒓굅 ??strings.xml 由ъ냼???꾪솚
+a0ddead Refactor RingSystem to use Android string resources for i18n
+9dad498 Refactor CallerIdOverlayManager: Replace hardcoded OverlayUiText with Android string resources
+0a35ece Refactor PrivacyTrustMessages: Replace hardcoded language instances with Android string resources.
+a6a4cdb feat: ?щ?鍮??깊뙥?좊━ 諛깆뾽 ?쒖뒪???댁떇
+c88592e chore: fix .gitignore to exclude all build directories
+22d55d3 Stage 19: 寃곗젣 ?붾㈃ ?좊ː??蹂닿컯 + ?쒓컖 ?꾧퀎 ?ш뎄??1eb1c05 媛寃??뺤콉 ?꾨㈃ 媛쒗렪: ?⑥씪 ?붽컙 援щ룆 $9.9/$6.9/$3.9 + ?댁? ?뺤콉
+2f955f8 ?⑤낫???꾨㈃ 援먯껜: ?ㅻ챸?????꾪삊/?곹솴??(吏덈Ц?믪쐞?묅넂?닿껐)
+65db403 UI 吏덈Ц???꾪솚: 湲곕뒫 ?섏뿴 ???먮떒 ?좊룄 移대뱶
+990ee55 Stage 17: ?⑤낫??3??由щ돱??+ deprecated ?꾩씠肄??섏젙
+6eddf09 Implement 4-engine dashboard and detail screens in CallCheckNavHost
+e100cb4 Add PushCheck, MessageCheck, and PrivacyCheck engine integrations
+9ab74d9 build-logic: Kotlin jvmToolchain(17) ?ㅼ젙 異붽? ??JVM-target 遺덉씪移??닿껐
+cea3b01 ActionMapper when 遺꾧린 蹂댁셿: PUSH_*/MSG_*/PRIV_* 移댄뀒怨좊━ 留ㅽ븨 異붽?
+9fceb1f 4?붿쭊 ?듯빀 ?꾪궎?띿쿂: CallCheck + PushCheck + MessageCheck + PrivacyCheck
+5168dad ?몄젒 踰덊샇 4?④퀎 ????뺤옣: 10 ??100 ??1,000 ??10,000踰덊샇
+4000899 ?몄젒 踰덊샇 留ㅼ묶: AdjacentNumberMatcher + 2?④퀎 寃???뚯씠?꾨씪??a0f101c 踰덊샇 蹂??寃?? PhoneNumberVariantGenerator + OR 荑쇰━ ?듯빀
+3cd7eab 援ъ“ ?듭씪: android/ ?쒕툕?대뜑 ?쒓굅 ??猷⑦듃 Gradle ?꾨줈?앺듃 (CardSpend ?쒖?)
+200a746 Stage 15: ?ㅺ린湲?怨꾩륫 + 異쒖떆 由ы뿀????5紐⑤뱢 援ы쁽
+46c68b9 Stage 14: Launch Readiness Lock ???댁쁺 ?좉툑 + ?쒗궥 釉뚮젅?댁빱 + 異쒖떆 ??쒕낫??e28c556 Stage 13: Global Validation System ???쒕??덉씠???ㅽ듃?덉뒪/?쇰뱶諛??먮룞蹂댁젙 4紐⑤뱢
+93ee082 Stage 12: CountryComplianceValidator ??223媛쒓뎅 4異??꾩닔 寃利앷린
+3237586 Stage 12 fix: KR Tier A ??뼱?곌린 諛⑹? + putIfAbsent ?꾩엯
+9b3178f Stage 12: 190媛쒓뎅 Search Provider Registry + 2珥?SLA Timeout Enforcer
+08d0c66 Stage 11: ?ㅼ쟾 ?섏튂 ?좉툑 ??踰ㅼ튂留덊겕 ?꾨젅?꾩썙??+ 30媛쒓뎅 留ㅽ듃由?뒪 + 由ъ냼??紐⑤땲??4b9fb9b Stage 10: ?ㅺ린湲??깅뒫 怨꾩륫 + 30媛쒓뎅 ?뺤콉 ?뺤옣 + 2-Phase UX ?꾩꽦
+ca2508e Stage 9: ?명꽣?됲듃 ?꾩꽦??媛뺥솕 ??4? 紐⑤뱢 ?듯빀
+92d3914 Stage 8: 3-Tier PreJudge ?뚯씠?꾨씪??+ BehaviorPattern 4異??먮떒
+4dfeec2 Stage 7: enum ?뺥빀??蹂듦뎄 + ?ㅽ봽?쇱씤 fallback + 濡쒖뺄?숈뒿 + 罹먯떆
+b298f3f feat: QA ?꾩닔 留ㅽ듃由?뒪 ?듦낵 ??action 湲곕컲 ?묒젏 ?듭씪
+c430ec9 feat: CALLCHECK.APP initial commit
