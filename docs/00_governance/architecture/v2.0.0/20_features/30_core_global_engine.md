@@ -116,6 +116,7 @@ class InputAggregator(
 | 3 결정 중앙집중 금지 | 코어 엔진은 디바이스 로컬, 외부 결정 없음 (v2.0.0 §3 강화 주석) |
 | 4 자가 작동 | 내부 검색 + 공개 피드 캐시 = 오프라인 작동 |
 | 5 정직성 | 검색·피드 결과 가공 없이 원본 표시 |
+| 6 가격 정직성 | (코어 엔진은 가격 표시 영역 외, §16 Billing + §31 Pricing에서 측정. 통화 default 추론은 SimContext 활용 — 헌법 §8조 정합) |
 | 7 Device-Oriented Goose | 모든 핵심 처리 온디바이스 |
 | **8 SIM-Oriented Single Core** | SimContext = 코어 단일 진실원 |
 

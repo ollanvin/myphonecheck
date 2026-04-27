@@ -1,4 +1,4 @@
-## 0-B-2. Patch 감사 로그 (Patch 17~45)
+## 0-B-2. Patch 감사 로그 (Patch 17~46)
 
 **원본 출처**: v1.7.1 §0-B-2 (159–188)
 **v2.0.0 Layer**: Appendix
@@ -8,7 +8,7 @@
 
 ---
 
-## 0-B-2. Patch 감사 로그 (Patch 17~45)
+## 0-B-2. Patch 감사 로그 (Patch 17~46)
 
 | PATCH | 내용 | 위치 | 검증 | 사유 |
 |---|---|---|---|---|
@@ -41,6 +41,7 @@
 | **PATCH-43** | **§29 SIM-Oriented Single Core 신설** | **20_features/29_sim_oriented_core.md 신규** | **신규 H1** | **SimContext 데이터 클래스. UI 언어 3단 fallback (SIM → 시스템 → English). SIM 변경 추적 3-옵션 (적용/유지/초기화). SIM 부재 fallback + 명시.** |
 | **PATCH-44** | **§30 :core:global-engine 신설** | **20_features/30_core_global_engine.md 신규** | **신규 H1** | **모든 Surface 단일 코어 사용 (One Core Engine). parsing/search/decision/sim-context 모듈 구조. 검색 3대 축 통합. v1.9.0 §17 위협 평가 한정 해석 정정. Stage 2-001~005 마이그레이션 표.** |
 | **PATCH-45** | **§17 One Core Engine 정확화** | **06_product_design/05_product_strategy.md** | **본문 갱신** | **Decision Engine = 코어 내부 모듈 (decision/InputAggregator). 모든 Surface가 단일 코어 사용. §17-3-A 신규 정식 항목 표 (Initial Scan / SIM-Oriented / Core Engine). v1.9.0 위협 평가 한정 해석 정정.** |
+| **PATCH-46** | **v2.0.0 정정 (Cursor CHECK-CODE 감사)** | **05_constitution.md §1-1, 06_product_design/05_product_strategy.md §17, 20_features/27_card.md §27-10, 20_features/30_core_global_engine.md §30-6, 95_integration/01_six_surfaces_integration.md §36-3-B** | **본문 갱신** | **Cursor CHECK-CODE Major-1·2 + Minor-1·2·3 정정. §17 표 'Stage 1-002 예정' → '구현 완료 (PR #14)'. §95 §36-3-B v1.9.0 'DE 미공유' 논지 폐기 + One Core 통합 재서술. §1-1 제목 7조 → 8조. §30-6 헌법 표 6조 가격 정직성 행 추가. §27-10 기준 헌법 v1.9.0 → v2.0.0 + 8조 SIM-Oriented 행 추가. v1.9.0 cp -r 후 잔존한 표현을 v2.0.0 본질(One Core, 헌법 §8조, PR #14 흡수)에 정합화.** |
 
 **MAJOR 승격 기록 (2026-04-27 v2.0.0)**: Patch 41~45 반영 시점에 **v1.9.0 → v2.0.0 MAJOR 에스컬레이션**. 사유: 헌법 8조 신설(헌법 본문 변경 = SemVer MAJOR) + One Core Engine 본질 정확화 + SIM-Oriented Single Core 명문화 + Initial Scan + `:core:global-engine` 모듈 신설. v1.7.1·v1.8.0·v1.9.0 모두 FROZEN 보존, v2.0.0 신설. 코드 마이그레이션은 Stage 2-001~005 후속 PR.
 

@@ -149,16 +149,38 @@ v1.9.0 시점 PushCheck = **규칙 기반 휴지통** (앱/채널 차단 규칙 
 - 6 단계 (UI): `FourAttributeCard` 대신 휴지통 화면이 핵심 (위협 4속성 표시는 Stage 2+)
 - 7·8·9 단계: 권한 매트릭스 NLS 행 추가, SmokeRun 시나리오 보강, Patch 39 기록 — 모두 충족
 
-### 36-3-B. CardCheck 신설 사례 (v1.9.0 Patch 40)
+### 36-3-B. CardCheck 사례 — v1.9.0 신설 → v2.0.0 One Core 통합
 
-CardCheck는 **위협 평가 Surface가 아니다**. SMS/Push **재활용 거래 추출 Surface (Producer/Consumer 모델, §27 본문 참조)**. 따라서 위 일반 워크플로우 중:
+**v1.9.0 시점** (역사 기록):
 
-- 1~5 단계: 미적용 (IdentifierType / Decision Engine 미사용)
-- 6 단계: `FourAttributeCard` 셸 대신 카드사별 월 사용액 카드뷰 중심 UI
-- 7 단계: 새 권한 0 (MessageCheck/PushCheck가 이미 보유한 권한 재활용)
-- 8~9 단계: SmokeRun 시나리오 추가, Patch 40 기록
+v1.9.0에서 CardCheck는 자체 `:feature:card-check` 모듈에 `PatternExtractor`를 보유하고, "위협 평가 Surface 한정 Decision Engine 공유"라는 v1.9.0 §17-1 해석에 따라 "Surface가 DE를 공유하지 않는다"고 서술됐다. 본 표현은 v1.9.0 시점의 한정 해석에서 비롯된 것이다.
 
-CardCheck 사례를 통해 Surface는 반드시 Decision Engine을 공유하지 않는다는 것이 명시됨 (§17-1 v1.9.0 정의 정정).
+**v2.0.0 정정 (현재)**:
+
+헌법 §8조 SIM-Oriented Single Core 신설 + §17 One Core Engine 정확화 정합:
+
+- 모든 Surface는 `:core:global-engine` 단일 코어를 사용한다 (§17-1, §30)
+- CardCheck 통화·금액 파싱은 Stage 2-001에서 `:core:global-engine/parsing/currency/`로 마이그레이션 예정 (§30-8 표)
+- Decision Engine은 코어 내부 모듈 `decision/InputAggregator.kt`로 정확화 (§30-5)
+- v1.9.0의 "Surface가 DE를 공유하지 않는다"는 표현은 **v2.0.0 One Core 본질과 충돌하므로 폐기**
+
+**Stage 1-002 구현 사실** (PR #14, `e6a76ad`):
+
+- `:feature:card-check/parser/PatternExtractor.kt` (자체 모듈, ICU·Unicode 표준)
+- 17/17 단위 테스트 PASS (다양성 6 통화 + Validator)
+- 헌법 1~7조 정합 검증 (헌법 §27-10 표)
+- Room DB v13 승격 (CardTransactionEntity, CardSourceLabelEntity)
+
+**Stage 2-001 마이그레이션** (계획):
+
+- `:feature:card-check/parser/` → `:core:global-engine/parsing/currency/` 코어로 위치 이동
+- 기능 동일, 사용자 영향 0
+- 코어 `InputAggregator` 통합 (Source Detection / Pattern Extraction / Validation 코어 활용)
+- Surface 모듈은 코어 의존 얇은 layer로 축소
+
+**v1.9.0 일반 워크플로우와의 관계** (역사 기록 보존):
+
+v1.9.0 §36-3 1~9 단계 워크플로우는 위협 평가 Surface 추가용 패턴이었음. v2.0.0에서는 모든 Surface가 코어 사용으로 본 워크플로우 자체가 코어 통합 패턴으로 진화. 자세한 v1.9.0 본문은 v1.9.0 디렉토리 (frozen) 참조.
 
 ### 36-3-C. Initial Scan 흐름 (v2.0.0 §28)
 
