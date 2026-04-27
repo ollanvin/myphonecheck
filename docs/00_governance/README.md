@@ -21,8 +21,9 @@ This governance area follows the **2-axis Single Source of Truth** model:
 ### Architecture (Product Design)
 
 - `architecture/v1.7.1/` — Frozen reference (canonical)
-- `architecture/v1.8.0/` — Current Working Canonical
-- Defines: constitution 7 principles, Four Surfaces, NKB schema, Decision Engine, Day-by-Day implementation guide
+- `architecture/v1.8.0/` — Frozen (이전 Working Canonical, 4 Surface 시점)
+- `architecture/v1.9.0/` — Current Working Canonical (Six Surfaces, MAJOR 승격)
+- Defines: constitution 7 principles, Six Surfaces (CallCheck/MessageCheck/MicCheck/CameraCheck/PushCheck/CardCheck), NKB schema, Decision Engine, Day-by-Day implementation guide
 
 ### Infrastructure (Operations)
 
@@ -34,8 +35,9 @@ This governance area follows the **2-axis Single Source of Truth** model:
 
 - Architecture and Infrastructure are **paired documents**
 - Each has its own Working Canonical (independent versioning)
+- 현재 페어: **Architecture v1.9.0 ↔ Infrastructure v1.1** (Infrastructure v1.2 승격은 후속 WO에서 검토)
 - Conflict resolution: **Architecture takes precedence** (per Infrastructure v1.1 §0.2 Rule 4)
-- Cross-references: Infrastructure §0.2 -> Architecture v1.8.0 5 paths; Architecture §35-6 -> Infrastructure v1.1
+- Cross-references: Infrastructure §0.2 -> Architecture v1.9.0 (Six Surfaces, 6 paths); Architecture §35-6 -> Infrastructure v1.1
 
 ---
 
@@ -83,4 +85,4 @@ For project governance evolution and refactor records, see:
 - `project-governance.md` (current rules)
 - `archive/legacy_docs/project-governance-original.md` (pre-2026-04-27 original)
 
-Last refactor: 2026-04-27 (WO-V180-CLEANUP-009-E)
+Last refactor: 2026-04-27 (WO-V180-CLEANUP-009-E + WO-V190-GOVERNANCE-PATCH-003 v1.9.0 sync)

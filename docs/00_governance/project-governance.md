@@ -28,7 +28,8 @@ MyPhoneCheck must align to the constitution repository, but project-specific imp
 - The fixed layers are `Global Core`, `Country Policy Layer`, and `Presentation Layer`.
 - `CallCheck Core Engine` is the only judgment core.
 - `MessageCheck` is an extension path into the same core, not an independent engine.
-- `PushCheck` remains disabled.
+- `PushCheck` operates as a push trash (notification quarantine) Surface — promoted to formal Surface in Architecture v1.9.0.
+- `CardCheck` (v1.9.0 신설) provides month-by-month card spend management as a Surface that reuses SMS/Push data only (no new permissions, no new outbound traffic).
 - The app does not make the final user judgment. It shows evidence.
 - The user remains the final decision-maker.
 - Contact saving and relationship management remain separate.
@@ -60,7 +61,8 @@ Project documents must live under `docs/` and be classified by purpose.
 | Path | Purpose |
 |---|---|
 | `architecture/v1.7.1/` | Architecture canonical (frozen reference) |
-| `architecture/v1.8.0/` | Architecture current Working Canonical |
+| `architecture/v1.8.0/` | Architecture frozen (이전 Working Canonical, 4 Surface 시점) |
+| `architecture/v1.9.0/` | Architecture current Working Canonical (Six Surfaces, MAJOR 승격) |
 | `infrastructure/v1.0/` | Infrastructure original (paired) |
 | `infrastructure/v1.1/` | Infrastructure current Working Canonical |
 | `archive/` | Historical preservation (workorders, patches, legacy_docx, legacy_docs, temp) |
@@ -86,3 +88,14 @@ This document was refactored on 2026-04-27 (WO-V180-CLEANUP-009-E):
 - Added archive policy reference
 
 Original backed up at: `archive/legacy_docs/project-governance-original.md`
+
+### Updates 2026-04-27 (WO-V190-GOVERNANCE-PATCH-003)
+
+PR #11 (Architecture v1.9.0 MAJOR 머지, squash `0a62b91`) 후속 거버넌스 동기화:
+
+- `architecture/v1.9.0/` 행 추가 (Six Surfaces 정식 Working Canonical)
+- `architecture/v1.8.0/` 행은 frozen으로 강등 (4 Surface 시점 이전 Canonical)
+- Fixed Project Principles에서 "PushCheck remains disabled" 제거 — v1.9.0에서 push trash 정식 Surface로 승격된 사실 반영
+- Fixed Project Principles에 CardCheck 신설 명시 (월별 카드 사용액 관리, SMS/Push 재활용)
+- Infrastructure v1.1 cross-ref는 v1.9.0 기준 (현재형)으로 갱신, v1.2 승격은 별도 후속 WO
+- 거버넌스 본문은 영문 정책 + 한글 주석 혼합 유지 (텍스트 변경 최소화)
