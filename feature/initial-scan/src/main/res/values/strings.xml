@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="initial_scan_title">Initial Scan</string>
+    <string name="initial_scan_consent_title">Permission consent</string>
+    <string name="initial_scan_consent_desc">MyPhoneCheck reads your call log, SMS inbox, and installed app inventory on this device only. No data is sent off-device.</string>
+    <string name="initial_scan_grant_phone">Grant phone state</string>
+    <string name="initial_scan_grant_calls">Grant call log</string>
+    <string name="initial_scan_grant_sms">Grant SMS</string>
+    <string name="initial_scan_start">Start scan</string>
+    <string name="initial_scan_skip">Skip for now</string>
+    <string name="initial_scan_progress_title">Building base data</string>
+    <string name="initial_scan_progress_sim">SIM context</string>
+    <string name="initial_scan_progress_calls">Call log</string>
+    <string name="initial_scan_progress_sms">SMS inbox</string>
+    <string name="initial_scan_progress_packages">Installed apps</string>
+    <string name="initial_scan_complete_title">Base built</string>
+    <string name="initial_scan_complete_desc">All 6 Surfaces are now active.</string>
+    <string name="initial_scan_continue">Continue</string>
+    <string name="initial_scan_settings_entry_title">Initial Scan</string>
+    <string name="initial_scan_settings_entry_desc">Re-scan device to refresh base data</string>
+    <string name="initial_scan_count_format">%1$d entries</string>
+</resources>

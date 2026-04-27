@@ -47,6 +47,7 @@ include(":feature:push-trash")
 include(":feature:card-check")
 include(":feature:call-check")
 include(":feature:message-check")
+include(":feature:initial-scan")
 
 // Data modules
 include(":data:contacts")
