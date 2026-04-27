@@ -43,6 +43,7 @@ include(":feature:country-config")
 include(":feature:message-intercept")
 include(":feature:privacy-check")
 include(":feature:push-trash")
+include(":feature:card-check")
 
 // Data modules
 include(":data:contacts")

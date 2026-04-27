@@ -5,6 +5,8 @@ import androidx.room.RoomDatabase
 import app.myphonecheck.mobile.data.localcache.dao.BackupMetadataDao
 import app.myphonecheck.mobile.data.localcache.dao.BlockedAppDao
 import app.myphonecheck.mobile.data.localcache.dao.BlockedChannelDao
+import app.myphonecheck.mobile.data.localcache.dao.CardSourceLabelDao
+import app.myphonecheck.mobile.data.localcache.dao.CardTransactionDao
 import app.myphonecheck.mobile.data.localcache.dao.DetailTagDao
 import app.myphonecheck.mobile.data.localcache.dao.InitialScanMetaDao
 import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
@@ -19,6 +21,8 @@ import app.myphonecheck.mobile.data.localcache.dao.UserCallRecordDao
 import app.myphonecheck.mobile.data.localcache.entity.BackupMetadataEntity
 import app.myphonecheck.mobile.data.localcache.entity.BlockedAppEntity
 import app.myphonecheck.mobile.data.localcache.entity.BlockedChannelEntity
+import app.myphonecheck.mobile.data.localcache.entity.CardSourceLabelEntity
+import app.myphonecheck.mobile.data.localcache.entity.CardTransactionEntity
 import app.myphonecheck.mobile.data.localcache.entity.DetailTagEntity
 import app.myphonecheck.mobile.data.localcache.entity.InitialScanMetaEntity
 import app.myphonecheck.mobile.data.localcache.entity.MessageHubEntity
@@ -42,8 +46,13 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
  *  - PrivacyHistoryEntity: PrivacyCheck 카메라/마이크 접근 히스토리
  *  - PushStatsEntity: PushCheck 앱별 일간 알림 통계
  *  - BlockedChannelEntity / BlockedAppEntity / TrashedNotificationEntity / PushNotificationObservationEntity: 푸시 휴지통(Stage 1)
+ *  - CardTransactionEntity / CardSourceLabelEntity: CardCheck Stage 1-002 (글로벌 파싱 엔진)
  *
  * 서버 동기화: 없음 (온디바이스 전용)
+ *
+ * 버전 이력:
+ *  - v12: 푸시 휴지통 4 entity (Stage 1-001)
+ *  - v13 (2026-04-27): CardTransaction + CardSourceLabel 추가 (Stage 1-002, Architecture v1.9.0 §27)
  */
 @Database(
     entities = [
@@ -61,8 +70,10 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
         BlockedAppEntity::class,
         TrashedNotificationEntity::class,
         PushNotificationObservationEntity::class,
+        CardTransactionEntity::class,
+        CardSourceLabelEntity::class,
     ],
-    version = 12,
+    version = 13,
     exportSchema = true,
 )
 abstract class MyPhoneCheckDatabase : RoomDatabase() {
@@ -80,6 +91,8 @@ abstract class MyPhoneCheckDatabase : RoomDatabase() {
     abstract fun blockedAppDao(): BlockedAppDao
     abstract fun trashedNotificationDao(): TrashedNotificationDao
     abstract fun pushNotificationObservationDao(): PushNotificationObservationDao
+    abstract fun cardTransactionDao(): CardTransactionDao
+    abstract fun cardSourceLabelDao(): CardSourceLabelDao
 
     companion object {
         const val DATABASE_NAME = "myphonecheck.db"
