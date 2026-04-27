@@ -135,6 +135,7 @@ dependencies {
     implementation(project(":feature:push-trash"))
     implementation(project(":feature:card-check"))
     implementation(project(":feature:call-check"))
+    implementation(project(":feature:message-check"))
 
     // Data modules
     implementation(project(":data:contacts"))
