@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="message_check_title">Message Check</string>
+    <string name="message_check_recent_messages">Recent Messages</string>
+    <string name="message_check_sender_inventory">Sender Inventory</string>
+    <string name="message_check_permission_required">SMS read permission required</string>
+    <string name="message_check_grant_permission">Grant permission</string>
+    <string name="message_check_no_messages">No recent messages</string>
+    <string name="message_check_settings_entry_title">MessageCheck</string>
+    <string name="message_check_settings_entry_desc">Sender inventory and SMS pattern classification</string>
+    <string name="message_check_category_payment">Payment</string>
+    <string name="message_check_category_spam">Spam candidate</string>
+    <string name="message_check_category_notification">Notification</string>
+    <string name="message_check_category_normal">Normal</string>
+    <string name="message_check_short_sender">Short sender</string>
+    <string name="message_check_count_format">%1$d messages</string>
+</resources>

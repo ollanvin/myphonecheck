@@ -99,6 +99,8 @@ import app.myphonecheck.mobile.feature.cardcheck.R as CardCheckR
 import app.myphonecheck.mobile.feature.cardcheck.ui.CardCheckRoute
 import app.myphonecheck.mobile.feature.callcheck.R as CallCheckR
 import app.myphonecheck.mobile.feature.callcheck.ui.CallCheckRoute
+import app.myphonecheck.mobile.feature.messagecheck.R as MessageCheckR
+import app.myphonecheck.mobile.feature.messagecheck.ui.MessageCheckRoute
 import app.myphonecheck.mobile.feature.pushtrash.R as PushTrashR
 import app.myphonecheck.mobile.feature.pushtrash.ui.AppBlockSettingsRoute
 import app.myphonecheck.mobile.feature.pushtrash.ui.PushTrashAppsRoute
@@ -349,6 +351,7 @@ fun MyPhoneCheckNavHost(
                     onNavigateToPushTrash = { navController.navigate("push-trash") },
                     onNavigateToCardCheck = { navController.navigate("card-check") },
                     onNavigateToCallCheck = { navController.navigate("call-check") },
+                    onNavigateToMessageCheck = { navController.navigate("message-check") },
                     onRestartOnboarding = {
                         // 온보딩 완료 플래그 동기 제거 → 네비게이션 → 뒤로가기 스택 초기화
                         appPrefs.edit()
@@ -402,6 +405,9 @@ fun MyPhoneCheckNavHost(
             }
             composable("call-check") {
                 CallCheckRoute(onBack = { navController.popBackStack() })
+            }
+            composable("message-check") {
+                MessageCheckRoute(onBack = { navController.popBackStack() })
             }
         }
     }
@@ -2199,6 +2205,7 @@ private fun SettingsScreen(
     onNavigateToPushTrash: () -> Unit = {},
     onNavigateToCardCheck: () -> Unit = {},
     onNavigateToCallCheck: () -> Unit = {},
+    onNavigateToMessageCheck: () -> Unit = {},
     onRestartOnboarding: () -> Unit = {},
 ) {
     val language = languageProvider.resolveLanguage()
@@ -2605,6 +2612,57 @@ private fun SettingsScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = context.getString(CallCheckR.string.call_check_settings_entry_desc),
+                                fontSize = 12.sp,
+                                color = Color(0xFFB0BEC5),
+                            )
+                        }
+                    }
+                    Icon(
+                        Icons.Filled.ChevronRight,
+                        contentDescription = null,
+                        tint = Color(0xFFB0BEC5),
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // MessageCheck 진입 카드 (Architecture v2.0.0 §22 Stage 2-003)
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onNavigateToMessageCheck() },
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1B2838)),
+                shape = RoundedCornerShape(16.dp),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            Icons.Filled.Message,
+                            contentDescription = null,
+                            tint = Color(0xFF4FC3F7),
+                            modifier = Modifier.size(24.dp),
+                        )
+                        Column {
+                            Text(
+                                text = context.getString(MessageCheckR.string.message_check_settings_entry_title),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = context.getString(MessageCheckR.string.message_check_settings_entry_desc),
                                 fontSize = 12.sp,
                                 color = Color(0xFFB0BEC5),
                             )
