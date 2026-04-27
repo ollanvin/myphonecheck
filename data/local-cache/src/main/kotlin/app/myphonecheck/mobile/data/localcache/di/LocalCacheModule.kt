@@ -7,6 +7,8 @@ import app.myphonecheck.mobile.core.security.DatabaseKeyProvider
 import app.myphonecheck.mobile.data.localcache.dao.BackupMetadataDao
 import app.myphonecheck.mobile.data.localcache.dao.BlockedAppDao
 import app.myphonecheck.mobile.data.localcache.dao.BlockedChannelDao
+import app.myphonecheck.mobile.data.localcache.dao.CardSourceLabelDao
+import app.myphonecheck.mobile.data.localcache.dao.CardTransactionDao
 import app.myphonecheck.mobile.data.localcache.dao.DetailTagDao
 import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
 import app.myphonecheck.mobile.data.localcache.dao.InitialScanMetaDao
@@ -18,6 +20,7 @@ import app.myphonecheck.mobile.data.localcache.dao.PushStatsDao
 import app.myphonecheck.mobile.data.localcache.dao.SensorScanResultDao
 import app.myphonecheck.mobile.data.localcache.dao.TrashedNotificationDao
 import app.myphonecheck.mobile.data.localcache.dao.UserCallRecordDao
+import app.myphonecheck.mobile.data.localcache.db.Migration12To13
 import app.myphonecheck.mobile.data.localcache.db.MyPhoneCheckDatabase
 import app.myphonecheck.mobile.data.localcache.repository.NumberProfileRepository
 import app.myphonecheck.mobile.data.localcache.repository.PreJudgeCacheRepository
@@ -76,6 +79,7 @@ object LocalCacheModule {
             MyPhoneCheckDatabase.DATABASE_NAME,
         )
             .openHelperFactory(factory)
+            .addMigrations(Migration12To13)
             .fallbackToDestructiveMigration()
             .build()
     }
@@ -205,4 +209,18 @@ object LocalCacheModule {
     fun providePushNotificationObservationDao(
         database: MyPhoneCheckDatabase,
     ): PushNotificationObservationDao = database.pushNotificationObservationDao()
+
+    // CardCheck (Stage 1-002, Architecture v1.9.0 §27)
+
+    @Provides
+    @Singleton
+    fun provideCardTransactionDao(
+        database: MyPhoneCheckDatabase,
+    ): CardTransactionDao = database.cardTransactionDao()
+
+    @Provides
+    @Singleton
+    fun provideCardSourceLabelDao(
+        database: MyPhoneCheckDatabase,
+    ): CardSourceLabelDao = database.cardSourceLabelDao()
 }

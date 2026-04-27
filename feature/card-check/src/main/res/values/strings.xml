@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- CardCheck (Architecture v1.9.0 §27) — English default. Localization is handled separately. -->
+
+    <string name="card_check_title">CardCheck</string>
+    <string name="card_check_settings_entry_title">CardCheck</string>
+    <string name="card_check_settings_entry_desc">Track monthly card spend across all currencies. Source detection is user-driven; no card brands or countries are pre-configured.</string>
+
+    <string name="card_check_section_totals">Monthly totals (by currency · by card)</string>
+    <string name="card_check_section_transactions">Transactions</string>
+
+    <string name="card_check_month_current">This month</string>
+    <string name="card_check_month_previous">Last month</string>
+
+    <string name="card_check_include_low_confidence">Include low-confidence rows</string>
+
+    <string name="card_check_confidence_high">HIGH</string>
+    <string name="card_check_confidence_medium">MEDIUM</string>
+    <string name="card_check_confidence_low">LOW</string>
+
+    <string name="card_check_transaction_count">%1$d transactions</string>
+
+    <string name="card_check_empty_title">No transactions yet</string>
+    <string name="card_check_empty_desc">When you label a sender as a card source, future SMS or notifications from that sender will be captured here. Nothing is sent off the device.</string>
+
+    <string name="card_check_labeling_prompt_title">Is this a card payment source?</string>
+    <string name="card_check_labeling_prompt_desc">We detected a payment-like message from %1$s. Confirm to label it for future automatic capture.</string>
+    <string name="card_check_labeling_confirm">Yes, label as</string>
+    <string name="card_check_labeling_deny">No</string>
+
+    <string name="card_check_user_promise">All card data is processed only on this device. No external server receives it. SMS and notifications are read from what the OS already has, and the original text is discarded after parsing. Card sources are labeled by you, not pre-classified by the system.</string>
+</resources>

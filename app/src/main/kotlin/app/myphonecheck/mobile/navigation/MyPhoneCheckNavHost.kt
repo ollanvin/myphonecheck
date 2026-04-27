@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
@@ -94,6 +95,8 @@ import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter
 import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter.Lang
 import app.myphonecheck.mobile.feature.decisionui.components.FullEngineReasoningSection
 import app.myphonecheck.mobile.feature.privacycheck.R as PrivacyR
+import app.myphonecheck.mobile.feature.cardcheck.R as CardCheckR
+import app.myphonecheck.mobile.feature.cardcheck.ui.CardCheckRoute
 import app.myphonecheck.mobile.feature.pushtrash.R as PushTrashR
 import app.myphonecheck.mobile.feature.pushtrash.ui.AppBlockSettingsRoute
 import app.myphonecheck.mobile.feature.pushtrash.ui.PushTrashAppsRoute
@@ -342,6 +345,7 @@ fun MyPhoneCheckNavHost(
                     onBack = { navController.popBackStack() },
                     onNavigateToBackup = { navController.navigate("backup") },
                     onNavigateToPushTrash = { navController.navigate("push-trash") },
+                    onNavigateToCardCheck = { navController.navigate("card-check") },
                     onRestartOnboarding = {
                         // 온보딩 완료 플래그 동기 제거 → 네비게이션 → 뒤로가기 스택 초기화
                         appPrefs.edit()
@@ -389,6 +393,9 @@ fun MyPhoneCheckNavHost(
                 arguments = listOf(navArgument("packageName") { type = NavType.StringType }),
             ) {
                 AppBlockSettingsRoute(onBack = { navController.popBackStack() })
+            }
+            composable("card-check") {
+                CardCheckRoute(onBack = { navController.popBackStack() })
             }
         }
     }
@@ -2184,6 +2191,7 @@ private fun SettingsScreen(
     onBack: () -> Unit,
     onNavigateToBackup: () -> Unit = {},
     onNavigateToPushTrash: () -> Unit = {},
+    onNavigateToCardCheck: () -> Unit = {},
     onRestartOnboarding: () -> Unit = {},
 ) {
     val language = languageProvider.resolveLanguage()
@@ -2488,6 +2496,57 @@ private fun SettingsScreen(
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
                                 text = context.getString(PushTrashR.string.push_trash_settings_entry_desc),
+                                fontSize = 12.sp,
+                                color = Color(0xFFB0BEC5),
+                            )
+                        }
+                    }
+                    Icon(
+                        Icons.Filled.ChevronRight,
+                        contentDescription = null,
+                        tint = Color(0xFFB0BEC5),
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // CardCheck 진입 카드 (Architecture v1.9.0 §27 Stage 1-002)
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onNavigateToCardCheck() },
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1B2838)),
+                shape = RoundedCornerShape(16.dp),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            Icons.Filled.CreditCard,
+                            contentDescription = null,
+                            tint = Color(0xFF4FC3F7),
+                            modifier = Modifier.size(24.dp),
+                        )
+                        Column {
+                            Text(
+                                text = context.getString(CardCheckR.string.card_check_settings_entry_title),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = context.getString(CardCheckR.string.card_check_settings_entry_desc),
                                 fontSize = 12.sp,
                                 color = Color(0xFFB0BEC5),
                             )

@@ -133,6 +133,7 @@ dependencies {
     implementation(project(":feature:message-intercept"))
     implementation(project(":feature:privacy-check"))
     implementation(project(":feature:push-trash"))
+    implementation(project(":feature:card-check"))
 
     // Data modules
     implementation(project(":data:contacts"))
