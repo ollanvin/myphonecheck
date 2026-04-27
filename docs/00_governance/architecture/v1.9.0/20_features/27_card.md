@@ -106,15 +106,19 @@ data class CardTransactionEntity(
 
 ## 27-10. 헌법 정합성
 
-| 헌법 | 정합 여부 | 근거 |
+**기준 헌법**: `docs/00_governance/architecture/v1.9.0/05_constitution.md` (MyPhoneCheck product 헌법 7개 조항)
+
+CardCheck는 위 7개 조항 모두에 직접 정합한다.
+
+| 헌법 (조 + 정식 명칭) | 정합 여부 | 근거 |
 |---|---|---|
-| 1조 Out-Bound Zero | OK | 새 외부 통신 0, SMS/Push 자체는 사용자 디바이스 자원 |
-| 2조 In-Bound Zero | OK | SMS/Push 원문 폐기, 추출 필드만 저장 |
-| 3조 Decision Centralization Prohibited | OK | 디바이스 로컬 파싱·집계, 외부 결정 없음 |
-| 4조 Self-Operation | OK | 네트워크 단절 시에도 작동 |
-| 5조 정직성 | OK | 측정값 그대로 표시, 가공 없음 |
-| 6조 사용자 신뢰 | OK | 사용자가 결제 내역 직접 확인 |
-| 7조 Device-Oriented Goose | OK | 모든 처리 온디바이스 |
+| 제1조 Out-Bound Zero (사용자 데이터 외부 전송 금지) | OK | 새 외부 통신 0. SMS/Push 자체는 OS가 이미 받은 사용자 디바이스 자원이며 카드사 서버로 재전송하지 않음 |
+| 제2조 In-Bound Zero (외부 원문 영구 저장 금지) | OK | SMS/Push 원문은 메모리 내 파서가 처리 후 폐기, 추출 필드(cardName·amount·timestamp·merchantName·source)만 영구 저장 |
+| 제3조 결정권 중앙집중 금지 | OK | 디바이스 로컬 파싱·집계 + 카드사별 패턴 매칭. 본사 분류·중앙 결정 0 |
+| 제4조 자가 작동 (Self-Operation, L3 기준선) | OK | 네트워크 단절 시에도 SMS Repository·NLS·Room DB·UI 모두 작동 (L3 기준선 충족) |
+| 제5조 정직성 (Honesty) | OK | 카드 사용액 측정값 그대로 표시, 가공·예측 없음. 추출 실패·모호 시 사용자에게 ambiguous 플래그 노출 (헌법 §5-1) |
+| 제6조 가격 정직성 (Pricing Honesty) | OK | 카드 결제 금액은 SMS/Push에 표시된 측정값 그대로 사용 (가공·예측·환산·반올림 없음). 사용자가 직접 본 영수증·SMS와 1:1 일치 보장 |
+| 제7조 디바이스 오리엔티드 거위 (Device-Oriented Goose) | OK | 모든 처리 온디바이스. 본사 운영 0, 본사 매핑 0, 카드사 서버 직접 통신 0 (SMS/Push 재활용만) |
 
 ## 27-11. 사용자 대면 약속
 

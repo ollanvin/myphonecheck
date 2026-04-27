@@ -63,15 +63,20 @@
 
 ## 26-8. 헌법 정합성
 
-| 헌법 | 정합 여부 | 근거 |
+**기준 헌법**: `docs/00_governance/architecture/v1.9.0/05_constitution.md` (MyPhoneCheck product 헌법 7개 조항)
+
+PushCheck는 위 7개 조항 중 **6개 조항에 직접 정합**한다 (제6조 가격 정직성은 PushCheck와 무관하므로 본 표에서 제외).
+
+| 헌법 (조 + 정식 명칭) | 정합 여부 | 근거 |
 |---|---|---|
-| 1조 Out-Bound Zero | OK | NLS는 OS API, 외부 전송 0 |
-| 2조 In-Bound Zero | OK | 알림 원문 폐기, 메타데이터만 저장 |
-| 3조 Decision Centralization Prohibited | OK | 디바이스 로컬 격리 |
-| 4조 Self-Operation | OK | 네트워크 단절 시에도 작동 |
-| 5조 정직성 | OK | 격리 사실 사용자에게 명시 |
-| 6조 사용자 신뢰 | OK | 사용자가 휴지통 직접 관리 |
-| 7조 Device-Oriented Goose | OK | NLS = Android 표준 메커니즘 |
+| 제1조 Out-Bound Zero (사용자 데이터 외부 전송 금지) | OK | NLS는 OS API. 알림 메타데이터·원문 모두 외부 전송 0 |
+| 제2조 In-Bound Zero (외부 원문 영구 저장 금지) | OK | 알림 원문은 메모리 내 분류 후 폐기, 휴지통 DB에는 격리 메타데이터만 저장 |
+| 제3조 결정권 중앙집중 금지 | OK | 격리 여부 판단은 사용자 차단 규칙 + 디바이스 로컬 채널 매핑. 본사 fallback 0 |
+| 제4조 자가 작동 (Self-Operation, L3 기준선) | OK | 네트워크 단절 시에도 NLS·Room DB·휴지통 UI 모두 작동 (L3 기준선 충족) |
+| 제5조 정직성 (Honesty) | OK | 격리 사실을 사용자에게 명시 + 사용자가 휴지통에서 직접 복원·삭제 가능 (격리·복원 투명성 보장) |
+| 제7조 디바이스 오리엔티드 거위 (Device-Oriented Goose) | OK | NLS는 Android 표준 메커니즘. 본사 운영 0, 본사 매핑 0, 모든 처리 온디바이스 |
+
+**제6조 가격 정직성 비대상 사유**: PushCheck는 알림 격리 Surface로 구독·결제·net ARPU 측정과 직접 관련이 없다. 가격 정직성은 §16 (Billing) + §31 (Pricing) 영역에서 측정·검증된다.
 
 ## 26-9. cross-ref
 
