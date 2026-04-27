@@ -1,3 +1,12 @@
+> **ARCHIVE NOTE (2026-04-27, WO-V180-CLEANUP-009-E)**
+>
+> 본 파일은 원래 `docs/00_governance/docs-index.md`에 위치했으나
+> 파일명과 내용이 불일치 (파일명: docs-index, 내용: Android 모듈 안내).
+>
+> 모듈 안내 내용은 레포 루트 `README.md`로 이동·통합됨.
+> 본 파일은 역사 기록용으로 archive에 보존.
+
+---
 # MyPhoneCheck Android Project
 
 A multi-module Android application for intelligent call verification and decision making using Kotlin, Jetpack Compose, and Hilt dependency injection.
