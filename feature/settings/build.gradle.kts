@@ -60,9 +60,15 @@ dependencies {
 
     implementation(project(":core:model"))
     implementation(project(":core:util"))
+    implementation(project(":core:global-engine"))
     implementation(project(":data:local-cache"))
+    implementation(project(":feature:initial-scan"))
+
+    implementation(libs.datastore.preferences)
 
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
 }
