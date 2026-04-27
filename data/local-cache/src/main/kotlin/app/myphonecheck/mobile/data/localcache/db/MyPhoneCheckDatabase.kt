@@ -5,33 +5,41 @@ import androidx.room.RoomDatabase
 import app.myphonecheck.mobile.data.localcache.dao.BackupMetadataDao
 import app.myphonecheck.mobile.data.localcache.dao.BlockedAppDao
 import app.myphonecheck.mobile.data.localcache.dao.BlockedChannelDao
+import app.myphonecheck.mobile.data.localcache.dao.CallBaseDao
 import app.myphonecheck.mobile.data.localcache.dao.CardSourceLabelDao
 import app.myphonecheck.mobile.data.localcache.dao.CardTransactionDao
 import app.myphonecheck.mobile.data.localcache.dao.DetailTagDao
 import app.myphonecheck.mobile.data.localcache.dao.InitialScanMetaDao
 import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
 import app.myphonecheck.mobile.data.localcache.dao.NumberProfileDao
+import app.myphonecheck.mobile.data.localcache.dao.PackageBaseDao
 import app.myphonecheck.mobile.data.localcache.dao.PreJudgeCacheDao
 import app.myphonecheck.mobile.data.localcache.dao.PrivacyHistoryDao
 import app.myphonecheck.mobile.data.localcache.dao.PushNotificationObservationDao
 import app.myphonecheck.mobile.data.localcache.dao.PushStatsDao
 import app.myphonecheck.mobile.data.localcache.dao.SensorScanResultDao
+import app.myphonecheck.mobile.data.localcache.dao.SimContextSnapshotDao
+import app.myphonecheck.mobile.data.localcache.dao.SmsBaseDao
 import app.myphonecheck.mobile.data.localcache.dao.TrashedNotificationDao
 import app.myphonecheck.mobile.data.localcache.dao.UserCallRecordDao
 import app.myphonecheck.mobile.data.localcache.entity.BackupMetadataEntity
 import app.myphonecheck.mobile.data.localcache.entity.BlockedAppEntity
 import app.myphonecheck.mobile.data.localcache.entity.BlockedChannelEntity
+import app.myphonecheck.mobile.data.localcache.entity.CallBaseEntity
 import app.myphonecheck.mobile.data.localcache.entity.CardSourceLabelEntity
 import app.myphonecheck.mobile.data.localcache.entity.CardTransactionEntity
 import app.myphonecheck.mobile.data.localcache.entity.DetailTagEntity
 import app.myphonecheck.mobile.data.localcache.entity.InitialScanMetaEntity
 import app.myphonecheck.mobile.data.localcache.entity.MessageHubEntity
 import app.myphonecheck.mobile.data.localcache.entity.NumberProfileEntity
+import app.myphonecheck.mobile.data.localcache.entity.PackageBaseEntity
 import app.myphonecheck.mobile.data.localcache.entity.PreJudgeCacheEntry
 import app.myphonecheck.mobile.data.localcache.entity.PrivacyHistoryEntity
 import app.myphonecheck.mobile.data.localcache.entity.PushNotificationObservationEntity
 import app.myphonecheck.mobile.data.localcache.entity.PushStatsEntity
 import app.myphonecheck.mobile.data.localcache.entity.SensorScanResultEntity
+import app.myphonecheck.mobile.data.localcache.entity.SimContextSnapshotEntity
+import app.myphonecheck.mobile.data.localcache.entity.SmsBaseEntity
 import app.myphonecheck.mobile.data.localcache.entity.TrashedNotificationEntity
 import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
 
@@ -53,6 +61,8 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
  * 버전 이력:
  *  - v12: 푸시 휴지통 4 entity (Stage 1-001)
  *  - v13 (2026-04-27): CardTransaction + CardSourceLabel 추가 (Stage 1-002, Architecture v1.9.0 §27)
+ *  - v14: Initial Scan 베이스 4 entity 추가 (Architecture v2.0.0 §28).
+ *          call_base_entry, sms_base_entry, package_base_entry, sim_context_snapshot.
  */
 @Database(
     entities = [
@@ -72,8 +82,12 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
         PushNotificationObservationEntity::class,
         CardTransactionEntity::class,
         CardSourceLabelEntity::class,
+        CallBaseEntity::class,
+        SmsBaseEntity::class,
+        PackageBaseEntity::class,
+        SimContextSnapshotEntity::class,
     ],
-    version = 13,
+    version = 14,
     exportSchema = true,
 )
 abstract class MyPhoneCheckDatabase : RoomDatabase() {
@@ -93,6 +107,10 @@ abstract class MyPhoneCheckDatabase : RoomDatabase() {
     abstract fun pushNotificationObservationDao(): PushNotificationObservationDao
     abstract fun cardTransactionDao(): CardTransactionDao
     abstract fun cardSourceLabelDao(): CardSourceLabelDao
+    abstract fun callBaseDao(): CallBaseDao
+    abstract fun smsBaseDao(): SmsBaseDao
+    abstract fun packageBaseDao(): PackageBaseDao
+    abstract fun simContextSnapshotDao(): SimContextSnapshotDao
 
     companion object {
         const val DATABASE_NAME = "myphonecheck.db"

@@ -20,7 +20,12 @@ import app.myphonecheck.mobile.data.localcache.dao.PushStatsDao
 import app.myphonecheck.mobile.data.localcache.dao.SensorScanResultDao
 import app.myphonecheck.mobile.data.localcache.dao.TrashedNotificationDao
 import app.myphonecheck.mobile.data.localcache.dao.UserCallRecordDao
+import app.myphonecheck.mobile.data.localcache.dao.CallBaseDao
+import app.myphonecheck.mobile.data.localcache.dao.PackageBaseDao
+import app.myphonecheck.mobile.data.localcache.dao.SimContextSnapshotDao
+import app.myphonecheck.mobile.data.localcache.dao.SmsBaseDao
 import app.myphonecheck.mobile.data.localcache.db.Migration12To13
+import app.myphonecheck.mobile.data.localcache.db.Migration13To14
 import app.myphonecheck.mobile.data.localcache.db.MyPhoneCheckDatabase
 import app.myphonecheck.mobile.data.localcache.repository.NumberProfileRepository
 import app.myphonecheck.mobile.data.localcache.repository.PreJudgeCacheRepository
@@ -79,7 +84,7 @@ object LocalCacheModule {
             MyPhoneCheckDatabase.DATABASE_NAME,
         )
             .openHelperFactory(factory)
-            .addMigrations(Migration12To13)
+            .addMigrations(Migration12To13, Migration13To14)
             .fallbackToDestructiveMigration()
             .build()
     }
@@ -223,4 +228,26 @@ object LocalCacheModule {
     fun provideCardSourceLabelDao(
         database: MyPhoneCheckDatabase,
     ): CardSourceLabelDao = database.cardSourceLabelDao()
+
+    // Initial Scan 베이스 (Architecture v2.0.0 §28, Room v14)
+
+    @Provides
+    @Singleton
+    fun provideCallBaseDao(database: MyPhoneCheckDatabase): CallBaseDao =
+        database.callBaseDao()
+
+    @Provides
+    @Singleton
+    fun provideSmsBaseDao(database: MyPhoneCheckDatabase): SmsBaseDao =
+        database.smsBaseDao()
+
+    @Provides
+    @Singleton
+    fun providePackageBaseDao(database: MyPhoneCheckDatabase): PackageBaseDao =
+        database.packageBaseDao()
+
+    @Provides
+    @Singleton
+    fun provideSimContextSnapshotDao(database: MyPhoneCheckDatabase): SimContextSnapshotDao =
+        database.simContextSnapshotDao()
 }
