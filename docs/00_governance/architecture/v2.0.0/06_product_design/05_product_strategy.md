@@ -32,7 +32,7 @@
 | 3 | MicCheck | RECORD_AUDIO 보유 앱 목록 | List<MicPermissionEntry> | 정식 (단순 관리자) |
 | 4 | CameraCheck | CAMERA 보유 앱 목록 | List<CameraPermissionEntry> | 정식 (단순 관리자) |
 | 5 | PushCheck | NotificationListenerService 알림 메타데이터 | Trash Item (Stage 1 규칙 기반 휴지통; PushRisk 4속성 통합은 Phase 2+ 후속) | **정식 승격** (Stage 1-001 구현 완료 반영) |
-| 6 | CardCheck | 카드 결제 SMS/Push | CardSummary (월별 카드 사용액) | **신규 Surface** (Stage 1-002 예정) |
+| 6 | CardCheck | 카드 결제 SMS/Push | CardSummary (월별 카드 사용액) | **Stage 1-002 구현 완료** (PR #14, `e6a76ad`). Stage 2-001에서 코어 엔진 마이그레이션 |
 
 ## 17-3. 정식 승격 + 후행 Surface 구분
 
@@ -72,7 +72,7 @@
 | Phase 3: MicCheck / CameraCheck | `MicPermissionEntry`/`CameraPermissionEntry` + PackageManager 스캔 (단순 관리자, Patch 30·37) | 스모크런 8~9 PASS |
 | Phase 3.5: PushCheck | NLS + Room DB v12 + 휴지통 UI | Stage 1-001 완료 반영 |
 | Phase 4: Billing 통합 | Play Billing + 구독 상태 UX | 스모크런 10 PASS |
-| Phase 4.5: CardCheck | 카드 결제 SMS/Push 파서 + 월별 카드 합계 | Stage 1-002 예정 |
+| Phase 4.5: CardCheck | 카드 결제 SMS/Push 파서 + 월별 카드 합계 | Stage 1-002 완료 (PR #14, `e6a76ad`) → Stage 2-001 코어 마이그레이션 예정 |
 | Phase 5: 다국어·접근성 | 190개국 strings.xml + TalkBack | SmokeRun12 (다국어 렌더 확인) |
 | Phase 6: 안정화 + Store | 90일 Vitals 모니터링 + 스토어 심사 대응 | Play Console 승인 |
 | Phase 7: iOS 진입 | v2.0.0 이후 | 별도 MAJOR 계획 |

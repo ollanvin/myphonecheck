@@ -144,7 +144,7 @@ data class CardTransactionEntity(
   - DB v13 승격
 - 의존: `:data:sms` (기존 SMS Repository), `:feature:push-trash` (기존 NotificationListener)
 
-## 27-10. 헌법 정합성 (기준 헌법: docs/00_governance/architecture/v1.9.0/05_constitution.md)
+## 27-10. 헌법 정합성 (기준 헌법: docs/00_governance/architecture/v2.0.0/05_constitution.md)
 
 | 조 | 명칭 | 정합 사유 |
 |---|---|---|
@@ -155,6 +155,7 @@ data class CardTransactionEntity(
 | 5 | 정직성 (Honesty) | 측정값 그대로, "결제 의심" 표현 (단정 X) |
 | 6 | 가격 정직성 (Pricing Honesty) | 측정 금액 그대로, 가공·예측·환산 없음. 영수증·SMS와 1:1 일치 |
 | 7 | Device-Oriented Goose | 모든 처리 온디바이스, ICU 표준 활용 |
+| 8 | SIM-Oriented Single Core | 통화 default 추론에 `SimContext.currency` 활용 (멀티 통화 사용자 정합 유지). 카드사·국가별 분기 코드 0 |
 
 ## 27-11. 사용자 대면 약속
 
