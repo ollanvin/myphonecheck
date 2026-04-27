@@ -1,0 +1,54 @@
+## 0-A. 버전 매트릭스 (Version Matrix)
+
+**원본 출처**: v1.7.1 §0-A + §0-A-1 + §0-A-2 (45줄)
+**v1.8.0 Layer**: Appendix
+**의존**: `appendix/B_patch_history.md` + `appendix/C_limitations.md`
+**변경 이력**: 본 파일은 v1.7.1 §0-A + §0-A-1 + §0-A-2 (45줄) 원본 전문 이관본. 텍스트 변경 없음.
+**파일 경로**: `docs/00_governance/architecture/v1.8.0_codex/appendix/D_version_matrix.md`
+
+---
+
+
+| 버전 | 일자 | 단계 | 비고 |
+|---|---|---|---|
+| v1.3 | 2026-04-XX | 초안 | 첫 토론 라운드 |
+| v1.4_disc | 2026-04-XX | Discussion | 12 Open Issues 발생 |
+| v1.4_final | 2026-04-XX | 검증 1라운드 | 외부 토론자 통과 |
+| v1.5.0 | 2026-04-XX | 본문 통합 | 검증 2라운드 대상 |
+| v1.5.1-patch | 2026-04-XX | 패치 묶음 | Patch 01~08 |
+| v1.5.1 | 2026-04-XX | 통합본 | v1.5.0 + v1.5.1-patch |
+| v1.5.2-patch | 2026-04-22 | 패치 묶음 | Patch 09~16 |
+| v1.5.2 | 2026-04-22 | 통합본 | v1.5.1 + v1.5.2-patch |
+| v1.5.3-patch | 2026-04-22 | PATCH | Patch 17 (BROADCAST_SMS 제거) |
+| v1.5.3 | 2026-04-22 | PATCH 통합 | v1.5.2 + v1.5.3-patch |
+| v1.6.0-patch | 2026-04-22 | MINOR 신설 | Patch 18~22 (Four Surfaces 신설) |
+| v1.6.0 | 2026-04-22 | MINOR 통합본 | v1.5.3 + v1.6.0-patch |
+| v1.6.1-patch | 2026-04-22 | PATCH 정정 | Patch 23~28 |
+| v1.6.1 (1차) | 2026-04-24 오전 | Working Canonical 1차 | 7개 docx 입력 통합 재작성, 5-Lane 검증 대상 |
+| v1.6.1 (2차) | 2026-04-24 오후 | Working Canonical 2차 | Patch 29~36 반영, 코웍 87a9a3 4건 흡수 |
+| v1.6.2 | 2026-04-24 저녁 | Working Canonical (PATCH 승격) | 기존 v1.6.1 산출물(630dda·87a9a3·파이프라인 미통과본)과 구분 위해 PATCH 승격 |
+| v1.7.0 | 2026-04-24 저녁 | Working Canonical (MINOR) | 7-워커 통합 평가(Claude Code·Cursor·Codex CLI·코웍·헐크·자비스·스타크) 결과 반영. P0 6건 + P1 8건 정정. Patch 37 신설. |
+| **v1.7.1** | **2026-04-24 심야** | **본 통합본 (PATCH)** | **2차 외부 검증 라운드(자비스·헐크·스타크) 유효 지적 반영. Patch 38 신설 (Play Integrity API classicRequest 로컬 무결성 검증 추가). 스타크 지적 기반 크랙 방지 방어선 보강.** |
+| v2.0.0 | 미정 | MAJOR | iOS Edition |
+
+
+
+| 버전 | 헌법 변경 여부 | 변경 사항 |
+|---|---|---|
+| v1.0 ~ v1.5.2 | 변경 없음 | **6조 체계** (1~6조 텍스트 동일) |
+| v1.5.3 ~ v1.7.0 | 신설 1건 | **7조 체계** — 7조(디바이스 오리엔티드 거위) 명문화, 기존 5조 내용을 조문으로 격상 |
+| v2.0.0 (예정) | 변경 가능 | iOS Edition 도입 시 일부 조항 보강 가능 |
+
+**대표님 명시 승인 없이 헌법 변경 금지.**
+
+
+
+| 버전 | 가격 | 비고 |
+|---|---|---|
+| PRD 초안 | USD 1/월 | 비현실적 (수수료·세금 미반영) |
+| v1.4_disc | net ARPU $1.19/월 | 계산 근거 문서화 |
+| v1.5.x | ~1.5 USD 조항 | 폐기 |
+| **v1.6.1** | **USD 2.49/월 단일** | **전세계 동일, 연간 가격 없음, 2026-04-22 확정** |
+
+근거: Whoscall 신규 $2.89 / Hiya $3.99 / Truecaller $4.49 대비 최저가 포지셔닝이면서 Base Architecture ~1.5 USD보다 지속가능한 마진 확보. 경쟁 가격 조사(2026-04-22) 근거.
+
