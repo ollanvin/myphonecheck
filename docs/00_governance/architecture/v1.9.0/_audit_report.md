@@ -1,9 +1,15 @@
-# _audit_report.md — Claude Code 무결성 감사 리포트
+# _audit_report.md — Claude Code 무결성 감사 리포트 (v1.9.0 패키지 감사 보조물)
 
-**WO**: WO-V180-MIGRATE-002
+**위치**: `docs/00_governance/architecture/v1.9.0/_audit_report.md`
+**원작 시점**: v1.8.0 마이그레이션 (WO-V180-MIGRATE-002, 2026-04-24)
+**v1.9.0 보존 사유**: v1.8.0 → v1.9.0 MAJOR 승격 (WO-V190-SIX-SURFACES-001-A) 시 cherry-pick 정책에 따라 본 패키지 내부 감사 보조물로 그대로 유지. 본 리포트의 수치(파일 수 70, 크기 310 KB 등)는 v1.8.0 시점 기준이며 v1.9.0 패키지 (73 files, 약 270 KB)와 직접 비교하지 않음.
+**v1.9.0 시점 정정**:
+- 본 리포트 내 `01_four_surfaces_integration.md` 참조 → v1.9.0에서 `01_six_surfaces_integration.md`로 rename됨 (Patch 39·40 후속, 본 리포트 본문은 v1.8.0 시점 표현 그대로 보존).
+
+**WO**: WO-V180-MIGRATE-002 (원작), WO-V190-SIX-SURFACES-002 (v1.9.0 헤더 보강)
 **워커**: Claude Code (Anthropic CLI)
 **감사 종류**: 자체 감사 (self-audit), WO §6-3 Claude Code 워커 특화 산출물
-**작성 시각**: 2026-04-24 심야 (KST)
+**작성 시각**: 2026-04-24 심야 (KST), v1.9.0 헤더 보강 2026-04-27
 **환경**: Windows 11 Pro 10.0.26200 · Python 3.14.4 · Git Bash · PowerShell 7
 **감사 방법**: 자동화 스크립트 (`scripts/verify_v180_claudecode.py`) 기반 기계적 검증
 

@@ -14,7 +14,7 @@
 
 ## 17-1. One Engine 원칙 재선언
 
-- **엔진은 하나**: Decision Engine은 단일 구현체이며, CallCheck·MessageCheck·PushCheck 같은 위협 평가 Surface가 공유한다.
+- **엔진은 하나**: Decision Engine은 단일 구현체이며, CallCheck·MessageCheck 위협 평가 Surface가 공유한다. PushCheck는 Stage 1 시점 **규칙 기반 휴지통**으로 작동하며 Decision Engine 통합은 **Stage 2+ 후속** (위 §17-2 출력 컬럼 참조 + §36-3-A).
 - **엔진 분기 금지**: "CallCheck 전용 Decision Engine" 같은 분기 금지. 입력 `IdentifierType`으로 분기하되, 동일 엔진 내부에서 처리.
 - **Surface는 Value Extraction Layer**: Surface는 사용자 가치 추출 단위다. MicCheck·CameraCheck·CardCheck처럼 엔진을 직접 쓰지 않는 Surface도 정식 Surface다.
 - **확장은 Surface 추가로**: 새 기능 추가 시 기존 엔진은 유지하고, 필요 시 새 Surface 또는 새 파서를 추가한다.
@@ -27,14 +27,14 @@
 | 2 | MessageCheck | MMS/SMS 발신번호 + URL + 기관명 (Mode A/B) | MessageRisk (4속성) | 정식 |
 | 3 | MicCheck | RECORD_AUDIO 보유 앱 목록 | List<MicPermissionEntry> | 정식 (단순 관리자) |
 | 4 | CameraCheck | CAMERA 보유 앱 목록 | List<CameraPermissionEntry> | 정식 (단순 관리자) |
-| 5 | PushCheck | NotificationListenerService 알림 메타데이터 | PushRisk (4속성) + Trash Item | **정식 승격** (Stage 1-001 구현 완료 반영) |
+| 5 | PushCheck | NotificationListenerService 알림 메타데이터 | Trash Item (Stage 1 규칙 기반 휴지통; PushRisk 4속성 통합은 Phase 2+ 후속) | **정식 승격** (Stage 1-001 구현 완료 반영) |
 | 6 | CardCheck | 카드 결제 SMS/Push | CardSummary (월별 카드 사용액) | **신규 Surface** (Stage 1-002 예정) |
 
 ## 17-3. 정식 승격 + 후행 Surface 구분
 
 | Surface | 개요 | 현재 상태 | 이관 이력 |
 |---|---|---|---|
-| **PushCheck (푸시 휴지통)** | NotificationListenerService 기반, 스팸 지정 발신자 알림 자동 cancel → 자체 DB 저장 → 휴지통 UI | **정식 Surface** | Stage 1-001 cursor 구현 완료 반영 |
+| **PushCheck (푸시 휴지통)** | NotificationListenerService 기반, 스팸 지정 발신자 알림 자동 cancel → 자체 DB 저장 → 휴지통 UI. Stage 1 시점 **규칙 기반** (앱/채널 차단 규칙 매칭). PushRisk 4속성 통합은 Phase 2+ 후속. | **정식 Surface** (Stage 1 규칙 기반) | Stage 1-001 cursor 구현 완료 반영 |
 | **CardCheck** | 카드 결제 SMS/Push에서 카드명·금액·일시·가맹점을 추출하여 월별 합계 표시 | **정식 Surface** | 카드스펜드 별도 앱 폐기 결정에 따라 통합 |
 | **AppSecurityWatch** | 신규 앱 설치 시 과거 보안 사고 이력 자동 검색·경고 + 기존 앱 신규 CVE/침해 사고 실시간 감지·알림 + NVD CVE·CISA KEV·Have I Been Pwned 조회 + Decision Engine 기반 앱 평판 판정 | 후행 | **Patch 31로 MicCheck/CameraCheck에서 분리 이관** |
 | UrlCheck | 브라우저 공유 URL 검사 | 후행 | — |

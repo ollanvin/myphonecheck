@@ -51,7 +51,9 @@ Notification (NLS, PushCheck) ──→ CardCheck (카드사 앱 알림 필터)
 
 ## 27-4. 저장 (Room DB)
 
-**신규 entity**: `CardTransaction`
+**신규 entity**: `CardTransactionEntity` (Kotlin 식별자, Room `@Entity`) ↔ `CardTransaction` (도메인 용어)
+
+> **용어 매핑**: 본 스펙에서 "CardTransaction"은 도메인 모델을 가리키는 일반 명칭이며, 실제 Kotlin 식별자는 `CardTransactionEntity`이다. 도메인 ↔ Entity 변환은 데이터 계층에서 처리.
 
 ```kotlin
 @Entity(tableName = "card_transaction")

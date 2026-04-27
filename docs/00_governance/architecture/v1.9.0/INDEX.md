@@ -1,10 +1,10 @@
-# INDEX — MyPhoneCheck Architecture v1.9.0 (Codex)
+# INDEX — MyPhoneCheck Architecture v1.9.0 (Claude Code)
 
 **총 파일 수**: 73
 **총 크기**: 약 270 KB
 **원본**: v1.7.1 (4,556줄, 216 KB)
-**WO**: WO-V190-SIX-SURFACES-001-B
-**워커**: Codex CLI
+**WO**: WO-V190-SIX-SURFACES-001-A
+**워커**: Claude Code
 **작업 성격**: v1.8.0 → v1.9.0 MAJOR 승격 (Six Surfaces)
 
 ---
@@ -18,11 +18,12 @@ v1.9.0/
 ├── README.md                             ← 폴더 목적 안내
 ├── 05_constitution.md                    ← §1 헌법 7조
 ├── 30_billing.md                         ← §31 Billing 구현
+├── _audit_report.md                      ← 패키지 내부 감사 보조물 (v1.9.0)
 │
 ├── 00_core/
 │   ├── README.md
 │   ├── 01_primary.md                     ← 비전 작성분 (placeholder)
-│   ├── 02_secondary.md                   ← 비전 작성분 (placeholder)
+│   ├── 02_secondary.md                   ← 세 기둥 + Six Surfaces 서문 (실질 콘텐츠)
 │   └── 03_tertiary.md                    ← 비전 작성분 (placeholder)
 │
 ├── 06_product_design/

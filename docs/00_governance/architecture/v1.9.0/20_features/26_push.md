@@ -14,10 +14,12 @@
 ## 26-2. 데이터 소스
 
 - **NotificationListenerService (NLS)**: 시스템 전체 알림 수신
-- **Room DB v12**: 격리된 알림 영구 저장
+- **Room DB v12**: 격리된 알림(title·text 본문 포함) 영구 저장
 - **자체 매핑 테이블**: 채널 ID → 사용자 정의 라벨
 
 새 외부 통신: **0** (헌법 1조 정합)
+
+**헌법 2조 (In-Bound Zero) 해석 명확화**: OS 알림 본문(title, text)은 휴지통 복원·검색 기능을 위해 디바이스 내부에 보존된다. 헌법 2조 (In-Bound Zero)는 **외부 검색 엔진에서 받은 HTML/JSON 원문**에 적용되며, OS NotificationListener를 통한 **디바이스 내부 알림 본문은 본 조 비대상**이다. 알림 본문은 사용자 자신의 디바이스 자원으로 외부 원문이 아니다.
 
 ## 26-3. 작동 흐름
 
@@ -39,6 +41,8 @@
 - **5개 이상 시드 매핑**: 주요 메신저·쇼핑·뉴스 앱 채널 라벨 사전 정의
 
 ## 26-5. Stage 1 완료 범위 (Stage 1-001 cursor 구현)
+
+> **v1.9.0 시점 PushCheck Stage 1 = 규칙 기반 휴지통** (앱/채널 차단 규칙으로 격리 여부 결정). Decision Engine 통합 (NKB·Softmax·Tier 가중치 기반 위협 평가)은 **Stage 2+ 후속 작업**으로 위임.
 
 1. NLS 권한 요청 UX
 2. 알림 수신 → Room DB 저장
@@ -70,7 +74,7 @@ PushCheck는 위 7개 조항 중 **6개 조항에 직접 정합**한다 (제6조
 | 헌법 (조 + 정식 명칭) | 정합 여부 | 근거 |
 |---|---|---|
 | 제1조 Out-Bound Zero (사용자 데이터 외부 전송 금지) | OK | NLS는 OS API. 알림 메타데이터·원문 모두 외부 전송 0 |
-| 제2조 In-Bound Zero (외부 원문 영구 저장 금지) | OK | 알림 원문은 메모리 내 분류 후 폐기, 휴지통 DB에는 격리 메타데이터만 저장 |
+| 제2조 In-Bound Zero (외부 원문 영구 저장 금지) | OK (비대상) | OS 알림 본문은 디바이스 내부 자원이며 외부 원문 아님. 헌법 2조는 외부 검색 원문에 적용 (§26-2 해석 명확화 참조). 휴지통 DB에 보존되는 알림 본문은 사용자 자신의 디바이스 자원 |
 | 제3조 결정권 중앙집중 금지 | OK | 격리 여부 판단은 사용자 차단 규칙 + 디바이스 로컬 채널 매핑. 본사 fallback 0 |
 | 제4조 자가 작동 (Self-Operation, L3 기준선) | OK | 네트워크 단절 시에도 NLS·Room DB·휴지통 UI 모두 작동 (L3 기준선 충족) |
 | 제5조 정직성 (Honesty) | OK | 격리 사실을 사용자에게 명시 + 사용자가 휴지통에서 직접 복원·삭제 가능 (격리·복원 투명성 보장) |
@@ -84,5 +88,5 @@ PushCheck는 위 7개 조항 중 **6개 조항에 직접 정합**한다 (제6조
 - Stage 1-001 cursor 보고서: `docs/07_relay/done/REPORT-WO-STAGE1-001__cursor__done.md`
 - 기술 검증: `docs/07_relay/done/TECH-VERIFICATION-NLS.md`
 - 수동 테스트 절차: `docs/05_quality/stage1_push_trash_manual_test.md`
-- §17-1 Surface 정의 (v1.9.0 정정 — 위협 평가 Surface 분류)
-- §36-3-A Surface 확장 정책 PushCheck 사례
+- §17-1 Surface 정의 (v1.9.0 정정 — Stage 1 PushCheck = 규칙 기반 휴지통, Stage 2+ DE 통합 후속)
+- §36-3-A Surface 확장 정책 PushCheck 사례 (Stage 1 규칙 기반 한정)

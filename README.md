@@ -16,8 +16,8 @@ MyPhoneCheck operates under 7 constitutional principles (see `docs/00_governance
 2. **In-Bound Zero**: External raw text never persisted; only feature counts stored in NKB
 3. **Decision Centralization Prohibited**: Device is the primary decision maker, not central servers
 4. **Self-Operation**: System operates without central servers (L3 baseline SLA)
-5. **Honesty**: No false claims; transparent evidence presentation
-6. **User Trust**: User is the final decision maker; app shows evidence only
+5. **Honesty**: No false claims; transparent evidence presentation; user is the final decision maker — app shows evidence only
+6. **Pricing Honesty**: Single $2.49/month global pricing, transparent value; net ARPU measured/disclosed (gross × (1 − 0.30 store) × (1 − 0.10 VAT) × (1 − 0.05 refund) ≈ $1.49)
 7. **Device-Oriented Goose**: All processing on-device; aligned with Android platform standards
 
 ---
