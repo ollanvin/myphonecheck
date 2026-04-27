@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="call_check_title">Call Check</string>
+    <string name="call_check_recent_calls">Recent Calls</string>
+    <string name="call_check_invalid_number">Invalid number</string>
+    <string name="call_check_unknown">Unknown</string>
+    <string name="call_check_permission_required">Call log permission required</string>
+    <string name="call_check_grant_permission">Grant permission</string>
+    <string name="call_check_no_entries">No recent calls</string>
+    <string name="call_check_type_incoming">Incoming</string>
+    <string name="call_check_type_outgoing">Outgoing</string>
+    <string name="call_check_type_missed">Missed</string>
+    <string name="call_check_type_rejected">Rejected</string>
+    <string name="call_check_type_blocked">Blocked</string>
+    <string name="call_check_type_voicemail">Voicemail</string>
+    <string name="call_check_type_unknown">Unknown</string>
+    <string name="call_check_settings_entry_title">CallCheck</string>
+    <string name="call_check_settings_entry_desc">Recent call log normalized via SIM region</string>
+    <string name="call_check_class_invalid">Invalid</string>
+    <string name="call_check_class_mobile">Mobile</string>
+    <string name="call_check_class_fixed">Fixed line</string>
+    <string name="call_check_class_fixed_or_mobile">Mobile or fixed</string>
+    <string name="call_check_class_international">International</string>
+    <string name="call_check_class_premium">Premium rate</string>
+    <string name="call_check_class_toll_free">Toll-free</string>
+    <string name="call_check_class_other">Other</string>
+    <string name="call_check_empty_title">No recent calls</string>
+    <string name="call_check_empty_desc">Calls will appear here once permission is granted and call history exists.</string>
+</resources>

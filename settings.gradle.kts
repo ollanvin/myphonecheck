@@ -45,6 +45,7 @@ include(":feature:message-intercept")
 include(":feature:privacy-check")
 include(":feature:push-trash")
 include(":feature:card-check")
+include(":feature:call-check")
 
 // Data modules
 include(":data:contacts")
