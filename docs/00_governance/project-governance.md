@@ -18,10 +18,10 @@ It does not store the cross-project constitution itself.
 - Constitution repository local path: `C:\Users\user\Dev\ollanvin\web`
 - Constitution repository remote: `https://github.com/ollanvin/web`
 - Constitution document baseline: `CONSTITUTION.md` (OllanVin 조직 인프라 헌법, 8조 체계)
-- Constitution version baseline: **8-article (Architecture v2.0.0)** — 8조 SIM-Oriented Single Core 신설 (PATCH-41)
-- Architecture canonical: **v2.0.0** (Working Canonical)
+- Constitution version baseline: **8-article (Architecture v2.0.0 ~ v2.1.0)** — 8조 SIM-Oriented Single Core 신설 (PATCH-41), v2.1.0 무변경
+- Architecture canonical: **v2.1.0** (Working Canonical)
 
-MyPhoneCheck product 헌법 (Out-Bound Zero ~ SIM-Oriented Single Core 8조)은 Architecture v2.0.0 `05_constitution.md`에 위치한다 (web 레포 OllanVin 인프라 헌법과는 별도). 두 헌법은 다른 영역을 다루며, MyPhoneCheck는 둘 다 정합한다.
+MyPhoneCheck product 헌법 (Out-Bound Zero ~ SIM-Oriented Single Core 8조)은 Architecture v2.1.0 `05_constitution.md`에 위치한다 (web 레포 OllanVin 인프라 헌법과는 별도). 두 헌법은 다른 영역을 다루며, MyPhoneCheck는 둘 다 정합한다.
 
 ## Fixed Project Principles
 
@@ -35,6 +35,10 @@ MyPhoneCheck product 헌법 (Out-Bound Zero ~ SIM-Oriented Single Core 8조)은 
 - `Initial Scan` (v2.0.0 신설): 최초 론칭 후 디바이스 스캔으로 6 Surface 베이스데이터·베이스양식을 일괄 구축한다 (§28).
 - `:core:global-engine` (v2.0.0 신설): 모든 Surface가 사용하는 단일 코어 엔진. **Surface별 자체 파서·매핑 코드 금지** (§30).
 - **SIM-Oriented Single Core (헌법 8조, v2.0.0)**: 국가·통화·전화번호 양식 단일 진실원 = SIM (MCC/MNC). UI 언어만 사용자 선택 가능 (3단 fallback: SIM → 디바이스 시스템 → English).
+- **4-Layer Data Model (§30-3-A, v2.1.0)**: OS / MyPhoneCheck / 외부 캐시 / 외부 검색 분리. Layer 우선순위 = 2·1·3·4. FeedType 4유형 (SecurityIntelligence / GovernmentPublic / CompetitorApp / TelcoBlocklist).
+- **Real-time Action (§31, v2.1.0)**: 수신 거절 즉시 종료, SMS abortBroadcast, 밀리초 단위 조치 (50ms 응답). `CallScreeningService` 등록 권장.
+- **Tag System (§32, v2.1.0)**: 휘발성 메모, 연락처 저장과 별개. REMIND_ME / PENDING / SUSPICIOUS / ARCHIVE.
+- **Competitor Feeds (§30-4-4, v2.1.0)**: 경쟁 앱 공개 데이터 활용 (라이선스·robots.txt 정합 필수). 사용자 옵트인 강조 ("타사 데이터 활용").
 - The app does not make the final user judgment. It shows evidence.
 - The user remains the final decision-maker.
 - Contact saving and relationship management remain separate.
@@ -68,7 +72,8 @@ Project documents must live under `docs/` and be classified by purpose.
 | `architecture/v1.7.1/` | Architecture canonical (frozen reference) |
 | `architecture/v1.8.0/` | Architecture frozen (4 Surface 시점) |
 | `architecture/v1.9.0/` | Architecture frozen (Six Surfaces 정식) |
-| `architecture/v2.0.0/` | Architecture current Working Canonical (One Core Engine + SIM-Oriented + Initial Scan, MAJOR 승격) |
+| `architecture/v2.0.0/` | Architecture frozen (One Core Engine + SIM-Oriented + Initial Scan, MAJOR) |
+| `architecture/v2.1.0/` | Architecture current Working Canonical (4-Layer + Real-time + Tag + Competitor Feeds, MINOR 승격) |
 | `infrastructure/v1.0/` | Infrastructure original (paired) |
 | `infrastructure/v1.1/` | Infrastructure current Working Canonical |
 | `archive/` | Historical preservation (workorders, patches, legacy_docx, legacy_docs, temp) |
@@ -121,3 +126,19 @@ PR #15 (Architecture v2.0.0 MAJOR 머지, squash `2dd2bc6`) 후속 거버넌스 
 - Architecture canonical: **v2.0.0**
 - Infrastructure v1.1 cross-ref: v2.0.0 기준 (9 paths = 6 Surfaces + Initial Scan + SIM Core + Global Engine)
 - v1.2 승격은 별도 후속 WO (toolmap·SOPs 변화 검토 필요)
+
+### Updates 2026-04-28 (WO-V210-GOVERNANCE-PATCH)
+
+PR #25 (Architecture v2.1.0 MINOR 머지, squash `80c10b7`) 후속 거버넌스 동기화:
+
+- `architecture/v2.1.0/` 행 추가 (4-Layer + Real-time + Tag + Competitor Feeds, MINOR 승격)
+- `architecture/v2.0.0/` 행은 frozen으로 강등 (One Core Engine + SIM-Oriented 시점 이전 Canonical)
+- Fixed Project Principles에 v2.1.0 신설 사항 추가:
+  · **4-Layer Data Model** (§30-3-A): OS / MyPhoneCheck / 외부 캐시 / 외부 검색 분리, Layer 우선순위 2·1·3·4
+  · **Real-time Action** (§31): CallScreeningService + SMS abortBroadcast + Push cancel, 50ms 응답
+  · **Tag System** (§32): 휘발성 메모, REMIND_ME / PENDING / SUSPICIOUS / ARCHIVE priority
+  · **Competitor Feeds** (§30-4-4): 더콜·후후·뭐야이번호·Whoscall 등 경쟁 앱 공개 데이터, 옵트인 다운로드, 라이선스·robots.txt 정합 필수
+- Constitution baseline: 8조 (v2.0.0 ~ v2.1.0, 변경 없음 → MINOR)
+- Architecture canonical: **v2.1.0**
+- Infrastructure v1.1 cross-ref: v2.1.0 기준 (9 paths → **11 paths** = 기존 9 + Real-time Action + Tag System)
+- v1.2 승격은 별도 후속 WO (Real-time Action·Tag·Competitor Feeds 통합 검토 필요)
