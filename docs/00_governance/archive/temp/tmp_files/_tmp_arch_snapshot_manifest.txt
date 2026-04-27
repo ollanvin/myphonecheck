@@ -1,0 +1,17 @@
+289126a|docs/01_architecture/global-single-core-system.md
+289126a|docs/01_architecture/myphonecheck_base_architecture_v1.md
+96471c6|docs/01_architecture/stage1_research/01_current_state.md
+96471c6|docs/01_architecture/stage1_research/02_module_candidates.md
+96471c6|docs/01_architecture/stage1_research/03_dependency_audit.md
+96471c6|docs/01_architecture/stage1_research/04_test_strategy.md
+96471c6|docs/01_architecture/stage1_research/05_ci_cd_roadmap.md
+7d1c71b|docs/01_architecture/myphonecheck_base_architecture_v1.md
+7d1c71b|docs/05_quality/reports/architecture_conformance_myphonecheck_base_architecture_v1.md
+7d1c71b|docs/ARCHITECTURE.md
+1426473|docs/01_architecture/global-single-core-system.md
+1426473|docs/01_architecture/legacy/ARCHITECTURE_ONDEVICE_SEARCH.md
+1426473|docs/01_architecture/legacy/SECURITY_ARCHITECTURE_V1.docx
+1426473|docs/ARCHITECTURE_ONDEVICE_SEARCH.md
+1426473|docs/SECURITY_ARCHITECTURE_V1.docx
+1426473|docs/architecture/global-single-core-snapshot.md
+0ecd4ab|docs/01_architecture/global-single-core-system.md

@@ -1,0 +1,8 @@
+﻿  codex-global-single-core-snapshot
+* feature/prd-pricing-patch
+  main
+  refactor/structure-v4.3
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/feature/prd-pricing-patch
+  remotes/origin/main
+
