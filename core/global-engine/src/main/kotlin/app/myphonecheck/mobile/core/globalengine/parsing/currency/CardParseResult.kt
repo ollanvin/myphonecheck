@@ -1,9 +1,10 @@
-package app.myphonecheck.mobile.feature.cardcheck.parser
+package app.myphonecheck.mobile.core.globalengine.parsing.currency
 
 /**
- * 글로벌 파싱 엔진 출력 (Architecture v1.9.0 §27-3).
+ * 글로벌 파싱 엔진 출력 (Architecture v2.0.0 §27-3 + §30 :core:global-engine).
  *
- * 파이프라인: SourceDetector → PatternExtractor → Validator.
+ * Stage 2-001 마이그레이션: :feature:card-check/parser/CardParseResult.kt → 본 위치 (기능 동일).
+ * 파이프라인: SourceDetector → CurrencyAmountParser → CurrencyValidator.
  * 카드사·국가 분기 0. 시드 데이터 0.
  */
 data class CardParseResult(

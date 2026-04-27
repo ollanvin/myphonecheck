@@ -29,6 +29,7 @@ include(":core:common")
 include(":core:model")
 include(":core:util")
 include(":core:security")
+include(":core:global-engine")
 
 // Feature modules
 include(":feature:call-intercept")

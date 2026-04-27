@@ -1,6 +1,4 @@
-package app.myphonecheck.mobile.feature.cardcheck
-
-import app.myphonecheck.mobile.feature.cardcheck.parser.PatternExtractor
+package app.myphonecheck.mobile.core.globalengine.parsing.currency
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
@@ -16,11 +14,12 @@ import org.junit.Test
  *  5. ISO 4217 코드 prefix·suffix (USD, JPY) — 영문 SMS
  *  6. 한자 단위 토큰 (CNY 元, JPY 円) + RTL 통화 기호 (ILS ₪) — 다국어
  *
- * 카드사·국가 분기 0 검증: 위 6 패턴이 동일 PatternExtractor로 모두 처리됨.
+ * 카드사·국가 분기 0 검증: 위 6 패턴이 동일 CurrencyAmountParser (구 PatternExtractor) 로 모두 처리됨.
+ * Stage 2-001 마이그레이션: 본 테스트는 :feature:card-check/test/PatternExtractorTest.kt → 코어 이전 (회귀 0).
  */
-class PatternExtractorTest {
+class CurrencyAmountParserTest {
 
-    private val extractor = PatternExtractor()
+    private val extractor = CurrencyAmountParser()
 
     // ===== 1. 소수 0자릿수: KRW, JPY =====
 

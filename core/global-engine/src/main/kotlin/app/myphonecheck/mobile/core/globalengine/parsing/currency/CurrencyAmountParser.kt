@@ -1,4 +1,4 @@
-package app.myphonecheck.mobile.feature.cardcheck.parser
+package app.myphonecheck.mobile.core.globalengine.parsing.currency
 
 import java.util.Currency
 import java.util.regex.Pattern
@@ -6,7 +6,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * 글로벌 파싱 엔진 — 패턴 추출 (Architecture v1.9.0 §27-3-2).
+ * 글로벌 파싱 엔진 — 통화·금액 추출 (Architecture v2.0.0 §27-3-2 + §30 :core:global-engine).
+ *
+ * Stage 2-001 마이그레이션: :feature:card-check/parser/PatternExtractor.kt → 본 위치.
+ * 기능 동일, 위치만 변경 (회귀 0). 클래스명 PatternExtractor → CurrencyAmountParser (의미 명확화).
  *
  * 카드사·국가·언어 무관. ICU·Unicode 표준 기반.
  *
@@ -24,7 +27,7 @@ import javax.inject.Singleton
  * 명시적 매핑 표가 더 안정적이다.
  */
 @Singleton
-class PatternExtractor @Inject constructor() {
+class CurrencyAmountParser @Inject constructor() {
 
     /** 통화 + 금액 추출. prefix·suffix 양쪽 패턴 시도. */
     fun extractCurrencyAmount(text: String): CurrencyAmount? {
