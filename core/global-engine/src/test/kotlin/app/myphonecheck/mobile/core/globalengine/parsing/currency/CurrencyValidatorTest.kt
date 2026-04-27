@@ -1,16 +1,15 @@
-package app.myphonecheck.mobile.feature.cardcheck
+package app.myphonecheck.mobile.core.globalengine.parsing.currency
 
-import app.myphonecheck.mobile.feature.cardcheck.parser.CardParseResult
-import app.myphonecheck.mobile.feature.cardcheck.parser.Confidence
-import app.myphonecheck.mobile.feature.cardcheck.parser.CurrencyAmount
-import app.myphonecheck.mobile.feature.cardcheck.parser.TransactionSource
-import app.myphonecheck.mobile.feature.cardcheck.parser.Validator
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class ValidatorTest {
+/**
+ * Stage 2-001 마이그레이션: :feature:card-check/test/ValidatorTest.kt → 본 위치 (회귀 0).
+ * 클래스명: Validator → CurrencyValidator.
+ */
+class CurrencyValidatorTest {
 
-    private val validator = Validator()
+    private val validator = CurrencyValidator()
     private val sampleAmount = CurrencyAmount("USD", 2_550L)
 
     @Test

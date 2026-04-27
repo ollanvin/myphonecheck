@@ -1,13 +1,12 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
 }
 
 android {
-    namespace = "app.myphonecheck.mobile.feature.cardcheck"
+    namespace = "app.myphonecheck.mobile.core.globalengine"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -34,31 +33,18 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
     implementation(libs.androidx.core.ktx)
-    implementation(libs.bundles.androidx.lifecycle)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.bundles.androidx.compose)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.kotlinx.coroutines.core)
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
-    implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.android)
-
+    implementation(project(":core:model"))
+    implementation(project(":core:util"))
     implementation(project(":data:local-cache"))
-    implementation(project(":core:global-engine"))
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

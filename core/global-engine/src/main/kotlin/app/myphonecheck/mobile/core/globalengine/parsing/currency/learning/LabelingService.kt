@@ -1,16 +1,19 @@
-package app.myphonecheck.mobile.feature.cardcheck.learning
+package app.myphonecheck.mobile.core.globalengine.parsing.currency.learning
 
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * 사용자 주도 라벨링 서비스 (Architecture v1.9.0 §27-3-1).
+ * 사용자 주도 라벨링 서비스 (Architecture v2.0.0 §27-3-1 + §30 :core:global-engine).
+ *
+ * Stage 2-001 마이그레이션: :feature:card-check/learning/LabelingService.kt → 본 위치 (기능 동일).
  *
  * SourceDetector가 Suspect로 분류한 발신자에 대해 사용자 확인을 받아 라벨 학습.
  * 한 번 라벨링된 발신자는 이후 자동 처리 (Known).
  *
  * Stage 1-002: 단순 confirm/deny + 라벨 입력.
- * Stage 2+: 매칭 패턴 학습 강화 (ML).
+ * Stage 2-001 (본 PR): 코어로 이전, 기능 동일.
+ * Stage 2+: 매칭 패턴 학습 강화 (ML) — 후속.
  */
 @Singleton
 class LabelingService @Inject constructor(

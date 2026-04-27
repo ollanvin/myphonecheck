@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.myphonecheck.mobile.data.localcache.dao.CardTransactionMonthlyTotal
 import app.myphonecheck.mobile.data.localcache.entity.CardTransactionEntity
-import app.myphonecheck.mobile.feature.cardcheck.learning.LabelingService
+import app.myphonecheck.mobile.core.globalengine.parsing.currency.learning.LabelingService
 import app.myphonecheck.mobile.feature.cardcheck.repository.CardTransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
