@@ -376,10 +376,10 @@ v1.7.1은 v1.6.x 계열 PATCH (FROZEN), v1.8.0은 4워커 마이그레이션 결
 
 **— 문서 종료 —**
 
-발행: 2026-04-24
+발행: 2026-04-27
 작성: 비전 (Vision)
-상태: v1.7.0 Working Canonical (7-워커 평가 P0·P1 반영, 대표님 승인 대기)
+상태: v1.9.0 Working Canonical (Six Surfaces MAJOR 승격, 대표님 승인 대기)
 페어: `MyPhoneCheck_Infrastructure_v1.0.md`
-적용 Patch: 1~37 (29~36은 v1.6.1 2차 재작성 신설, 37은 v1.7.0 통합 정정)
-흡수 출처: 코웍 87a9a3 4건 + 5-Lane 검증 P0/P1 8건 + 7-워커 통합 평가 P0 5건 + P1 6건
-다음 단계: Phase B (Cursor 로컬 배치 + Git 커밋 + 빌드 스크립트)
+적용 Patch: 1~40 (39는 PushCheck 정식 승격, 40은 CardCheck 신설)
+흡수 출처: 코웍 87a9a3 4건 + 5-Lane 검증 P0/P1 8건 + 7-워커 통합 평가 P0 5건 + P1 6건 + Stage 1-001 PushCheck 구현 결과
+다음 단계: 본 PR 머지 후 Stage 1-002 CardCheck 구현 워크오더
