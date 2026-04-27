@@ -96,4 +96,55 @@ docs/00_governance/
 - **2차 CLI 백업**: ChatGPT Codex CLI
 - **자동 통신망**: **2026-04-24 폐기 완료** (ops 레포 삭제, 수동 1:1 워커 분배로 전환)
 
+
+## 35-6. v1.1 갱신 주석 (2026-04-27 추가, Architecture 본문 보존)
+
+본 §35-1 ~ §35-5는 v1.7.1 원본 전문 이관본 (텍스트 변경 금지). 
+다만 Infrastructure가 v1.0 → v1.1로 갱신됨에 따라, 본 섹션에서 **현행 페어 상태**를 명시한다.
+
+### 35-6-1. 현행 Infrastructure 페어 상태
+
+- **원본 보관**: `docs/00_governance/infrastructure/v1.0/MyPhoneCheck_Infra_Ops_v1.0.md` (참조 전용)
+- **현행 Working Canonical**: `docs/00_governance/infrastructure/v1.1/MyPhoneCheck_Infra_Ops_v1.1.md`
+- **갱신 commit**: PR #3, `541b1d4` (2026-04-27)
+
+§35-1 페어 구조 다이어그램의 `MyPhoneCheck_Infrastructure_v1.0.md` 명칭은
+**v1.0 (원본 보관) + v1.1 (현행)**으로 읽는다.
+
+### 35-6-2. v1.0 → v1.1 신설 사항 (요약)
+
+본 Architecture v1.8.0과 정합되는 Infrastructure v1.1 신설 6대 사항:
+
+| 위치 | 신설 내용 | Architecture 측 정합점 |
+|---|---|---|
+| Infra §0.2 | Architecture v1.8.0 참조 경로 5개 명시 + Rule 4 (Arch 우선) | 본 §35-3 충돌 해소 규칙 강화 |
+| Infra §0.4 | 4워커 구조(2실행+2감사) + Layer별 차등 + 동시 주행 규칙 | 본 §35-5 워커 역할 정의 확장 |
+| Infra §1 | Arch `05_constitution.md` 정합 주석 추가 (본문 v1.0 보존) | Arch `05_constitution.md` 헌법 7조 |
+| Infra §4.0 | 쿼터 풀 (Cursor/Codex 독립, Max 공유) + 도구별 주·보조 역할 | 본 §35-5 워커 분담 상세화 |
+| Infra §7 | STEP 0-bis (Arch v1.8.0 상태 확인 게이트) + STEP 5-bis (Layer별 차등 적용) | Arch v1.8.0 디렉토리 구조 |
+| Infra §8.4 | 4워커 작업 판정 기준 + 외부 검증자(자비스·헐크·스타크) 판정 | Arch `00_core/02_secondary.md` 검증 절차 |
+
+### 35-6-3. 페어 정합 검증 결과 (2026-04-27)
+
+비전 자동 cross-ref 검증 9개 항목:
+- §0.2 참조 경로 5개 실재: PASS
+- STEP 0-bis 경로 일관성: PASS
+- 페어 포인터 작동: PASS (본 §35-6 추가 후)
+- 헌법 정합성: PASS
+- v1.1 신설 섹션 12종: PASS
+- 부록 A v1.1 변경 이력: PASS
+- v1.0 원문 보존: PASS (100%)
+
+### 35-6-4. 본 갱신 주석의 위치
+
+본 §35-6은 **Architecture v1.8.0의 cross-ref 양방향 정합** 확보를 위한 최소 갱신.
+v1.7.1 원본 §35 (35-1 ~ 35-5)는 무결성 보존, 새 정보는 본 §35-6 부록 형태로만 추가.
+
+향후 Architecture MINOR 승격(v1.8.1 등) 시 본 §35-6 내용은 §35-1 ~ §35-5에 통합 가능.
+
+---
+
+**갱신 출처**: WO-V180-CROSSREF-PATCH-008
+**갱신 사유**: 비전 cross-ref 검증 1건 WARN 즉시 수정
+**갱신자**: Claude Code (대표님 지시 - 발견 즉시 수정 원칙)
 ---
