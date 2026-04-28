@@ -2,6 +2,8 @@ package app.myphonecheck.mobile.feature.pushtrash.service
 
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
+import app.myphonecheck.mobile.core.globalengine.decision.ActionType
+import app.myphonecheck.mobile.core.globalengine.decision.RealTimeActionEngine
 import app.myphonecheck.mobile.core.globalengine.parsing.notification.NotificationSourceParser
 import app.myphonecheck.mobile.feature.pushtrash.repository.PushTrashRepository
 import dagger.hilt.android.AndroidEntryPoint
@@ -11,6 +13,16 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * PushCheck NotificationListener — Stage 1-001(휴지통) + v2.1.0 §31 Real-time Action 통합.
+ *
+ * 새 로직:
+ *  1. Real-time BLOCK (Layer 2 BlockList 매칭) → 즉시 cancel + 휴지통 저장.
+ *  2. Real-time SILENT (Layer 2 SUSPICIOUS Tag) → 휴지통 저장만, OS 알림 그대로 (priority 조정 한계로 cancel 안 함).
+ *  3. PASS → 기존 휴지통 차단 규칙 (PushTrashRepository.decide) 유지.
+ *
+ * 회귀 0: 기존 차단 규칙 동작 그대로. Real-time BLOCK은 차단 규칙보다 먼저 cancel하므로 결과 동일하거나 더 빠름.
+ */
 @AndroidEntryPoint
 class PushTrashNotificationListener : NotificationListenerService() {
 
@@ -19,6 +31,9 @@ class PushTrashNotificationListener : NotificationListenerService() {
 
     @Inject
     lateinit var sourceParser: NotificationSourceParser
+
+    @Inject
+    lateinit var actionEngine: RealTimeActionEngine
 
     private val job = SupervisorJob()
     private val scope = CoroutineScope(job + Dispatchers.Main.immediate)
@@ -36,6 +51,16 @@ class PushTrashNotificationListener : NotificationListenerService() {
 
         scope.launch {
             repository.recordNotificationObserved(source.packageName, channelId, source.postTime)
+
+            // v2.1.0 §31 Real-time Action 우선 적용.
+            val realtime = actionEngine.decideForNotification(source.packageName)
+            if (realtime.action == ActionType.BLOCK) {
+                repository.recordTrashed(sbn)
+                cancelNotification(sbn.key)
+                return@launch
+            }
+
+            // 기존 차단 규칙 (Stage 1-001) 적용.
             when (repository.decide(source.packageName, channelId)) {
                 PushTrashRepository.Decision.Allow -> Unit
                 PushTrashRepository.Decision.Block -> {

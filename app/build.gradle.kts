@@ -137,6 +137,8 @@ dependencies {
     implementation(project(":feature:call-check"))
     implementation(project(":feature:message-check"))
     implementation(project(":feature:initial-scan"))
+    implementation(project(":feature:call-screening"))
+    implementation(project(":feature:sms-block"))
 
     // Data modules
     implementation(project(":data:contacts"))

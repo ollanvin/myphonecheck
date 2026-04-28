@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sms_block_default_app_title">Set as default SMS app (optional)</string>
+    <string name="sms_block_default_app_desc">Default SMS app mode (Mode A) enables full block before inbox. Observer mode (Mode B) is the default.</string>
+</resources>
