@@ -164,10 +164,10 @@ gh pr merge <PR> --squash --delete-branch --auto
 | 코드 변경 | **0** |
 | 12영역 | 본문 표 참조 — 홈 4카드 vs Six Surfaces · locales 이중 구조가 주요 갭 |
 | 페어 WO | Cowork `WO-V230-UX-ASSETS-AUDIT` 결과와 병합 권고 |
-| self_merge_executed | **NO** |
-| self_merge_note | `audit/v1-code-mapping` Head의 GitHub PR 없음 (`gh pr list --head audit/v1-code-mapping` → 빈 목록). 브랜치 푸시·PR 생성 후 동일 명령 재실행 필요. |
+| self_merge_executed | **YES** |
+| self_merge_note | PR [#39](https://github.com/ollanvin/myphonecheck/pull/39) (`audit/v1-code-mapping` → `main`) · 스쿼시 머지 커밋 `aa5450eb` · 명령 `gh pr merge 39 --squash --delete-branch --auto` |
 
-상태: **문서 산출 완료** · §10-6 자체 머지는 PR 생성 후 보완
+상태: **완료** · §10-6 자체 머지 이행
 ```
 
 ---
