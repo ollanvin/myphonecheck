@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -1159,55 +1161,75 @@ private fun HomeScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // 2x2 Grid of Engine Cards
-        Column(
-            modifier = Modifier.fillMaxWidth(),
+        // Six Surfaces (헌법 §8): LazyVerticalGrid 2 columns × 3 rows — Call, Message, Push, Card, Camera, Mic
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(572.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
+            userScrollEnabled = false,
         ) {
-            // Row 1: CallCheck + Message intelligence
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
+            item {
                 EngineCard(
                     question = stringResource(AppR.string.engine_call_question),
                     description = stringResource(AppR.string.engine_call_desc),
                     icon = Icons.Filled.Phone,
                     color = Color(0xFF4FC3F7),
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.fillMaxWidth(),
                     onClick = { onEngineClick("engine/call") },
                 )
+            }
+            item {
                 EngineCard(
                     question = stringResource(AppR.string.engine_message_question),
                     description = stringResource(AppR.string.engine_message_desc),
                     icon = Icons.Filled.Message,
                     color = Color(0xFF81C784),
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.fillMaxWidth(),
                     onClick = { onEngineClick("message-hub") },
                 )
             }
-
-            // Row 2: CameraCheck + MicCheck
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
+            item {
+                EngineCard(
+                    question = stringResource(AppR.string.engine_push_question),
+                    description = stringResource(AppR.string.engine_push_desc),
+                    icon = Icons.Filled.Notifications,
+                    color = Color(0xFF9575CD),
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { onEngineClick("push-trash") },
+                )
+            }
+            item {
+                EngineCard(
+                    question = stringResource(AppR.string.engine_card_question),
+                    description = stringResource(AppR.string.engine_card_desc),
+                    icon = Icons.Filled.CreditCard,
+                    color = Color(0xFF4DB6AC),
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = { onEngineClick("card-check") },
+                )
+            }
+            item {
                 SensorEngineCard(
                     question = stringResource(AppR.string.engine_camera_question),
                     description = stringResource(AppR.string.engine_camera_desc),
                     icon = Icons.Filled.Videocam,
                     color = Color(0xFFE57373),
                     scanState = displayCameraState,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.fillMaxWidth(),
                     onClick = { onEngineClick("camera-check") },
                 )
+            }
+            item {
                 SensorEngineCard(
                     question = stringResource(AppR.string.engine_mic_question),
                     description = stringResource(AppR.string.engine_mic_desc),
                     icon = Icons.Filled.Mic,
                     color = Color(0xFFFFB74D),
                     scanState = displayMicState,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.fillMaxWidth(),
                     onClick = { onEngineClick("mic-check") },
                 )
             }
