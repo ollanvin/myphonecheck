@@ -127,6 +127,10 @@
     <string name="engine_mic_question">Who is\nlistening in?</string>
     <string name="engine_mic_desc">Detect apps with microphone access</string>
 
+    <!-- CardCheck home Surface (§8) -->
+    <string name="engine_card_question">Should you\npay from this SMS?</string>
+    <string name="engine_card_desc">Parse amounts and fraud cues from texts</string>
+
     <!-- Sensor scan status -->
     <string name="scan_status_not_scanned">Not scanned</string>
     <string name="scan_status_scanning">Scanning…</string>
