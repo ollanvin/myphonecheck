@@ -169,6 +169,7 @@ dependencies {
     implementation(project(":feature:country-config"))
     // feature:push-intercept removed per v1.1 Architecture (PUSH REMOVED)
     implementation(project(":feature:message-intercept"))
+    implementation(project(":feature:onboarding"))
     implementation(project(":feature:privacy-check"))
     implementation(project(":feature:push-trash"))
     implementation(project(":feature:card-check"))

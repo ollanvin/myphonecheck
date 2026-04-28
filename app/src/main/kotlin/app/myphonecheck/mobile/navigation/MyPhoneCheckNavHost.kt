@@ -107,6 +107,8 @@ import app.myphonecheck.mobile.feature.messagecheck.R as MessageCheckR
 import app.myphonecheck.mobile.feature.messagecheck.ui.MessageCheckRoute
 import app.myphonecheck.mobile.feature.initialscan.R as InitialScanR
 import app.myphonecheck.mobile.feature.initialscan.ui.InitialScanRoute
+import app.myphonecheck.mobile.feature.onboarding.ui.OnboardingPermissionRow
+import app.myphonecheck.mobile.feature.onboarding.ui.OnboardingScreen
 import app.myphonecheck.mobile.feature.settings.R as SettingsR
 import app.myphonecheck.mobile.feature.settings.v2.ui.SettingsV2Route
 import app.myphonecheck.mobile.feature.tagsystem.R as TagSystemR
@@ -438,12 +440,6 @@ fun MyPhoneCheckNavHost(
     }
 }
 
-// ═══════════════════════════════════════════════════════════
-// 온보딩 5장 — 보호영역 / 4엔진 / 권한안내 / 보안선언 / 권한요청
-// ═══════════════════════════════════════════════════════════
-
-private const val ONBOARDING_PAGE_COUNT = 5
-
 private fun Context.hasDrawOverlayPermission(): Boolean =
     Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(this)
 
@@ -524,572 +520,6 @@ private fun Context.openAppDetailsSettings() {
     startActivity(intent)
 }
 
-@Composable
-private fun OnboardingScreen(
-    languageProvider: LanguageContextProvider,
-    onContinue: () -> Unit,
-) {
-    languageProvider.resolveLanguage()
-    var currentPage by remember { mutableIntStateOf(0) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF0D1B2A)),
-    ) {
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .padding(24.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            when (currentPage) {
-                0 -> OnboardingPage1()
-                1 -> OnboardingPage2()
-                2 -> OnboardingPage3()
-                3 -> OnboardingPage4()
-                4 -> OnboardingPage5()
-            }
-        }
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
-            horizontalArrangement = Arrangement.Center,
-        ) {
-            repeat(ONBOARDING_PAGE_COUNT) { index ->
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = 4.dp)
-                        .size(if (index == currentPage) 10.dp else 8.dp)
-                        .background(
-                            color = if (index == currentPage) Color(0xFF4FC3F7) else Color(0xFF455A64),
-                            shape = RoundedCornerShape(50),
-                        ),
-                )
-            }
-        }
-
-        if (currentPage < 4) {
-            Button(
-                onClick = { currentPage++ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .padding(bottom = 32.dp)
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4FC3F7)),
-                shape = RoundedCornerShape(12.dp),
-            ) {
-                Text(
-                    text = stringResource(AppR.string.btn_next),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF0D1B2A),
-                )
-            }
-        } else {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .padding(bottom = 32.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                OutlinedButton(
-                    onClick = onContinue,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFF4FC3F7)),
-                ) {
-                    Text(
-                        stringResource(AppR.string.onboarding_permissions_later),
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                }
-                Button(
-                    onClick = onContinue,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4FC3F7)),
-                    shape = RoundedCornerShape(12.dp),
-                ) {
-                    Text(
-                        stringResource(AppR.string.onboarding_permissions_continue_home),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF0D1B2A),
-                    )
-                }
-            }
-        }
-    }
-}
-
-/** 온보딩 1장: 질문 + 위협 인식 */
-@Composable
-private fun OnboardingPage1() {
-    val context = LocalContext.current
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.verticalScroll(rememberScrollState()),
-    ) {
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // 위협 질문 — 큰 글씨
-        Text(
-            text = context.getString(AppR.string.onboarding_page1_title),
-            fontSize = 26.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            textAlign = TextAlign.Center,
-            lineHeight = 36.sp,
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // 위협 상황 묘사
-        Text(
-            text = context.getString(AppR.string.onboarding_page1_threat),
-            fontSize = 16.sp,
-            color = Color(0xFFE57373),
-            textAlign = TextAlign.Center,
-            lineHeight = 24.sp,
-            fontWeight = FontWeight.Medium,
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // 해결 제시
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF1A2A3A)),
-            shape = RoundedCornerShape(12.dp),
-        ) {
-            Column(modifier = Modifier.padding(20.dp)) {
-                Text(
-                    text = context.getString(AppR.string.onboarding_page1_card_title),
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF4FC3F7),
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = context.getString(AppR.string.onboarding_page1_card_desc),
-                    fontSize = 14.sp,
-                    color = Color(0xFFB0BEC5),
-                    lineHeight = 20.sp,
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // 온디바이스 신뢰
-        Text(
-            text = context.getString(AppR.string.onboarding_on_device_only),
-            fontSize = 12.sp,
-            color = Color(0xFF455A64),
-        )
-    }
-}
-
-/** 온보딩 2장: 4곳 공격 포인트 */
-@Composable
-private fun OnboardingPage2() {
-    val context = LocalContext.current
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.verticalScroll(rememberScrollState()),
-    ) {
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = context.getString(AppR.string.onboarding_page2_title),
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFFE57373),
-            textAlign = TextAlign.Center,
-            lineHeight = 32.sp,
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        data class ThreatInfo(
-            val icon: ImageVector,
-            val threat: String,
-            val attack: String,
-            val color: Color,
-        )
-        val threats = listOf(
-            ThreatInfo(
-                Icons.Filled.Phone,
-                context.getString(AppR.string.threat_call_title),
-                context.getString(AppR.string.threat_call_desc),
-                Color(0xFF4FC3F7)
-            ),
-            ThreatInfo(
-                Icons.Filled.Message,
-                context.getString(AppR.string.threat_message_title),
-                context.getString(AppR.string.threat_message_desc),
-                Color(0xFF81C784)
-            ),
-            ThreatInfo(
-                Icons.Filled.Security,
-                context.getString(AppR.string.threat_privacy_title),
-                context.getString(AppR.string.threat_privacy_desc),
-                Color(0xFFE57373)
-            ),
-        )
-
-        for (threat in threats) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 5.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF2A1A1A)),
-                shape = RoundedCornerShape(12.dp),
-            ) {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(threat.icon, null, tint = threat.color, modifier = Modifier.size(28.dp))
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column {
-                        Text(
-                            text = threat.threat,
-                            fontSize = 16.sp,
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
-                        )
-                        Text(
-                            text = threat.attack,
-                            fontSize = 13.sp,
-                            color = Color(0xFFEF9A9A),
-                        )
-                    }
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text(
-            text = context.getString(AppR.string.onboarding_page2_footer),
-            fontSize = 15.sp,
-            color = Color(0xFF4FC3F7),
-            fontWeight = FontWeight.SemiBold,
-            textAlign = TextAlign.Center,
-        )
-    }
-}
-
-/** 온보딩 3장: 접근 필요 이유 + 신뢰 확정 */
-@Composable
-private fun OnboardingPage3() {
-    val context = LocalContext.current
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.verticalScroll(rememberScrollState()),
-    ) {
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = context.getString(AppR.string.onboarding_page3_title),
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            textAlign = TextAlign.Center,
-            lineHeight = 32.sp,
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        data class AccessInfo(
-            val target: String,
-            val why: String,
-            val icon: ImageVector,
-        )
-        val accesses = listOf(
-            AccessInfo(
-                context.getString(AppR.string.access_phone_target),
-                context.getString(AppR.string.access_phone_why),
-                Icons.Filled.Phone
-            ),
-            AccessInfo(
-                context.getString(AppR.string.access_sms_target),
-                context.getString(AppR.string.access_sms_why),
-                Icons.Filled.Message
-            ),
-            AccessInfo(
-                context.getString(AppR.string.access_usage_target),
-                context.getString(AppR.string.access_usage_why),
-                Icons.Filled.Security
-            ),
-        )
-
-        for (access in accesses) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF1A2A3A)),
-                shape = RoundedCornerShape(12.dp),
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(access.icon, null, tint = Color(0xFF4FC3F7), modifier = Modifier.size(24.dp))
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Column {
-                        Text(
-                            text = access.why,
-                            fontSize = 14.sp,
-                            color = Color(0xFFB0BEC5),
-                        )
-                        Text(
-                            text = access.target,
-                            fontSize = 13.sp,
-                            color = Color(0xFF607D8B),
-                        )
-                    }
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // 신뢰 확정 — 강한 톤
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF1A3A2A)),
-            shape = RoundedCornerShape(12.dp),
-        ) {
-            Column(modifier = Modifier.padding(20.dp)) {
-                Text(
-                    text = context.getString(AppR.string.onboarding_privacy_title),
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF81C784),
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = context.getString(AppR.string.onboarding_privacy_desc),
-                    fontSize = 13.sp,
-                    color = Color(0xFF81C784).copy(alpha = 0.7f),
-                )
-            }
-        }
-    }
-}
-
-/** 온보딩 4장: 보안 선언 */
-@Composable
-private fun OnboardingPage4() {
-    val context = LocalContext.current
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.verticalScroll(rememberScrollState()),
-    ) {
-        Icon(
-            imageVector = Icons.Filled.Shield,
-            contentDescription = null,
-            tint = Color(0xFF4FC3F7),
-            modifier = Modifier.size(72.dp),
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = context.getString(AppR.string.onboarding_p4_hero),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            textAlign = TextAlign.Center,
-            lineHeight = 32.sp,
-        )
-        Spacer(modifier = Modifier.height(28.dp))
-        val declares = listOf(
-            context.getString(AppR.string.onboarding_declare_no_server),
-            context.getString(AppR.string.onboarding_declare_no_collection),
-            context.getString(AppR.string.onboarding_declare_no_transfer),
-        )
-        for (line in declares) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF1A2A3A)),
-                shape = RoundedCornerShape(12.dp),
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        Icons.Filled.Check,
-                        contentDescription = null,
-                        tint = Color(0xFF4FC3F7),
-                        modifier = Modifier.size(22.dp),
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(
-                        text = line,
-                        fontSize = 15.sp,
-                        color = Color.White,
-                        lineHeight = 22.sp,
-                    )
-                }
-            }
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = context.getString(AppR.string.onboarding_aes_footer),
-            fontSize = 12.sp,
-            color = Color(0xFF607D8B),
-            textAlign = TextAlign.Center,
-        )
-    }
-}
-
-@Composable
-private fun OnboardingPermissionRow(
-    icon: ImageVector,
-    title: String,
-    description: String,
-    granted: Boolean,
-    onAllow: () -> Unit,
-) {
-    val context = LocalContext.current
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A2A3A)),
-        shape = RoundedCornerShape(12.dp),
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(icon, null, tint = Color(0xFF4FC3F7), modifier = Modifier.size(28.dp))
-                Spacer(modifier = Modifier.width(12.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(title, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(description, fontSize = 13.sp, color = Color(0xFFB0BEC5), lineHeight = 18.sp)
-                }
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-            if (granted) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        Icons.Filled.CheckCircle,
-                        contentDescription = null,
-                        tint = Color(0xFF81C784),
-                        modifier = Modifier.size(22.dp),
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        context.getString(AppR.string.perm_status_granted),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF81C784),
-                    )
-                }
-            } else {
-                Button(
-                    onClick = onAllow,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4FC3F7)),
-                    shape = RoundedCornerShape(10.dp),
-                ) {
-                    Text(
-                        context.getString(AppR.string.perm_action_allow),
-                        color = Color(0xFF0D1B2A),
-                        fontWeight = FontWeight.Bold,
-                    )
-                }
-            }
-        }
-    }
-}
-
-/** 온보딩 5장: 권한 요청 */
-@Composable
-private fun OnboardingPage5() {
-    val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-    var refreshTrigger by remember { mutableIntStateOf(0) }
-
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                refreshTrigger++
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
-    }
-
-    val overlayOk = remember(refreshTrigger) { context.hasDrawOverlayPermission() }
-    val usageOk = remember(refreshTrigger) { context.hasUsageStatsPermission() }
-
-    val phoneLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission(),
-    ) { refreshTrigger++ }
-
-    val phoneOk = remember(refreshTrigger) { context.hasReadPhoneStatePermission() }
-
-    Column(
-        modifier = Modifier.verticalScroll(rememberScrollState()),
-    ) {
-        Text(
-            text = stringResource(AppR.string.onboarding_p5_intro),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = Color.White,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
-            lineHeight = 24.sp,
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        OnboardingPermissionRow(
-            icon = Icons.Filled.Layers,
-            title = context.getString(AppR.string.perm_overlay_title),
-            description = context.getString(AppR.string.perm_overlay_desc),
-            granted = overlayOk,
-            onAllow = {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    val intent = Intent(
-                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:${context.packageName}"),
-                    )
-                    context.startActivity(intent)
-                }
-            },
-        )
-        OnboardingPermissionRow(
-            icon = Icons.Filled.Security,
-            title = context.getString(AppR.string.perm_usage_stats_title),
-            description = context.getString(AppR.string.perm_usage_stats_desc),
-            granted = usageOk,
-            onAllow = {
-                context.startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
-            },
-        )
-        OnboardingPermissionRow(
-            icon = Icons.Filled.Phone,
-            title = context.getString(AppR.string.perm_phone_state_title),
-            description = context.getString(AppR.string.perm_phone_state_desc),
-            granted = phoneOk,
-            onAllow = { phoneLauncher.launch(Manifest.permission.READ_PHONE_STATE) },
-        )
-    }
-}
 
 // ═══════════════════════════════════════════════════════════
 // 홈 화면 — 오버레이 데모 트리거
@@ -3009,6 +2439,8 @@ private fun SettingsPermissionsSection() {
         title = context.getString(AppR.string.perm_overlay_title),
         description = context.getString(AppR.string.perm_overlay_desc),
         granted = overlayOk,
+        actionAllowLabel = context.getString(AppR.string.perm_action_allow),
+        statusGrantedLabel = context.getString(AppR.string.perm_status_granted),
         onAllow = {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 val intent = Intent(
@@ -3024,6 +2456,8 @@ private fun SettingsPermissionsSection() {
         title = context.getString(AppR.string.perm_usage_stats_title),
         description = context.getString(AppR.string.perm_usage_stats_desc),
         granted = usageStatsOk,
+        actionAllowLabel = context.getString(AppR.string.perm_action_allow),
+        statusGrantedLabel = context.getString(AppR.string.perm_status_granted),
         onAllow = {
             context.startActivity(
                 Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
@@ -3043,6 +2477,8 @@ private fun SettingsPermissionsSection() {
         title = context.getString(AppR.string.perm_phone_state_title),
         description = context.getString(AppR.string.perm_phone_state_desc),
         granted = phoneStateOk,
+        actionAllowLabel = context.getString(AppR.string.perm_action_allow),
+        statusGrantedLabel = context.getString(AppR.string.perm_status_granted),
         onAllow = {
             if (phoneStateOk) {
                 context.openAppDetailsSettings()
@@ -3056,6 +2492,8 @@ private fun SettingsPermissionsSection() {
         title = context.getString(AppR.string.perm_contacts_title),
         description = context.getString(AppR.string.perm_contacts_desc),
         granted = contactsOk,
+        actionAllowLabel = context.getString(AppR.string.perm_action_allow),
+        statusGrantedLabel = context.getString(AppR.string.perm_status_granted),
         onAllow = {
             if (contactsOk) {
                 context.openAppDetailsSettings()
@@ -3070,6 +2508,8 @@ private fun SettingsPermissionsSection() {
         title = context.getString(AppR.string.perm_sms_receive_title),
         description = context.getString(AppR.string.perm_sms_receive_desc),
         granted = receiveSmsOk,
+        actionAllowLabel = context.getString(AppR.string.perm_action_allow),
+        statusGrantedLabel = context.getString(AppR.string.perm_status_granted),
         onAllow = {
             if (receiveSmsOk) {
                 context.openAppDetailsSettings()
@@ -3084,6 +2524,8 @@ private fun SettingsPermissionsSection() {
             title = context.getString(AppR.string.perm_answer_calls_title),
             description = context.getString(AppR.string.perm_answer_calls_desc),
             granted = answerCallsOk,
+            actionAllowLabel = context.getString(AppR.string.perm_action_allow),
+            statusGrantedLabel = context.getString(AppR.string.perm_status_granted),
             onAllow = {
                 if (answerCallsOk) {
                     context.openAppDetailsSettings()
@@ -3106,6 +2548,8 @@ private fun SettingsPermissionsSection() {
             title = context.getString(AppR.string.perm_post_notifications_title),
             description = context.getString(AppR.string.perm_post_notifications_desc),
             granted = postNotifOk,
+            actionAllowLabel = context.getString(AppR.string.perm_action_allow),
+            statusGrantedLabel = context.getString(AppR.string.perm_status_granted),
             onAllow = {
                 if (postNotifOk) {
                     context.openAppDetailsSettings()
