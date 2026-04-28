@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tag_list_title">Tags</string>
+    <string name="tag_settings_entry_title">Tag System</string>
+    <string name="tag_settings_entry_desc">Volatile memos: REMIND_ME / PENDING / SUSPICIOUS / ARCHIVE</string>
+    <string name="tag_add_title">Add tag for %1$s</string>
+    <string name="tag_text_label">Memo</string>
+    <string name="tag_priority_remind_me">Remind Me</string>
+    <string name="tag_priority_pending">Pending</string>
+    <string name="tag_priority_suspicious">Suspicious</string>
+    <string name="tag_priority_archive">Archive</string>
+    <string name="tag_add_confirm">Save</string>
+    <string name="tag_add_cancel">Cancel</string>
+    <string name="tag_seen_count">Seen %1$d times</string>
+    <string name="tag_last_seen">Last: %1$s</string>
+    <string name="tag_never_seen">Never seen</string>
+    <string name="tag_daily_reminder_title">Pending tags</string>
+    <string name="tag_daily_reminder_text">%1$d numbers tagged Remind Me have not appeared for 7 days.</string>
+    <string name="tag_user_promise">Tags are stored only on this device. Delete anytime.</string>
+    <string name="tag_empty_title">No tags yet</string>
+    <string name="tag_empty_desc">Long-press a number in CallCheck/MessageCheck to add a tag (coming in next PR).</string>
+    <string name="tag_delete">Delete</string>
+    <string name="tag_section_suspicious">Suspicious</string>
+    <string name="tag_section_pending">Pending</string>
+    <string name="tag_section_remind_me">Remind Me</string>
+    <string name="tag_section_archive">Archive</string>
+</resources>

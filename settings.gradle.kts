@@ -50,6 +50,7 @@ include(":feature:message-check")
 include(":feature:initial-scan")
 include(":feature:call-screening")
 include(":feature:sms-block")
+include(":feature:tag-system")
 
 // Data modules
 include(":data:contacts")
