@@ -18,6 +18,12 @@ on:
 permissions:
   contents: read
 
+# PR close/update 시 이 PR의 in-flight matrix 잡 자동 cancel (큐 적체 방지).
+# 야간 풀(matrix-test-nightly)과는 별도 group이라 영향 없음.
+concurrency:
+  group: matrix-pr-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   matrix-pr:
     name: matrix-pr (sim=${{ matrix.sim }} scenario=${{ matrix.scenario }})
@@ -37,6 +43,29 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+
+      # Gradle 의존성 캐시 — modules-2 + wrapper.
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', 'gradle/libs.versions.toml') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      # AVD 시스템 이미지 캐시 — pixel7Api34 (PR 게이트 단일 디바이스).
+      # API 34 system image 다운로드 (~1.5GB) 시간 단축.
+      - name: Cache AVD system images
+        id: avd-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+            /usr/local/lib/android/sdk/system-images/android-34
+          key: avd-pr-${{ runner.os }}-api34-google-x86_64-v1
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
@@ -59,6 +88,10 @@ jobs:
 
       - name: Compile (smoke)
         run: ./gradlew :app:compileDebugKotlin
+
+      # Managed Devices Setup 1회 실행 — AVD 첫 부트 cost 분리 (캐시 효과 최대화).
+      - name: Managed Device Setup (pixel7Api34)
+        run: ./gradlew :app:pixel7Api34Setup
 
       - name: Run matrix scenario
         env:
