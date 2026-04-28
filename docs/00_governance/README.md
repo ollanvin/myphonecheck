@@ -24,8 +24,10 @@ This governance area follows the **2-axis Single Source of Truth** model:
 - `architecture/v1.8.0/` — Frozen (4 Surface 시점)
 - `architecture/v1.9.0/` — Frozen (Six Surfaces 정식)
 - `architecture/v2.0.0/` — Frozen (One Core Engine + SIM-Oriented + Initial Scan, MAJOR)
-- `architecture/v2.1.0/` — Current Working Canonical (4-Layer + Real-time + Tag + Competitor Feeds, MINOR)
-- Defines: constitution 8 principles (v2.0.0 §8조 SIM-Oriented 신설, v2.1.0 무변경), Six Surfaces (CallCheck/MessageCheck/MicCheck/CameraCheck/PushCheck/CardCheck), Initial Scan, `:core:global-engine` (모든 Surface 단일 코어), NKB schema, Day-by-Day implementation guide
+- `architecture/v2.1.0/` — Frozen (4-Layer + Real-time + Tag + Competitor Feeds, MINOR)
+- `architecture/v2.2.0/` — Frozen (헌법 §9 빅테크 정공법 + §10 비전 자율 결정, 8조 → 10조 MAJOR)
+- `architecture/v2.3.0/` — Current Working Canonical (헌법 §10-6 자체 머지 의무 신설, §10 5절 → 6절 MINOR)
+- Defines: constitution 10 principles (v2.0.0 §8조 SIM-Oriented + v2.2.0 §9 빅테크 + §10 비전 자율 결정 + **v2.3.0 §10-6 자체 머지 의무**), Six Surfaces (CallCheck/MessageCheck/MicCheck/CameraCheck/PushCheck/CardCheck), Initial Scan, `:core:global-engine` (모든 Surface 단일 코어), NKB schema, Day-by-Day implementation guide
 - **One Core Engine**: All Surfaces share single `:core:global-engine`. Self parser/mapping prohibited.
 - **SIM-Oriented Single Core (헌법 8조)**: 국가·통화·전화번호 양식 단일 진실원 = SIM. UI 언어 3단 fallback (SIM → 시스템 → English).
 - **4-Layer Data Model (§30-3-A, v2.1.0)**: OS / MyPhoneCheck / 외부 캐시 / 외부 검색 분리. Layer 우선순위 = 2·1·3·4.
@@ -37,17 +39,19 @@ This governance area follows the **2-axis Single Source of Truth** model:
 
 - `infrastructure/v1.0/` — Paired with Architecture v1.7.1 (frozen)
 - `infrastructure/v1.1/` — Frozen (PR #16/#26 cross-ref 패치 누적)
-- `infrastructure/v1.2/` — Current Working Canonical (Architecture v2.1.0 정합 MAJOR 승격, toolmap·SOPs 정식)
+- `infrastructure/v1.2/` — Frozen (Architecture v2.1.0 정합 MAJOR, toolmap·SOPs 정식)
+- `infrastructure/v1.3/` — Current Working Canonical (Architecture v2.3.0 페어 정합 MAJOR — 헌법 §10-6 자체 머지 의무 + Toolmap §4.0.9 + SOP-V13-001)
 - Defines: toolmap (Cursor, Codex CLI, Claude Code, Cowork, Vision), build pipelines, SOPs, secrets management
 - v1.2 신설: SOP-V12-001 Real-time Action / SOP-V12-002 Tag System / SOP-V12-003 Public Feed
+- v1.3 신설: §4.0.9 자체 머지 정공법 (`gh pr merge --squash --delete-branch --auto`) / SOP-V13-001 워크오더 발행 + 자체 머지 (헌법 §10-6 정합)
 
 ### Pair Relationship
 
 - Architecture and Infrastructure are **paired documents**
 - Each has its own Working Canonical (independent versioning)
-- 현재 페어: **Architecture v2.1.0 ↔ Infrastructure v1.2** (정식 승격, v1.2 with toolmap + SOPs 정식)
-- Conflict resolution: **Architecture takes precedence** (per Infrastructure v1.2 §0.2 Rule 4)
-- Cross-references: Infrastructure §0.2 -> Architecture v2.1.0 (4-Layer + Real-time + Tag + Competitor, 11 paths = 6 Surfaces + Initial Scan + SIM-Oriented Core + `:core:global-engine` + Real-time Action + Tag System); Architecture §35-6 -> Infrastructure v1.2
+- 현재 페어: **Architecture v2.3.0 ↔ Infrastructure v1.3** (정식 승격, 헌법 10조 + §10-6 자체 머지 의무 + Toolmap §4.0.9 + SOP-V13-001)
+- Conflict resolution: **Architecture takes precedence** (per Infrastructure v1.3 §0.2 Rule 4)
+- Cross-references: Infrastructure §0.2 -> Architecture v2.3.0 (4-Layer + Real-time + Tag + Competitor + §9-6 검증 매트릭스 + §10-6 자체 머지 의무, **12 paths**); Architecture §35-6 -> Infrastructure v1.3
 
 ---
 
@@ -95,4 +99,4 @@ For project governance evolution and refactor records, see:
 - `project-governance.md` (current rules)
 - `archive/legacy_docs/project-governance-original.md` (pre-2026-04-27 original)
 
-Last refactor: 2026-04-28 (WO-V180-CLEANUP-009-E + WO-V190-GOVERNANCE-PATCH-003 v1.9.0 sync + WO-V200-GOVERNANCE-PATCH v2.0.0 sync + WO-V210-GOVERNANCE-PATCH v2.1.0 sync + WO-INFRA-V12-MAJOR Infrastructure v1.2 정식 승격)
+Last refactor: 2026-04-28 (WO-V180-CLEANUP-009-E + WO-V190-GOVERNANCE-PATCH-003 v1.9.0 sync + WO-V200-GOVERNANCE-PATCH v2.0.0 sync + WO-V210-GOVERNANCE-PATCH v2.1.0 sync + WO-INFRA-V12-MAJOR Infrastructure v1.2 정식 승격 + WO-V220-MAJOR-001 Architecture v2.2.0 헌법 10조 신설 + WO-V220-GOVERNANCE-INFRA-V13-INTEGRATED Architecture v2.3.0 + Infrastructure v1.3 페어 승격, 헌법 §10-6 자체 머지 의무)

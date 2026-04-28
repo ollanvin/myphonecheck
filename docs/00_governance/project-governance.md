@@ -18,10 +18,10 @@ It does not store the cross-project constitution itself.
 - Constitution repository local path: `C:\Users\user\Dev\ollanvin\web`
 - Constitution repository remote: `https://github.com/ollanvin/web`
 - Constitution document baseline: `CONSTITUTION.md` (OllanVin 조직 인프라 헌법, 8조 체계)
-- Constitution version baseline: **8-article (Architecture v2.0.0 ~ v2.1.0)** — 8조 SIM-Oriented Single Core 신설 (PATCH-41), v2.1.0 무변경
-- Architecture canonical: **v2.1.0** (Working Canonical)
+- Constitution version baseline: **10-article (Architecture v2.2.0 ~ v2.3.0)** — v2.2.0 §9 빅테크 정공법(7절) + §10 비전 자율 결정(5절) MAJOR 신설, **v2.3.0 §10-6 자체 머지 의무 신설(§10 5절 → 6절) MINOR**
+- Architecture canonical: **v2.3.0** (Working Canonical)
 
-MyPhoneCheck product 헌법 (Out-Bound Zero ~ SIM-Oriented Single Core 8조)은 Architecture v2.1.0 `05_constitution.md`에 위치한다 (web 레포 OllanVin 인프라 헌법과는 별도). 두 헌법은 다른 영역을 다루며, MyPhoneCheck는 둘 다 정합한다.
+MyPhoneCheck product 헌법 (Out-Bound Zero ~ §10-6 자체 머지 의무 10조)은 Architecture v2.3.0 `05_constitution.md`에 위치한다 (web 레포 OllanVin 인프라 헌법과는 별도). 두 헌법은 다른 영역을 다루며, MyPhoneCheck는 둘 다 정합한다.
 
 ## Fixed Project Principles
 
@@ -39,6 +39,9 @@ MyPhoneCheck product 헌법 (Out-Bound Zero ~ SIM-Oriented Single Core 8조)은 
 - **Real-time Action (§31, v2.1.0)**: 수신 거절 즉시 종료, SMS abortBroadcast, 밀리초 단위 조치 (50ms 응답). `CallScreeningService` 등록 권장.
 - **Tag System (§32, v2.1.0)**: 휘발성 메모, 연락처 저장과 별개. REMIND_ME / PENDING / SUSPICIOUS / ARCHIVE.
 - **Competitor Feeds (§30-4-4, v2.1.0)**: 경쟁 앱 공개 데이터 활용 (라이선스·robots.txt 정합 필수). 사용자 옵트인 강조 ("타사 데이터 활용").
+- **빅테크 정공법 (헌법 §9, v2.2.0)**: 시장 분리·번역 작업·외부 계약·iOS 분리·검증 매트릭스 부재 6종 위반 영구 차단. §9-6 검증 매트릭스 (SIM 11개국 × Locale 11개 × 디바이스 4종, 핵심 40~60 케이스, PR 회귀 게이트).
+- **비전 자율 결정 (헌법 §10, v2.2.0)**: 사지선다·확인 받기 금지. 비전이 메모리·헌법 정합 후 단독 결정. 외부 검증자 권고도 비전 발행 거쳐야 실행.
+- **자체 머지 의무 (헌법 §10-6, v2.3.0 신설)**: 비전 워크오더 = 워커가 한 사이클(분기 → 작성 → push+PR → CI PASS → squash merge + delete branch → 완료 보고) 자체 수행. 명령: `gh pr merge <PR> --squash --delete-branch --auto`. 대표님 머지 개입 = §10-2 비전 책임 영역 위반. 예외: 외부 의사결정·NOT-OK·명시적 대표님 결정 요청.
 - The app does not make the final user judgment. It shows evidence.
 - The user remains the final decision-maker.
 - Contact saving and relationship management remain separate.
@@ -73,10 +76,13 @@ Project documents must live under `docs/` and be classified by purpose.
 | `architecture/v1.8.0/` | Architecture frozen (4 Surface 시점) |
 | `architecture/v1.9.0/` | Architecture frozen (Six Surfaces 정식) |
 | `architecture/v2.0.0/` | Architecture frozen (One Core Engine + SIM-Oriented + Initial Scan, MAJOR) |
-| `architecture/v2.1.0/` | Architecture current Working Canonical (4-Layer + Real-time + Tag + Competitor Feeds, MINOR 승격) |
+| `architecture/v2.1.0/` | Architecture frozen (4-Layer + Real-time + Tag + Competitor Feeds, MINOR 시점) |
+| `architecture/v2.2.0/` | Architecture frozen (헌법 §9 빅테크 정공법 + §10 비전 자율 결정, 8조 → 10조 MAJOR) |
+| `architecture/v2.3.0/` | Architecture current Working Canonical (헌법 §10-6 자체 머지 의무 신설, MINOR) |
 | `infrastructure/v1.0/` | Infrastructure original (paired with Architecture v1.7.1, frozen) |
 | `infrastructure/v1.1/` | Infrastructure frozen (Architecture v1.8.0~v2.1.0 cross-ref 패치 시점) |
-| `infrastructure/v1.2/` | Infrastructure current Working Canonical (Architecture v2.1.0 정합 MAJOR, toolmap·SOPs 정식) |
+| `infrastructure/v1.2/` | Infrastructure frozen (Architecture v2.1.0 정합 MAJOR 시점) |
+| `infrastructure/v1.3/` | Infrastructure current Working Canonical (Architecture v2.3.0 페어 정합 MAJOR — 헌법 §10-6 + Toolmap §4.0.9 + SOP-V13-001) |
 | `archive/` | Historical preservation (workorders, patches, legacy_docx, legacy_docs, temp) |
 | `project-governance.md` | This file |
 | `README.md` | Governance area guide |
@@ -188,3 +194,45 @@ PR #32 (Infrastructure v1.2 머지, squash `6c7c149`) 후속 3 워커 (Claude Co
 
 보호 영역 무손상:
 - v1.7.1 / v1.8.0 / v1.9.0 / v2.0.0 / Infrastructure v1.0~v1.2.
+
+### Updates 2026-04-28 (WO-V220-MAJOR-001 — Architecture v2.2.0 헌법 10조 MAJOR 승격)
+
+PR #34 / PR #35 (정정본 §9-6 검증 매트릭스 추가) 머지 후속 거버넌스 동기화:
+
+- `architecture/v2.2.0/` 행 추가 (헌법 §9 빅테크 정공법 + §10 비전 자율 결정, 8조 → 10조 MAJOR)
+- `architecture/v2.1.0/` 행은 frozen으로 강등
+- Constitution baseline: 8조 → **10조** (§9 7절 + §10 5절 신설; §9-6 검증 매트릭스 정정본 신설)
+- Architecture canonical: **v2.2.0** (이후 v2.3.0 MINOR 승격 후 frozen 전환)
+- Fixed Project Principles에 §9 빅테크 정공법 + §10 비전 자율 결정 항목 추가
+- 비전 누적 위반 6건 영구 차단 (시장 분리·번역·계약·iOS 분리·사지선다·검증 매트릭스 부재)
+
+### Updates 2026-04-28 (WO-V220-GOVERNANCE-INFRA-V13-INTEGRATED — v2.3.0 + v1.3 페어 승격)
+
+PR #35 (Architecture v2.2.0 정정본 머지, main 6db52a7) 후속 페어 정식 승격:
+
+- `architecture/v2.3.0/` 행 추가 (헌법 §10-6 자체 머지 의무 신설, §10 5절 → 6절 MINOR)
+- `architecture/v2.2.0/` 행은 frozen으로 강등
+- `infrastructure/v1.3/` 행 추가 (Architecture v2.3.0 페어 정합 MAJOR — 헌법 §10-6 + Toolmap §4.0.9 자체 머지 정공법 + SOP-V13-001)
+- `infrastructure/v1.2/` 행은 frozen으로 강등
+- Constitution baseline: 10조 + **§10-6 자체 머지 의무** (§10 6번째 절 신설)
+- Architecture canonical: **v2.3.0**
+- Infrastructure canonical: **v1.3**
+- Fixed Project Principles에 §10-6 자체 머지 의무 항목 추가
+- v1.3 신설 항목:
+  · **§4.0.9 자체 머지 정공법**: 한 사이클 6단계 + `gh pr merge <PR> --squash --delete-branch --auto`
+  · **SOP-V13-001 워크오더 발행 + 자체 머지**: 비전 발행권 + 워커 자체 머지 + 영역 한정 + CI 분류 + §11 양식
+  · **§7 STEP 0-bis 13항목**: §10-6 자체 머지 게이트 추가 (12 → 13)
+  · **§0.2 Cross-references 12 paths**: §9-6 검증 매트릭스 명시 추가
+  · **부록 A v1.3 변경 이력 표**: v1.2 → v1.3 항목별 변경 매트릭스
+- 비전 누적 잘못 7번째(자체 머지 단계 누락) 영구 차단
+- 페어 검증: Architecture v2.3.0 ↔ Infrastructure v1.3 정식 페어 확정
+- 자체 적용 (정합 검증): 본 PR은 §10-6 정합으로 워커가 직접 `gh pr merge --squash --delete-branch --auto` 수행
+
+영역 한정:
+- `docs/00_governance/architecture/v2.3.0/` (cp 후 §10-6 + 부록 B/D/E + INDEX 갱신)
+- `docs/00_governance/infrastructure/v1.3/MyPhoneCheck_Infra_Ops_v1.3.md` (cp 후 본문 정정)
+- `docs/00_governance/README.md` (페어 v2.3.0 ↔ v1.3 갱신)
+- `docs/00_governance/project-governance.md` (본 Refactor Note 추가)
+
+보호 영역 무손상:
+- v1.7.1 / v1.8.0 / v1.9.0 / v2.0.0 / v2.1.0 / v2.2.0 / Infrastructure v1.0~v1.2.
