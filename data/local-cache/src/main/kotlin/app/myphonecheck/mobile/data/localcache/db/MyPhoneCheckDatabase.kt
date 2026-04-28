@@ -10,6 +10,7 @@ import app.myphonecheck.mobile.data.localcache.dao.CallBaseDao
 import app.myphonecheck.mobile.data.localcache.dao.CardSourceLabelDao
 import app.myphonecheck.mobile.data.localcache.dao.CardTransactionDao
 import app.myphonecheck.mobile.data.localcache.dao.DetailTagDao
+import app.myphonecheck.mobile.data.localcache.dao.FeedEntryDao
 import app.myphonecheck.mobile.data.localcache.dao.InitialScanMetaDao
 import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
 import app.myphonecheck.mobile.data.localcache.dao.NumberProfileDao
@@ -32,6 +33,7 @@ import app.myphonecheck.mobile.data.localcache.entity.CallBaseEntity
 import app.myphonecheck.mobile.data.localcache.entity.CardSourceLabelEntity
 import app.myphonecheck.mobile.data.localcache.entity.CardTransactionEntity
 import app.myphonecheck.mobile.data.localcache.entity.DetailTagEntity
+import app.myphonecheck.mobile.data.localcache.entity.FeedEntryEntity
 import app.myphonecheck.mobile.data.localcache.entity.InitialScanMetaEntity
 import app.myphonecheck.mobile.data.localcache.entity.MessageHubEntity
 import app.myphonecheck.mobile.data.localcache.entity.NumberProfileEntity
@@ -71,6 +73,8 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
  *          blocked_identifier (PHONE_E164 / SMS_SENDER / NOTIFICATION_PACKAGE).
  *  - v16: Tag System 휘발성 메모 1 entity 추가 (Architecture v2.1.0 §32).
  *          phone_tag (REMIND_ME / PENDING / SUSPICIOUS / ARCHIVE).
+ *  - v17: 공개 피드 캐시 1 entity 추가 (Architecture v2.1.0 §30-4 Layer 3).
+ *          feed_entry (4 FeedType 공통 캐시).
  */
 @Database(
     entities = [
@@ -96,8 +100,9 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
         SimContextSnapshotEntity::class,
         BlockedIdentifierEntity::class,
         PhoneTagEntity::class,
+        FeedEntryEntity::class,
     ],
-    version = 16,
+    version = 17,
     exportSchema = true,
 )
 abstract class MyPhoneCheckDatabase : RoomDatabase() {
@@ -123,6 +128,7 @@ abstract class MyPhoneCheckDatabase : RoomDatabase() {
     abstract fun simContextSnapshotDao(): SimContextSnapshotDao
     abstract fun blockedIdentifierDao(): BlockedIdentifierDao
     abstract fun phoneTagDao(): PhoneTagDao
+    abstract fun feedEntryDao(): FeedEntryDao
 
     companion object {
         const val DATABASE_NAME = "myphonecheck.db"

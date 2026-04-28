@@ -12,7 +12,6 @@ import app.myphonecheck.mobile.core.globalengine.search.internal.HistoryReposito
 import app.myphonecheck.mobile.core.globalengine.search.internal.OnDeviceHistorySearch
 import app.myphonecheck.mobile.core.globalengine.search.publicfeed.PublicFeedAggregator
 import app.myphonecheck.mobile.core.globalengine.search.publicfeed.PublicFeedCache
-import app.myphonecheck.mobile.core.globalengine.search.publicfeed.PublicFeedSource
 import app.myphonecheck.mobile.core.globalengine.simcontext.SimContext
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -32,21 +31,22 @@ class InputAggregatorTest {
         override suspend fun findByKey(key: String, type: QueryType): List<MatchEntry> = items
     }
 
-    private class FixedSource(
-        override val id: String,
-        private val optedIn: Boolean,
-    ) : PublicFeedSource {
-        override val name: String = "fixed-$id"
-        override suspend fun isOptedIn(): Boolean = optedIn
-        override suspend fun lookup(query: SearchQuery): List<MatchEntry> = emptyList()
-    }
+    private fun optInProvider(ids: Set<String>): app.myphonecheck.mobile.core.globalengine.search.publicfeed.FeedOptInProvider =
+        object : app.myphonecheck.mobile.core.globalengine.search.publicfeed.FeedOptInProvider {
+            override suspend fun optedInIds(): Set<String> = ids
+        }
 
     @Test
     fun `aggregate returns all three axes`() = runTest {
         val internal = OnDeviceHistorySearch(FixedRepo(listOf(MatchEntry("k", "internal hit", null))))
         val cache = PublicFeedCache()
-        cache.put("kisa", "k", listOf(MatchEntry("k", "feed hit", Severity.HIGH)))
-        val publicFeed = PublicFeedAggregator(cache, listOf(FixedSource("kisa", true)))
+        // PR #29 FeedRegistry에 등록된 phishtank id 사용 (default registry).
+        cache.put("phishtank", "k", listOf(MatchEntry("k", "feed hit", Severity.HIGH)))
+        val publicFeed = PublicFeedAggregator(
+            cache,
+            app.myphonecheck.mobile.core.globalengine.search.publicfeed.FeedRegistry(),
+            optInProvider(setOf("phishtank")),
+        )
         val external = CustomTabExternalSearch()
 
         val agg = InputAggregator(internal, publicFeed, external).aggregate(query("k"))
@@ -66,7 +66,11 @@ class InputAggregatorTest {
     @Test
     fun `aggregate without opted-in feeds yields empty public matches`() = runTest {
         val internal = OnDeviceHistorySearch(FixedRepo(emptyList()))
-        val publicFeed = PublicFeedAggregator(PublicFeedCache(), emptyList())
+        val publicFeed = PublicFeedAggregator(
+            PublicFeedCache(),
+            app.myphonecheck.mobile.core.globalengine.search.publicfeed.FeedRegistry(),
+            optInProvider(emptySet()),
+        )
         val external = CustomTabExternalSearch()
 
         val agg = InputAggregator(internal, publicFeed, external).aggregate(query("nothing"))
@@ -79,7 +83,11 @@ class InputAggregatorTest {
     @Test
     fun `external intent always built regardless of internal results`() = runTest {
         val internal = OnDeviceHistorySearch(FixedRepo(emptyList()))
-        val publicFeed = PublicFeedAggregator(PublicFeedCache(), emptyList())
+        val publicFeed = PublicFeedAggregator(
+            PublicFeedCache(),
+            app.myphonecheck.mobile.core.globalengine.search.publicfeed.FeedRegistry(),
+            optInProvider(emptySet()),
+        )
         val external = CustomTabExternalSearch()
 
         val agg = InputAggregator(internal, publicFeed, external).aggregate(query("hello world"))
