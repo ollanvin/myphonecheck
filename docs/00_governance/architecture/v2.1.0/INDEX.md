@@ -14,11 +14,11 @@
 ## 전체 문서 맵
 
 ```
-v2.0.0/
+v2.1.0/
 │
 ├── INDEX.md                              ← 본 파일
 ├── README.md                             ← 폴더 목적 안내
-├── 05_constitution.md                    ← §1 헌법 8조 (v2.0.0 §8조 신설)
+├── 05_constitution.md                    ← §1 헌법 8조 (v2.0.0 §8조 신설, v2.1.0 무변경)
 ├── 30_billing.md                         ← §31 Billing 구현
 ├── _audit_report.md                      ← 패키지 내부 감사 보조물 (v1.9.0)
 │

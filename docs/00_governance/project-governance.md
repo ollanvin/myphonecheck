@@ -165,3 +165,26 @@ PR #31 (Stage 2-010 통합 정리 머지, squash `81c83cd`) 후속, Architecture
 - Infrastructure canonical: **v1.2** (frozen 전환된 v1.1 → v1.2 MAJOR)
 - v1.0 / v1.1 frozen 보존 (FROZEN, 이력 보존)
 - 다음 페어 변경: Architecture v2.2.0 또는 v3.0.0 시 재검토
+
+### Updates 2026-04-28 (WO-V210-AUDIT-CORRECTIONS — 3 워커 통합 감사 후속 정정)
+
+PR #32 (Infrastructure v1.2 머지, squash `6c7c149`) 후속 3 워커 (Claude Code + Cursor + Cowork) 통합 감사 발견 사항 정정:
+
+- **Cowork Major-1 (Subfolder Structure 테이블 v2.0.0·v2.1.0 행 누락)**: 검증 결과 **NO-OP**.
+  · PR #32 (Infrastructure v1.2 정식 승격) 시 project-governance.md sync 작업에서 이미 v2.0.0/v2.1.0 행 추가 + Infrastructure v1.0~v1.2 행 추가 완료.
+  · Cowork 감사가 PR #32 머지 이전 시점을 본 것으로 추정 — 현재 main 시점에서는 정합 상태.
+- **Cowork Minor-2 (v2.1.0 INDEX.md 트리맵 루트 v2.0.0/ 오표기)**: 정정 완료.
+  · `docs/00_governance/architecture/v2.1.0/INDEX.md` line 17 `v2.0.0/` → `v2.1.0/`.
+  · 트리맵 루트만 정정. 본문 cross-ref·역사 표기 무손상.
+- **Cursor Minor 3건**: 본 PR 영역 외 처리.
+  · Cursor 감사 보고서 미접수 (docs/07_relay/done/에 v2.1.0 감사 보고서 없음).
+  · WO STEP 6 명시 절차 따라 별도 후속 WO에서 처리 예정.
+- **Cowork Suggestion-1 (Infrastructure v1.2 승격)**: 별도 처리 완료 (PR #32).
+- **Cowork Minor-1 (14 PR 라벨 미부착)**: GitHub UI 작업, 본 PR 영역 외.
+
+영역 한정:
+- `docs/00_governance/project-governance.md` (본 Refactor Note 추가)
+- `docs/00_governance/architecture/v2.1.0/INDEX.md` (트리맵 루트 정정)
+
+보호 영역 무손상:
+- v1.7.1 / v1.8.0 / v1.9.0 / v2.0.0 / Infrastructure v1.0~v1.2.
