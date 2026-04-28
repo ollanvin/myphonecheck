@@ -74,8 +74,9 @@ Project documents must live under `docs/` and be classified by purpose.
 | `architecture/v1.9.0/` | Architecture frozen (Six Surfaces 정식) |
 | `architecture/v2.0.0/` | Architecture frozen (One Core Engine + SIM-Oriented + Initial Scan, MAJOR) |
 | `architecture/v2.1.0/` | Architecture current Working Canonical (4-Layer + Real-time + Tag + Competitor Feeds, MINOR 승격) |
-| `infrastructure/v1.0/` | Infrastructure original (paired) |
-| `infrastructure/v1.1/` | Infrastructure current Working Canonical |
+| `infrastructure/v1.0/` | Infrastructure original (paired with Architecture v1.7.1, frozen) |
+| `infrastructure/v1.1/` | Infrastructure frozen (Architecture v1.8.0~v2.1.0 cross-ref 패치 시점) |
+| `infrastructure/v1.2/` | Infrastructure current Working Canonical (Architecture v2.1.0 정합 MAJOR, toolmap·SOPs 정식) |
 | `archive/` | Historical preservation (workorders, patches, legacy_docx, legacy_docs, temp) |
 | `project-governance.md` | This file |
 | `README.md` | Governance area guide |
@@ -142,3 +143,25 @@ PR #25 (Architecture v2.1.0 MINOR 머지, squash `80c10b7`) 후속 거버넌스 
 - Architecture canonical: **v2.1.0**
 - Infrastructure v1.1 cross-ref: v2.1.0 기준 (9 paths → **11 paths** = 기존 9 + Real-time Action + Tag System)
 - v1.2 승격은 별도 후속 WO (Real-time Action·Tag·Competitor Feeds 통합 검토 필요)
+
+### Updates 2026-04-28 (WO-INFRA-V12-MAJOR — Infrastructure v1.2 정식 승격)
+
+PR #31 (Stage 2-010 통합 정리 머지, squash `81c83cd`) 후속, Architecture v2.1.0 ↔ Infrastructure v1.2 정식 페어 확정:
+
+- `infrastructure/v1.2/` 행 추가 (Architecture v2.1.0 정합 MAJOR 승격, toolmap·SOPs 정식)
+- `infrastructure/v1.1/` 행은 frozen으로 강등 (Architecture v1.8.0~v2.1.0 cross-ref 패치 누적 시점 이전 Canonical)
+- v1.2 신설 항목:
+  · **Toolmap §4.0 정식**: 메모리 #6 권한 범위 기반 정책 — Claude Code 메인 구현 + 감사 + 시스템 스캔 (PowerShell 네이티브 전면 권한)
+  · **§4.0.7 Codex CLI 환경 이슈 메모**: v2.0.0~v2.1.0 시리즈 Claude Code 단독 진행 사실 명문화
+  · **§4.0.5 Layer별 차등 정식**: Layer 1~4별 주력 워커 + 크로스 체크 명시
+  · **§5-bis SOPs 신설**:
+    - SOP-V12-001 Real-time Action 운영 (CallScreening + SMS abort + Push cancel, 50ms timeout)
+    - SOP-V12-002 Tag System 운영 (4 priority + 일일 리마인드)
+    - SOP-V12-003 Public Feed 운영 (4유형 출처 + 옵트인 + 라이선스 검토 강제)
+  · **§7 STEP 0-bis 12항목 정식**: §31 Real-time + §32 Tag 추가 (PR #26 패치 정리)
+  · **부록 A v1.2 변경 이력 표**: v1.1 → v1.2 항목별 변경 매트릭스
+- Constitution baseline: 8조 (v2.0.0 ~ v2.1.0, 변경 없음)
+- Architecture canonical: **v2.1.0** (변경 없음, 페어만 정식 승격)
+- Infrastructure canonical: **v1.2** (frozen 전환된 v1.1 → v1.2 MAJOR)
+- v1.0 / v1.1 frozen 보존 (FROZEN, 이력 보존)
+- 다음 페어 변경: Architecture v2.2.0 또는 v3.0.0 시 재검토
