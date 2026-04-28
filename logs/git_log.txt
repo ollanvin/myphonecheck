@@ -1,0 +1,5 @@
+﻿cca259c build: gradlew check 수정 + docs/ARCHITECTURE.md 역설계도
+5ef0840 v4.3: structure refactor complete
+f7cbaa5 feat: rewrite overlay to 2-second decision UI + wire DO_NOT_MISS notification action
+0288803 feat: overlay 2s decision UX + DO_NOT_MISS integration
+fb2ca8b feat: global number engine + device adaptive scan + persistence + refresh policy

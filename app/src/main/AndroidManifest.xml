@@ -99,16 +99,7 @@
             </intent-filter>
         </receiver>
 
-        <!-- PushCheck: Notification Listener Service -->
-        <service
-            android:name="app.myphonecheck.mobile.feature.pushintercept.PushInterceptService"
-            android:enabled="false"
-            android:exported="true"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
-            <intent-filter>
-                <action android:name="android.service.notification.NotificationListenerService" />
-            </intent-filter>
-        </service>
+        <!-- PushCheck: REMOVED per v1.1 Architecture (PUSH feature eliminated) -->
 
         <!-- MessageCheck: SMS Broadcast Receiver -->
         <receiver

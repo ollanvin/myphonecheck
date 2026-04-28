@@ -1,0 +1,21 @@
+﻿
+ + Options
+     | Auto-detection:     Enabled
+     | Auto-download:      Enabled
+
+ + Eclipse Temurin JDK 17.0.18+8
+     | Location:           C:\Users\user\.gradle\jdks\eclipse_adoptium-17-amd64-windows\jdk-17.0.18+8
+     | Language Version:   17
+     | Vendor:             Eclipse Temurin
+     | Architecture:       amd64
+     | Is JDK:             true
+     | Detected by:        Auto-provisioned by Gradle
+
+ + JetBrains JDK 21.0.10+-14961533-b1163.108
+     | Location:           C:\Program Files\Android\Android Studio\jbr
+     | Language Version:   21
+     | Vendor:             JetBrains
+     | Architecture:       amd64
+     | Is JDK:             true
+     | Detected by:        Current JVM
+

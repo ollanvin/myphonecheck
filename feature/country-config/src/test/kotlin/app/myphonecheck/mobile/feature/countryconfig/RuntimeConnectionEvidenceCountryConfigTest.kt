@@ -140,52 +140,33 @@ class RuntimeConnectionEvidenceCountryConfigTest {
     // ═══════════════════════════════════════════════════════════
 
     @Test
-    fun `EVIDENCE-6 Pricing 3-tier country mapping complete`() {
-        println("\n═══ 증거 6: Pricing Policy ═══")
+    fun `EVIDENCE-6 Pricing v1_1 single price worldwide`() {
+        println("\n═══ 증거 6: Pricing Policy (v1.1 단일가) ═══")
 
-        // Tier 1 ($9.99) 주요 국가
-        val tier1Countries = listOf("US", "KR", "JP", "GB", "DE", "AU", "CA", "FR", "SG")
-        for (cc in tier1Countries) {
+        // v1.1: 전 세계 $1.99/월 단일 가격
+        val allCountries = listOf(
+            "US", "KR", "JP", "GB", "DE", "AU", "CA", "FR", "SG",  // 구 Tier 1
+            "BR", "MX", "RU", "CN", "TR", "TH", "PH",              // 구 Tier 2
+            "BD", "MM", "LA", "KH", "NP", "ET", "TZ",              // 구 Tier 3
+        )
+        for (cc in allCountries) {
             val tier = CountryPricingMapper.getTier(cc)
-            println("[Tier1] $cc → ${tier.monthlyPriceUsd}/月 (trial=${tier.freeTrialDays}d)")
-            assertEquals("$cc must be Tier 1", 1, tier.tierId)
-            assertEquals("$cc must be \$9.9", "\$9.9", tier.monthlyPriceUsd)
+            println("[SINGLE] $cc → ${tier.monthlyPriceUsd}/月 (trial=${tier.freeTrialDays}d)")
+            assertEquals("$cc must be \$1.99", "\$1.99", tier.monthlyPriceUsd)
             assertEquals("$cc must have 30-day trial", 30, tier.freeTrialDays)
         }
 
-        // Tier 2 ($6.9) 주요 국가
-        val tier2Countries = listOf("BR", "MX", "RU", "CN", "TR", "TH", "PH")
-        for (cc in tier2Countries) {
-            val tier = CountryPricingMapper.getTier(cc)
-            println("[Tier2] $cc → ${tier.monthlyPriceUsd}/月 (trial=${tier.freeTrialDays}d)")
-            assertEquals("$cc must be Tier 2", 2, tier.tierId)
-            assertEquals("$cc must be \$6.9", "\$6.9", tier.monthlyPriceUsd)
-            assertEquals("$cc must have 30-day trial", 30, tier.freeTrialDays)
-        }
-
-        // Tier 3 ($3.9) — 미매핑 국가
-        val tier3Countries = listOf("BD", "MM", "LA", "KH", "NP", "ET", "TZ")
-        for (cc in tier3Countries) {
-            val tier = CountryPricingMapper.getTier(cc)
-            println("[Tier3] $cc → ${tier.monthlyPriceUsd}/月 (trial=${tier.freeTrialDays}d)")
-            assertEquals("$cc must be Tier 3", 3, tier.tierId)
-            assertEquals("$cc must be \$3.9", "\$3.9", tier.monthlyPriceUsd)
-            assertEquals("$cc must have 30-day trial", 30, tier.freeTrialDays)
-        }
-
-        // null → Tier 1 (보수적)
+        // null → 단일 가격
         val nullTier = CountryPricingMapper.getTier(null)
-        println("[null] → ${nullTier.monthlyPriceUsd}/月 (탐지 실패 시 최고가)")
-        assertEquals("null must default to Tier 1", 1, nullTier.tierId)
+        println("[null] → ${nullTier.monthlyPriceUsd}/月")
+        assertEquals("null must be \$1.99", "\$1.99", nullTier.monthlyPriceUsd)
 
         // Play Console 입력용 표
         println("\n[Play Console 입력용 표]")
-        println("┌──────────┬─────────┬──────────┬──────────┬──────────────────────────────┐")
-        println("│ Tier     │ Monthly │ Yearly   │ Trial    │ Play Offer ID                │")
-        println("├──────────┼─────────┼──────────┼──────────┼──────────────────────────────┤")
-        println("│ Tier 1   │ \$9.9    │ 30 days  │ free-trial-1month            │")
-        println("│ Tier 2   │ \$6.9    │ 30 days  │ free-trial-1month            │")
-        println("│ Tier 3   │ \$3.9    │ 30 days  │ free-trial-1month            │")
+        println("┌──────────┬─────────┬──────────┬──────────────────────────────┐")
+        println("│ Plan     │ Monthly │ Trial    │ Play Offer ID                │")
+        println("├──────────┼─────────┼──────────┼──────────────────────────────┤")
+        println("│ Single   │ \$1.99   │ 30 days  │ free-trial-1month            │")
         println("└──────────┴─────────┴──────────┴──────────────────────────────┘")
 
         // 앱 내 가격 설명 문구 (7개 언어)
@@ -198,9 +179,14 @@ class RuntimeConnectionEvidenceCountryConfigTest {
             assertTrue("${lang.code} trial message must contain 30", trialMsg.contains("30"))
         }
 
-        // 월간 단일 구독 가격 확인
-        assertEquals("Tier 1 monthly", "\$9.9", PricingTier.TIER_1.monthlyPriceUsd)
-        assertEquals("Tier 2 monthly", "\$6.9", PricingTier.TIER_2.monthlyPriceUsd)
-        assertEquals("Tier 3 monthly", "\$3.9", PricingTier.TIER_3.monthlyPriceUsd)
+        // v1.1 단일 가격 확인
+        assertEquals("SINGLE monthly", "\$1.99", PricingTier.SINGLE.monthlyPriceUsd)
+        // deprecated aliases도 $1.99
+        @Suppress("DEPRECATION")
+        assertEquals("TIER_1 alias", "\$1.99", PricingTier.TIER_1.monthlyPriceUsd)
+        @Suppress("DEPRECATION")
+        assertEquals("TIER_2 alias", "\$1.99", PricingTier.TIER_2.monthlyPriceUsd)
+        @Suppress("DEPRECATION")
+        assertEquals("TIER_3 alias", "\$1.99", PricingTier.TIER_3.monthlyPriceUsd)
     }
 }

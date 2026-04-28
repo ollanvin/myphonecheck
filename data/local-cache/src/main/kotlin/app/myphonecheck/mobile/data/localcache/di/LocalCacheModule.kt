@@ -11,7 +11,6 @@ import app.myphonecheck.mobile.data.localcache.dao.InitialScanMetaDao
 import app.myphonecheck.mobile.data.localcache.dao.NumberProfileDao
 import app.myphonecheck.mobile.data.localcache.dao.PreJudgeCacheDao
 import app.myphonecheck.mobile.data.localcache.dao.PrivacyHistoryDao
-import app.myphonecheck.mobile.data.localcache.dao.PushStatsDao
 import app.myphonecheck.mobile.data.localcache.dao.SensorScanResultDao
 import app.myphonecheck.mobile.data.localcache.dao.UserCallRecordDao
 import app.myphonecheck.mobile.data.localcache.db.MyPhoneCheckDatabase
@@ -141,13 +140,7 @@ object LocalCacheModule {
         return database.privacyHistoryDao()
     }
 
-    @Provides
-    @Singleton
-    fun providePushStatsDao(
-        database: MyPhoneCheckDatabase,
-    ): PushStatsDao {
-        return database.pushStatsDao()
-    }
+    // PushStatsDao: REMOVED per v1.1 Architecture (PUSH feature eliminated)
 
     @Provides
     @Singleton

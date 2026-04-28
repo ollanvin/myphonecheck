@@ -9,9 +9,10 @@ package app.myphonecheck.mobile.core.model
  *
  * ═══════════════════════════════════════════════
  * CALL     → 전화 수신 → MyPhoneCheck 엔진
- * PUSH     → 알림 수신 → PushCheck 엔진
  * MESSAGE  → 문자 수신 → MessageCheck 엔진
  * PRIVACY  → 센서 접근 → PrivacyCheck 엔진
+ *
+ * v1.1: PUSH 엔진 제거됨
  * ═══════════════════════════════════════════════
  */
 enum class InterceptEventType(
@@ -24,11 +25,7 @@ enum class InterceptEventType(
         displayNameKo = "전화 수신",
         iconLabel = "CALL",
     ),
-    PUSH(
-        displayNameEn = "Push Notification",
-        displayNameKo = "알림 수신",
-        iconLabel = "PUSH",
-    ),
+    // PUSH removed per v1.1 Architecture
     MESSAGE(
         displayNameEn = "Message Received",
         displayNameKo = "메시지 수신",

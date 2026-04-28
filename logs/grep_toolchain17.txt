@@ -1,0 +1,7 @@
+﻿
+build-logic\convention\build.gradle.kts:13:    jvmToolchain(17)
+core\common\build.gradle.kts:6:    jvmToolchain(17)
+build.gradle.kts:14:            jvmToolchain(17)
+build.gradle.kts:19:            jvmToolchain(17)
+
+

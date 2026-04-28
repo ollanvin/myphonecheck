@@ -1,0 +1,23 @@
+﻿
+app\build.gradle.kts:47:        jvmTarget = "17"
+core\model\build.gradle.kts:33:        jvmTarget = "17"
+core\security\build.gradle.kts:31:        jvmTarget = "17"
+core\util\build.gradle.kts:33:        jvmTarget = "17"
+data\calllog\build.gradle.kts:34:        jvmTarget = "17"
+data\contacts\build.gradle.kts:34:        jvmTarget = "17"
+data\local-cache\build.gradle.kts:34:        jvmTarget = "17"
+data\search\build.gradle.kts:34:        jvmTarget = "17"
+data\sms\build.gradle.kts:34:        jvmTarget = "17"
+feature\billing\build.gradle.kts:35:        jvmTarget = "17"
+feature\call-intercept\build.gradle.kts:34:        jvmTarget = "17"
+feature\country-config\build.gradle.kts:34:        jvmTarget = "17"
+feature\decision-engine\build.gradle.kts:34:        jvmTarget = "17"
+feature\decision-ui\build.gradle.kts:35:        jvmTarget = "17"
+feature\device-evidence\build.gradle.kts:34:        jvmTarget = "17"
+feature\message-intercept\build.gradle.kts:34:        jvmTarget = "17"
+feature\privacy-check\build.gradle.kts:34:        jvmTarget = "17"
+feature\search-enrichment\build.gradle.kts:34:        jvmTarget = "17"
+feature\settings\build.gradle.kts:35:        jvmTarget = "17"
+build.gradle.kts:25:            jvmTarget = "17"
+
+

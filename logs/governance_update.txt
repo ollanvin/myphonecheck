@@ -1,0 +1,11 @@
+﻿
+docs\00_governance\project-governance.md:62:- **Stage 0 — Common contracts (Coding WO
+ f1a85c + hotfix e3b05e Java 17):** 순수 JVM 모듈 `:core:common` (`app.myphonecheck.core.
+common.*`) — `IdentifierType`, `RiskKnowledge` 계약군, `Checker`, `DecisionEngineContrac
+t`, `FREEZE.md`, `FreezeMarkerTest`, 워크플로 `.github/workflows/contract-freeze-check.ym
+l`. 리포 전역 **JDK 17** (`jvmToolchain(17)`, `gradle.properties`의 `org.gradle.java.insta
+llations.auto-download`, 루트·`build-logic` `settings.gradle.kts`의 **Foojay toolchain r
+esolver** `0.9.0`). 검증: `./gradlew :core:common:test`. 런타임 classpath에 `android*` 의존성 
+없음.
+
+
