@@ -1,0 +1,72 @@
+name: Matrix Test (PR Gate)
+
+# 헌법 §9-6 정합 PR 게이트: CORE 4 SIM × 17 시나리오 (pixel7Api34 단일 디바이스).
+# 야간 풀 매트릭스는 matrix-test-nightly.yml.
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'app/**'
+      - 'core/**'
+      - 'data/**'
+      - 'feature/**'
+      - 'scripts/matrix/**'
+      - '.github/workflows/matrix-test-pr.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  matrix-pr:
+    name: matrix-pr (sim=${{ matrix.sim }} scenario=${{ matrix.scenario }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        sim: [KR, US, JP, DE]
+        scenario: [S01, S02, S03, S04, S05, S06, S07, S08, S09, S10, S11, S12, S13, S14, S15, S16, S17]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: >-
+            tools platform-tools
+            platforms;android-34
+            build-tools;34.0.0
+            system-images;android-34;google_apis;x86_64
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Compile (smoke)
+        run: ./gradlew :app:compileDebugKotlin
+
+      - name: Run matrix scenario
+        env:
+          SIM: ${{ matrix.sim }}
+          SCENARIO: ${{ matrix.scenario }}
+        run: |
+          set -euo pipefail
+          echo "[matrix-pr] sim=$SIM scenario=$SCENARIO device=pixel7Api34"
+          ./gradlew :app:pixel7Api34DebugAndroidTest \
+            -Pandroid.testInstrumentationRunnerArguments.class=app.myphonecheck.mobile.matrix.ScenarioMatrixTest#test$SCENARIO \
+            -Pandroid.testInstrumentationRunnerArguments.sim=$SIM

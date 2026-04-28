@@ -1,0 +1,110 @@
+name: Matrix Test (Nightly Full)
+
+# 헌법 §9-6 정합 야간 풀 매트릭스: 4 device × 11 SIM × 17 시나리오 = 748 풀.
+# Latin Hypercube 샘플링으로 60 케이스 선정 (~60분 목표).
+# cron: 매일 18:00 UTC (한국 03:00 KST).
+
+on:
+  schedule:
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+    inputs:
+      sample_size:
+        description: '샘플 케이스 수 (LHS)'
+        required: false
+        default: '60'
+      seed:
+        description: 'RNG seed (재현 가능성)'
+        required: false
+        default: '42'
+
+permissions:
+  contents: read
+
+jobs:
+  sample:
+    name: Sample (LHS)
+    runs-on: ubuntu-latest
+    outputs:
+      cases: ${{ steps.lhs.outputs.cases }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Generate LHS sample
+        id: lhs
+        env:
+          SAMPLE_SIZE: ${{ github.event.inputs.sample_size || '60' }}
+          SEED: ${{ github.event.inputs.seed || '42' }}
+        run: |
+          set -euo pipefail
+          cases=$(python3 scripts/matrix/sample/sample_lhs.py --size "$SAMPLE_SIZE" --seed "$SEED")
+          echo "$cases" > cases.json
+          # GitHub Actions outputs JSON 한 줄 — `cases` key 단일 값으로 다음 job matrix 진입.
+          echo "cases<<EOF" >> "$GITHUB_OUTPUT"
+          jq -c . cases.json >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Upload sample
+        uses: actions/upload-artifact@v4
+        with:
+          name: matrix-sample
+          path: cases.json
+
+  matrix-nightly:
+    name: nightly (device=${{ matrix.case.device }} sim=${{ matrix.case.sim }} scenario=${{ matrix.case.scenario }})
+    needs: sample
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        case: ${{ fromJson(needs.sample.outputs.cases) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: >-
+            tools platform-tools
+            platforms;android-34
+            build-tools;34.0.0
+            system-images;android-34;google_apis;x86_64
+            system-images;android-33;google_apis;x86_64
+            system-images;android-31;google_apis;x86_64
+            system-images;android-28;google_apis;x86_64
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run matrix case
+        env:
+          DEVICE: ${{ matrix.case.device }}
+          SIM: ${{ matrix.case.sim }}
+          SCENARIO: ${{ matrix.case.scenario }}
+        run: |
+          set -euo pipefail
+          echo "[matrix-nightly] device=$DEVICE sim=$SIM scenario=$SCENARIO"
+          ./gradlew :app:${DEVICE}DebugAndroidTest \
+            -Pandroid.testInstrumentationRunnerArguments.class=app.myphonecheck.mobile.matrix.ScenarioMatrixTest#test$SCENARIO \
+            -Pandroid.testInstrumentationRunnerArguments.sim=$SIM

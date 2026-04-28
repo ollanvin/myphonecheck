@@ -62,6 +62,47 @@ android {
         // error → warning 강등. 번역 추가 시 이 설정 제거 예정.
         warning += "MissingTranslation"
     }
+
+    // 헌법 §9-6 검증·테스트 정공법: Gradle Managed Devices 4종 매트릭스
+    // (단일 디바이스 검증 금지, API 28/31/33/34 + 폰·태블릿 form factor)
+    @Suppress("UnstableApiUsage")
+    testOptions {
+        managedDevices {
+            localDevices {
+                create("pixel4Api28") {
+                    device = "Pixel 4"
+                    apiLevel = 28
+                    systemImageSource = "google"
+                }
+                create("pixel5Api31") {
+                    device = "Pixel 5"
+                    apiLevel = 31
+                    systemImageSource = "google"
+                }
+                create("tabletApi33") {
+                    device = "Pixel Tablet"
+                    apiLevel = 33
+                    systemImageSource = "google"
+                }
+                create("pixel7Api34") {
+                    device = "Pixel 7"
+                    apiLevel = 34
+                    systemImageSource = "google"
+                }
+            }
+            groups {
+                create("ciMatrix") {
+                    targetDevices.add(localDevices.getByName("pixel4Api28"))
+                    targetDevices.add(localDevices.getByName("pixel5Api31"))
+                    targetDevices.add(localDevices.getByName("tabletApi33"))
+                    targetDevices.add(localDevices.getByName("pixel7Api34"))
+                }
+                create("prGate") {
+                    targetDevices.add(localDevices.getByName("pixel7Api34"))
+                }
+            }
+        }
+    }
 }
 
 dependencies {
