@@ -2,6 +2,8 @@ package app.myphonecheck.mobile.feature.settings.v2.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.myphonecheck.mobile.core.globalengine.search.publicfeed.FeedRegistry
+import app.myphonecheck.mobile.core.globalengine.search.publicfeed.PublicFeedSource
 import app.myphonecheck.mobile.core.globalengine.simcontext.SimChangeDetector
 import app.myphonecheck.mobile.core.globalengine.simcontext.SimChangeResult
 import app.myphonecheck.mobile.core.globalengine.simcontext.SimContext
@@ -35,6 +37,7 @@ class SettingsV2ViewModel @Inject constructor(
     private val baseDataRepository: BaseDataRepository,
     private val initialScanService: InitialScanService,
     private val userPreferenceRepository: UserPreferenceRepository,
+    private val feedRegistry: FeedRegistry,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsV2UiState())
@@ -47,6 +50,11 @@ class SettingsV2ViewModel @Inject constructor(
     val publicFeedOptIn: StateFlow<Set<String>> =
         userPreferenceRepository.publicFeedOptInFlow
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptySet())
+
+    /** FeedRegistry 카탈로그 — Stage 2-008(§30-4) 4 FeedType 출처. */
+    fun availableFeedSources(): List<PublicFeedSource> = feedRegistry.all()
+
+    fun isFeedPlaceholder(source: PublicFeedSource): Boolean = feedRegistry.isPlaceholder(source)
 
     init {
         refresh()

@@ -43,6 +43,12 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
+    implementation(libs.work.runtime.ktx)
+    implementation(libs.hilt.work)
+    kapt(libs.hilt.work.compiler)
+
+    implementation(libs.gson)
+
     implementation(project(":core:model"))
     implementation(project(":core:util"))
     implementation(project(":data:local-cache"))

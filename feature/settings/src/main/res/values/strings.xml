@@ -69,4 +69,14 @@
     <string name="settings_v2_public_feed_title">Public Feed Opt-in</string>
     <string name="settings_v2_public_feed_desc">Public feeds are downloaded only after you enable each source.</string>
     <string name="settings_v2_public_feed_empty">No public feed sources are wired in this release.</string>
+    <string name="settings_v2_feed_section_global">Global Sources</string>
+    <string name="settings_v2_feed_section_country">Your Country: %1$s</string>
+    <string name="settings_v2_feed_section_other">Other Countries</string>
+    <string name="settings_v2_feed_license_format">%1$s · %2$s</string>
+    <string name="settings_v2_feed_competitor_warning">Third-party app data — review terms before opt-in</string>
+    <string name="settings_v2_feed_placeholder_warning">Placeholder — license review pending, opt-in disabled</string>
+    <string name="settings_v2_feed_type_security">Security Intelligence</string>
+    <string name="settings_v2_feed_type_government">Government Public</string>
+    <string name="settings_v2_feed_type_competitor">Competitor App</string>
+    <string name="settings_v2_feed_type_telco">Telco Blocklist</string>
 </resources>

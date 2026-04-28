@@ -56,11 +56,14 @@ fun SettingsV2Route(
     val state by viewModel.state.collectAsState()
     val language by viewModel.languagePreference.collectAsState()
     val optIn by viewModel.publicFeedOptIn.collectAsState()
+    val feedSources = viewModel.availableFeedSources()
 
     SettingsV2Screen(
         state = state,
         language = language,
         publicFeedOptIn = optIn,
+        feedSources = feedSources,
+        isPlaceholder = viewModel::isFeedPlaceholder,
         onBack = onBack,
         onSelectLanguage = viewModel::setLanguagePreference,
         onRescan = viewModel::rescan,
@@ -68,6 +71,7 @@ fun SettingsV2Route(
         onApplyNewSim = viewModel::applyNewSim,
         onKeepPrevious = viewModel::keepPreviousSim,
         onResetAndRescan = viewModel::resetAndRescan,
+        onToggleFeedOptIn = viewModel::setPublicFeedOptIn,
     )
 }
 
@@ -76,6 +80,8 @@ private fun SettingsV2Screen(
     state: SettingsV2UiState,
     language: UiLanguagePreference,
     publicFeedOptIn: Set<String>,
+    feedSources: List<app.myphonecheck.mobile.core.globalengine.search.publicfeed.PublicFeedSource>,
+    isPlaceholder: (app.myphonecheck.mobile.core.globalengine.search.publicfeed.PublicFeedSource) -> Boolean,
     onBack: () -> Unit,
     onSelectLanguage: (UiLanguagePreference) -> Unit,
     onRescan: () -> Unit,
@@ -83,6 +89,7 @@ private fun SettingsV2Screen(
     onApplyNewSim: (SimContext) -> Unit,
     onKeepPrevious: () -> Unit,
     onResetAndRescan: () -> Unit,
+    onToggleFeedOptIn: (String, Boolean) -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize().background(ScreenBg)) {
         Column(
@@ -107,7 +114,13 @@ private fun SettingsV2Screen(
 
             BaseDataSection(state, onRescan, onResetBase)
 
-            PublicFeedOptInSection(publicFeedOptIn)
+            PublicFeedOptInSection(
+                sources = feedSources,
+                optedInIds = publicFeedOptIn,
+                simCountryIso = state.currentSim?.countryIso.orEmpty(),
+                isPlaceholder = isPlaceholder,
+                onToggle = onToggleFeedOptIn,
+            )
 
             ConstitutionSection()
 
@@ -265,7 +278,13 @@ private fun BaseDataSection(
 }
 
 @Composable
-private fun PublicFeedOptInSection(optIn: Set<String>) {
+private fun PublicFeedOptInSection(
+    sources: List<app.myphonecheck.mobile.core.globalengine.search.publicfeed.PublicFeedSource>,
+    optedInIds: Set<String>,
+    simCountryIso: String,
+    isPlaceholder: (app.myphonecheck.mobile.core.globalengine.search.publicfeed.PublicFeedSource) -> Boolean,
+    onToggle: (String, Boolean) -> Unit,
+) {
     SectionCard {
         SectionTitle(stringResource(R.string.settings_v2_public_feed_title))
         Text(
@@ -273,16 +292,108 @@ private fun PublicFeedOptInSection(optIn: Set<String>) {
             color = TextSubtle, fontSize = 12.sp,
         )
         Spacer(modifier = Modifier.height(8.dp))
-        if (optIn.isEmpty()) {
+
+        if (sources.isEmpty()) {
             Text(
                 text = stringResource(R.string.settings_v2_public_feed_empty),
                 color = TextSubtle, fontSize = 12.sp,
             )
-        } else {
-            optIn.forEach { id ->
-                Text(text = "· $id", color = Accent, fontSize = 12.sp)
+            return@SectionCard
+        }
+
+        val global = sources.filter {
+            it.countryScope is app.myphonecheck.mobile.core.globalengine.search.publicfeed.CountryScope.GLOBAL
+        }
+        val country = sources.filter {
+            val cs = it.countryScope
+            cs is app.myphonecheck.mobile.core.globalengine.search.publicfeed.CountryScope.COUNTRY &&
+                cs.iso.equals(simCountryIso, ignoreCase = true)
+        }
+        val others = sources - global.toSet() - country.toSet()
+
+        if (global.isNotEmpty()) {
+            Text(
+                text = stringResource(R.string.settings_v2_feed_section_global),
+                color = TextSubtle, fontSize = 11.sp, fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
+            )
+            global.forEach { src ->
+                FeedToggleRow(src, optedInIds.contains(src.id), isPlaceholder(src), onToggle)
             }
         }
+
+        if (country.isNotEmpty()) {
+            Text(
+                text = stringResource(R.string.settings_v2_feed_section_country, simCountryIso),
+                color = TextSubtle, fontSize = 11.sp, fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
+            )
+            country.forEach { src ->
+                FeedToggleRow(src, optedInIds.contains(src.id), isPlaceholder(src), onToggle)
+            }
+        }
+
+        if (others.isNotEmpty()) {
+            Text(
+                text = stringResource(R.string.settings_v2_feed_section_other),
+                color = TextSubtle, fontSize = 11.sp, fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
+            )
+            others.forEach { src ->
+                FeedToggleRow(src, optedInIds.contains(src.id), isPlaceholder(src), onToggle)
+            }
+        }
+    }
+}
+
+@Composable
+private fun FeedToggleRow(
+    source: app.myphonecheck.mobile.core.globalengine.search.publicfeed.PublicFeedSource,
+    optedIn: Boolean,
+    placeholder: Boolean,
+    onToggle: (String, Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
+            Text(
+                text = source.name,
+                color = Color.White,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Medium,
+            )
+            Text(
+                text = stringResource(
+                    R.string.settings_v2_feed_license_format,
+                    source.license,
+                    source.updateFrequency.name,
+                ),
+                color = TextSubtle,
+                fontSize = 10.sp,
+            )
+            if (source.type is app.myphonecheck.mobile.core.globalengine.search.publicfeed.FeedType.CompetitorApp) {
+                Text(
+                    text = stringResource(R.string.settings_v2_feed_competitor_warning),
+                    color = Warn,
+                    fontSize = 10.sp,
+                )
+            }
+            if (placeholder) {
+                Text(
+                    text = stringResource(R.string.settings_v2_feed_placeholder_warning),
+                    color = Warn,
+                    fontSize = 10.sp,
+                )
+            }
+        }
+        androidx.compose.material3.Switch(
+            checked = optedIn,
+            enabled = !placeholder,
+            onCheckedChange = { onToggle(source.id, it) },
+        )
     }
 }
 
