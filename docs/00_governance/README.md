@@ -35,17 +35,19 @@ This governance area follows the **2-axis Single Source of Truth** model:
 
 ### Infrastructure (Operations)
 
-- `infrastructure/v1.0/` — Paired with Architecture v1.7.1
-- `infrastructure/v1.1/` — Current Working Canonical
+- `infrastructure/v1.0/` — Paired with Architecture v1.7.1 (frozen)
+- `infrastructure/v1.1/` — Frozen (PR #16/#26 cross-ref 패치 누적)
+- `infrastructure/v1.2/` — Current Working Canonical (Architecture v2.1.0 정합 MAJOR 승격, toolmap·SOPs 정식)
 - Defines: toolmap (Cursor, Codex CLI, Claude Code, Cowork, Vision), build pipelines, SOPs, secrets management
+- v1.2 신설: SOP-V12-001 Real-time Action / SOP-V12-002 Tag System / SOP-V12-003 Public Feed
 
 ### Pair Relationship
 
 - Architecture and Infrastructure are **paired documents**
 - Each has its own Working Canonical (independent versioning)
-- 현재 페어: **Architecture v2.1.0 ↔ Infrastructure v1.1** (cross-ref 갱신, Infrastructure v1.2 승격은 후속 WO에서 검토)
-- Conflict resolution: **Architecture takes precedence** (per Infrastructure v1.1 §0.2 Rule 4)
-- Cross-references: Infrastructure §0.2 -> Architecture v2.1.0 (4-Layer + Real-time + Tag + Competitor, 11 paths = 6 Surfaces + Initial Scan + SIM-Oriented Core + `:core:global-engine` + Real-time Action + Tag System); Architecture §35-6 -> Infrastructure v1.1
+- 현재 페어: **Architecture v2.1.0 ↔ Infrastructure v1.2** (정식 승격, v1.2 with toolmap + SOPs 정식)
+- Conflict resolution: **Architecture takes precedence** (per Infrastructure v1.2 §0.2 Rule 4)
+- Cross-references: Infrastructure §0.2 -> Architecture v2.1.0 (4-Layer + Real-time + Tag + Competitor, 11 paths = 6 Surfaces + Initial Scan + SIM-Oriented Core + `:core:global-engine` + Real-time Action + Tag System); Architecture §35-6 -> Infrastructure v1.2
 
 ---
 
@@ -93,4 +95,4 @@ For project governance evolution and refactor records, see:
 - `project-governance.md` (current rules)
 - `archive/legacy_docs/project-governance-original.md` (pre-2026-04-27 original)
 
-Last refactor: 2026-04-28 (WO-V180-CLEANUP-009-E + WO-V190-GOVERNANCE-PATCH-003 v1.9.0 sync + WO-V200-GOVERNANCE-PATCH v2.0.0 sync + WO-V210-GOVERNANCE-PATCH v2.1.0 sync)
+Last refactor: 2026-04-28 (WO-V180-CLEANUP-009-E + WO-V190-GOVERNANCE-PATCH-003 v1.9.0 sync + WO-V200-GOVERNANCE-PATCH v2.0.0 sync + WO-V210-GOVERNANCE-PATCH v2.1.0 sync + WO-INFRA-V12-MAJOR Infrastructure v1.2 정식 승격)
