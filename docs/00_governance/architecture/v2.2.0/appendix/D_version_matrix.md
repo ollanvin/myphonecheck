@@ -71,4 +71,4 @@
 | v1.9.0 | 2026-04-27 | MAJOR | Six Surfaces 정식 (4 → 6), Producer/Consumer |
 | v2.0.0 | 2026-04-27 | MAJOR | 헌법 8조 신설 (SIM-Oriented), One Core Engine, Initial Scan, :core:global-engine |
 | **v2.1.0** | **2026-04-28** | **MINOR** | **4-Layer 데이터 모델 + 검색 4축(Competitor 추가) + Real-time Action Engine + Tag System** |
-| **v2.2.0** | **2026-04-28** | **MAJOR** | **헌법 §9 빅테크 정공법 + §10 비전 자율 결정 신설 (8조 → 10조). values-xx 수동 추가 금지, 외부 영업·계약 0, 글로벌 단일 출시, iOS·Android 동등, 사지선다·확인 받기 금지. 비전 누적 위반 영구 차단.** |
+| **v2.2.0** | **2026-04-28** | **MAJOR** | **헌법 §9 빅테크 정공법(7절: 언어·운영·출시·코드·위반·검증·비고) + §10 비전 자율 결정(5절) 신설 (8조 → 10조). §9-6 검증·테스트 정책 (Gradle Managed Devices + SIM 11개국 × Locale 11개 × 디바이스 4종 매트릭스). 비전 누적 위반 6건 영구 차단.** |
