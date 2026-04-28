@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Architecture v2.1.0 §29 + 헌법 §8-2 — UI 언어 사용자 선택 옵션.
-  Stage 2-009 (PR #30) 신설.
+  헌법 §9-1 빅테크 정공법 (언어·번역 정책) 정합.
 
-  본 PR은 Locale 적용 인프라(AppCompatDelegate.setApplicationLocales)를 명문화.
-  실제 strings.xml values-xx 번역 추가는 점진 확장 (별도 PR).
-  현재 fallback: en (만국 공통).
+  영문 default만 유지. values-xx 수동 번역 파일 0.
+  OS 시스템 Locale 자동 처리에 위임 (AppCompatDelegate.setApplicationLocales + Android 14+ system 자동 번역).
+  사용자 디바이스가 자체 번역·표시 처리.
+
+  참조: docs/00_governance/architecture/v2.3.0/05_constitution.md §9-1
+        docs/00_governance/infrastructure/v1.3/MyPhoneCheck_Infra_Ops_v1.3.md §0.2
 -->
 <locale-config xmlns:android="http://schemas.android.com/apk/res/android">
     <locale android:name="en" />
-    <locale android:name="ko" />
 </locale-config>
