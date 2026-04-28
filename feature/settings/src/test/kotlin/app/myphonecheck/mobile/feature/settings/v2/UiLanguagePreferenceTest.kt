@@ -1,6 +1,6 @@
 package app.myphonecheck.mobile.feature.settings.v2
 
-import app.myphonecheck.mobile.feature.settings.v2.repository.UiLanguagePreference
+import app.myphonecheck.mobile.core.globalengine.simcontext.UiLanguagePreference
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

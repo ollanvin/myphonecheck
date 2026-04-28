@@ -39,7 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import app.myphonecheck.mobile.core.globalengine.simcontext.SimChangeResult
 import app.myphonecheck.mobile.core.globalengine.simcontext.SimContext
 import app.myphonecheck.mobile.feature.settings.R
-import app.myphonecheck.mobile.feature.settings.v2.repository.UiLanguagePreference
+import app.myphonecheck.mobile.core.globalengine.simcontext.UiLanguagePreference
 import java.util.Locale
 
 private val ScreenBg = Color(0xFF0D1B2A)

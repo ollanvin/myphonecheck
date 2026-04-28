@@ -152,6 +152,7 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:util"))
     implementation(project(":core:security"))
+    implementation(project(":core:global-engine"))
 
     // WorkManager
     implementation(libs.work.runtime.ktx)

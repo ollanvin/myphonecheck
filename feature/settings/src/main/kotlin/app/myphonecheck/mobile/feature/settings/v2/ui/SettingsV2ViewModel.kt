@@ -9,9 +9,10 @@ import app.myphonecheck.mobile.core.globalengine.simcontext.SimChangeResult
 import app.myphonecheck.mobile.core.globalengine.simcontext.SimContext
 import app.myphonecheck.mobile.core.globalengine.simcontext.SimContextProvider
 import app.myphonecheck.mobile.core.globalengine.simcontext.SimContextStorage
+import app.myphonecheck.mobile.core.globalengine.simcontext.UiLanguageApplicator
+import app.myphonecheck.mobile.core.globalengine.simcontext.UiLanguagePreference
 import app.myphonecheck.mobile.feature.initialscan.repository.BaseDataRepository
 import app.myphonecheck.mobile.feature.initialscan.service.InitialScanService
-import app.myphonecheck.mobile.feature.settings.v2.repository.UiLanguagePreference
 import app.myphonecheck.mobile.feature.settings.v2.repository.UserPreferenceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -38,6 +39,7 @@ class SettingsV2ViewModel @Inject constructor(
     private val initialScanService: InitialScanService,
     private val userPreferenceRepository: UserPreferenceRepository,
     private val feedRegistry: FeedRegistry,
+    private val uiLanguageApplicator: UiLanguageApplicator,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsV2UiState())
@@ -80,7 +82,12 @@ class SettingsV2ViewModel @Inject constructor(
     }
 
     fun setLanguagePreference(pref: UiLanguagePreference) {
-        viewModelScope.launch { userPreferenceRepository.setUiLanguagePreference(pref) }
+        viewModelScope.launch {
+            userPreferenceRepository.setUiLanguagePreference(pref)
+            // Stage 2-009 (PR #30): preference 저장 직후 즉시 Locale 적용.
+            // AppCompatDelegate.setApplicationLocales가 Activity recreate 트리거.
+            uiLanguageApplicator.apply(pref, simContextProvider.resolve())
+        }
     }
 
     fun setPublicFeedOptIn(sourceId: String, optIn: Boolean) {
