@@ -53,8 +53,14 @@ class SettingsV2ViewModel @Inject constructor(
         userPreferenceRepository.publicFeedOptInFlow
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptySet())
 
-    /** FeedRegistry 카탈로그 — Stage 2-008(§30-4) 4 FeedType 출처. */
-    fun availableFeedSources(): List<PublicFeedSource> = feedRegistry.all()
+    /**
+     * FeedRegistry 카탈로그 — Stage 2-008(§30-4) 4 FeedType 출처.
+     *
+     * Phase 2-C(PR #34, WO-V210-FEEDS-ACTIVATE): `requiresUserOptIn = true` 필터링 적용.
+     * 라이선스 미결 / 사업개발 트랙 출처는 UI 비노출.
+     */
+    fun availableFeedSources(): List<PublicFeedSource> =
+        feedRegistry.all().filter { it.requiresUserOptIn }
 
     fun isFeedPlaceholder(source: PublicFeedSource): Boolean = feedRegistry.isPlaceholder(source)
 
