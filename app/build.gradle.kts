@@ -57,11 +57,8 @@ android {
         }
     }
 
-    lint {
-        // MissingTranslation: 5개 locale(ar/es/ja/ru/zh) 번역 적체 — 별도 트랙 관리
-        // error → warning 강등. 번역 추가 시 이 설정 제거 예정.
-        warning += "MissingTranslation"
-    }
+    // 헌법 §9-1 빅테크 정공법: values-xx 수동 번역 파일 0, 영문 default + OS 위임.
+    // MissingTranslation 강등은 §9-1 정합 후 불필요 (번역 누락 발생 0) → 제거.
 
     // 헌법 §9-6 검증·테스트 정공법: Gradle Managed Devices 4종 매트릭스
     // (단일 디바이스 검증 금지, API 28/31/33/34 + 폰·태블릿 form factor)
