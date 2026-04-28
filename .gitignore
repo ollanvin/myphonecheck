@@ -72,3 +72,6 @@ out/
 *.tmp
 *.bak
 *.swp
+
+# --- Backup snapshots (WO-V230-WORKTREE-SPLIT, 2026-04-28) ---
+myphonecheck-backup-pre-filter-20260422/
