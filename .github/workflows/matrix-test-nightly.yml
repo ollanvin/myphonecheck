@@ -21,6 +21,12 @@ on:
 permissions:
   contents: read
 
+# 야간 풀은 cron이라 cancel-in-progress: false (이전 실행 보장 후 새 실행 진입).
+# matrix-pr과 별도 group이라 PR 잡과 독립.
+concurrency:
+  group: matrix-nightly
+  cancel-in-progress: false
+
 jobs:
   sample:
     name: Sample (LHS)
@@ -75,6 +81,29 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      # Gradle 의존성 캐시 (PR 게이트와 동일 key — cache 공유).
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', 'gradle/libs.versions.toml') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      # AVD 시스템 이미지 + 인스턴스 캐시 — 디바이스별 분리 (cache hit율 최대화).
+      # API 28/31/33/34 system image 다운로드 (~6GB 누적) 시간 단축.
+      - name: Cache AVD system images
+        id: avd-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+            /usr/local/lib/android/sdk/system-images
+          key: avd-nightly-${{ runner.os }}-${{ matrix.case.device }}-v1
+
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
         with:
@@ -96,6 +125,10 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+
+      # Managed Device Setup 1회 실행 — AVD 첫 부트 cost 분리.
+      - name: Managed Device Setup (${{ matrix.case.device }})
+        run: ./gradlew :app:${{ matrix.case.device }}Setup
 
       - name: Run matrix case
         env:
