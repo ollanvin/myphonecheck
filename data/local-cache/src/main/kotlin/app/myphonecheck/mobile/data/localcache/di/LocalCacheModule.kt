@@ -23,11 +23,13 @@ import app.myphonecheck.mobile.data.localcache.dao.UserCallRecordDao
 import app.myphonecheck.mobile.data.localcache.dao.BlockedIdentifierDao
 import app.myphonecheck.mobile.data.localcache.dao.CallBaseDao
 import app.myphonecheck.mobile.data.localcache.dao.PackageBaseDao
+import app.myphonecheck.mobile.data.localcache.dao.PhoneTagDao
 import app.myphonecheck.mobile.data.localcache.dao.SimContextSnapshotDao
 import app.myphonecheck.mobile.data.localcache.dao.SmsBaseDao
 import app.myphonecheck.mobile.data.localcache.db.Migration12To13
 import app.myphonecheck.mobile.data.localcache.db.Migration13To14
 import app.myphonecheck.mobile.data.localcache.db.Migration14To15
+import app.myphonecheck.mobile.data.localcache.db.Migration15To16
 import app.myphonecheck.mobile.data.localcache.db.MyPhoneCheckDatabase
 import app.myphonecheck.mobile.data.localcache.repository.NumberProfileRepository
 import app.myphonecheck.mobile.data.localcache.repository.PreJudgeCacheRepository
@@ -86,7 +88,7 @@ object LocalCacheModule {
             MyPhoneCheckDatabase.DATABASE_NAME,
         )
             .openHelperFactory(factory)
-            .addMigrations(Migration12To13, Migration13To14, Migration14To15)
+            .addMigrations(Migration12To13, Migration13To14, Migration14To15, Migration15To16)
             .fallbackToDestructiveMigration()
             .build()
     }
@@ -259,4 +261,11 @@ object LocalCacheModule {
     @Singleton
     fun provideBlockedIdentifierDao(database: MyPhoneCheckDatabase): BlockedIdentifierDao =
         database.blockedIdentifierDao()
+
+    // Tag System (Architecture v2.1.0 §32, Room v16)
+
+    @Provides
+    @Singleton
+    fun providePhoneTagDao(database: MyPhoneCheckDatabase): PhoneTagDao =
+        database.phoneTagDao()
 }

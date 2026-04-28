@@ -14,6 +14,7 @@ import app.myphonecheck.mobile.data.localcache.dao.InitialScanMetaDao
 import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
 import app.myphonecheck.mobile.data.localcache.dao.NumberProfileDao
 import app.myphonecheck.mobile.data.localcache.dao.PackageBaseDao
+import app.myphonecheck.mobile.data.localcache.dao.PhoneTagDao
 import app.myphonecheck.mobile.data.localcache.dao.PreJudgeCacheDao
 import app.myphonecheck.mobile.data.localcache.dao.PrivacyHistoryDao
 import app.myphonecheck.mobile.data.localcache.dao.PushNotificationObservationDao
@@ -35,6 +36,7 @@ import app.myphonecheck.mobile.data.localcache.entity.InitialScanMetaEntity
 import app.myphonecheck.mobile.data.localcache.entity.MessageHubEntity
 import app.myphonecheck.mobile.data.localcache.entity.NumberProfileEntity
 import app.myphonecheck.mobile.data.localcache.entity.PackageBaseEntity
+import app.myphonecheck.mobile.data.localcache.entity.PhoneTagEntity
 import app.myphonecheck.mobile.data.localcache.entity.PreJudgeCacheEntry
 import app.myphonecheck.mobile.data.localcache.entity.PrivacyHistoryEntity
 import app.myphonecheck.mobile.data.localcache.entity.PushNotificationObservationEntity
@@ -67,6 +69,8 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
  *          call_base_entry, sms_base_entry, package_base_entry, sim_context_snapshot.
  *  - v15: Real-time Action 차단 목록 1 entity 추가 (Architecture v2.1.0 §31).
  *          blocked_identifier (PHONE_E164 / SMS_SENDER / NOTIFICATION_PACKAGE).
+ *  - v16: Tag System 휘발성 메모 1 entity 추가 (Architecture v2.1.0 §32).
+ *          phone_tag (REMIND_ME / PENDING / SUSPICIOUS / ARCHIVE).
  */
 @Database(
     entities = [
@@ -91,8 +95,9 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
         PackageBaseEntity::class,
         SimContextSnapshotEntity::class,
         BlockedIdentifierEntity::class,
+        PhoneTagEntity::class,
     ],
-    version = 15,
+    version = 16,
     exportSchema = true,
 )
 abstract class MyPhoneCheckDatabase : RoomDatabase() {
@@ -117,6 +122,7 @@ abstract class MyPhoneCheckDatabase : RoomDatabase() {
     abstract fun packageBaseDao(): PackageBaseDao
     abstract fun simContextSnapshotDao(): SimContextSnapshotDao
     abstract fun blockedIdentifierDao(): BlockedIdentifierDao
+    abstract fun phoneTagDao(): PhoneTagDao
 
     companion object {
         const val DATABASE_NAME = "myphonecheck.db"
