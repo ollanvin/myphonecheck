@@ -1,5 +1,7 @@
 package app.myphonecheck.mobile.feature.decisionengine
 
+import android.content.Context
+import android.content.res.Resources
 import app.myphonecheck.mobile.core.model.ActionRecommendation
 import app.myphonecheck.mobile.core.model.ConclusionCategory
 import app.myphonecheck.mobile.core.model.DecisionResult
@@ -13,6 +15,8 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import io.mockk.every
+import io.mockk.mockk
 
 /**
  * 190개국 실전 환경 장애 시나리오 전수 검증.
@@ -38,7 +42,7 @@ class RealWorldFailureScenarioTest {
         engine = DecisionEngineImpl(
             riskBadgeMapper = RiskBadgeMapper(),
             actionMapper = ActionMapper(),
-            summaryGenerator = SummaryGenerator(),
+            summaryGenerator = mockSummaryGenerator(),
         )
     }
 
@@ -536,5 +540,16 @@ class RealWorldFailureScenarioTest {
                 reason.isNotBlank(),
             )
         }
+    }
+
+    private fun mockSummaryGenerator(): SummaryGenerator {
+        val ctx = mockk<Context>()
+        val res = mockk<Resources>()
+        every { ctx.applicationContext } returns ctx
+        every { ctx.resources } returns res
+        every { res.getString(any<Int>()) } returns "Summary text"
+        every { res.getString(any<Int>(), any()) } returns "Reason text"
+        every { res.getString(any<Int>(), any(), any()) } returns "Reason fmt"
+        return SummaryGenerator(ctx)
     }
 }

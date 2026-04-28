@@ -73,4 +73,10 @@
     <string name="notif_action_important">Mark Important</string>
     <string name="notif_timeout_title_fmt">%1$s Unable to determine — %2$s</string>
     <string name="notif_timeout_content">Decision timed out — please check manually</string>
+
+    <!-- SMS metadata adjustments (§9-1 EN default) -->
+    <string name="intercept_msg_contains_link">Contains SMS link</string>
+    <string name="intercept_msg_links_detected_fmt">Message links detected: %1$d</string>
+    <string name="intercept_msg_long_link_pattern">Long link pattern detected</string>
+    <string name="intercept_msg_short_link">Contains shortened link</string>
 </resources>

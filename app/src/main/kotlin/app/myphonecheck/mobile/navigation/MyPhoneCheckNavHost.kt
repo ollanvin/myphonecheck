@@ -96,7 +96,6 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
 import app.myphonecheck.mobile.data.localcache.repository.NumberProfileSnapshot
 import app.myphonecheck.mobile.feature.countryconfig.*
 import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter
-import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter.Lang
 import app.myphonecheck.mobile.feature.decisionui.components.FullEngineReasoningSection
 import app.myphonecheck.mobile.feature.privacycheck.R as PrivacyR
 import app.myphonecheck.mobile.feature.cardcheck.R as CardCheckR

@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import app.myphonecheck.mobile.feature.decisionui.R
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.myphonecheck.mobile.core.model.DecisionResult
 import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter
-import app.myphonecheck.mobile.core.util.DecisionReasoningFormatter.Lang
+import app.myphonecheck.mobile.core.util.R as UtilR
 import app.myphonecheck.mobile.feature.decisionui.components.ActionButtonRow
 import app.myphonecheck.mobile.feature.decisionui.components.DisclaimerText
 import app.myphonecheck.mobile.feature.decisionui.components.ExpandableDetailSection
@@ -277,10 +277,10 @@ private fun RingInnerContent(
     result: DecisionResult,
     ringColor: androidx.compose.ui.graphics.Color,
 ) {
-    val lang = when (LocalConfiguration.current.locales[0]?.language) {
-        "ko" -> Lang.KO
-        else -> Lang.EN
-    }
+    val resources = LocalContext.current.resources
+    val riskLabel = DecisionReasoningFormatter.riskTriLabel(resources, result.riskLevel)
+    val pct = DecisionReasoningFormatter.confidencePercent(result.confidence)
+    val confidenceLine = stringResource(UtilR.string.reasoning_overlay_risk_confidence, riskLabel, pct)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(horizontal = 12.dp),
@@ -296,10 +296,7 @@ private fun RingInnerContent(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = when (lang) {
-                Lang.KO -> "${DecisionReasoningFormatter.riskTriLabel(result.riskLevel, lang)} · 신뢰도 ${DecisionReasoningFormatter.confidencePercent(result.confidence)}%"
-                Lang.EN -> "${DecisionReasoningFormatter.riskTriLabel(result.riskLevel, lang)} · ${DecisionReasoningFormatter.confidencePercent(result.confidence)}% confidence"
-            },
+            text = confidenceLine,
             color = ringColor,
             fontSize = 12.sp,
             fontWeight = FontWeight.SemiBold,

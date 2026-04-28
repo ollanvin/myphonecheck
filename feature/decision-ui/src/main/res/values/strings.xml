@@ -21,4 +21,37 @@
     <string name="decision_no_history">No judgment history yet</string>
     <string name="preview_delivery_likely">Likely delivery/shipping</string>
     <string name="preview_scam_likely">Phone number likely to be a scam</string>
+
+    <!-- Expandable evidence detail (§9-1 EN default) -->
+    <string name="detail_label_status">Status</string>
+    <string name="detail_no_device_history">No device history</string>
+    <string name="detail_label_contact_saved">Saved contact</string>
+    <string name="detail_saved_named">Saved (%1$s)</string>
+    <string name="detail_saved">Saved</string>
+    <string name="detail_not_saved">Not saved</string>
+    <string name="detail_label_outgoing">Outgoing</string>
+    <string name="detail_label_incoming">Incoming</string>
+    <string name="detail_label_missed">Missed</string>
+    <string name="detail_label_rejected">Rejected</string>
+    <string name="detail_label_connected">Connected calls</string>
+    <string name="detail_total_duration_sec">Total duration (sec)</string>
+    <string name="detail_avg_duration_sec">Avg duration (sec)</string>
+    <string name="detail_short_calls">Short calls (&lt;10s)</string>
+    <string name="detail_long_calls">Long calls (&gt;60s)</string>
+    <string name="detail_sms">SMS</string>
+    <string name="detail_sms_yes_last">Yes (last: %1$s)</string>
+    <string name="detail_sms_yes">Yes</string>
+    <string name="detail_last_contact_days">Last contact</string>
+    <string name="detail_days_ago_fmt">%1$d days ago</string>
+    <string name="detail_calls_fmt">%1$d calls</string>
+    <string name="detail_calls_last_fmt">%1$d calls (last: %2$s)</string>
+    <string name="detail_sec_fmt">%1$d sec</string>
+    <string name="detail_search_30d_fmt">30d searches: %1$d</string>
+    <string name="detail_search_90d_fmt">90d searches: %1$d</string>
+    <string name="detail_search_trend">Search trend</string>
+    <string name="detail_keyword_clusters">Keyword clusters</string>
+    <string name="detail_repeated_entities">Repeated entities</string>
+    <string name="detail_search_snippet">Search snippet</string>
+    <string name="detail_em_dash">—</string>
+    <string name="detail_signal_count_fmt">%1$d results</string>
 </resources>

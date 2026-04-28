@@ -22,6 +22,7 @@ import app.myphonecheck.mobile.data.localcache.repository.PreJudgeCacheRepositor
 import app.myphonecheck.mobile.data.search.CachedEntry
 import app.myphonecheck.mobile.data.search.SearchResultCachePolicy
 import app.myphonecheck.mobile.feature.decisionengine.DecisionEngine
+import app.myphonecheck.mobile.feature.callintercept.R
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -582,11 +583,14 @@ class CallInterceptRepositoryImpl @Inject constructor(
             (riskLevelScore(base.riskLevel) + adjustedBoost).coerceIn(0f, 1f),
         )
 
+        val res = context.resources
         val messageReasons = buildList {
-            if (metadata.hasUrl) add("문자 링크 포함")
-            if (metadata.urlCount >= 2) add("메시지 링크 ${metadata.urlCount}개 감지")
-            if (metadata.longestUrlLength >= 24) add("긴 링크 패턴 감지")
-            if (metadata.hasShortLink) add("단축 링크 포함")
+            if (metadata.hasUrl) add(res.getString(R.string.intercept_msg_contains_link))
+            if (metadata.urlCount >= 2) {
+                add(res.getString(R.string.intercept_msg_links_detected_fmt, metadata.urlCount))
+            }
+            if (metadata.longestUrlLength >= 24) add(res.getString(R.string.intercept_msg_long_link_pattern))
+            if (metadata.hasShortLink) add(res.getString(R.string.intercept_msg_short_link))
         }
 
         val adjustedCategory = when {
@@ -609,8 +613,10 @@ class CallInterceptRepositoryImpl @Inject constructor(
         )
 
         val adjustedSummary = when (adjustedCategory) {
-            ConclusionCategory.MSG_PHISHING_LINK -> ConclusionCategory.MSG_PHISHING_LINK.summaryKo
-            ConclusionCategory.MSG_UNKNOWN_SENDER -> ConclusionCategory.MSG_UNKNOWN_SENDER.summaryKo
+            ConclusionCategory.MSG_PHISHING_LINK ->
+                context.resources.getString(ConclusionCategory.MSG_PHISHING_LINK.summaryResId)
+            ConclusionCategory.MSG_UNKNOWN_SENDER ->
+                context.resources.getString(ConclusionCategory.MSG_UNKNOWN_SENDER.summaryResId)
             else -> base.summary
         }
 

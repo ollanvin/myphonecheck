@@ -1,5 +1,7 @@
 package app.myphonecheck.mobile.core.model
 
+import androidx.annotation.StringRes
+
 /**
  * 판단 결론 카테고리.
  *
@@ -10,65 +12,41 @@ package app.myphonecheck.mobile.core.model
  * - PRIVACY 엔진: PRIV_* 카테고리
  *
  * 모든 카테고리는 동일한 Decision UI (Ring + 버튼)로 출력됩니다.
+ *
+ * Display copy는 [summaryResId] 한 경로로만 제공한다 (§9-1: EN default strings.xml, OS Locale 위임).
  */
 enum class ConclusionCategory(
-    val summaryEn: String,
-    val summaryKo: String,
+    @StringRes val summaryResId: Int,
     val eventType: InterceptEventType = InterceptEventType.CALL,
 ) {
     // ═══════════════════════════════════════
     // MyPhoneCheck 엔진 (기존)
     // ═══════════════════════════════════════
-    KNOWN_CONTACT(
-        summaryEn = "Known contact",
-        summaryKo = "저장된 연락처",
-    ),
-    BUSINESS_LIKELY(
-        summaryEn = "Business contact likely",
-        summaryKo = "거래처/업무 번호 가능성 높음",
-    ),
-    DELIVERY_LIKELY(
-        summaryEn = "Delivery/courier likely",
-        summaryKo = "택배/배송 가능성 높음",
-    ),
-    INSTITUTION_LIKELY(
-        summaryEn = "Institution likely",
-        summaryKo = "기관/병원 가능성 높음",
-    ),
-    SALES_SPAM_SUSPECTED(
-        summaryEn = "Sales/advertising suspected",
-        summaryKo = "광고/영업 의심",
-    ),
-    SCAM_RISK_HIGH(
-        summaryEn = "Scam/phishing risk high",
-        summaryKo = "스팸/사기 위험 높음",
-    ),
-    INSUFFICIENT_EVIDENCE(
-        summaryEn = "Insufficient evidence",
-        summaryKo = "판단 근거 부족",
-    ),
+    KNOWN_CONTACT(R.string.cat_summary_known_contact),
+    BUSINESS_LIKELY(R.string.cat_summary_business_likely),
+    DELIVERY_LIKELY(R.string.cat_summary_delivery_likely),
+    INSTITUTION_LIKELY(R.string.cat_summary_institution_likely),
+    SALES_SPAM_SUSPECTED(R.string.cat_summary_sales_spam_suspected),
+    SCAM_RISK_HIGH(R.string.cat_summary_scam_risk_high),
+    INSUFFICIENT_EVIDENCE(R.string.cat_summary_insufficient_evidence),
 
     // ═══════════════════════════════════════
     // PushCheck 엔진
     // ═══════════════════════════════════════
     PUSH_CRITICAL(
-        summaryEn = "Important notification",
-        summaryKo = "핵심 알림",
+        R.string.cat_summary_push_critical,
         eventType = InterceptEventType.PUSH,
     ),
     PUSH_PROMOTION(
-        summaryEn = "Promotional notification",
-        summaryKo = "프로모션/광고 알림",
+        R.string.cat_summary_push_promotion,
         eventType = InterceptEventType.PUSH,
     ),
     PUSH_NOISE(
-        summaryEn = "Noise notification",
-        summaryKo = "소음 알림 (반복/무의미)",
+        R.string.cat_summary_push_noise,
         eventType = InterceptEventType.PUSH,
     ),
     PUSH_NIGHT_DISTURB(
-        summaryEn = "Night-time disturbance",
-        summaryKo = "야간 방해 알림",
+        R.string.cat_summary_push_night_disturb,
         eventType = InterceptEventType.PUSH,
     ),
 
@@ -76,28 +54,23 @@ enum class ConclusionCategory(
     // MessageCheck 엔진
     // ═══════════════════════════════════════
     MSG_SAFE(
-        summaryEn = "Safe message",
-        summaryKo = "안전한 메시지",
+        R.string.cat_summary_msg_safe,
         eventType = InterceptEventType.MESSAGE,
     ),
     MSG_IMPERSONATION(
-        summaryEn = "Impersonation suspected",
-        summaryKo = "사칭 의심 메시지",
+        R.string.cat_summary_msg_impersonation,
         eventType = InterceptEventType.MESSAGE,
     ),
     MSG_PHISHING_LINK(
-        summaryEn = "Phishing link detected",
-        summaryKo = "피싱 링크 감지",
+        R.string.cat_summary_msg_phishing_link,
         eventType = InterceptEventType.MESSAGE,
     ),
     MSG_FINANCIAL_SCAM(
-        summaryEn = "Financial scam suspected",
-        summaryKo = "금융 사기 의심",
+        R.string.cat_summary_msg_financial_scam,
         eventType = InterceptEventType.MESSAGE,
     ),
     MSG_UNKNOWN_SENDER(
-        summaryEn = "Unknown sender",
-        summaryKo = "알 수 없는 발신자",
+        R.string.cat_summary_msg_unknown_sender,
         eventType = InterceptEventType.MESSAGE,
     ),
 
@@ -105,23 +78,19 @@ enum class ConclusionCategory(
     // PrivacyCheck 엔진
     // ═══════════════════════════════════════
     PRIV_NORMAL(
-        summaryEn = "Normal sensor usage",
-        summaryKo = "정상적인 센서 사용",
+        R.string.cat_summary_priv_normal,
         eventType = InterceptEventType.PRIVACY,
     ),
     PRIV_FIRST_ACCESS(
-        summaryEn = "First-time sensor access",
-        summaryKo = "최초 센서 접근",
+        R.string.cat_summary_priv_first_access,
         eventType = InterceptEventType.PRIVACY,
     ),
     PRIV_BACKGROUND(
-        summaryEn = "Background sensor access",
-        summaryKo = "백그라운드 센서 접근",
+        R.string.cat_summary_priv_background,
         eventType = InterceptEventType.PRIVACY,
     ),
     PRIV_SUSPICIOUS(
-        summaryEn = "Suspicious sensor activity",
-        summaryKo = "의심스러운 센서 활동",
+        R.string.cat_summary_priv_suspicious,
         eventType = InterceptEventType.PRIVACY,
     ),
 }
