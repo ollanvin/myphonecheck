@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Test-Path *)",
+      "PowerShell(Out-File *)",
+      "PowerShell(Select-String *)",
+      "PowerShell($f = '.github\\\\workflows\\\\contract-freeze-check.yml'; $raw = [System.IO.File]::ReadAllBytes\\($f\\); \"Length=$\\($raw.Length\\)\"; \"First 4 bytes: $\\($raw[0..3] | ForEach-Object { '{0:X2}' -f $_ }\\)\"; \"Has BOM FF FE \\(UTF16-LE\\): $\\($raw[0] -eq 0xFF -and $raw[1] -eq 0xFE\\)\"; \"Has BOM FE FF \\(UTF16-BE\\): $\\($raw[0] -eq 0xFE -and $raw[1] -eq 0xFF\\)\")",
+      "PowerShell(git check-ignore *)",
+      "PowerShell($ts = Get-Date -Format \"yyyy-MM-ddTHH:mm:ssK\"; \"KST timestamp: $ts\"; \\(Get-TimeZone\\).Id)",
+      "PowerShell(New-Item *)",
+      "PowerShell(\"=== MODIFIED \\(50\\) ===\"; Get-Content logs\\\\hygiene\\\\modified_files.txt; \"`n=== UNTRACKED \\(115\\) ===\"; Get-Content logs\\\\hygiene\\\\untracked_files.txt)",
+      "PowerShell(\"=== sample diff: feature/push-intercept/build.gradle.kts ===\"; git diff -- feature/push-intercept/build.gradle.kts | Select-Object -First 60; \"`n=== sample diff: feature/push-intercept/proguard-rules.pro ===\"; git diff -- feature/push-intercept/proguard-rules.pro | Select-Object -First 30)",
+      "PowerShell(\"=== libs.versions.toml diff ===\"; git diff -- gradle/libs.versions.toml | Select-Object -First 80)",
+      "PowerShell(\"=== core/model/build.gradle.kts diff ===\"; git diff -- core/model/build.gradle.kts | Select-Object -First 40; \"`n=== core/model/.../ConclusionCategory.kt diff \\(first 15 lines\\) ===\"; git diff -- core/model/src/main/kotlin/app/myphonecheck/mobile/core/model/ConclusionCategory.kt | Select-Object -First 15; \"`n=== app/build.gradle.kts diff ===\"; git diff -- app/build.gradle.kts | Select-Object -First 50)",
+      "PowerShell(git add *)",
+      "PowerShell($content = [System.IO.File]::ReadAllText\\('.github\\\\workflows\\\\contract-freeze-check.yml', [System.Text.Encoding]::Unicode\\); \"Text length: $\\($content.Length\\) chars\"; \"Normalizing line endings \\(CRLF -> LF\\)\"; $normalized = $content -replace \"`r`n\", \"`n\"; \"Writing as UTF-8 \\(no BOM\\)\"; $utf8NoBom = New-Object System.Text.UTF8Encoding $false; [System.IO.File]::WriteAllText\\('.github\\\\workflows\\\\contract-freeze-check.yml', $normalized, $utf8NoBom\\); \"Re-read verification:\"; $bytes = [System.IO.File]::ReadAllBytes\\('.github\\\\workflows\\\\contract-freeze-check.yml'\\); \"New length: $\\($bytes.Length\\)\"; \"First 4 bytes \\(hex\\): $\\($bytes[0..3] | ForEach-Object { $_.ToString\\('X2'\\) }\\)\"; \"First char UTF-8 decode:\"; [System.Text.Encoding]::UTF8.GetString\\($bytes[0..40]\\))",
+      "PowerShell(\"=== Modified files NOT staged ===\"; git diff --name-only 2>&1 | Where-Object { $_ -notmatch 'warning:' }; \"`n=== Untracked files ===\"; git ls-files --others --exclude-standard)",
+      "PowerShell(\"=== git stash show \\(what's in stash\\) ===\"; git stash show --stat 2>&1 | Select-Object -First 20; \"---\"; \"=== What stash actually saved: ===\"; git stash show -- --stat stash@{0} 2>&1 | Select-Object -First 30)",
+      "PowerShell(\"Quick sanity check: is app/src/main/AndroidManifest.xml really still modified?\"; \\(git diff --name-only\\) -contains 'app/src/main/AndroidManifest.xml'; \"---\"; \"Recent HEAD pointer hasn't moved?\"; git rev-parse HEAD; \"---\"; \"reflog last 3:\"; git reflog -3)",
+      "PowerShell(\"Current stash list before dropping:\"; git stash list; \"---\"; \"Dropping stash@{0} \\(mixed content, redundant with working tree\\):\"; git stash drop stash@{0} 2>&1; \"---\"; \"After drop:\"; git stash list)",
+      "PowerShell(git stash *)",
+      "PowerShell(git diff --name-only 2>&1 | Where-Object { $_ -notmatch 'warning:' -and $_ -notmatch 'replaced' -and $_.Length -gt 0 }; \"---\"; git ls-files --others --exclude-standard 2>&1 | Where-Object { $_.Length -gt 0 })",
+      "PowerShell(\"=== core/common presence in staged ===\"; git diff --cached --name-only -- 'core/common/' | Sort-Object; \"---\"; \"Files expected: 14 \\(1 FREEZE.md + 1 build.gradle.kts + 8 main kt + 4 test kt\\)\"; \"Actually staged: $\\(\\(git diff --cached --name-only -- 'core/common/' | Measure-Object -Line\\).Lines\\)\")",
+      "PowerShell(git push *)",
+      "PowerShell(\"=== 현재 로컬 상태 ===\"; \"HEAD: $\\(git rev-parse HEAD\\)\"; \"HEAD^: $\\(git rev-parse HEAD~1\\)\"; git log --oneline origin/codex-global-single-core-snapshot..HEAD; \"---\"; \"=== 원격 상태 ===\"; git log --oneline -3 origin/codex-global-single-core-snapshot; \"---\"; \"=== working tree cleanliness ===\"; \"staged: $\\(\\(git diff --cached --name-only | Measure-Object -Line\\).Lines\\)  modified: $\\(\\(git diff --name-only 2>&1 | Where-Object { $_ -notmatch 'warning:' -and $_ -notmatch 'replaced' -and $_.Length -gt 0 } | Measure-Object -Line\\).Lines\\)  untracked: $\\(\\(git ls-files --others --exclude-standard | Measure-Object -Line\\).Lines\\)\"; \"---\"; \"=== stash list ===\"; git stash list)",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(Copy-Item *)",
+      "PowerShell(\"=== robocopy error output ===\"; Get-Content logs\\\\filter\\\\robocopy.txt -ErrorAction SilentlyContinue | Select-Object -First 30)",
+      "PowerShell(git filter-repo *)",
+      "PowerShell(pip *)",
+      "PowerShell(pip install *)",
+      "PowerShell(git rev-list *)",
+      "PowerShell(git fetch *)",
+      "PowerShell(git branch *)",
+      "PowerShell(git *)",
+      "PowerShell(git ls-tree *)",
+      "PowerShell(\"=== stash contents \\(is stage1_research in here?\\) ===\"; git stash list; \"---\"; git stash show 'stash@{0}' --stat 2>&1 | Select-String -Pattern 'stage1_research'; \"---\"; \"=== stash full file list ===\"; git stash show 'stash@{0}' --name-only 2>&1 | Select-String -Pattern 'stage1_research|docs/01')",
+      "PowerShell(gh auth *)"
+    ]
+  }
+}
