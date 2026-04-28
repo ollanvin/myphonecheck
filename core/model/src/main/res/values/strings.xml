@@ -14,4 +14,26 @@
     <string name="ring_action_hold">Pending Review</string>
     <string name="ring_disclaimer">This app assists your judgment. The final decision is yours.</string>
     <string name="ring_disclaimer_detail">This result is based on device history and web search analysis. Accuracy is not guaranteed. MyPhoneCheck is a decision-support tool. The final decision to answer, reject, or block is yours.</string>
+
+    <!-- ConclusionCategory summaries — defaults in values; locale overlays optional -->
+    <string name="cat_summary_known_contact">Known contact</string>
+    <string name="cat_summary_business_likely">Business contact likely</string>
+    <string name="cat_summary_delivery_likely">Delivery/courier likely</string>
+    <string name="cat_summary_institution_likely">Institution likely</string>
+    <string name="cat_summary_sales_spam_suspected">Sales/advertising suspected</string>
+    <string name="cat_summary_scam_risk_high">Scam/phishing risk high</string>
+    <string name="cat_summary_insufficient_evidence">Insufficient evidence</string>
+    <string name="cat_summary_push_critical">Important notification</string>
+    <string name="cat_summary_push_promotion">Promotional notification</string>
+    <string name="cat_summary_push_noise">Noise notification</string>
+    <string name="cat_summary_push_night_disturb">Night-time disturbance</string>
+    <string name="cat_summary_msg_safe">Safe message</string>
+    <string name="cat_summary_msg_impersonation">Impersonation suspected</string>
+    <string name="cat_summary_msg_phishing_link">Phishing link detected</string>
+    <string name="cat_summary_msg_financial_scam">Financial scam suspected</string>
+    <string name="cat_summary_msg_unknown_sender">Unknown sender</string>
+    <string name="cat_summary_priv_normal">Normal sensor usage</string>
+    <string name="cat_summary_priv_first_access">First-time sensor access</string>
+    <string name="cat_summary_priv_background">Background sensor access</string>
+    <string name="cat_summary_priv_suspicious">Suspicious sensor activity</string>
 </resources>

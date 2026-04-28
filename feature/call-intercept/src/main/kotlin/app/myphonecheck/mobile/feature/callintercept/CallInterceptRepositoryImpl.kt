@@ -609,8 +609,9 @@ class CallInterceptRepositoryImpl @Inject constructor(
         )
 
         val adjustedSummary = when (adjustedCategory) {
-            ConclusionCategory.MSG_PHISHING_LINK -> ConclusionCategory.MSG_PHISHING_LINK.summaryKo
-            ConclusionCategory.MSG_UNKNOWN_SENDER -> ConclusionCategory.MSG_UNKNOWN_SENDER.summaryKo
+            ConclusionCategory.MSG_PHISHING_LINK,
+            ConclusionCategory.MSG_UNKNOWN_SENDER,
+            -> context.resources.getString(adjustedCategory.summaryResId)
             else -> base.summary
         }
 

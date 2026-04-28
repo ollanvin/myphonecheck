@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="reason_risk_tri_safe">SAFE</string>
+    <string name="reason_risk_tri_warning">WARNING</string>
+    <string name="reason_risk_tri_danger">DANGER</string>
+    <string name="reason_risk_tri_unknown">UNKNOWN</string>
+
+    <string name="reason_report_none_ondevice">Reports: no web/community signals (on-device only)</string>
+    <string name="reason_report_scam">Reports: many scam/phishing/spam-related mentions</string>
+    <string name="reason_report_spam_mentions">Reports: telemarketing/spam-related mentions</string>
+    <string name="reason_report_detail">Reports: %1$s</string>
+    <string name="reason_report_snippets_risk">Reports: risk cues from search snippets/keywords</string>
+
+    <string name="reason_pattern_short_calls">%1$d short calls (&lt;10s)</string>
+    <string name="reason_pattern_long_calls">%1$d long calls (&gt;60s)</string>
+    <string name="reason_pattern_rejected">%1$d× rejected</string>
+    <string name="reason_pattern_clusters">Search clusters: %1$s</string>
+    <string name="reason_pattern_trend">Search trend: %1$s</string>
+    <string name="reason_pattern_none">Patterns: no notable call/search pattern</string>
+    <string name="reason_pattern_line">Pattern analysis: %1$s</string>
+
+    <string name="reason_behavior_none">User behavior: no call/SMS history for this number</string>
+    <string name="reason_behavior_outgoing">outgoing %1$d</string>
+    <string name="reason_behavior_incoming">incoming %1$d</string>
+    <string name="reason_behavior_answered">answered %1$d</string>
+    <string name="reason_behavior_rejected">rejected %1$d</string>
+    <string name="reason_behavior_missed">missed %1$d</string>
+    <string name="reason_behavior_sms">SMS present</string>
+    <string name="reason_behavior_last_contact">last contact ~%1$dd ago</string>
+    <string name="reason_behavior_line">User behavior: %1$s</string>
+
+    <string name="reason_search_none">Search summary: none (skipped or empty)</string>
+    <string name="reason_search_signals_line">Search summary: %1$s</string>
+    <string name="reason_search_snippet_line">Search summary: %1$s</string>
+    <string name="reason_search_keywords_line">Search summary: keywords %1$s</string>
+
+    <string name="reason_engine_reasons_title">Engine reasons:</string>
+
+    <string name="reasoning_overlay_phase_pending">Final analysis in progress (web/global data pending)</string>
+    <string name="reasoning_overlay_phase_complete">Final analysis complete</string>
+    <string name="reasoning_overlay_immediate">Immediate view: based on evidence collected so far.</string>
+    <string name="reasoning_overlay_judgment_basis">Judgment basis</string>
+    <string name="reasoning_overlay_section_report">Report / complaint signals</string>
+    <string name="reasoning_overlay_section_pattern">Pattern analysis</string>
+    <string name="reasoning_overlay_section_behavior">User behavior on device</string>
+    <string name="reasoning_overlay_section_search">Search summary</string>
+    <string name="reasoning_overlay_global_banner">Analysis uses global web/community data</string>
+    <string name="reasoning_overlay_risk_confidence">Risk: %1$s · %2$d%% confidence</string>
+
+    <string name="reasoning_timestamp_unknown">Unknown</string>
+</resources>

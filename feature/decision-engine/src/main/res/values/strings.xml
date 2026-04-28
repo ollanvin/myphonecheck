@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="engine_reason_no_device_history">No device history</string>
+    <string name="engine_reason_saved_contact_named">Saved contact: %1$s</string>
+    <string name="engine_reason_saved_contact">Saved contact</string>
+    <string name="engine_reason_unsaved_no_history">Unsaved number, no device history</string>
+    <string name="engine_reason_outgoing_fmt">outgoing %1$d</string>
+    <string name="engine_reason_incoming_fmt">incoming %1$d</string>
+    <string name="engine_reason_missed_fmt">missed %1$d</string>
+    <string name="engine_reason_avg_duration_fmt">avg %1$ds</string>
+    <string name="engine_reason_search_scam">Search: scam/phishing keywords found</string>
+    <string name="engine_reason_search_spam">Search: spam/telemarketing keywords found</string>
+    <string name="engine_reason_search_delivery">Search: delivery/courier keywords found</string>
+    <string name="engine_reason_search_institution">Search: institution keywords found</string>
+    <string name="engine_reason_search_business">Search: business keywords found</string>
+    <string name="engine_reason_search_entity_repeat">Search: &quot;%1$s&quot; repeatedly mentioned</string>
+    <string name="engine_reason_recent_contact_days">Contact within last %1$d days</string>
+    <string name="engine_reason_short_calls_only">%1$d short calls (&lt;10s), no long calls</string>
+    <string name="engine_reason_user_initiated">User initiated previous calls</string>
+    <string name="engine_reason_sms_history">SMS history exists</string>
+</resources>
