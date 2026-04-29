@@ -82,3 +82,18 @@
 **Before**: 허용 목록 단순 나열 (Google·Bing, 스토어 API, 공공 API)
 **After**: 4대 축 매핑 명시 + AI 검색 모드 + 경쟁사 Reverse Lookup + Custom Tab 원칙
 **삭제**: AI answer engine API 직접 통합 (Perplexity Sonar 등) 영구 금지 명시
+
+---
+
+## PATCH-V240-2 — 메타데이터 정합 정정 (2026-04-29)
+
+**WO**: WO-V240-METADATA-CONSISTENCY
+**범위**: v2.4.0/README.md + 05_constitution.md L15 본문 표기 정합 정정
+**근거**: 직전 WO-V230-STAGE-INVENTORY 진단에서 사실 노출 2건
+**Before**:
+- README.md = v1.9.0 메타데이터 잔재 (v2.3.0 → v2.4.0 cp 시 전파)
+- 05_constitution.md L15 = "8개 조항" 본문 표기 (실제 §10까지 신설된 10조와 불일치)
+**After**:
+- README.md 전체 교체 (v2.4.0 정체성 + 변경 사항 명시)
+- 05_constitution.md "8개 조항" → "10개 조항" 정정 + v2.2.0 §9·§10 신설 본문 반영
+**원인 분석**: v1.9.0 → v2.0.0 → v2.1.0 → v2.2.0 → v2.3.0 → v2.4.0 거치며 README 메타데이터 + 헌법 본문 표기 갱신 누락 누적. 빅테크 정공법 = SSOT 디렉토리 메타데이터 무조건 갱신.
