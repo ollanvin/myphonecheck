@@ -12,14 +12,14 @@ import java.util.TimeZone
 
 class OnDeviceHistorySearchTest {
 
-    private fun simContext() = SimContext(
+    private val sim = SimContext(
         mcc = "", mnc = "", countryIso = "KR", operatorName = "",
         currency = Currency.getInstance("KRW"),
         phoneRegion = "KR", timezone = TimeZone.getTimeZone("Asia/Seoul"),
     )
 
-    private fun query(key: String, type: QueryType = QueryType.PHONE_NUMBER) =
-        SearchQuery(key, type, SearchContext(simContext()))
+    private fun phoneInput(value: String): SearchInput.PhoneNumber =
+        SearchInput.PhoneNumber(value, sim)
 
     @Test
     fun `internal search returns repository matches and HIGH confidence`() = runTest {
@@ -29,7 +29,7 @@ class OnDeviceHistorySearchTest {
         }
         val search = OnDeviceHistorySearch(repo)
 
-        val result = search.search(query("+821012345678"))
+        val result = search.search(phoneInput("+821012345678"))
 
         assertEquals(SearchSource.INTERNAL, result.source)
         assertEquals(1, result.matches.size)
@@ -42,9 +42,34 @@ class OnDeviceHistorySearchTest {
         val repo = object : HistoryRepository {
             override suspend fun findByKey(key: String, type: QueryType) = emptyList<MatchEntry>()
         }
-        val result = OnDeviceHistorySearch(repo).search(query("unknown"))
+        val result = OnDeviceHistorySearch(repo).search(phoneInput("unknown"))
         assertTrue(result.matches.isEmpty())
         assertEquals(SearchConfidence.HIGH, result.confidence)
+        assertEquals(SearchSource.INTERNAL, result.source)
+    }
+
+    @Test
+    fun `AppPackage input routes to APP_PACKAGE query type`() = runTest {
+        var capturedType: QueryType? = null
+        val repo = object : HistoryRepository {
+            override suspend fun findByKey(key: String, type: QueryType): List<MatchEntry> {
+                capturedType = type
+                return emptyList()
+            }
+        }
+        OnDeviceHistorySearch(repo).search(SearchInput.AppPackage("com.example.app"))
+        assertEquals(QueryType.APP_PACKAGE, capturedType)
+    }
+
+    @Test
+    fun `MessageBody input returns empty result (Stage 4 boundary)`() = runTest {
+        val repo = object : HistoryRepository {
+            override suspend fun findByKey(key: String, type: QueryType) = emptyList<MatchEntry>()
+        }
+        val result = OnDeviceHistorySearch(repo).search(
+            SearchInput.MessageBody("hi", emptyList(), emptyList())
+        )
+        assertTrue(result.matches.isEmpty())
         assertEquals(SearchSource.INTERNAL, result.source)
     }
 }
