@@ -61,6 +61,7 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:util"))
     implementation(project(":data:sms"))
+    implementation(project(":data:contacts"))
     implementation(project(":data:local-cache"))
     implementation(project(":feature:decision-ui"))
 

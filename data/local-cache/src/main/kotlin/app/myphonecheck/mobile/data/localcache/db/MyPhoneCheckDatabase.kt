@@ -77,6 +77,8 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
  *          phone_tag (REMIND_ME / PENDING / SUSPICIOUS / ARCHIVE).
  *  - v17: 공개 피드 캐시 1 entity 추가 (Architecture v2.1.0 §30-4 Layer 3).
  *          feed_entry (4 FeedType 공통 캐시).
+ *  - v18: hub_message (WO-DATA-MSG-001 parallel hub rows).
+ *  - v19: hub_message full schema replaces Stage 3 stub table where applicable.
  */
 @Database(
     entities = [
@@ -105,7 +107,7 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
         FeedEntryEntity::class,
         HubMessageEntity::class,
     ],
-    version = 18,
+    version = 19,
     exportSchema = true,
 )
 abstract class MyPhoneCheckDatabase : RoomDatabase() {
