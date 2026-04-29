@@ -12,6 +12,12 @@ import app.myphonecheck.mobile.core.model.LocalLearningSignal
 import app.myphonecheck.mobile.core.model.RiskLevel
 import app.myphonecheck.mobile.core.model.SearchEvidence
 import app.myphonecheck.mobile.core.model.SearchTrend
+import app.myphonecheck.core.common.risk.RiskTier
+import app.myphonecheck.core.common.risk.TierMapping
+import app.myphonecheck.mobile.core.globalengine.decision.AggregatedInput
+import app.myphonecheck.mobile.core.globalengine.search.MatchEntry
+import app.myphonecheck.mobile.core.globalengine.search.SearchConfidence
+import app.myphonecheck.mobile.core.globalengine.search.Severity
 import javax.inject.Inject
 import kotlin.math.min
 
@@ -422,6 +428,78 @@ class DecisionEngineImpl @Inject constructor(
         val level: ImportanceLevel,
         val reason: String,
     )
+
+    // ───────────────────────────────────────────────
+    // v2.5.0 §10-formula-2axis (Stage 3-003-REV)
+    // 기존 evaluate(deviceEvidence, ...) 시그니처 보존, 본 메서드는 신규 진입점.
+    // ───────────────────────────────────────────────
+
+    /**
+     * v2.5.0 2축 가중치 합산 진입점.
+     *
+     * 1. 기존 evaluate(deviceEvidence, ...)로 7 카테고리 매핑 산출 (회귀 보호)
+     * 2. aggregatedInput 있으면 NKB(0.40) + AI(0.60) 가중치 합산 → RiskTier
+     * 3. aggregatedInput 없으면 legacy RiskLevel → RiskTier 매핑
+     */
+    fun evaluate(decisionInput: DecisionInput): DecisionResult {
+        val baseResult = evaluate(
+            deviceEvidence = decisionInput.deviceEvidence,
+            searchEvidence = decisionInput.searchEvidence,
+            localLearning = decisionInput.localLearning,
+            behaviorPattern = decisionInput.behaviorPattern,
+            actionState = decisionInput.actionState,
+        )
+        val (tier, score) = if (decisionInput.aggregatedInput != null) {
+            compute2AxisTier(decisionInput.aggregatedInput)
+        } else {
+            mapLegacyToTier(baseResult.riskLevel) to 0f
+        }
+        return baseResult.copy(tier = tier, score = score)
+    }
+
+    private fun compute2AxisTier(aggregated: AggregatedInput): Pair<RiskTier, Float> {
+        val W_NKB = 0.40f
+        val W_AI = 0.60f
+
+        val nkbSignal = signalFromMatches(aggregated.internalNkb?.matches)
+        val nkbConfidence = confidenceWeight(aggregated.internalNkb?.confidence)
+
+        val aiSignal = signalFromMatches(aggregated.externalAi?.matches)
+        val aiConfidence = confidenceWeight(aggregated.externalAi?.confidence)
+
+        val score = W_NKB * nkbConfidence * nkbSignal + W_AI * aiConfidence * aiSignal
+        val totalConfidence = W_NKB * nkbConfidence + W_AI * aiConfidence
+
+        return TierMapping.from(score, totalConfidence) to score
+    }
+
+    /** Severity → signal [-1, 1]. 가장 강한 신호 우선. */
+    private fun signalFromMatches(matches: List<MatchEntry>?): Float {
+        if (matches.isNullOrEmpty()) return 0f
+        return matches.map {
+            when (it.severity) {
+                Severity.CRITICAL -> 1.0f
+                Severity.HIGH -> 0.7f
+                Severity.MEDIUM -> 0.4f
+                Severity.LOW -> 0.2f
+                null -> 0f
+            }
+        }.max()
+    }
+
+    private fun confidenceWeight(c: SearchConfidence?): Float = when (c) {
+        SearchConfidence.HIGH -> 1.0f
+        SearchConfidence.MEDIUM -> 0.6f
+        SearchConfidence.LOW -> 0.3f
+        null -> 0f
+    }
+
+    private fun mapLegacyToTier(riskLevel: RiskLevel): RiskTier = when (riskLevel) {
+        RiskLevel.HIGH -> RiskTier.Danger
+        RiskLevel.MEDIUM -> RiskTier.Caution
+        RiskLevel.LOW -> RiskTier.Safe
+        RiskLevel.UNKNOWN -> RiskTier.Unknown
+    }
 
     private companion object {
         const val MPC_IMPORTANCE = "MPC_IMPORTANCE"

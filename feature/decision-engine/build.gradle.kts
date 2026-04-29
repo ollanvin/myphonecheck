@@ -47,8 +47,10 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
+    implementation(project(":core:common"))
     implementation(project(":core:model"))
     implementation(project(":core:util"))
+    implementation(project(":core:global-engine"))
     implementation(project(":feature:device-evidence"))
 
     testImplementation(libs.junit)
