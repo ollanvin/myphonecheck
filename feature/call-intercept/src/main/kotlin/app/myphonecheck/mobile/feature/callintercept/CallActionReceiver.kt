@@ -31,7 +31,7 @@ private const val ACTION_MARK_DO_NOT_MISS = "action_mark_do_not_miss"
  * 사용자 행동 브로드캐스트 수신자.
  *
  * 오버레이/Notification에서 사용자가 선택한 행동(수신/거절/차단)을
- * UserCallRecordRepository + BlocklistRepository에 기록한다.
+ * UserCallRecordRepository + NumberProfileRepository에 기록한다.
  *
  * 특별 행동:
  * - ACTION_MARK_DO_NOT_MISS: 번호를 DO_NOT_MISS로 표시.
@@ -47,9 +47,6 @@ class CallActionReceiver : BroadcastReceiver() {
 
     @Inject
     lateinit var decisionNotificationManager: DecisionNotificationManager
-
-    @Inject
-    lateinit var blocklistRepository: BlocklistRepository
 
     @Inject
     lateinit var userCallRecordRepository: UserCallRecordRepository
@@ -142,9 +139,6 @@ class CallActionReceiver : BroadcastReceiver() {
             recordUserAction(phoneNumber, UserCallAction.BLOCKED)
             updateBlockState(phoneNumber, NumberProfileBlockState.BLOCKED)
 
-            // BlocklistRepository에도 추가
-            addToBlocklist(phoneNumber)
-
             // Notification 해제
             decisionNotificationManager.dismissNotification(context, phoneNumber)
         } catch (e: Exception) {
@@ -193,21 +187,6 @@ class CallActionReceiver : BroadcastReceiver() {
                 Log.d(TAG, "UserCallRecord saved: ${action.displayKey} for $phoneNumber")
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to record user action to UserCallRecord", e)
-            }
-        }
-    }
-
-    private fun addToBlocklist(phoneNumber: String) {
-        receiverScope.launch {
-            try {
-                blocklistRepository.addToBlocklist(
-                    phoneNumber = phoneNumber,
-                    reason = "User blocked from overlay/notification",
-                    timestamp = System.currentTimeMillis(),
-                )
-                Log.d(TAG, "Successfully added $phoneNumber to blocklist")
-            } catch (e: Exception) {
-                Log.e(TAG, "Error adding to blocklist", e)
             }
         }
     }
