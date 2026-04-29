@@ -1,4 +1,4 @@
-﻿data/local-cache/schemas/app.myphonecheck.mobile.data.localcache.db.MyPhoneCheckDatabase/12.json
+data/local-cache/schemas/app.myphonecheck.mobile.data.localcache.db.MyPhoneCheckDatabase/12.json
 docs/00_governance/MyPhoneCheck_Architecture_v1.3_extracted.md
 docs/00_governance/MyPhoneCheck_Architecture_v1.4_full.md
 docs/00_governance/MyPhoneCheck_Architecture_v1.5.1_7d23b4.docx

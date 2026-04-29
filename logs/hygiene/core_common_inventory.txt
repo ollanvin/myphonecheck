@@ -1,4 +1,4 @@
-﻿
+
 FullName                                                                                             
 --------                                                                                             
 C:\Users\user\Dev\ollanvin\myphonecheck\core\common\build.gradle.kts                                 

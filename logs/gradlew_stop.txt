@@ -1,1 +1,1 @@
-﻿No Gradle daemons are running.
+No Gradle daemons are running.

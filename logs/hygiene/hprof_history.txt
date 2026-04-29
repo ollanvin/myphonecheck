@@ -1,4 +1,4 @@
-﻿cca259c build: gradlew check 수정 + docs/ARCHITECTURE.md 역설계도
+cca259c build: gradlew check 수정 + docs/ARCHITECTURE.md 역설계도
 java_pid384076.hprof
 java_pid397536.hprof
 java_pid399920.hprof

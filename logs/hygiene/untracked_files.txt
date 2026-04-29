@@ -1,4 +1,4 @@
-﻿.claude/settings.local.json
+.claude/settings.local.json
 .github/workflows/contract-freeze-check.yml
 core/common/FREEZE.md
 core/common/build.gradle.kts

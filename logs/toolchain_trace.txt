@@ -1,4 +1,4 @@
-﻿
+
 logs\core_common_compile_info.txt:3:Received JVM installation metadata from 'C:\Progr
 am Files\Android\Android Studio\jbr': {JAVA_HOME=C:\Program Files\Android\Android Stu
 dio\jbr, JAVA_VERSION=21.0.10, JAVA_VENDOR=JetBrains s.r.o., RUNTIME_NAME=OpenJDK Run

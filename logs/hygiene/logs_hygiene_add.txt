@@ -1,4 +1,4 @@
-﻿git : warning: in the working copy of 'logs/hygiene/logs_add.txt', CRLF will be replaced by LF the ne
+git : warning: in the working copy of 'logs/hygiene/logs_add.txt', CRLF will be replaced by LF the ne
 xt time Git touches it
 At line:1 char:1
 + git add logs/hygiene/ 2>&1 | Out-File -Encoding utf8 logs\hygiene\log ...

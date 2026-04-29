@@ -1,4 +1,4 @@
-﻿# Lane 2 Cursor 원격 검증 리포트
+# Lane 2 Cursor 원격 검증 리포트
 
 WO: **WO-V161-VERIFY-REMOTE-001**  
 수행: 2026-04-24 (로컬 Git + GitHub REST API). `gh` CLI는 PATH에 없어 **REST API**로 PR/Issue 조회.

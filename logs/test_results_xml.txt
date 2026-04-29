@@ -1,4 +1,4 @@
-﻿
+
 Name                                                            Length
 ----                                                            ------
 TEST-app.myphonecheck.core.common.CheckerContractTest.xml          580

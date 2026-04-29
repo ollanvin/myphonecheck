@@ -1,4 +1,4 @@
-﻿ .github/workflows/contract-freeze-check.yml        |   25 +
+ .github/workflows/contract-freeze-check.yml        |   25 +
  .gitignore                                         |    3 +
  app/build.gradle.kts                               |    8 +-
  app/src/main/AndroidManifest.xml                   |   11 +-

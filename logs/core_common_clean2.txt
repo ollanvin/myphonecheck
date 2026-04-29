@@ -1,4 +1,4 @@
-﻿> Task :build-logic:convention:checkKotlinGradlePluginConfigurationErrors
+> Task :build-logic:convention:checkKotlinGradlePluginConfigurationErrors
 > Task :build-logic:convention:compileKotlin UP-TO-DATE
 > Task :build-logic:convention:compileJava NO-SOURCE
 > Task :build-logic:convention:pluginDescriptors UP-TO-DATE

@@ -1,4 +1,4 @@
-﻿ebcd6f5 Merge pull request #1 from ollanvin/feature/prd-pricing-patch
+ebcd6f5 Merge pull request #1 from ollanvin/feature/prd-pricing-patch
 9b172e8 docs(prd): update pricing to USD 2.49/month per memory #11
 df664ec fix(queue): WO-DISCOVERY-005 UTF-8 BOM-less LF (was UTF-16 LE)
 f6b7bc8 discovery(executing-OS): WO-DISCOVERY-002 ??443 .md ?꾩닔 ?붿빟

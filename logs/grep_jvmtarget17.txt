@@ -1,4 +1,4 @@
-﻿
+
 app\build.gradle.kts:47:        jvmTarget = "17"
 core\model\build.gradle.kts:33:        jvmTarget = "17"
 core\security\build.gradle.kts:31:        jvmTarget = "17"

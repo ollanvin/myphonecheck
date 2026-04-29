@@ -1,4 +1,4 @@
-﻿
+
  + Options
      | Auto-detection:     Enabled
      | Auto-download:      Enabled

@@ -1,4 +1,4 @@
-﻿git : warning: in the working copy of 'logs/ci_android_lastcommit.txt', CRLF will be replaced by LF t
+git : warning: in the working copy of 'logs/ci_android_lastcommit.txt', CRLF will be replaced by LF t
 he next time Git touches it
 At line:1 char:1
 + git add logs/ 2>&1 | Out-File -Encoding utf8 logs\hygiene\logs_add.tx ...

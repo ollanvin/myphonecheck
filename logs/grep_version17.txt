@@ -1,4 +1,4 @@
-﻿
+
 app\build.gradle.kts:42:        sourceCompatibility = JavaVersion.VERSION_17
 app\build.gradle.kts:43:        targetCompatibility = JavaVersion.VERSION_17
 build-logic\convention\build.gradle.kts:8:    sourceCompatibility = JavaVersion.VERSI
