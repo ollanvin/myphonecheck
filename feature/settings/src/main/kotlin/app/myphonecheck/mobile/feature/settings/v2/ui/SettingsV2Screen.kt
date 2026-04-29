@@ -374,13 +374,6 @@ private fun FeedToggleRow(
                 color = TextSubtle,
                 fontSize = 10.sp,
             )
-            if (source.type is app.myphonecheck.mobile.core.globalengine.search.publicfeed.FeedType.CompetitorApp) {
-                Text(
-                    text = stringResource(R.string.settings_v2_feed_competitor_warning),
-                    color = Warn,
-                    fontSize = 10.sp,
-                )
-            }
             if (placeholder) {
                 Text(
                     text = stringResource(R.string.settings_v2_feed_placeholder_warning),

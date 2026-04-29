@@ -49,7 +49,6 @@ dependencies {
     implementation(project(":feature:decision-engine"))
     implementation(project(":feature:country-config"))
     implementation(project(":data:contacts"))
-    implementation(project(":data:search"))
     implementation(project(":data:local-cache"))
 
     testImplementation(libs.junit)

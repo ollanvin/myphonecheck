@@ -21,24 +21,25 @@ class FeedRegistryTest {
     )
 
     @Test
-    fun `all returns 10 sources after Phase 2-C activation`() {
-        // PR #34 (Phase 2-C):
+    fun `all returns 6 sources after Stage 3-000 CompetitorApp removal`() {
+        // Stage 3-000 (헌법 §1 v2.4.0 정합):
         // - Active 4: Abuse.ch, PhishTank, KISA Phishing URL, KISA Phishing URL Recent
-        // - Hidden 6: kisa_smishing_kr, thecall_kr, whowho_kr, moaff_kr, whoscall_global, kt_blocklist_kr
-        assertEquals(10, registry.all().size)
+        // - Hidden 2: kisa_smishing_kr, kt_blocklist_kr
+        // - 폐기: thecall_kr, whowho_kr, moaff_kr, whoscall_global (CompetitorApp)
+        assertEquals(6, registry.all().size)
     }
 
     @Test
     fun `recommendForSim KR returns global plus KR-only`() {
         val recommended = registry.recommendForSim(sim("KR"))
-        // GLOBAL 3 (abusech, phishtank, whoscall_global) + KR 7 (kisa × 3 + competitor 3 + telco 1) = 10
-        assertEquals(10, recommended.size)
+        // GLOBAL 2 (abusech, phishtank) + KR 4 (kisa × 3 + telco 1) = 6
+        assertEquals(6, recommended.size)
     }
 
     @Test
     fun `recommendForSim US returns only global sources`() {
         val recommended = registry.recommendForSim(sim("US"))
-        assertEquals(3, recommended.size)
+        assertEquals(2, recommended.size)
         assertTrue(recommended.all { it.countryScope is CountryScope.GLOBAL })
     }
 
@@ -55,13 +56,6 @@ class FeedRegistryTest {
         // 2 active + 1 hidden
         assertEquals(2, list.count { it.requiresUserOptIn })
         assertEquals(1, list.count { !it.requiresUserOptIn })
-    }
-
-    @Test
-    fun `byType CompetitorApp returns 4 all hidden (Phase 2-A pending)`() {
-        val list = registry.byType(FeedType.CompetitorApp)
-        assertEquals(4, list.size)
-        assertTrue(list.all { !it.requiresUserOptIn })
     }
 
     @Test
@@ -88,8 +82,8 @@ class FeedRegistryTest {
 
     @Test
     fun `placeholder detection - blank URL is placeholder`() {
-        val competitor = registry.byId("thecall_kr")!!
-        assertTrue(registry.isPlaceholder(competitor))
+        val telcoPlaceholder = registry.byId("kt_blocklist_kr")!!
+        assertTrue(registry.isPlaceholder(telcoPlaceholder))
         val real = registry.byId("phishtank")!!
         assertFalse(registry.isPlaceholder(real))
     }
@@ -118,25 +112,15 @@ class FeedRegistryTest {
     }
 
     @Test
-    fun `Competitor placeholders are hidden until license review`() {
-        val competitors = registry.byType(FeedType.CompetitorApp)
-        assertTrue("at least 4 competitor sources expected", competitors.size >= 4)
-        competitors.forEach { src ->
-            assertFalse(
-                "Competitor ${src.id} must be hidden (requiresUserOptIn=false) until license review",
-                src.requiresUserOptIn,
-            )
-        }
-        // 명시 ID 검증 (사업개발 트랙)
+    fun `Competitor sources fully removed in Stage 3-000`() {
+        // 폐기 완료 (헌법 §1 v2.4.0 정합): thecall_kr, whowho_kr, moaff_kr, whoscall_global
         listOf("thecall_kr", "whowho_kr", "moaff_kr", "whoscall_global").forEach { id ->
-            val src = registry.byId(id)
-            assertNotNull("expected competitor id $id", src)
-            assertFalse(src!!.requiresUserOptIn)
+            assertNull("CompetitorApp id $id must be removed", registry.byId(id))
         }
     }
 
     @Test
-    fun `recommendForSim KR returns active KR sources excluding hidden competitors`() {
+    fun `recommendForSim KR returns active KR sources`() {
         val recommended = registry.recommendForSim(sim("KR"))
         val active = recommended.filter { it.requiresUserOptIn }
         // Active = GLOBAL 2 (abusech, phishtank) + KR 2 (KISA Phishing URL × 2) = 4
@@ -145,8 +129,7 @@ class FeedRegistryTest {
         assertTrue(active.any { it.id == "kisa_phishing_url_recent_kr" })
         assertTrue(active.any { it.id == "abusech_urlhaus" })
         assertTrue(active.any { it.id == "phishtank" })
-        // Hidden CompetitorApp / Telco / kisa_smishing 미포함
-        assertTrue(active.none { it.type == FeedType.CompetitorApp })
+        // Hidden Telco / kisa_smishing 미포함
         assertTrue(active.none { it.type == FeedType.TelcoBlocklist })
         assertTrue(active.none { it.id == "kisa_smishing_kr" })
     }

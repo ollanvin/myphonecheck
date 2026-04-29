@@ -19,8 +19,6 @@ import app.myphonecheck.mobile.core.model.RiskLevel
 import app.myphonecheck.mobile.core.model.TwoPhaseDecision
 import app.myphonecheck.mobile.core.model.UserCallAction
 import app.myphonecheck.mobile.data.localcache.repository.PreJudgeCacheRepository
-import app.myphonecheck.mobile.data.search.CachedEntry
-import app.myphonecheck.mobile.data.search.SearchResultCachePolicy
 import app.myphonecheck.mobile.feature.decisionengine.DecisionEngine
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.async
@@ -459,7 +457,7 @@ class CallInterceptRepositoryImpl @Inject constructor(
 
         // Tier 1: 인메모리 캐시
         val cached = decisionCache[normalizedNumber]
-        if (cached != null && cached.isValid(SearchResultCachePolicy.DECISION_CACHE_TTL_MS)) {
+        if (cached != null && cached.isValid(CallInterceptCachePolicy.DECISION_CACHE_TTL_MS)) {
             val result = cached.data
             return PhaseResult(
                 action = result.action,
@@ -665,10 +663,10 @@ class CallInterceptRepositoryImpl @Inject constructor(
     }
 
     private fun cacheResult(normalizedNumber: String, result: DecisionResult) {
-        if (decisionCache.size >= SearchResultCachePolicy.MEMORY_CACHE_MAX_ENTRIES) {
+        if (decisionCache.size >= CallInterceptCachePolicy.MEMORY_CACHE_MAX_ENTRIES) {
             evictExpiredEntries()
         }
-        if (decisionCache.size >= SearchResultCachePolicy.MEMORY_CACHE_MAX_ENTRIES) {
+        if (decisionCache.size >= CallInterceptCachePolicy.MEMORY_CACHE_MAX_ENTRIES) {
             evictOldestEntry()
         }
         decisionCache[normalizedNumber] = CachedEntry(data = result, phoneNumber = normalizedNumber)
@@ -677,7 +675,7 @@ class CallInterceptRepositoryImpl @Inject constructor(
     private fun evictExpiredEntries() {
         val now = System.currentTimeMillis()
         val expired = decisionCache.entries.filter {
-            !it.value.isValid(SearchResultCachePolicy.DECISION_CACHE_TTL_MS, now)
+            !it.value.isValid(CallInterceptCachePolicy.DECISION_CACHE_TTL_MS, now)
         }
         expired.forEach { decisionCache.remove(it.key) }
     }

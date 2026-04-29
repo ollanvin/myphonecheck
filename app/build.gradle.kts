@@ -161,7 +161,6 @@ dependencies {
     // Feature modules
     implementation(project(":feature:call-intercept"))
     implementation(project(":feature:device-evidence"))
-    implementation(project(":feature:search-enrichment"))
     implementation(project(":feature:decision-engine"))
     implementation(project(":feature:decision-ui"))
     implementation(project(":feature:settings"))
@@ -184,7 +183,6 @@ dependencies {
     implementation(project(":data:contacts"))
     implementation(project(":data:calllog"))
     implementation(project(":data:sms"))
-    implementation(project(":data:search"))
     implementation(project(":data:local-cache"))
 
     // Core modules

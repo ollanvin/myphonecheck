@@ -102,65 +102,9 @@ class FeedRegistry @Inject constructor() {
             requiresUserOptIn = false,
         ),
 
-        // === C. CompetitorApp (한국 3사 + Whoscall, 비노출, 사업개발 트랙) ===
-        // Phase 2-A 결과: YELLOW~RED. 약관 전문 입수 + 법무 검토 + 운영사 직접 접촉 + 서면 라이선스 후 활성화.
-        // Phase 2-A 보고서: docs/05_quality/competitor_license_review.md.
-        PublicFeedSource(
-            id = "thecall_kr",
-            name = "TheCall (Korea) — Pending License",
-            type = FeedType.CompetitorApp,
-            countryScope = CountryScope.COUNTRY("KR"),
-            license = "Pending — Phase 2-A YELLOW (ToS UNKNOWN)",
-            updateFrequency = UpdateFrequency.ON_DEMAND,
-            downloadUrl = "",
-            format = FeedFormat.JSON_ARRAY,
-            dataType = FeedDataType.PHONE_NUMBER,
-            description = "Pending license review (Phase 2-A YELLOW)",
-            termsUrl = null,
-            requiresUserOptIn = false,
-        ),
-        PublicFeedSource(
-            id = "whowho_kr",
-            name = "whowho (Korea) — Pending License",
-            type = FeedType.CompetitorApp,
-            countryScope = CountryScope.COUNTRY("KR"),
-            license = "Pending — Phase 2-A YELLOW (UNKNOWN)",
-            updateFrequency = UpdateFrequency.ON_DEMAND,
-            downloadUrl = "",
-            format = FeedFormat.JSON_ARRAY,
-            dataType = FeedDataType.PHONE_NUMBER,
-            description = "Pending license review (Phase 2-A YELLOW)",
-            termsUrl = null,
-            requiresUserOptIn = false,
-        ),
-        PublicFeedSource(
-            id = "moaff_kr",
-            name = "뭐야이번호 (Korea) — Pending License",
-            type = FeedType.CompetitorApp,
-            countryScope = CountryScope.COUNTRY("KR"),
-            license = "Pending — Phase 2-A YELLOW~RED (자동화·복제 금지 조항)",
-            updateFrequency = UpdateFrequency.ON_DEMAND,
-            downloadUrl = "",
-            format = FeedFormat.JSON_ARRAY,
-            dataType = FeedDataType.PHONE_NUMBER,
-            description = "Pending license review (Phase 2-A YELLOW~RED, 자동화·복제 금지)",
-            termsUrl = null,
-            requiresUserOptIn = false,
-        ),
-        PublicFeedSource(
-            id = "whoscall_global",
-            name = "Whoscall (Global) — Pending Official Contract",
-            type = FeedType.CompetitorApp,
-            countryScope = CountryScope.GLOBAL,
-            license = "Pending — Phase 2-A RED 무허가 / GREEN 공식 계약 (ASI) 후",
-            updateFrequency = UpdateFrequency.ON_DEMAND,
-            downloadUrl = "",
-            format = FeedFormat.JSON_ARRAY,
-            dataType = FeedDataType.PHONE_NUMBER,
-            description = "Pending official contract (Phase 2-A RED 무허가 / GREEN ASI 계약 후)",
-            termsUrl = null,
-            requiresUserOptIn = false,
-        ),
+        // === C. CompetitorApp 항목 폐기 (Stage 3-000, 헌법 §1 v2.4.0 정합) ===
+        // 경쟁사 비공식 API/scraper 통합 영구 금지. 경쟁사 Reverse Lookup은 후속 Stage 3-002
+        // `core/global-engine/search/competitor/` 디렉토리에서 Custom Tab 사용자 직접 진입으로 처리.
 
         // === D. TelcoBlocklist — KT (한국, 비노출, 추가 검토) ===
         PublicFeedSource(
