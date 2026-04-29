@@ -50,7 +50,6 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:util"))
     implementation(project(":feature:device-evidence"))
-    implementation(project(":feature:search-enrichment"))
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

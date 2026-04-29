@@ -86,15 +86,7 @@
             android:launchMode="singleTop"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <!-- Call Screening Service (Android 10+) -->
-        <service
-            android:name=".feature.callintercept.MyPhoneCheckScreeningService"
-            android:exported="true"
-            android:permission="android.permission.BIND_SCREENING_SERVICE">
-            <intent-filter>
-                <action android:name="android.telecom.CallScreeningService" />
-            </intent-filter>
-        </service>
+        <!-- Call Screening Service (Android 10+) — call-screening 모듈에서 정본 등록 (Stage 3-000). -->
 
         <!-- Call Action Receiver for notification actions -->
         <receiver
