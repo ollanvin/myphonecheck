@@ -1,16 +1,21 @@
 package app.myphonecheck.mobile.core.globalengine.search.external
 
 /**
- * 외부 AI/일반 검색 모드 (Architecture v2.4.0 §1 + 메모리 #8).
+ * AI 검색 모드 (Architecture v2.5.0 헌법 §1 정합).
  *
- * 헌법 §1 정합: Custom Tab 사용자 직접 진입만 사용. 우리 송신 0.
- * AI 검색 모드 1차 → 일반 검색 fallback.
+ * SIM 기준 SimAiSearchRegistry가 후보군 자동 추출.
+ * 최소 2개 보장 + 사용자 자율 결정 + 마지막 선택 기억.
+ *
+ * AI Mode 우선, *_PLAIN은 fallback (AI 미작동 시).
+ * (구) v2.4.0 4축 모델은 v2.5.0에서 2축으로 단순화 (NKB 0.40 + AI 0.60).
  */
 enum class ExternalMode {
-    GOOGLE_AI_MODE,    // udm=50, 1차 default
-    BING_COPILOT,      // showconv=1, fallback
-    NAVER_CUE,         // 한국 SIM, 별건 검증 후 활성
-    GOOGLE_PLAIN,      // udm 없음, fallback
-    BING_PLAIN,        // showconv 없음
-    NAVER_PLAIN,       // cue 미적용
+    GOOGLE_AI_MODE,    // udm=50
+    BING_COPILOT,      // showconv=1
+    NAVER_AI,          // ai=1 (정정: NAVER_CUE → NAVER_AI 정본 명칭)
+    YAHOO_JAPAN_AI,    // 신규 (JP SIM 후보)
+    BAIDU_AI,          // 신규 (CN SIM 후보)
+    GOOGLE_PLAIN,      // fallback
+    BING_PLAIN,        // fallback
+    NAVER_PLAIN,       // fallback
 }

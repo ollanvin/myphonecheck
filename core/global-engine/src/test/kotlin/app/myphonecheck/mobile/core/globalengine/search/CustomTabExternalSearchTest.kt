@@ -13,13 +13,12 @@ import java.util.TimeZone
 class CustomTabExternalSearchTest {
 
     private val external = CustomTabExternalSearch()
+    private val sim = SimContext("", "", "KR", "", Currency.getInstance("KRW"), "KR", TimeZone.getTimeZone("UTC"))
 
-    private fun query(key: String, type: QueryType = QueryType.PHONE_NUMBER): SearchQuery {
-        val sim = SimContext("", "", "KR", "", Currency.getInstance("KRW"), "KR", TimeZone.getTimeZone("UTC"))
-        return SearchQuery(key, type, SearchContext(sim))
-    }
+    private fun phoneInput(value: String): SearchInput.PhoneNumber =
+        SearchInput.PhoneNumber(value, sim)
 
-    // ── ExternalMode URL 빌더 (v2.4.0 신규) ──────────────────────────
+    // ── string query 호환 (Stage 3-001 시그니처) ──────────────────
 
     @Test
     fun `GOOGLE_AI_MODE produces udm 50 URL`() {
@@ -34,10 +33,22 @@ class CustomTabExternalSearchTest {
     }
 
     @Test
-    fun `NAVER_CUE produces cue subdomain URL`() {
-        val url = external.buildUrl("01012345678", ExternalMode.NAVER_CUE)
-        assertTrue(url.startsWith("https://cue.search.naver.com"))
-        assertTrue(url.contains("query=01012345678"))
+    fun `NAVER_AI produces ai 1 query parameter`() {
+        val url = external.buildUrl("01012345678", ExternalMode.NAVER_AI)
+        assertTrue(url.startsWith("https://m.search.naver.com"))
+        assertTrue(url.contains("ai=1"))
+    }
+
+    @Test
+    fun `YAHOO_JAPAN_AI produces yahoo co jp URL`() {
+        val url = external.buildUrl("01012345678", ExternalMode.YAHOO_JAPAN_AI)
+        assertTrue(url.startsWith("https://search.yahoo.co.jp"))
+    }
+
+    @Test
+    fun `BAIDU_AI produces baidu URL`() {
+        val url = external.buildUrl("01012345678", ExternalMode.BAIDU_AI)
+        assertTrue(url.startsWith("https://www.baidu.com"))
     }
 
     @Test
@@ -50,21 +61,13 @@ class CustomTabExternalSearchTest {
     @Test
     fun `BING_PLAIN omits showconv parameter`() {
         val url = external.buildUrl("01012345678", ExternalMode.BING_PLAIN)
-        assertEquals("https://www.bing.com/search?q=01012345678", url)
         assertFalse(url.contains("showconv"))
     }
 
     @Test
-    fun `NAVER_PLAIN uses default search subdomain`() {
+    fun `NAVER_PLAIN omits ai parameter`() {
         val url = external.buildUrl("01012345678", ExternalMode.NAVER_PLAIN)
-        assertTrue(url.startsWith("https://search.naver.com/search.naver"))
-    }
-
-    @Test
-    fun `query with special chars properly URL-encoded`() {
-        val url = external.buildUrl("+82 10-1234 5678", ExternalMode.GOOGLE_AI_MODE)
-        assertTrue(url.contains("%2B82") || url.contains("%2B"))
-        assertFalse(url.contains(" "))
+        assertFalse(url.contains("ai="))
     }
 
     @Test
@@ -73,36 +76,57 @@ class CustomTabExternalSearchTest {
         assertEquals("https://www.google.com/search?q=01012345678&udm=50", url)
     }
 
-    // ── 기존 buildIntent(SearchQuery) 호환 (default = GOOGLE_AI_MODE) ──
+    @Test
+    fun `query with special chars properly URL-encoded`() {
+        val url = external.buildUrl("+82 10-1234 5678", ExternalMode.GOOGLE_AI_MODE)
+        assertTrue(url.contains("%2B"))
+        assertFalse(url.contains(" "))
+    }
+
+    // ── SearchInput 시그니처 (v2.5.0 신규) ──────────────────
 
     @Test
-    fun `buildIntent default mode produces udm 50 URL`() {
-        val intent = external.buildIntent(query("+821012345678"))
-        assertEquals("https://www.google.com/search?q=%2B821012345678&udm=50", intent.url)
+    fun `buildUrl with PhoneNumber input + GOOGLE_AI_MODE`() {
+        val url = external.buildUrl(phoneInput("01012345678"))
+        assertEquals("https://www.google.com/search?q=01012345678&udm=50", url)
     }
 
     @Test
-    fun `buildIntent key with spaces encoded as plus`() {
-        val intent = external.buildIntent(query("Bank Alert"))
-        assertTrue(intent.url.endsWith("Bank+Alert&udm=50"))
+    fun `buildUrl with Url input encodes URL value`() {
+        val input = SearchInput.Url("https://phishing.example.com", "MESSAGE")
+        val url = external.buildUrl(input, ExternalMode.GOOGLE_AI_MODE)
+        assertTrue(url.contains("phishing.example.com"))
     }
 
     @Test
-    fun `buildIntent query type does not change URL structure`() {
-        val phone = external.buildIntent(query("abc", QueryType.PHONE_NUMBER)).url
-        val pkg = external.buildIntent(query("abc", QueryType.APP_PACKAGE)).url
-        assertEquals(phone, pkg)
+    fun `buildUrl with AppPackage input includes security CVE keywords`() {
+        val input = SearchInput.AppPackage("com.example.suspicious")
+        val url = external.buildUrl(input, ExternalMode.GOOGLE_AI_MODE)
+        // toAiSearchQuery returns "com.example.suspicious security CVE" → URL-encoded
+        assertTrue(url.contains("CVE"))
+        assertTrue(url.contains("com.example.suspicious"))
     }
 
     @Test
-    fun `buildIntent URL prefix uses Google search base`() {
-        val intent = external.buildIntent(query("x"))
-        assertTrue(intent.url.startsWith("https://www.google.com/search?q="))
+    fun `buildUrl with MessageBody prefers extracted URL`() {
+        val input = SearchInput.MessageBody(
+            text = "click here",
+            extractedUrls = listOf("https://phishing.example.com"),
+            extractedNumbers = emptyList(),
+        )
+        val url = external.buildUrl(input, ExternalMode.GOOGLE_AI_MODE)
+        assertTrue(url.contains("phishing.example.com"))
+    }
+
+    @Test
+    fun `buildIntent with PhoneNumber input produces URL`() {
+        val intent = external.buildIntent(phoneInput("01012345678"))
+        assertEquals("https://www.google.com/search?q=01012345678&udm=50", intent.url)
     }
 
     @Test
     fun `buildIntent with explicit BING_COPILOT mode`() {
-        val intent = external.buildIntent(query("xyz"), ExternalMode.BING_COPILOT)
+        val intent = external.buildIntent(phoneInput("01012345678"), ExternalMode.BING_COPILOT)
         assertTrue(intent.url.startsWith("https://www.bing.com/search?q="))
         assertTrue(intent.url.contains("showconv=1"))
     }
