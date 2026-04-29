@@ -32,6 +32,14 @@ class RoomTagRepository @Inject constructor(
         return entity.toTagRecord()
     }
 
+    /**
+     * v2.6.0 §11 액션 2 (Tag) — 사용자 명시 라벨링. priority = REMIND_ME.
+     * 본 메서드는 TagRepository 인터페이스 default override.
+     */
+    override suspend fun setTag(key: String, type: IdentifierType, tagText: String) {
+        upsert(key, type, tagText, TagPriority.REMIND_ME)
+    }
+
     suspend fun upsert(
         key: String,
         type: IdentifierType,

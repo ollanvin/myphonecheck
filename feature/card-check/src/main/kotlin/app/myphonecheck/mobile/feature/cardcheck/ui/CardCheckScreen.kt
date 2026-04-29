@@ -32,14 +32,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import app.myphonecheck.core.common.risk.RiskTier
 import app.myphonecheck.mobile.core.globalengine.search.SearchInput
 import app.myphonecheck.mobile.core.globalengine.simcontext.SimContext
 import app.myphonecheck.mobile.feature.cardcheck.R
-import app.myphonecheck.mobile.feature.decisionui.components.DirectSearchAddon
 import app.myphonecheck.mobile.feature.decisionui.components.DirectSearchHandler
 import app.myphonecheck.mobile.feature.decisionui.components.SurfaceContext
+import app.myphonecheck.mobile.feature.decisionui.components.ThreeActionsAddon
 import java.text.NumberFormat
 import java.util.Currency
 import java.util.Locale
@@ -69,6 +72,7 @@ fun CardCheckRoute(
         onToggleIncludeLow = viewModel::toggleIncludeLow,
         directSearchHandler = viewModel.directSearchHandler,
         simContext = viewModel.simContext(),
+        viewModel = viewModel,
     )
 }
 
@@ -83,6 +87,7 @@ private fun CardCheckScreen(
     onToggleIncludeLow: () -> Unit,
     directSearchHandler: DirectSearchHandler? = null,
     simContext: SimContext? = null,
+    viewModel: CardCheckViewModel? = null,
 ) {
     Box(modifier = Modifier.fillMaxSize().background(ScreenBg)) {
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -117,14 +122,30 @@ private fun CardCheckScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // v2.5.0 §direct-search: 첫 transaction의 sourceId 기준 SIM AI 검색
+            // v2.6.0 §11 3액션: 첫 transaction의 sourceId 기준 차단/태그/검색
             val firstSourceId = transactions.firstOrNull()?.sourceId
-            if (firstSourceId != null && directSearchHandler != null && simContext != null) {
-                DirectSearchAddon(
-                    input = SearchInput.PhoneNumber(firstSourceId, simContext),
-                    tier = RiskTier.Unknown,
+            if (firstSourceId != null && directSearchHandler != null && simContext != null && viewModel != null) {
+                val input = SearchInput.PhoneNumber(firstSourceId, simContext)
+                var isBlocked by remember(firstSourceId) { mutableStateOf(false) }
+                var currentTag by remember(firstSourceId) { mutableStateOf<String?>(null) }
+                LaunchedEffect(firstSourceId) {
+                    isBlocked = viewModel.isBlocked(input)
+                    currentTag = viewModel.currentTag(input)
+                }
+                ThreeActionsAddon(
+                    input = input,
                     surfaceContext = SurfaceContext.CARD,
                     handler = directSearchHandler,
+                    isBlocked = isBlocked,
+                    currentTag = currentTag,
+                    onBlockToggle = { newState ->
+                        viewModel.toggleBlock(input, newState)
+                        isBlocked = newState
+                    },
+                    onTagSet = { tag ->
+                        viewModel.setTag(input, tag)
+                        currentTag = tag
+                    },
                 )
                 Spacer(modifier = Modifier.height(12.dp))
             }

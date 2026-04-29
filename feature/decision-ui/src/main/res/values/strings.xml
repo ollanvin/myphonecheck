@@ -31,4 +31,14 @@
     <string name="direct_search_mode_yahoo_japan_ai">Yahoo Japan AI</string>
     <string name="direct_search_mode_baidu_ai">Baidu AI</string>
     <string name="direct_search_fallback">General Search</string>
+
+    <!-- v2.6.0 §11 3-actions (Stage 3-007-3ACTIONS) — English default only (헌법 §9-1) -->
+    <string name="action_block">Block</string>
+    <string name="action_unblock">Unblock</string>
+    <string name="action_tag">Tag</string>
+    <string name="action_search">Search</string>
+    <string name="tag_dialog_title">Add tag</string>
+    <string name="tag_dialog_label">Free text (e.g. "trade partner", "ad spam")</string>
+    <string name="tag_dialog_save">Save</string>
+    <string name="tag_dialog_cancel">Cancel</string>
 </resources>

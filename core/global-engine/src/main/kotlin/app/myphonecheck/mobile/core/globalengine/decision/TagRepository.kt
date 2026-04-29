@@ -11,6 +11,14 @@ import javax.inject.Singleton
  */
 interface TagRepository {
     suspend fun findByKey(key: String, type: IdentifierType): TagRecord?
+
+    /**
+     * v2.6.0 §11 액션 2 (Tag) — 사용자 자유 텍스트 라벨 부여.
+     * 기본 priority = REMIND_ME. default 구현은 no-op (Noop fallback).
+     */
+    suspend fun setTag(key: String, type: IdentifierType, tagText: String) {
+        // default no-op — RoomTagRepository에서 override
+    }
 }
 
 data class TagRecord(
