@@ -1,4 +1,4 @@
-﻿YAML syntax check: PyYAML not available, falling back to structural inspection
+YAML syntax check: PyYAML not available, falling back to structural inspection
 name: Contract Freeze Check
 
 on:

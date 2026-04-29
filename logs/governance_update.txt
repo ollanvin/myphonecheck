@@ -1,4 +1,4 @@
-﻿
+
 docs\00_governance\project-governance.md:62:- **Stage 0 — Common contracts (Coding WO
  f1a85c + hotfix e3b05e Java 17):** 순수 JVM 모듈 `:core:common` (`app.myphonecheck.core.
 common.*`) — `IdentifierType`, `RiskKnowledge` 계약군, `Checker`, `DecisionEngineContrac

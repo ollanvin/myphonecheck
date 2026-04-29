@@ -1,4 +1,4 @@
-﻿9b172e86d287eb7ce2b48212952daf3fa353b81c|2026-04-24 10:33:06 +0900|鍮꾩쟾 (AI Agent)|docs(prd): update pricing to USD 2.49/month per memory #11
+9b172e86d287eb7ce2b48212952daf3fa353b81c|2026-04-24 10:33:06 +0900|鍮꾩쟾 (AI Agent)|docs(prd): update pricing to USD 2.49/month per memory #11
 df664ecc086decfe8a02fea032d8e92c9226297e|2026-04-23 10:41:39 +0900|鍮꾩쟾 (AI Agent)|fix(queue): WO-DISCOVERY-005 UTF-8 BOM-less LF (was UTF-16 LE)
 f6b7bc8d6f39065d0822688cc741ab56ac01e214|2026-04-23 10:35:38 +0900|鍮꾩쟾 (AI Agent)|discovery(executing-OS): WO-DISCOVERY-002 ??443 .md ?꾩닔 ?붿빟
 d8260413e98f5e83e7bb816f3867abf64752ede3|2026-04-23 10:33:27 +0900|鍮꾩쟾 (AI Agent)|queue: WO-DISCOVERY-002 in_progress

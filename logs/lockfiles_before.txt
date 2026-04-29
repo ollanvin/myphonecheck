@@ -1,4 +1,4 @@
-﻿
+
 FullName                                                                             
 --------                                                                             
 C:\Users\user\Dev\ollanvin\myphonecheck\.gradle\8.6\checksums\checksums.lock         

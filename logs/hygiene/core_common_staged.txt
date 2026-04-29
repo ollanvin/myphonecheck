@@ -1,4 +1,4 @@
-﻿core/common/FREEZE.md
+core/common/FREEZE.md
 core/common/build.gradle.kts
 core/common/src/main/kotlin/app/myphonecheck/core/common/checker/Checker.kt
 core/common/src/main/kotlin/app/myphonecheck/core/common/engine/DecisionEngineContract.kt

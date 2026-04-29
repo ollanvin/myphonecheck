@@ -1,4 +1,4 @@
-﻿ M app/build.gradle.kts
+ M app/build.gradle.kts
  M app/src/main/AndroidManifest.xml
  M app/src/main/kotlin/app/myphonecheck/mobile/legacy/ForcePhoneListener.kt
  M app/src/main/kotlin/app/myphonecheck/mobile/navigation/MyPhoneCheckNavHost.kt

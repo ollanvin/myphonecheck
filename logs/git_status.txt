@@ -1,4 +1,4 @@
-﻿## codex-global-single-core-snapshot...origin/codex-global-single-core-snapshot [ahead 1]
+## codex-global-single-core-snapshot...origin/codex-global-single-core-snapshot [ahead 1]
  M app/build.gradle.kts
  M app/src/main/AndroidManifest.xml
  M app/src/main/kotlin/app/myphonecheck/mobile/legacy/ForcePhoneListener.kt

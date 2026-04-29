@@ -1,0 +1,91 @@
+name: Encoding Check (UTF-8 enforcement)
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  encoding-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect non-UTF-8 files
+        run: |
+          set -e
+          BAD_FILES=$(find . \
+            -type f \
+            -size +0c \
+            \( -name "*.kt" -o -name "*.kts" -o -name "*.java" \
+               -o -name "*.gradle" -o -name "*.xml" -o -name "*.json" \
+               -o -name "*.yaml" -o -name "*.yml" -o -name "*.md" \
+               -o -name "*.txt" -o -name "*.pro" \) \
+            -not -path "./.git/*" \
+            -not -path "./build/*" \
+            -not -path "*/build/*" \
+            -not -path "*/.gradle/*" \
+            -not -path "./node_modules/*" \
+            -exec file -i {} \; \
+            | grep -v "charset=utf-8\|charset=us-ascii" \
+            || true)
+
+          if [ -n "$BAD_FILES" ]; then
+            echo "::error::Non-UTF-8 files detected (헌법 §9-7 위반):"
+            echo "$BAD_FILES"
+            exit 1
+          fi
+          echo "All files UTF-8 compliant (헌법 §9-7 정합)"
+
+      - name: Detect UTF-16 BOM (FF FE / FE FF)
+        run: |
+          set -e
+          BOM_FILES=$(find . \
+            -type f \
+            \( -name "*.kt" -o -name "*.kts" -o -name "*.java" \
+               -o -name "*.gradle" -o -name "*.xml" -o -name "*.json" \
+               -o -name "*.yaml" -o -name "*.yml" -o -name "*.md" \
+               -o -name "*.txt" -o -name "*.pro" \) \
+            -not -path "./.git/*" \
+            -not -path "./build/*" \
+            -not -path "*/build/*" \
+            -not -path "*/.gradle/*" \
+            -not -path "./node_modules/*" \
+            -exec sh -c '
+              head -c 2 "$1" | od -An -tx1 | tr -d " " | grep -qE "^(fffe|feff)$" && echo "$1"
+            ' _ {} \; \
+            || true)
+
+          if [ -n "$BOM_FILES" ]; then
+            echo "::error::UTF-16 BOM detected (헌법 §9-7 영구 금지):"
+            echo "$BOM_FILES"
+            exit 1
+          fi
+          echo "No UTF-16 BOM detected (헌법 §9-7 정합)"
+
+      - name: Detect UTF-8 BOM (EF BB BF)
+        run: |
+          set -e
+          UTF8_BOM_FILES=$(find . \
+            -type f \
+            \( -name "*.kt" -o -name "*.kts" -o -name "*.java" \
+               -o -name "*.gradle" -o -name "*.xml" -o -name "*.json" \
+               -o -name "*.yaml" -o -name "*.yml" -o -name "*.md" \
+               -o -name "*.txt" -o -name "*.pro" \) \
+            -not -path "./.git/*" \
+            -not -path "./build/*" \
+            -not -path "*/build/*" \
+            -not -path "*/.gradle/*" \
+            -not -path "./node_modules/*" \
+            -exec sh -c '
+              head -c 3 "$1" | od -An -tx1 | tr -d " " | grep -qE "^efbbbf$" && echo "$1"
+            ' _ {} \; \
+            || true)
+
+          if [ -n "$UTF8_BOM_FILES" ]; then
+            echo "::error::UTF-8 BOM detected (헌법 §9-7 BOM 없음 위반):"
+            echo "$UTF8_BOM_FILES"
+            exit 1
+          fi
+          echo "No UTF-8 BOM detected (헌법 §9-7 정합)"

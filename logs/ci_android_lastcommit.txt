@@ -1,4 +1,4 @@
-﻿commit 656abfae574459588cc99c73d527a70a816d699e
+commit 656abfae574459588cc99c73d527a70a816d699e
 Author: ITSALLDONE <founder@idolab.ai>
 Date:   Thu Apr 9 07:25:52 2026 +0900
 

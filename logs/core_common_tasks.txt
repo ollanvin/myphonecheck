@@ -1,4 +1,4 @@
-﻿Starting a Gradle Daemon, 1 stopped Daemon could not be reused, use --status for details
+Starting a Gradle Daemon, 1 stopped Daemon could not be reused, use --status for details
 > Task :build-logic:convention:checkKotlinGradlePluginConfigurationErrors
 > Task :build-logic:convention:compileKotlin UP-TO-DATE
 > Task :build-logic:convention:compileJava NO-SOURCE

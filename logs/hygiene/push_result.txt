@@ -1,4 +1,4 @@
-﻿git : remote: error: Trace: 4443d589e0aaebdc8cc19ebbf4bdcfda00a4d1e24f6280b470a3820e0a161607        
+git : remote: error: Trace: 4443d589e0aaebdc8cc19ebbf4bdcfda00a4d1e24f6280b470a3820e0a161607        
 At line:1 char:1
 + git push origin HEAD 2>&1 | Out-File -Encoding utf8 $env:TEMP\push_re ...
 + ~~~~~~~~~~~~~~~~~~~~~~~~~

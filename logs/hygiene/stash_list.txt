@@ -1,1 +1,1 @@
-﻿stash@{0}: On codex-global-single-core-snapshot: stage0-hotfix-hygiene: category C residue (push-removal refactor + other governance docs/scripts)
+stash@{0}: On codex-global-single-core-snapshot: stage0-hotfix-hygiene: category C residue (push-removal refactor + other governance docs/scripts)

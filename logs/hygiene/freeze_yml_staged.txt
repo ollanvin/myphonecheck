@@ -1,1 +1,1 @@
-﻿.github/workflows/contract-freeze-check.yml
+.github/workflows/contract-freeze-check.yml

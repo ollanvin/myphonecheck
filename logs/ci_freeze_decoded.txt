@@ -1,4 +1,4 @@
-﻿name: Contract Freeze Check
+name: Contract Freeze Check
 
 on:
   pull_request:

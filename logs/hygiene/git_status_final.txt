@@ -1,4 +1,4 @@
-﻿On branch codex-global-single-core-snapshot
+On branch codex-global-single-core-snapshot
 Your branch is ahead of 'origin/codex-global-single-core-snapshot' by 2 commits.
   (use "git push" to publish your local commits)
 
