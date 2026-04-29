@@ -155,3 +155,71 @@ enum class StalenessFlag {
 ```
 
 ---
+
+## §10-formula-4axis. 검색 4대 축 가중치 합산 (v2.4.0 신설)
+
+### 입력 (4대 축, 메모리 #8 + 헌법 §1 v2.4.0)
+
+| 축 | 입력 형태 | 가중치 W | 신뢰도 C |
+|---|---|---|---|
+| 1. 내부 NKB | featureCounts (호출/문자 빈도, 마지막 접촉) | 0.30 | 사용자 자신 이력 = 매우 높음 |
+| 2. 공공 공신력 | 신고 카운트, 신고 시점, 신고 카테고리 | 0.50 | Ground truth = 최고 |
+| 3. 외부 AI 검색 (사용자 직접) | 사용자 검색 후 태그 추가 시 입력 | 0.10 | 사용자 직접 검증 |
+| 4. 경쟁사 Reverse Lookup (사용자 직접) | 사용자 검색 후 태그 추가 시 입력 | 0.10 | 사용자 직접 검증 |
+
+**중요**: 축 3, 4는 우리가 직접 호출 0. 사용자 Custom Tab 진입 후 본인 판단으로 태그 추가 시에만 입력 발생. 헌법 §1 정합.
+
+### 합산 공식
+
+```
+RiskScore = Σ (W_i × C_i × signal_i)
+
+where:
+  signal_i ∈ [-1, 1]
+    -1 = strong safe (예: 사용자 빈번 통화 + 태그=가족)
+     0 = unknown
+    +1 = strong danger (예: KISA 신고 5건 + 사용자 차단 + 경쟁사 spam 분류)
+```
+
+### Tier 매핑
+
+| RiskScore 범위 | Tier | 색상 | 사용자 추천 행동 |
+|---|---|---|---|
+| `score >= +0.5` | **Danger** | 빨강 | 거절 + 차단 + 신고 |
+| `+0.2 ≤ score < +0.5` | **Caution** | 주황 | 거절 권장 + 직접 검색 |
+| `-0.2 < score < +0.2` AND 신뢰도 합산 < 0.4 | **Unknown** | 회색 | **직접 검색 강력 권장** |
+| `-0.2 < score < +0.2` AND 신뢰도 합산 ≥ 0.4 | **Caution** | 노랑 | 사용자 판단 |
+| `score ≤ -0.2` | **Safe** | 초록 | 정상 수신 |
+
+### Unknown Tier 특별 처리 (대표님 2026-04-29 결정)
+
+Unknown Tier = "결정 엔진이 충분한 정보를 못 받음". 옛 MyPhoneCheck v1에서 이 영역이 사용자에게 가장 답답한 영역이었음.
+
+대응:
+1. **명시 표시**: "정보 부족. 직접 확인이 필요합니다" 메시지
+2. **직접 검색 버튼 강조**: "🔍 직접 검색" 버튼을 Tier 표시 옆에 prominent 배치
+3. **4축 메뉴 자동 표시**: 사용자가 검색 진입 시 4축 메뉴 우선 노출 (AI 검색 default)
+4. **사용자 판단 후 입력**: 사용자가 검색 결과 보고 태그 추가 시 → 다음 동일 번호 수신 시 score 갱신 → Tier 변경
+
+### 6 Surface 적용
+
+본 공식은 6 Surface 모두 동일 적용 (헌법 §7 One Engine, N Surfaces).
+
+| Surface | 입력 채널 | Tier 표시 위치 |
+|---|---|---|
+| CallCheck (수신) | 발신 번호 | CallScreeningService UI |
+| CallCheck (종료 후) | 발신 번호 | 오버레이 카드 (또는 알림) |
+| MessageCheck | 발신 번호 + 본문 키워드 | 알림 + 자체 UI 카드 |
+| PushCheck | 알림 발신 앱 패키지 | 휴지통 항목 |
+| CardCheck | 카드 알림 발신 번호 | 카드 알림 UI |
+| MicCheck/CameraCheck | 권한 침해 발신 앱 | 권한 침해 알림 |
+
+각 Surface의 "직접 검색" 버튼 spec은 별건 WO (`WO-V230-SURFACES-DIRECT-SEARCH`) 처리.
+
+### 헌법 정합
+
+- §3 결정권 중앙집중 금지: 우리는 Tier만 제시, 행동 결정은 사용자
+- §5 정직성: Unknown은 정직히 Unknown 표시 + 직접 검색 채널 제공
+- §1 Out-Bound Zero: 축 3, 4는 사용자 직접 트리거만, 우리 송신 0
+- §6 가격 정직성: 4축 모두 우리 비용 0 ($2.49/월 net ARPU $1.49 유지)
+- §7 One Engine, N Surfaces: 6 Surface 동일 공식
