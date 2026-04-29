@@ -112,8 +112,8 @@ class FeedRegistryTest {
     }
 
     @Test
-    fun `Competitor sources fully removed (Stage 3-000 헌법 §1 v2.4.0 정합)`() {
-        // 폐기 완료: thecall_kr, whowho_kr, moaff_kr, whoscall_global
+    fun `Competitor sources fully removed in Stage 3-000`() {
+        // 폐기 완료 (헌법 §1 v2.4.0 정합): thecall_kr, whowho_kr, moaff_kr, whoscall_global
         listOf("thecall_kr", "whowho_kr", "moaff_kr", "whoscall_global").forEach { id ->
             assertNull("CompetitorApp id $id must be removed", registry.byId(id))
         }
