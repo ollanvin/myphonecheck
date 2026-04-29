@@ -60,9 +60,11 @@ dependencies {
 
     implementation(project(":core:model"))
     implementation(project(":core:util"))
+    implementation(project(":core:global-engine"))
     implementation(project(":feature:decision-engine"))
 
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
 }
