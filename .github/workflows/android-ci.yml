@@ -1,15 +1,25 @@
 name: Android CI
 
+# WO-CI-OPT-001 (2026-04-29): Job 분할 + gradle/actions/setup-gradle@v4 공식 캐싱.
+# 직전 사이클 평균 11분 → 목표 3~5분 (4 job 병렬).
+# 헌법 §9-7 정합 (UTF-8 BOM 없음).
+
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
 
+# 동일 PR 신규 push 시 in-flight build/test 자동 cancel (큐 적체 방지).
+concurrency:
+  group: android-ci-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
+    name: Build (assembleDebug)
     runs-on: ubuntu-latest
-
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -27,11 +37,81 @@ jobs:
             platforms;android-34
             build-tools;34.0.0
 
+      - name: Setup Gradle (공식 캐싱)
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew compileDebugKotlin
+      - name: assembleDebug (--build-cache --parallel)
+        run: ./gradlew app:assembleDebug --build-cache --parallel
 
-      - name: Run tests
-        run: ./gradlew testDebugUnitTest
+  unit-test:
+    name: Unit Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: >-
+            tools platform-tools
+            platforms;android-34
+            build-tools;34.0.0
+
+      - name: Setup Gradle (공식 캐싱)
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # Stage 3-000 학습: assembleDebug는 unit test compile을 거치지 않음 → 별 step.
+      - name: compileDebugUnitTestKotlin (회귀 게이트)
+        run: ./gradlew compileDebugUnitTestKotlin --build-cache --parallel
+
+      - name: testDebugUnitTest (모든 모듈)
+        run: ./gradlew testDebugUnitTest --build-cache --parallel
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: >-
+            tools platform-tools
+            platforms;android-34
+            build-tools;34.0.0
+
+      - name: Setup Gradle (공식 캐싱)
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: lintDebug (--build-cache --parallel)
+        run: ./gradlew lintDebug --build-cache --parallel || true
