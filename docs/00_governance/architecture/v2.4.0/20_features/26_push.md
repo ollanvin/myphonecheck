@@ -90,3 +90,64 @@ PushCheck는 위 7개 조항 중 **6개 조항에 직접 정합**한다 (제6조
 - 수동 테스트 절차: `docs/05_quality/stage1_push_trash_manual_test.md`
 - §17-1 Surface 정의 (v1.9.0 정정 — Stage 1 PushCheck = 규칙 기반 휴지통, Stage 2+ DE 통합 후속)
 - §36-3-A Surface 확장 정책 PushCheck 사례 (Stage 1 규칙 기반 한정)
+
+---
+
+## §direct-search. "직접 검색" 버튼 spec (v2.4.0 신설, 2026-04-29 대표님 결정)
+
+### 목적
+
+Risk Tier "Unknown" 영역 사용자 의사결정 보조. 옛 MyPhoneCheck v1에서 "확실하게 피싱·스팸이라고 판단하기 어려운 애매한 번호"가 사용자에게 가장 답답한 영역이었던 점 정정.
+
+본 Surface에서 사용자가 수신/거절/차단 외 **"직접 확인" 옵션**을 행사할 수 있도록 "🔍 직접 검색" 버튼을 prominent 배치한다.
+
+### 동작
+
+```
+[🔍 직접 검색] 탭
+  ↓
+4축 메뉴 시트 표시 (사용자 첫 사용 시 전체 메뉴, 이후 마지막 선택 default)
+  ① 🌐 AI 검색 (Google AI Mode)
+       → https://www.google.com/search?q={번호}&udm=50
+       → Custom Tab 진입
+  ② 🛡 KISA 보이스피싱 신고 DB
+       → 공공 API 결과 페이지
+  ③ 📞 경쟁사 (Truecaller / Whoscall / Hiya)
+       → 사용자 마지막 선택 기억
+       → Custom Tab 진입
+  ④ 🔎 일반 검색 (Google / Bing / Naver)
+       → 사용자 default 검색엔진
+       → Custom Tab 진입
+  ↓
+사용자가 검색 결과 보고 본인 판단
+  ↓
+사용자 행동:
+  - 수신
+  - 거절
+  - 차단
+  - 태그 추가 (이 입력은 다음 동일 번호 수신 시 결정 엔진 score 갱신, 헌법 §1·§2 정합 = 온디바이스만)
+```
+
+### 헌법 정합
+
+- §1 Out-Bound Zero: Custom Tab 사용자 직접 진입 = 사용자 본인 의지 외부 검색 (우리 송신 0)
+- §3 결정권 중앙집중 금지: 우리는 검색 채널 제공만, 행동 결정은 사용자
+- §5 정직성: Tier Unknown을 정직히 표시 + 직접 검색 채널 제공
+
+### UX 가이드
+
+- 버튼 색상: Tier 색상과 대비되는 중립색 (회색 또는 파랑)
+- 버튼 위치: Tier 표시 바로 옆 또는 아래 (사용자 시선 자연 흐름)
+- 버튼 크기: 최소 44dp (Material Design 터치 타겟)
+- 버튼 레이블: "🔍 직접 검색" (다국어 strings.xml)
+- 4축 메뉴 시트: BottomSheet 또는 Dialog (Material 3)
+- 마지막 선택 기억: SharedPreferences 로컬 저장 (헌법 §1·§2 정합)
+
+### §direct-search-push. PushCheck 배치 위치
+
+**휴지통 항목별**:
+- 위치: 휴지통 UI 각 항목 우측에 "🔍 검색" 아이콘
+- 검색 대상: 알림 발신 앱 패키지명 (1차) / 알림 본문 발신자 번호 (2차, 본문 파싱 필요)
+- 4축 중 활성: 본문이 폰 번호면 4축 전체, 앱 패키지명만이면 ①, ④
+
+**모듈**: `:feature:push-trash` (Stage 1-001 완료)
