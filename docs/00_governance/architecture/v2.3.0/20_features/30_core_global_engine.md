@@ -113,44 +113,55 @@ sealed class CountryScope {
 
 SIM countryIso 기반 자동 추천 시 CountryScope.COUNTRY 매칭이 우선.
 
-## 30-4. 검색 4축 (v2.1.0 정정 — 경쟁 앱 데이터 추가)
+## 검색 4대 축 (2026-04-29 v2.3.1 갱신)
 
-기존 3축(internal / external / public)을 4축으로 본질 확장. 메모리 #5 정합 + 헌법 §1 강제 그대로.
+본 4대 축은 결정 엔진(`:core:global-engine`)의 입력으로 통합된다. 사용자에게는 검색 결과를 직접 노출하지 않고, **Risk Tier + 근거 카드**만 표시한다 (헌법 §3 결정권 중앙집중 금지 + §5 정직성 정합).
 
-### 30-4-1. Internal (Layer 1·2 통합)
+### 축 1: 내부 (온디바이스 NKB)
+- 사용자 본인 통화/문자/태그 이력
+- 헌법 §1·§2 정합 (외부 송신 0)
+- 가중치: 높음 (사용자 자신의 이력)
 
-- 온디바이스 이력 (CallLog, SMS) + MyPhoneCheck 영구 기록 (라벨·태그·차단)
-- 외부 통신 0
-- 즉시 응답 (밀리초)
+### 축 2: 공공 공신력 (Ground Truth)
+- KISA 보이스피싱 신고 DB
+- 경찰청 사이버범죄 신고
+- 금감원 금융사기 신고
+- 통신사 공개 차단번호 리스트
+- 가중치: **최고** (ground truth)
+- 헌법 §1 허용 명시
 
-### 30-4-2. External (Layer 4)
+### 축 3: 외부 AI 검색 (사용자 직접 트리거)
+- **1차**: Google AI Mode (`https://www.google.com/search?q={번호}&udm=50`)
+- **Fallback**: Bing Copilot (`https://www.bing.com/search?q={번호}&showconv=1`)
+- 한국 SIM: Naver Cue (별건 검증 후 추가)
+- **방식**: Custom Tab 사용자 직접 진입. 우리 API 통합 0.
+- 가중치: 중간 (사용자 직접 검색 시 입력으로 합산)
+- 헌법 §1 정합 (사용자 본인 의지로 외부 검색)
 
-- 일반 검색엔진 (Google, Naver 등)
-- **Custom Tab 사용자 trigger 방식** (헌법 §1 정합)
-- 사용자가 명시적으로 "검색 열기" 버튼 클릭 → 브라우저 트리거
-- 본 앱은 검색 자체 수행 안 함, 결과 받지 않음
+### 축 4: 경쟁사 Reverse Lookup (사용자 직접 트리거)
+- Truecaller 웹: `https://www.truecaller.com/search/{country}/{number}`
+- Whoscall 웹: `https://whoscall.com/search/{number}`
+- Hiya 웹: `https://hiya.com/phone-lookup/{number}`
+- Should I Answer, Sync.ME 등 추가 가능
+- **방식**: Custom Tab 사용자 직접 진입. 우리 비공식 API/scraper 통합 절대 금지.
+- 가중치: 중간 (사용자 직접 검색 시 입력으로 합산)
+- 헌법 §1 정합 (공개 웹 페이지 사용자 본인 진입 = 일반 검색과 동일 패턴)
 
-### 30-4-3. Public Feed — Government & Telco (Layer 3-B / 3-D)
+### 4축 통합 → 결정 엔진
+모든 축의 결과는 `DecisionEngine`이 가중치 합산 후 Risk Tier (Safe / Caution / Danger / Unknown) 출력. 사용자에게는 Tier + 근거 카드만 표시.
 
-- 정부 신고 DB (예: KISA 스미싱 신고, FBI IC3, ACMA Do-Not-Call)
-- 통신사 공개 차단번호
-- 보안업체 공개 위협 인텔리전스 (예: Abuse.ch, PhishTank, OpenPhish)
-- **사용자 옵트인 다운로드 방식** (헌법 §1 정합)
-- 본 앱이 다운로드해서 디바이스 캐싱 → 이후 오프라인 활용
-- 외부 통신은 사용자 동의 후 정해진 피드만
-- SIM countryIso 기반 자동 추천 (CountryScope.COUNTRY 매칭)
+### "직접 검색" 버튼 (Risk Tier Unknown 영역 보조)
+6 Surface 모두에 "🔍 직접 검색" 버튼 배치. 사용자가 결과 부족한 케이스에서 직접 4축 검색 진입 가능. 본인 판단으로 행동 결정 (수신/거절/차단 외 "직접 확인" 옵션).
 
-### 30-4-4. Public Feed — Competitor Apps (Layer 3-C, v2.1.0 신규)
+배치:
+- CallCheck 수신 화면 (CallScreeningService UI)
+- CallCheck 통화 종료 오버레이 (SAW 또는 알림 카드)
+- MessageCheck 문자 수신 알림 + 자체 UI 카드
+- PushCheck 휴지통 항목별
+- CardCheck 카드 알림 발신자 번호
+- MicCheck/CameraCheck 권한 침해 알림 발신 앱
 
-- 경쟁 앱 공개 데이터 (한국 더콜·후후·뭐야이번호, 대만 Whoscall 등)
-- 사용자 신고 기반 풍부한 데이터셋 — 정부·통신사 출처보다 폭넓음
-- 활용 방식:
-  - 공개 API (있는 경우)
-  - 공개 웹 스크래핑 (robots.txt + 라이선스 정합 필수)
-  - 데이터 다운로드 후 디바이스 캐싱
-- 옵트인 강조: "타사 데이터 활용" 명시
-- 라이선스·이용약관 사전 검토 필수 — 본 PR 명문화, 실 출처 통합은 후속 PR
-- 헌법 §1 옵트인 정합 — 사용자 동의 없이 활성화 0
+상세는 `20_features/21~32` 각 Surface 문서 (별건 WO-V230-SURFACES-DIRECT-SEARCH).
 
 ## 30-5. Decision Input Aggregator
 
