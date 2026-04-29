@@ -35,8 +35,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import app.myphonecheck.core.common.risk.RiskTier
 import app.myphonecheck.mobile.core.globalengine.parsing.message.MessageCategory
 import app.myphonecheck.mobile.core.globalengine.parsing.message.SenderProfile
+import app.myphonecheck.mobile.core.globalengine.search.SearchInput
+import app.myphonecheck.mobile.core.globalengine.simcontext.SimContext
+import app.myphonecheck.mobile.feature.decisionui.components.DirectSearchAddon
+import app.myphonecheck.mobile.feature.decisionui.components.DirectSearchHandler
+import app.myphonecheck.mobile.feature.decisionui.components.MultiInputDirectSearchAddon
+import app.myphonecheck.mobile.feature.decisionui.components.SearchInputExtractor
+import app.myphonecheck.mobile.feature.decisionui.components.SurfaceContext
 import app.myphonecheck.mobile.feature.messagecheck.R
 import app.myphonecheck.mobile.feature.messagecheck.repository.MessageEntry
 import java.text.SimpleDateFormat
@@ -69,6 +77,8 @@ fun MessageCheckRoute(
         onRequestPermission = {
             permissionLauncher.launch(Manifest.permission.READ_SMS)
         },
+        directSearchHandler = viewModel.directSearchHandler,
+        simContext = viewModel.simContext(),
     )
 }
 
@@ -77,6 +87,8 @@ private fun MessageCheckScreen(
     state: MessageCheckUiState,
     onBack: () -> Unit,
     onRequestPermission: () -> Unit,
+    directSearchHandler: DirectSearchHandler? = null,
+    simContext: SimContext? = null,
 ) {
     Box(modifier = Modifier.fillMaxSize().background(ScreenBg)) {
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -101,7 +113,35 @@ private fun MessageCheckScreen(
                     fontSize = 12.sp,
                 )
                 MessageCheckUiState.PermissionRequired -> PermissionCard(onRequestPermission)
-                is MessageCheckUiState.Loaded -> LoadedContent(state)
+                is MessageCheckUiState.Loaded -> {
+                    LoadedContent(state)
+                    // v2.5.0 §direct-search-message: 첫 메시지 → 본문 파싱 다중 input
+                    val firstEntry = state.entries.firstOrNull()
+                    if (firstEntry != null && directSearchHandler != null && simContext != null) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        val candidates = SearchInputExtractor.fromMessage(
+                            senderPhoneNumber = firstEntry.sender,
+                            body = firstEntry.bodySnippet,
+                            simContext = simContext,
+                            surfaceContextLabel = "MESSAGE",
+                        )
+                        if (candidates.size > 1) {
+                            MultiInputDirectSearchAddon(
+                                candidates = candidates,
+                                tier = RiskTier.Unknown,
+                                surfaceContext = SurfaceContext.MESSAGE,
+                                handler = directSearchHandler,
+                            )
+                        } else if (candidates.size == 1) {
+                            DirectSearchAddon(
+                                input = candidates.first(),
+                                tier = RiskTier.Unknown,
+                                surfaceContext = SurfaceContext.MESSAGE,
+                                handler = directSearchHandler,
+                            )
+                        }
+                    }
+                }
             }
         }
     }

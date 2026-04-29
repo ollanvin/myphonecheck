@@ -35,9 +35,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import app.myphonecheck.core.common.risk.RiskTier
+import app.myphonecheck.mobile.core.globalengine.search.SearchInput
 import app.myphonecheck.mobile.feature.callcheck.R
 import app.myphonecheck.mobile.feature.callcheck.repository.CallDirection
 import app.myphonecheck.mobile.feature.callcheck.repository.CallEntry
+import app.myphonecheck.mobile.feature.decisionui.components.DirectSearchAddon
+import app.myphonecheck.mobile.feature.decisionui.components.DirectSearchHandler
+import app.myphonecheck.mobile.feature.decisionui.components.SurfaceContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -66,6 +71,8 @@ fun CallCheckRoute(
         onRequestPermission = {
             permissionLauncher.launch(Manifest.permission.READ_CALL_LOG)
         },
+        directSearchHandler = viewModel.directSearchHandler,
+        simRegion = (state as? CallCheckUiState.Loaded)?.simRegion ?: "",
     )
 }
 
@@ -74,6 +81,8 @@ private fun CallCheckScreen(
     state: CallCheckUiState,
     onBack: () -> Unit,
     onRequestPermission: () -> Unit,
+    directSearchHandler: DirectSearchHandler? = null,
+    simRegion: String = "",
 ) {
     Box(modifier = Modifier.fillMaxSize().background(ScreenBg)) {
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -100,11 +109,30 @@ private fun CallCheckScreen(
                     )
                 }
                 is CallCheckUiState.PermissionRequired -> PermissionCard(onRequestPermission)
-                is CallCheckUiState.Loaded -> EntryList(state.entries)
+                is CallCheckUiState.Loaded -> {
+                    EntryList(state.entries)
+                    // v2.5.0 §direct-search: 최근 entry의 PhoneNumber로 SIM 기준 AI 검색.
+                    val firstNumber = state.entries.firstOrNull()?.e164
+                    if (firstNumber != null && directSearchHandler != null && simRegion.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        DirectSearchAddon(
+                            input = SearchInput.PhoneNumber(firstNumber, callCheckSimContext(simRegion)),
+                            tier = RiskTier.Unknown,
+                            surfaceContext = SurfaceContext.CALL,
+                            handler = directSearchHandler,
+                        )
+                    }
+                }
             }
         }
     }
 }
+
+private fun callCheckSimContext(region: String) = app.myphonecheck.mobile.core.globalengine.simcontext.SimContext(
+    mcc = "", mnc = "", countryIso = region, operatorName = "",
+    currency = java.util.Currency.getInstance("USD"),
+    phoneRegion = region, timezone = java.util.TimeZone.getDefault(),
+)
 
 @Composable
 private fun PermissionCard(onRequest: () -> Unit) {

@@ -6,6 +6,7 @@ import app.myphonecheck.mobile.core.globalengine.simcontext.SimContextProvider
 import app.myphonecheck.mobile.feature.callcheck.repository.CallEntry
 import app.myphonecheck.mobile.feature.callcheck.repository.CallLogRepository
 import app.myphonecheck.mobile.feature.callcheck.service.CallVerificationService
+import app.myphonecheck.mobile.feature.decisionui.components.DirectSearchHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +26,10 @@ class CallCheckViewModel @Inject constructor(
     private val callLogRepository: CallLogRepository,
     private val verificationService: CallVerificationService,
     private val simContextProvider: SimContextProvider,
+    val directSearchHandler: DirectSearchHandler,
 ) : ViewModel() {
+
+    fun simContext() = simContextProvider.resolve()
 
     private val _uiState = MutableStateFlow<CallCheckUiState>(CallCheckUiState.Loading)
     val uiState: StateFlow<CallCheckUiState> = _uiState.asStateFlow()

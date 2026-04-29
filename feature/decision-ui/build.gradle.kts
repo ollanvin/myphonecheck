@@ -58,9 +58,9 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
-    implementation(project(":core:model"))
+    api(project(":core:model"))
     implementation(project(":core:util"))
-    implementation(project(":core:global-engine"))
+    api(project(":core:global-engine"))
     implementation(project(":feature:decision-engine"))
 
     testImplementation(libs.junit)

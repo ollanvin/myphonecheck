@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import app.myphonecheck.mobile.data.localcache.dao.CardTransactionMonthlyTotal
 import app.myphonecheck.mobile.data.localcache.entity.CardTransactionEntity
 import app.myphonecheck.mobile.core.globalengine.parsing.currency.learning.LabelingService
+import app.myphonecheck.mobile.core.globalengine.simcontext.SimContextProvider
 import app.myphonecheck.mobile.feature.cardcheck.repository.CardTransactionRepository
+import app.myphonecheck.mobile.feature.decisionui.components.DirectSearchHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +31,11 @@ import javax.inject.Inject
 class CardCheckViewModel @Inject constructor(
     private val repository: CardTransactionRepository,
     private val labeling: LabelingService,
+    private val simContextProvider: SimContextProvider,
+    val directSearchHandler: DirectSearchHandler,
 ) : ViewModel() {
+
+    fun simContext() = simContextProvider.resolve()
 
     private val _selectedMonth = MutableStateFlow(MonthOffset.CURRENT)
     val selectedMonth: StateFlow<MonthOffset> = _selectedMonth.asStateFlow()

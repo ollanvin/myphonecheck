@@ -3,6 +3,8 @@ package app.myphonecheck.mobile.feature.messagecheck.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.myphonecheck.mobile.core.globalengine.parsing.message.SenderProfile
+import app.myphonecheck.mobile.core.globalengine.simcontext.SimContextProvider
+import app.myphonecheck.mobile.feature.decisionui.components.DirectSearchHandler
 import app.myphonecheck.mobile.feature.messagecheck.repository.MessageEntry
 import app.myphonecheck.mobile.feature.messagecheck.repository.MessageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +24,11 @@ import javax.inject.Inject
 @HiltViewModel
 class MessageCheckViewModel @Inject constructor(
     private val messageRepository: MessageRepository,
+    private val simContextProvider: SimContextProvider,
+    val directSearchHandler: DirectSearchHandler,
 ) : ViewModel() {
+
+    fun simContext() = simContextProvider.resolve()
 
     private val _uiState = MutableStateFlow<MessageCheckUiState>(MessageCheckUiState.Loading)
     val uiState: StateFlow<MessageCheckUiState> = _uiState.asStateFlow()

@@ -59,6 +59,7 @@ dependencies {
 
     implementation(project(":core:global-engine"))
     implementation(project(":data:local-cache"))
+    implementation(project(":feature:decision-ui"))
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
