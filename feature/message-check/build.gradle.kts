@@ -62,6 +62,7 @@ dependencies {
     implementation(project(":core:util"))
     implementation(project(":data:sms"))
     implementation(project(":data:local-cache"))
+    implementation(project(":feature:decision-ui"))
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

@@ -2,7 +2,9 @@ package app.myphonecheck.mobile.feature.pushtrash.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.myphonecheck.mobile.core.globalengine.simcontext.SimContextProvider
 import app.myphonecheck.mobile.data.localcache.entity.TrashedNotificationEntity
+import app.myphonecheck.mobile.feature.decisionui.components.DirectSearchHandler
 import app.myphonecheck.mobile.feature.pushtrash.repository.PushTrashRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,7 +16,11 @@ import javax.inject.Inject
 @HiltViewModel
 class PushTrashBinViewModel @Inject constructor(
     private val repository: PushTrashRepository,
+    private val simContextProvider: SimContextProvider,
+    val directSearchHandler: DirectSearchHandler,
 ) : ViewModel() {
+
+    fun simContext() = simContextProvider.resolve()
 
     val items: StateFlow<List<TrashedNotificationEntity>> = repository.trashedItems
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())

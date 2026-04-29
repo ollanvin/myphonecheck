@@ -48,6 +48,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
+import app.myphonecheck.core.common.risk.RiskTier
+import app.myphonecheck.mobile.feature.decisionui.components.MultiInputDirectSearchAddon
+import app.myphonecheck.mobile.feature.decisionui.components.SearchInputExtractor
+import app.myphonecheck.mobile.feature.decisionui.components.SurfaceContext
 import androidx.lifecycle.LifecycleEventObserver
 import app.myphonecheck.mobile.data.localcache.entity.TrashedNotificationEntity
 import app.myphonecheck.mobile.feature.pushtrash.R
@@ -243,6 +247,25 @@ fun PushTrashBinRoute(onBack: () -> Unit) {
                         }
                     },
                 )
+            }
+
+            // v2.5.0 §direct-search-push: 첫 휴지통 항목 → AppPackage + 본문 파싱 다중 input
+            val firstItem = items.firstOrNull()
+            if (firstItem != null) {
+                item {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    val candidates = SearchInputExtractor.fromPushNotification(
+                        packageName = firstItem.packageName,
+                        body = firstItem.text.orEmpty(),
+                        simContext = vm.simContext(),
+                    )
+                    MultiInputDirectSearchAddon(
+                        candidates = candidates,
+                        tier = RiskTier.Unknown,
+                        surfaceContext = SurfaceContext.PUSH,
+                        handler = vm.directSearchHandler,
+                    )
+                }
             }
         }
     }
