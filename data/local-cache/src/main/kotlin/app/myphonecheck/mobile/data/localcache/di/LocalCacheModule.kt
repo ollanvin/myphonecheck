@@ -23,6 +23,7 @@ import app.myphonecheck.mobile.data.localcache.dao.UserCallRecordDao
 import app.myphonecheck.mobile.data.localcache.dao.BlockedIdentifierDao
 import app.myphonecheck.mobile.data.localcache.dao.CallBaseDao
 import app.myphonecheck.mobile.data.localcache.dao.FeedEntryDao
+import app.myphonecheck.mobile.data.localcache.dao.HubMessageDao
 import app.myphonecheck.mobile.data.localcache.dao.PackageBaseDao
 import app.myphonecheck.mobile.data.localcache.dao.PhoneTagDao
 import app.myphonecheck.mobile.data.localcache.dao.SimContextSnapshotDao
@@ -32,6 +33,8 @@ import app.myphonecheck.mobile.data.localcache.db.Migration13To14
 import app.myphonecheck.mobile.data.localcache.db.Migration14To15
 import app.myphonecheck.mobile.data.localcache.db.Migration15To16
 import app.myphonecheck.mobile.data.localcache.db.Migration16To17
+import app.myphonecheck.mobile.data.localcache.db.Migration17To18
+import app.myphonecheck.mobile.data.localcache.db.Migration18To19
 import app.myphonecheck.mobile.data.localcache.db.MyPhoneCheckDatabase
 import app.myphonecheck.mobile.data.localcache.repository.NumberProfileRepository
 import app.myphonecheck.mobile.data.localcache.repository.PreJudgeCacheRepository
@@ -96,6 +99,8 @@ object LocalCacheModule {
                 Migration14To15,
                 Migration15To16,
                 Migration16To17,
+                Migration17To18,
+                Migration18To19,
             )
             .fallbackToDestructiveMigration()
             .build()
@@ -131,6 +136,14 @@ object LocalCacheModule {
         database: MyPhoneCheckDatabase,
     ): MessageHubDao {
         return database.messageHubDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideHubMessageDao(
+        database: MyPhoneCheckDatabase,
+    ): HubMessageDao {
+        return database.hubMessageDao()
     }
 
     @Provides

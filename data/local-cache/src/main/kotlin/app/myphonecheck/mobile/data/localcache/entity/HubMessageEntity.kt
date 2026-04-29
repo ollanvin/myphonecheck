@@ -1,17 +1,31 @@
 package app.myphonecheck.mobile.data.localcache.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /**
- * Hub message minimal stub (Stage 3-007 빌드 그래프 정합 정정).
+ * WO-DATA-MSG-001 Message Hub row (parallel to legacy [MessageHubEntity] / `message_hub`).
  *
- * main 브랜치에 LocalCacheModule + MyPhoneCheckDatabase 가 HubMessageDao를 참조하나
- * 실 entity/dao/migration 파일이 누락된 상태에서 머지됨 (다른 작업 진행 중).
- * 본 PR은 unit test 컴파일 그래프 정합 위해 minimal stub 작성. 실 hub message 영역은 별 시리즈.
+ * Stores normalized SMS / notification lines for MessageCheck aggregation & classification.
  */
-@Entity(tableName = "hub_message")
+@Entity(
+    tableName = "hub_message",
+    indices = [
+        Index(value = ["received_at"]),
+        Index(value = ["sender_identifier", "received_at"]),
+    ],
+)
 data class HubMessageEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val createdAt: Long = System.currentTimeMillis(),
+    @ColumnInfo(name = "sender_identifier") val senderIdentifier: String,
+    @ColumnInfo(name = "sender_label") val senderLabel: String?,
+    @ColumnInfo(name = "content") val content: String,
+    @ColumnInfo(name = "has_link") val hasLink: Boolean,
+    @ColumnInfo(name = "extracted_urls") val extractedUrls: String,
+    @ColumnInfo(name = "extracted_numbers") val extractedNumbers: String,
+    @ColumnInfo(name = "category") val category: String,
+    @ColumnInfo(name = "received_at") val receivedAt: Long,
+    @ColumnInfo(name = "source") val source: String,
 )
