@@ -1,14 +1,22 @@
 name: Contract Freeze Check
 
+# WO-CI-OPT-001: gradle/actions/setup-gradle@v4 공식 캐싱 적용.
+# 헌법 §9-7 정합 (UTF-8 BOM 없음).
+
 on:
   pull_request:
     paths:
       - "core/common/**"
       - ".github/workflows/contract-freeze-check.yml"
 
+concurrency:
+  group: freeze-check-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify-freeze:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -18,8 +26,13 @@ jobs:
           java-version: "17"
           distribution: "temurin"
 
+      - name: Setup Gradle (공식 캐싱)
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: true
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Run core/common tests (includes FreezeMarkerTest)
-        run: ./gradlew :core:common:test --no-daemon
+        run: ./gradlew :core:common:test --build-cache
