@@ -306,3 +306,65 @@ data class ImpersonationFlag(
 ### 18-4-8. PrivacyCheck 폐기 기록 (Patch 21)
 
 (이하 §18-5로 이동되지 않고 현 위치 유지)
+
+---
+
+## §direct-search. "직접 검색" 버튼 spec (v2.4.0 신설, 2026-04-29 대표님 결정)
+
+### 목적
+
+Risk Tier "Unknown" 영역 사용자 의사결정 보조. 옛 MyPhoneCheck v1에서 "확실하게 피싱·스팸이라고 판단하기 어려운 애매한 번호"가 사용자에게 가장 답답한 영역이었던 점 정정.
+
+본 Surface에서 사용자가 수신/거절/차단 외 **"직접 확인" 옵션**을 행사할 수 있도록 "🔍 직접 검색" 버튼을 prominent 배치한다.
+
+### 동작
+
+```
+[🔍 직접 검색] 탭
+  ↓
+4축 메뉴 시트 표시 (사용자 첫 사용 시 전체 메뉴, 이후 마지막 선택 default)
+  ① 🌐 AI 검색 (Google AI Mode)
+       → https://www.google.com/search?q={번호}&udm=50
+       → Custom Tab 진입
+  ② 🛡 KISA 보이스피싱 신고 DB
+       → 공공 API 결과 페이지
+  ③ 📞 경쟁사 (Truecaller / Whoscall / Hiya)
+       → 사용자 마지막 선택 기억
+       → Custom Tab 진입
+  ④ 🔎 일반 검색 (Google / Bing / Naver)
+       → 사용자 default 검색엔진
+       → Custom Tab 진입
+  ↓
+사용자가 검색 결과 보고 본인 판단
+  ↓
+사용자 행동:
+  - 수신
+  - 거절
+  - 차단
+  - 태그 추가 (이 입력은 다음 동일 번호 수신 시 결정 엔진 score 갱신, 헌법 §1·§2 정합 = 온디바이스만)
+```
+
+### 헌법 정합
+
+- §1 Out-Bound Zero: Custom Tab 사용자 직접 진입 = 사용자 본인 의지 외부 검색 (우리 송신 0)
+- §3 결정권 중앙집중 금지: 우리는 검색 채널 제공만, 행동 결정은 사용자
+- §5 정직성: Tier Unknown을 정직히 표시 + 직접 검색 채널 제공
+
+### UX 가이드
+
+- 버튼 색상: Tier 색상과 대비되는 중립색 (회색 또는 파랑)
+- 버튼 위치: Tier 표시 바로 옆 또는 아래 (사용자 시선 자연 흐름)
+- 버튼 크기: 최소 44dp (Material Design 터치 타겟)
+- 버튼 레이블: "🔍 직접 검색" (다국어 strings.xml)
+- 4축 메뉴 시트: BottomSheet 또는 Dialog (Material 3)
+- 마지막 선택 기억: SharedPreferences 로컬 저장 (헌법 §1·§2 정합)
+
+### §direct-search-message. MessageCheck 배치 위치
+
+**문자 수신 직후 (알림 + 자체 UI)**:
+- Android: `RoleManager.ROLE_SMS` (사용자 명시 허용 시) 또는 NotificationListenerService
+- 위치: SMS 알림 expanded view 액션 버튼 + 자체 UI 카드 prominent 위치
+- 입력: 발신 번호 + 본문 키워드 (URL, 의심 단어)
+- 직접 검색 대상: 발신 번호 (1차) / 본문 URL (2차)
+
+**모듈**: `:feature:message-check` (Stage 2-003에서 코어 마이그레이션 완료)
