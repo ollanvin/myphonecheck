@@ -11,6 +11,7 @@ import app.myphonecheck.mobile.data.localcache.dao.CardSourceLabelDao
 import app.myphonecheck.mobile.data.localcache.dao.CardTransactionDao
 import app.myphonecheck.mobile.data.localcache.dao.DetailTagDao
 import app.myphonecheck.mobile.data.localcache.dao.FeedEntryDao
+import app.myphonecheck.mobile.data.localcache.dao.HubMessageDao
 import app.myphonecheck.mobile.data.localcache.dao.InitialScanMetaDao
 import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
 import app.myphonecheck.mobile.data.localcache.dao.NumberProfileDao
@@ -34,6 +35,7 @@ import app.myphonecheck.mobile.data.localcache.entity.CardSourceLabelEntity
 import app.myphonecheck.mobile.data.localcache.entity.CardTransactionEntity
 import app.myphonecheck.mobile.data.localcache.entity.DetailTagEntity
 import app.myphonecheck.mobile.data.localcache.entity.FeedEntryEntity
+import app.myphonecheck.mobile.data.localcache.entity.HubMessageEntity
 import app.myphonecheck.mobile.data.localcache.entity.InitialScanMetaEntity
 import app.myphonecheck.mobile.data.localcache.entity.MessageHubEntity
 import app.myphonecheck.mobile.data.localcache.entity.NumberProfileEntity
@@ -101,8 +103,9 @@ import app.myphonecheck.mobile.data.localcache.entity.UserCallRecord
         BlockedIdentifierEntity::class,
         PhoneTagEntity::class,
         FeedEntryEntity::class,
+        HubMessageEntity::class,
     ],
-    version = 17,
+    version = 18,
     exportSchema = true,
 )
 abstract class MyPhoneCheckDatabase : RoomDatabase() {
@@ -129,6 +132,7 @@ abstract class MyPhoneCheckDatabase : RoomDatabase() {
     abstract fun blockedIdentifierDao(): BlockedIdentifierDao
     abstract fun phoneTagDao(): PhoneTagDao
     abstract fun feedEntryDao(): FeedEntryDao
+    abstract fun hubMessageDao(): HubMessageDao
 
     companion object {
         const val DATABASE_NAME = "myphonecheck.db"

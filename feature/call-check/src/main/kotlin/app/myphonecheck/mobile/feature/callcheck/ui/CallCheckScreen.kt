@@ -35,14 +35,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import app.myphonecheck.core.common.risk.RiskTier
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import app.myphonecheck.mobile.core.globalengine.search.SearchInput
 import app.myphonecheck.mobile.feature.callcheck.R
 import app.myphonecheck.mobile.feature.callcheck.repository.CallDirection
 import app.myphonecheck.mobile.feature.callcheck.repository.CallEntry
-import app.myphonecheck.mobile.feature.decisionui.components.DirectSearchAddon
 import app.myphonecheck.mobile.feature.decisionui.components.DirectSearchHandler
 import app.myphonecheck.mobile.feature.decisionui.components.SurfaceContext
+import app.myphonecheck.mobile.feature.decisionui.components.ThreeActionsAddon
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -73,6 +76,7 @@ fun CallCheckRoute(
         },
         directSearchHandler = viewModel.directSearchHandler,
         simRegion = (state as? CallCheckUiState.Loaded)?.simRegion ?: "",
+        viewModel = viewModel,
     )
 }
 
@@ -83,6 +87,7 @@ private fun CallCheckScreen(
     onRequestPermission: () -> Unit,
     directSearchHandler: DirectSearchHandler? = null,
     simRegion: String = "",
+    viewModel: CallCheckViewModel? = null,
 ) {
     Box(modifier = Modifier.fillMaxSize().background(ScreenBg)) {
         Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -111,15 +116,31 @@ private fun CallCheckScreen(
                 is CallCheckUiState.PermissionRequired -> PermissionCard(onRequestPermission)
                 is CallCheckUiState.Loaded -> {
                     EntryList(state.entries)
-                    // v2.5.0 §direct-search: 최근 entry의 PhoneNumber로 SIM 기준 AI 검색.
+                    // v2.6.0 §11 3액션: 최근 entry의 PhoneNumber로 차단/태그/검색.
                     val firstNumber = state.entries.firstOrNull()?.e164
-                    if (firstNumber != null && directSearchHandler != null && simRegion.isNotEmpty()) {
+                    if (firstNumber != null && directSearchHandler != null && simRegion.isNotEmpty() && viewModel != null) {
+                        val input = SearchInput.PhoneNumber(firstNumber, callCheckSimContext(simRegion))
+                        var isBlocked by remember(firstNumber) { mutableStateOf(false) }
+                        var currentTag by remember(firstNumber) { mutableStateOf<String?>(null) }
+                        LaunchedEffect(firstNumber) {
+                            isBlocked = viewModel.isBlocked(input)
+                            currentTag = viewModel.currentTag(input)
+                        }
                         Spacer(modifier = Modifier.height(12.dp))
-                        DirectSearchAddon(
-                            input = SearchInput.PhoneNumber(firstNumber, callCheckSimContext(simRegion)),
-                            tier = RiskTier.Unknown,
+                        ThreeActionsAddon(
+                            input = input,
                             surfaceContext = SurfaceContext.CALL,
                             handler = directSearchHandler,
+                            isBlocked = isBlocked,
+                            currentTag = currentTag,
+                            onBlockToggle = { newState ->
+                                viewModel.toggleBlock(input, newState)
+                                isBlocked = newState
+                            },
+                            onTagSet = { tag ->
+                                viewModel.setTag(input, tag)
+                                currentTag = tag
+                            },
                         )
                     }
                 }

@@ -11,14 +11,17 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 /**
- * Android Q+ CallScreeningService (Architecture v2.1.0 §31-3).
+ * Android Q+ CallScreeningService (Architecture v2.6.0 §11 정합).
  *
- * 수신 통화 → SimContext 정규화 + RealTimeActionEngine 50ms 결정 → CallResponse.
+ * v2.6.0 §11 3액션 단일 책임 정합 (Stage 3-007 정정):
+ *  - **사용자 명시 차단** 누른 번호만 BLOCK 작동 (자동 차단 영구 미포함, §3 정합)
+ *  - `setRejectCall(false)` 영구 고정 — 거절은 시스템 dialer 책임 (§11 영구 미포함 액션)
+ *  - `setSilenceCall(false)` 영구 고정 — 자동 무음 영구 미포함 (§11)
+ *  - BLOCK = `setDisallowCall(true)` + `setSkipCallLog(true)` + `setSkipNotification(true)` 만
+ *  - 그 외 = OS 기본 동작 (시스템 dialer 단독 작동, 우리 미간섭)
  *
- * BLOCK = setDisallowCall(true) + setRejectCall(true) + setSkipNotification(true)
- *   → 벨 0회 또는 1회 미만 즉시 종료 (헌법 §3 사용자 차단 목록 기반).
- * SILENT = setSilenceCall(true) → 무음 처리, CallLog 보존.
- * 그 외 = OS 기본 동작.
+ * RealTimeActionEngine은 사용자 차단 목록 (BlockListRepository) lookup 결과만 BLOCK 반환.
+ * 자동 SILENT/SUSPICIOUS 분기는 본 v2.6.0 정합 이후 작동 안 함 (§11 영구 미포함).
  */
 @AndroidEntryPoint
 class MyPhoneCheckCallScreeningService : CallScreeningService() {
@@ -39,17 +42,16 @@ class MyPhoneCheckCallScreeningService : CallScreeningService() {
         // CallScreeningService timeout 5s — RealTimeActionEngine 50ms 자체 timeout 적용.
         val decision = runBlocking { actionEngine.decideForCall(key) }
 
+        // v2.6.0 §11 정합: 사용자 명시 차단만 BLOCK. 그 외는 OS 기본 (시스템 dialer 단독).
         val response = when (decision.action) {
             ActionType.BLOCK -> CallResponse.Builder()
                 .setDisallowCall(true)
-                .setRejectCall(true)
+                .setRejectCall(false)        // 헌법 §11 영구 고정 (거절은 시스템 dialer 책임)
+                .setSilenceCall(false)       // 헌법 §11 영구 고정 (자동 무음 미포함)
+                .setSkipCallLog(true)
                 .setSkipNotification(true)
-                .setSkipCallLog(false)  // CallLog는 남김 — 사용자 검토 가능 (헌법 §5).
                 .build()
-            ActionType.SILENT -> CallResponse.Builder()
-                .setSilenceCall(true)
-                .build()
-            else -> CallResponse.Builder().build()
+            else -> CallResponse.Builder().build()  // OS 기본 동작 (시스템 dialer 단독)
         }
 
         respondToCall(callDetails, response)
