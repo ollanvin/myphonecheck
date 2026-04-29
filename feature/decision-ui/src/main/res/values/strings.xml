@@ -21,4 +21,14 @@
     <string name="decision_no_history">No judgment history yet</string>
     <string name="preview_delivery_likely">Likely delivery/shipping</string>
     <string name="preview_scam_likely">Phone number likely to be a scam</string>
+
+    <!-- v2.5.0 §direct-search (Stage 3-004-REV) — English default only (헌법 §9-1) -->
+    <string name="direct_search_button_label">🔍 Direct Search</string>
+    <string name="direct_search_menu_title">Search this number</string>
+    <string name="direct_search_mode_google_ai">Google AI Mode</string>
+    <string name="direct_search_mode_bing_copilot">Bing Copilot</string>
+    <string name="direct_search_mode_naver_ai">Naver AI</string>
+    <string name="direct_search_mode_yahoo_japan_ai">Yahoo Japan AI</string>
+    <string name="direct_search_mode_baidu_ai">Baidu AI</string>
+    <string name="direct_search_fallback">General Search</string>
 </resources>
