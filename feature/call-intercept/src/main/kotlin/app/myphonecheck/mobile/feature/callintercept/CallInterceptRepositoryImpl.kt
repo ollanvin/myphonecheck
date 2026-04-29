@@ -17,7 +17,6 @@ import app.myphonecheck.mobile.core.model.PhaseSource
 import app.myphonecheck.mobile.core.model.PreJudgeResult
 import app.myphonecheck.mobile.core.model.RiskLevel
 import app.myphonecheck.mobile.core.model.TwoPhaseDecision
-import app.myphonecheck.mobile.core.model.UserCallAction
 import app.myphonecheck.mobile.data.localcache.repository.PreJudgeCacheRepository
 import app.myphonecheck.mobile.feature.decisionengine.DecisionEngine
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -33,29 +32,18 @@ private const val DEVICE_EVIDENCE_TIMEOUT_MS = 1000L
 private const val SEARCH_TIMEOUT_MS = 3000L
 
 /**
- * Stage 9: 완전체 인터셉트 파이프라인.
+ * 인터셉트 파이프라인 (v1 잔재 제거 후 핵심 2-Phase 유지).
  *
- * 4대 신규 모듈 통합:
- * 1. InterceptPriorityRouter — 분기 우선순위 (SKIP/INSTANT/LIGHT/FULL)
- * 2. CountryInterceptPolicyProvider — 국가별 인터셉트 정책
- * 3. 2-Phase Scoring — Phase 1 즉시 + Phase 2 확정
- * 4. InterceptOutcomeLearner — 사용자 행동 기반 학습 루프
- *
- * 파이프라인 흐름:
- * ┌─────────────────────────────────────────────────────────────┐
- * │ 수신 → Router(분기) → Phase1(즉시) → Phase2(풀) → 학습루프  │
- * └─────────────────────────────────────────────────────────────┘
+ * InterceptPriorityRouter — 분기 우선순위 (SKIP/INSTANT/LIGHT/FULL)
+ * 2-Phase Scoring — Phase 1 즉시 + Phase 2 확정
  */
 class CallInterceptRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val deviceEvidenceProvider: DeviceEvidenceProvider,
     private val searchEvidenceProvider: SearchEvidenceProvider,
-    private val localLearningProvider: LocalLearningProvider,
     private val preJudgeCacheRepository: PreJudgeCacheRepository,
     private val decisionEngine: DecisionEngine,
     private val priorityRouter: InterceptPriorityRouter,
-    private val countryPolicyProvider: CountryInterceptPolicyProvider,
-    private val performanceTracker: InterceptPerformanceTracker,
 ) : CallInterceptRepository {
 
     /** Tier 1: 인메모리 캐시 (TTL 1h, 최대 50건) */
@@ -103,16 +91,9 @@ class CallInterceptRepositoryImpl @Inject constructor(
             null
         }
 
-        // ── Step 2: 로컬 학습 데이터에서 사용자 행동 이력 조회 ──
-        val localLearning = try {
-            localLearningProvider.getSignal(normalizedNumber)
-        } catch (e: Exception) {
-            null
-        }
-
-        // ── Step 3: Priority Router 분기 ──
+        // ── Step 2: Priority Router 분기 ──
         val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-        val isInternational = isInternationalNumber(normalizedNumber, countryCode)
+        val isInternational = isInternationalNumber(normalizedNumber)
         val recentCount = if (input.channel == IdentifierChannel.CALL) {
             recentCallLog[normalizedNumber]?.count {
                 it > System.currentTimeMillis() - 3_600_000L
@@ -126,20 +107,14 @@ class CallInterceptRepositoryImpl @Inject constructor(
             preJudge = preJudge,
             isSavedContact = input.isSavedContact,
             isInternational = isInternational,
-            isVoip = false, // TODO: TelephonyManager 기반
+            isVoip = false,
             currentHour = currentHour,
             recentCallCount = recentCount,
-            lastUserAction = localLearning?.lastAction,
-            totalAnsweredCount = localLearning?.answeredCount ?: 0,
-            countryRiskElevated = countryPolicyProvider.isElevatedRiskCountry(countryCode),
         )
 
         Log.i(TAG, "Route: ${route.name} for $normalizedNumber (country=$countryCode)")
 
-        // ── Step 4: Route별 파이프라인 실행 ──
-        val networkOn = isNetworkAvailable()
-        val countryBoost = countryPolicyProvider.getRiskBoost(normalizedNumber, countryCode)
-
+        // ── Step 3: Route별 파이프라인 실행 ──
         val decision = when (route) {
             InterceptRoute.SKIP -> {
                 buildSkipDecision(pipelineStartMs, route)
@@ -154,14 +129,6 @@ class CallInterceptRepositoryImpl @Inject constructor(
                 buildFullDecision(input, countryCode, preJudge, pipelineStartMs, route)
             }
         }
-
-        // ── Step 5: 성능 계측 기록 ──
-        performanceTracker.record(
-            decision = decision,
-            numberHash = normalizedNumber.hashCode().toString(),
-            countryRiskBoost = countryBoost,
-            networkAvailable = networkOn,
-        )
 
         return decision
     }
@@ -247,14 +214,13 @@ class CallInterceptRepositoryImpl @Inject constructor(
                 deviceEvidenceProvider.gather(normalizedNumber)
             }
 
-            val localLearning = localLearningProvider.getSignal(normalizedNumber)
             val behaviorSignal = buildBehaviorSignal(input, countryCode)
 
             val result = applySecondaryIdentifierSignals(
                 base = decisionEngine.evaluate(
                     deviceEvidence = deviceEvidence,
                     searchEvidence = null,
-                    localLearning = localLearning,
+                    localLearning = null,
                     behaviorPattern = behaviorSignal,
                     actionState = input.actionState,
                 ),
@@ -265,10 +231,6 @@ class CallInterceptRepositoryImpl @Inject constructor(
                 "importance level=${result.importanceLevel} rule=${result.importanceReason}",
             )
 
-            // 국가별 위험 가중 적용
-            val countryRiskBoost = countryPolicyProvider.getRiskBoost(normalizedNumber, countryCode)
-            val adjustedRiskScore = (result.confidence + countryRiskBoost).coerceIn(0f, 1f)
-
             // 캐시 저장
             if (input.channel == IdentifierChannel.CALL) {
                 cacheResult(normalizedNumber, result)
@@ -278,7 +240,7 @@ class CallInterceptRepositoryImpl @Inject constructor(
             val phase2Time = System.currentTimeMillis()
             PhaseResult(
                 action = result.action,
-                riskScore = adjustedRiskScore,
+                riskScore = result.riskLevel.ordinal / 3f,
                 category = result.category,
                 confidence = result.confidence,
                 summary = result.summary,
@@ -357,24 +319,15 @@ class CallInterceptRepositoryImpl @Inject constructor(
                     }
                 } else null
 
-                val localLearningJob = async {
-                    try {
-                        localLearningProvider.getSignal(normalizedNumber)
-                    } catch (e: Exception) {
-                        null
-                    }
-                }
-
                 val deviceEvidence = deviceJob.await()
                 val searchEvidence = searchJob?.await()
-                val localLearning = localLearningJob.await()
                 val behaviorSignal = buildBehaviorSignal(input, countryCode)
 
                 val result = applySecondaryIdentifierSignals(
                     base = decisionEngine.evaluate(
                         deviceEvidence = deviceEvidence,
                         searchEvidence = searchEvidence,
-                        localLearning = localLearning,
+                        localLearning = null,
                         behaviorPattern = behaviorSignal,
                         actionState = input.actionState,
                     ),
@@ -385,13 +338,6 @@ class CallInterceptRepositoryImpl @Inject constructor(
                     "importance level=${result.importanceLevel} rule=${result.importanceReason}",
                 )
 
-                // 국가별 위험 가중 적용
-                val countryRiskBoost = countryPolicyProvider.getRiskBoost(normalizedNumber, countryCode)
-                val spamPeakBoost = if (countryPolicyProvider.isSpamPeakHour(
-                        Calendar.getInstance().get(Calendar.HOUR_OF_DAY), countryCode
-                    )) 0.03f else 0f
-                val totalBoost = countryRiskBoost + spamPeakBoost
-
                 // 캐시 저장
                 if (input.channel == IdentifierChannel.CALL) {
                     cacheResult(normalizedNumber, result)
@@ -401,7 +347,7 @@ class CallInterceptRepositoryImpl @Inject constructor(
                 val phase2Time = System.currentTimeMillis()
                 PhaseResult(
                     action = result.action,
-                    riskScore = (result.riskLevel.ordinal / 3f + totalBoost).coerceIn(0f, 1f),
+                    riskScore = result.riskLevel.ordinal / 3f,
                     category = result.category,
                     confidence = result.confidence,
                     summary = result.summary,
@@ -471,21 +417,14 @@ class CallInterceptRepositoryImpl @Inject constructor(
             )
         }
 
-        // 캐시 미스: 국가 정책 기반 기본 판단
-        val countryRisk = countryPolicyProvider.getRiskBoost(normalizedNumber, countryCode)
-        val baseAction = if (countryRisk >= 0.10f) {
-            ActionRecommendation.ANSWER_WITH_CAUTION
-        } else {
-            ActionRecommendation.HOLD
-        }
-
+        // 캐시 미스: 기본 판단 대기
         return PhaseResult(
-            action = baseAction,
-            riskScore = countryRisk,
+            action = ActionRecommendation.HOLD,
+            riskScore = 0f,
             category = ConclusionCategory.INSUFFICIENT_EVIDENCE,
             confidence = 0.20f,
-            summary = if (baseAction == ActionRecommendation.HOLD) "판단 중..." else "주의 필요",
-            riskLevel = if (countryRisk >= 0.10f) RiskLevel.MEDIUM else RiskLevel.UNKNOWN,
+            summary = "판단 중...",
+            riskLevel = RiskLevel.UNKNOWN,
             source = PhaseSource.COUNTRY_POLICY,
             completedAtMs = now,
         )
@@ -547,7 +486,7 @@ class CallInterceptRepositoryImpl @Inject constructor(
             recentHourCallCount = timestamps.count { it > oneHourAgo },
             recent24hCallCount = timestamps.count { it > oneDayAgo },
             isVoipCall = false, // TODO: TelephonyManager 기반 VoIP 감지
-            isInternationalCall = isInternationalNumber(normalizedNumber, deviceCountryCode),
+            isInternationalCall = isInternationalNumber(normalizedNumber),
             isRoaming = false, // TODO: TelephonyManager.isNetworkRoaming()
         )
     }
@@ -646,13 +585,8 @@ class CallInterceptRepositoryImpl @Inject constructor(
         ActionRecommendation.BLOCK_REVIEW -> 4
     }
 
-    private fun isInternationalNumber(normalizedNumber: String, deviceCountryCode: String?): Boolean {
-        if (deviceCountryCode == null || !normalizedNumber.startsWith("+")) return false
-        val numberCountry = normalizedNumber.removePrefix("+")
-        val policy = countryPolicyProvider.getPolicy(deviceCountryCode)
-        if (policy.dialCode.isEmpty()) return false
-        return !numberCountry.startsWith(policy.dialCode)
-    }
+    private fun isInternationalNumber(normalizedNumber: String): Boolean =
+        normalizedNumber.startsWith("+")
 
     private suspend fun storePreJudge(normalizedNumber: String, result: DecisionResult) {
         try {

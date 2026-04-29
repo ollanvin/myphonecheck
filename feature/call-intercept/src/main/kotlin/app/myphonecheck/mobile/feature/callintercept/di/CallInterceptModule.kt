@@ -1,7 +1,5 @@
 package app.myphonecheck.mobile.feature.callintercept.di
 
-import app.myphonecheck.mobile.feature.callintercept.BlocklistRepository
-import app.myphonecheck.mobile.feature.callintercept.BlocklistRepositoryImpl
 import app.myphonecheck.mobile.feature.callintercept.CallInterceptRepository
 import app.myphonecheck.mobile.feature.callintercept.CallInterceptRepositoryImpl
 import app.myphonecheck.mobile.feature.callintercept.DeviceEvidenceProvider
@@ -35,10 +33,4 @@ abstract class CallInterceptModule {
     abstract fun bindSearchEvidenceProvider(
         impl: SearchEvidenceProviderImpl
     ): SearchEvidenceProvider
-
-    @Binds
-    @Singleton
-    abstract fun bindBlocklistRepository(
-        impl: BlocklistRepositoryImpl
-    ): BlocklistRepository
 }
