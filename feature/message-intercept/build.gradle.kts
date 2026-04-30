@@ -43,13 +43,18 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
+    implementation(project(":core:global-engine"))
     implementation(project(":core:model"))
     implementation(project(":core:util"))
     implementation(project(":data:contacts"))
     implementation(project(":data:local-cache"))
     implementation(project(":feature:call-intercept"))
+    implementation(project(":feature:card-check"))
+    implementation(project(":feature:message-check"))
 
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
 }

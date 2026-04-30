@@ -1,10 +1,12 @@
 package app.myphonecheck.mobile.feature.pushtrash.service
 
+import android.app.Notification
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import app.myphonecheck.mobile.core.globalengine.decision.ActionType
 import app.myphonecheck.mobile.core.globalengine.decision.RealTimeActionEngine
 import app.myphonecheck.mobile.core.globalengine.parsing.notification.NotificationSourceParser
+import app.myphonecheck.mobile.feature.messageintercept.router.IngestRouter
 import app.myphonecheck.mobile.feature.pushtrash.repository.PushTrashRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -35,6 +37,9 @@ class PushTrashNotificationListener : NotificationListenerService() {
     @Inject
     lateinit var actionEngine: RealTimeActionEngine
 
+    @Inject
+    lateinit var ingestRouter: IngestRouter
+
     private val job = SupervisorJob()
     private val scope = CoroutineScope(job + Dispatchers.Main.immediate)
 
@@ -51,6 +56,20 @@ class PushTrashNotificationListener : NotificationListenerService() {
 
         scope.launch {
             repository.recordNotificationObserved(source.packageName, channelId, source.postTime)
+
+            // WO-INGEST-WIRING-001 — MessageHub + CardTransaction 양쪽 인입 와이어링.
+            // 기존 RealTimeActionEngine 분기 / decide 분기 / cancelNotification 동작 100% 보존.
+            val extras = sbn.notification?.extras
+            val title = extras?.getCharSequence(Notification.EXTRA_TITLE)?.toString()
+            val text = extras?.getCharSequence(Notification.EXTRA_TEXT)?.toString()
+            val senderLabel = resolveAppLabel(source.packageName)
+            ingestRouter.routeNotification(
+                packageName = source.packageName,
+                senderLabel = senderLabel,
+                title = title,
+                body = text,
+                receivedAt = source.postTime,
+            )
 
             // v2.1.0 §31 Real-time Action 우선 적용.
             val realtime = actionEngine.decideForNotification(source.packageName)
@@ -69,6 +88,13 @@ class PushTrashNotificationListener : NotificationListenerService() {
                 }
             }
         }
+    }
+
+    private fun resolveAppLabel(packageName: String): String? {
+        return runCatching {
+            val pm = packageManager
+            pm.getApplicationLabel(pm.getApplicationInfo(packageName, 0)).toString()
+        }.getOrNull()
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification) {

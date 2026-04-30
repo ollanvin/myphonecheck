@@ -20,6 +20,7 @@ import app.myphonecheck.mobile.data.localcache.dao.MessageHubDao
 import app.myphonecheck.mobile.data.localcache.entity.MessageHubEntity
 import app.myphonecheck.mobile.data.localcache.repository.NumberProfileRepository
 import app.myphonecheck.mobile.feature.callintercept.CallInterceptRepository
+import app.myphonecheck.mobile.feature.messageintercept.router.IngestRouter
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
@@ -42,6 +43,7 @@ class SmsInterceptReceiver : BroadcastReceiver() {
         fun callInterceptRepository(): CallInterceptRepository
         fun contactsDataSource(): ContactsDataSource
         fun numberProfileRepository(): NumberProfileRepository
+        fun ingestRouter(): IngestRouter
     }
 
     private companion object {
@@ -81,6 +83,7 @@ class SmsInterceptReceiver : BroadcastReceiver() {
                         callInterceptRepository = entryPoint.callInterceptRepository(),
                         contactsDataSource = entryPoint.contactsDataSource(),
                         numberProfileRepository = entryPoint.numberProfileRepository(),
+                        ingestRouter = entryPoint.ingestRouter(),
                         sender = sender,
                         body = body,
                     )
@@ -98,6 +101,7 @@ class SmsInterceptReceiver : BroadcastReceiver() {
         callInterceptRepository: CallInterceptRepository,
         contactsDataSource: ContactsDataSource,
         numberProfileRepository: NumberProfileRepository,
+        ingestRouter: IngestRouter,
         sender: String,
         body: String,
     ) {
@@ -188,6 +192,12 @@ class SmsInterceptReceiver : BroadcastReceiver() {
             Log.d(
                 TAG,
                 "SMS saved sender=$senderKey links=${detectedLinks.size} analyzed=${decision != null}",
+            )
+
+            ingestRouter.routeSms(
+                senderNumber = sender,
+                body = body,
+                receivedAt = now,
             )
         } catch (e: Exception) {
             Log.e(TAG, "Error processing SMS from $sender", e)
