@@ -152,12 +152,8 @@ class DebugSearchActivity : ComponentActivity() {
                     " importance=${result.importanceLevel}")
 
                 // ── 4. Overlay 바인딩 ──
-                val overlayLang = when (
-                    applicationContext.resources.configuration.locales[0]?.language
-                ) {
-                    "ko" -> SupportedLanguage.KO
-                    else -> SupportedLanguage.EN
-                }
+                // 헌법 §9-1: 영문 단일. 다국어 표시는 OS Locale + ICU 가 처리.
+                val overlayLang = SupportedLanguage.EN
 
                 overlayPresenter.present(
                     context = applicationContext,

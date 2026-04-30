@@ -1,21 +1,11 @@
 package app.myphonecheck.mobile.feature.countryconfig
 
 /**
- * MyPhoneCheck 지원 언어 목록.
+ * MyPhoneCheck 지원 언어.
  *
- * ┌──────────────────────────────────────────────────────────────┐
- * │ 언어 선택 원칙 (기기 컨텍스트 동기화)                         │
- * ├──────────────────────────────────────────────────────────────┤
- * │ 1. 앱 설정(수동 오버라이드)  → 최우선                        │
- * │ 2. OS/App Locale            → 자동 탐지                     │
- * │ 3. Device Locale             → 자동 탐지                     │
- * │ 4. EN fallback               → 최종 기본값                   │
- * ├──────────────────────────────────────────────────────────────┤
- * │ 기본 동작: UI 없음 (기기 자동 동기화)                         │
- * │ 예외: 딥 설정에서 수동 오버라이드 가능                         │
- * └──────────────────────────────────────────────────────────────┘
- *
- * ZH는 향후 ZH_HANS(간체)/ZH_HANT(번체) 분리 확장 여지를 남긴다.
+ * 헌법 §9-1 빅테크 정공법: 앱 코드/리소스는 영문 단일.
+ * 다국어 표시는 OS Locale + ICU + Locale fallback 만 사용한다.
+ * values-{locale} 수동 추가 / 다국어 하드코딩 분기 영구 금지.
  */
 enum class SupportedLanguage(
     /** ISO 639-1 언어 코드 */
@@ -25,20 +15,14 @@ enum class SupportedLanguage(
     /** 영어 표기 (폴백/로그용) */
     val englishName: String,
 ) {
-    KO("ko", "한국어", "Korean"),
     EN("en", "English", "English"),
-    JA("ja", "日本語", "Japanese"),
-    ZH("zh", "中文", "Chinese"),
-    RU("ru", "Русский", "Russian"),
-    ES("es", "Español", "Spanish"),
-    AR("ar", "العربية", "Arabic"),
     ;
 
     companion object {
 
         /**
-         * ISO 639-1 코드로 SupportedLanguage를 찾는다.
-         * 지원하지 않는 코드면 null 반환.
+         * ISO 639-1 코드 매칭. 영문(`en`)만 매칭한다.
+         * 다른 모든 코드는 null 반환 (헌법 §9-1).
          *
          * @param languageCode ISO 639-1 언어 코드 (대소문자 무관)
          */
@@ -48,7 +32,7 @@ enum class SupportedLanguage(
         }
 
         /**
-         * ISO 639-1 코드로 SupportedLanguage를 찾되, 없으면 EN을 반환.
+         * 모든 코드는 EN 으로 폴백한다 (영문 단일 정책).
          */
         fun fromCodeOrDefault(languageCode: String): SupportedLanguage {
             return fromCode(languageCode) ?: EN

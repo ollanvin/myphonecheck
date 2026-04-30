@@ -207,7 +207,7 @@ class CountryConfigProviderImpl : CountryConfigProvider {
                     "마케팅",
                 ),
             ),
-            uiStrings = createKoreanUiStrings(),
+            uiStrings = createEnglishUiStrings(),
         )
     }
 
@@ -471,36 +471,6 @@ class CountryConfigProviderImpl : CountryConfigProvider {
             searchProviderPriority = listOf("google", "truecaller"),
             keywordDictionary = usConfig.keywordDictionary,
             uiStrings = createEnglishUiStrings(),
-        )
-    }
-
-    private fun createKoreanUiStrings(): UiStrings {
-        return UiStrings(
-            riskLevelSafe = "안전",
-            riskLevelLow = "낮음",
-            riskLevelMedium = "중간",
-            riskLevelHigh = "높음",
-            riskLevelCritical = "위험",
-            callTypeDelivery = "배송/택배",
-            callTypeHospital = "병원/의료",
-            callTypeInstitution = "공공기관",
-            callTypeBusiness = "사업체",
-            callTypeFinanceSpam = "금융 스팸",
-            callTypeScam = "보이스피싱",
-            callTypeTelemarketing = "텔레마케팅",
-            callTypeUnknown = "알 수 없음",
-            actionAnswer = "받기",
-            actionReject = "거절",
-            actionBlock = "차단",
-            appName = "MyPhoneCheck",
-            settings = "설정",
-            language = "언어",
-            country = "국가",
-            aboutUs = "정보",
-            privacyPolicy = "개인정보 처리방침",
-            termsOfService = "이용약관",
-            contactUs = "피드백",
-            version = "버전",
         )
     }
 

@@ -1478,7 +1478,7 @@ private fun showDemoOverlay(
     val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
     val localizer = SignalSummaryLocalizer()
-    val categoryText = localizer.localizeCategory(category, context)
+    val categoryText = localizer.localizeCategory(category)
 
     // Verdict word from OverlayUiText
     val verdictWord = getOneWordVerdict(riskLevel, context)

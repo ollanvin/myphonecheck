@@ -1,15 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  헌법 §9-1 빅테크 정공법 (언어·번역 정책) 정합.
-
-  영문 default만 유지. values-xx 수동 번역 파일 0.
-  OS 시스템 Locale 자동 처리에 위임 (AppCompatDelegate.setApplicationLocales + Android 14+ system 자동 번역).
-  사용자 디바이스가 자체 번역·표시 처리.
-
-  참조: docs/00_governance/architecture/v2.3.0/05_constitution.md §9-1
-        docs/00_governance/infrastructure/v1.3/MyPhoneCheck_Infra_Ops_v1.3.md §0.2
-  WO: WO-V230-LOCALES-CLEANUP (Cursor §9-1 위반 발견 정정).
--->
 <locale-config xmlns:android="http://schemas.android.com/apk/res/android">
-    <locale android:name="en" />
+    <locale android:name="en"/>
 </locale-config>

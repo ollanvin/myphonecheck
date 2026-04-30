@@ -8,33 +8,23 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 /**
- * E2E 기기 컨텍스트 통합 테스트.
+ * E2E 기기 컨텍스트 통합 테스트 — EN 단일 (헌법 §9-1).
  *
  * ┌──────────────────────────────────────────────────────────────┐
  * │ 검증 대상: 전체 글로벌 파이프라인 (순수 JVM)                  │
  * ├──────────────────────────────────────────────────────────────┤
  * │ PhoneNumberContextBuilder                                     │
- * │   → (검색 생략, searchVariants 확인)                          │
  * │   → SignalSummaryLocalizer                                    │
- * │   → 최종 사용자 대면 텍스트                                   │
+ * │   → 영문 사용자 대면 텍스트                                   │
  * ├──────────────────────────────────────────────────────────────┤
- * │ 시나리오별 검증:                                               │
- * │ 1. KR 기기 + KR 번호 + KO 언어 → 한국어 출력                │
- * │ 2. US 기기 + US 번호 + EN 언어 → 영어 출력                  │
- * │ 3. JP 기기 + JP 번호 + JA 언어 → 일본어 출력                │
- * │ 4. KR 기기 + 짧은 번호(114) + KO 언어                       │
- * │ 5. KR 기기 + KR 번호 + EN 오버라이드 → 영어 출력            │
- * │ 6. 미지원 국가 기기 + EN 폴백                                │
- * │ 7. 전체 7개 언어 × SCAM 시나리오 커버리지                    │
+ * │ 시나리오: 다국가 기기 + 영문 단일 출력                        │
  * └──────────────────────────────────────────────────────────────┘
+ *
+ * 헌법 §9-1: 다국어 expectation / Locale switching 영구 폐기.
+ * 기기 국가는 KR/US/JP 등 다양하게 시뮬레이션 — 출력은 모두 영문.
  */
-@RunWith(RobolectricTestRunner::class)
-@Config(sdk = [34])
 class DeviceContextEndToEndTest {
 
     private lateinit var phoneContextBuilder: PhoneNumberContextBuilder
@@ -46,40 +36,32 @@ class DeviceContextEndToEndTest {
         localizer = SignalSummaryLocalizer()
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // 시나리오 1: KR 기기 + KR 번호 + KO 언어
-    // ═══════════════════════════════════════════════════════════
-
     @Test
-    fun `KR device - scam call - Korean output`() {
-        // 1. 번호 문맥 구성
+    fun `KR device - scam call - English output`() {
         val phoneCtx = phoneContextBuilder.build(
             rawNumber = "02-888-1234",
             deviceCountryCode = "KR",
             sourceContext = NumberSourceContext.INCOMING_CALL,
         )
 
-        // 번호 문맥 검증
         assertEquals("02-888-1234", phoneCtx.rawNumber)
         assertTrue(phoneCtx.isParseable)
         assertNotNull(phoneCtx.deviceCanonicalNumber)
         assertTrue(phoneCtx.searchVariants.isNotEmpty())
 
-        // 2. 언어 결정 (시뮬레이션: KR 기기 → KO)
+        // 헌법 §9-1: KR 기기여도 출력은 영문 단일
         val language = SupportedLanguage.fromCodeOrDefault("ko")
-        assertEquals(SupportedLanguage.KO, language)
+        assertEquals(SupportedLanguage.EN, language)
 
-        // 3. 로컬라이즈
         val result = localizer.localize(
             intensityKey = "DANGER",
             categoryKey = "SCAM_RISK_HIGH",
-            context = contextForLanguage(language),
         )
-        assertEquals("사기/피싱 위험 — 수신 위험", result)
+        assertEquals("Scam/Phishing Risk — High Risk", result)
     }
 
     @Test
-    fun `KR device - delivery call with entity - Korean output`() {
+    fun `KR device - delivery call with entity - English output`() {
         val phoneCtx = phoneContextBuilder.build(
             rawNumber = "1588-1255",
             deviceCountryCode = "KR",
@@ -91,16 +73,11 @@ class DeviceContextEndToEndTest {
         val result = localizer.localize(
             intensityKey = "VERIFY",
             categoryKey = "DELIVERY_LIKELY",
-            context = contextForLanguage(SupportedLanguage.KO),
-            entityName = "CJ대한통운",
+            entityName = "CJ Logistics",
         )
-        assertTrue(result.contains("CJ대한통운"))
-        assertTrue(result.contains("배송 확인 권장"))
+        assertTrue(result.contains("CJ Logistics"))
+        assertTrue(result.contains("Verify Recommended"))
     }
-
-    // ═══════════════════════════════════════════════════════════
-    // 시나리오 2: US 기기 + US 번호 + EN 언어
-    // ═══════════════════════════════════════════════════════════
 
     @Test
     fun `US device - scam call - English output`() {
@@ -115,7 +92,6 @@ class DeviceContextEndToEndTest {
         val result = localizer.localize(
             intensityKey = "DANGER",
             categoryKey = "SCAM_RISK_HIGH",
-            context = contextForLanguage(SupportedLanguage.EN),
         )
         assertEquals("Scam/Phishing Risk — High Risk", result)
     }
@@ -132,18 +108,13 @@ class DeviceContextEndToEndTest {
         val result = localizer.localize(
             intensityKey = "SAFE",
             categoryKey = "INSTITUTION_LIKELY",
-            context = contextForLanguage(SupportedLanguage.EN),
             entityName = "IRS",
         )
         assertEquals("IRS Institution Call — Safe to Answer", result)
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // 시나리오 3: JP 기기 + JP 번호 + JA 언어
-    // ═══════════════════════════════════════════════════════════
-
     @Test
-    fun `JP device - toll-free call - Japanese output`() {
+    fun `JP device - toll-free call - English output`() {
         val phoneCtx = phoneContextBuilder.build(
             rawNumber = "0120-444-113",
             deviceCountryCode = "JP",
@@ -154,16 +125,10 @@ class DeviceContextEndToEndTest {
         val result = localizer.localize(
             intensityKey = "SAFE",
             categoryKey = "INSTITUTION_LIKELY",
-            context = contextForLanguage(SupportedLanguage.JA),
             entityName = "NTT",
         )
-        assertTrue(result.contains("NTT"))
-        assertTrue(result.contains("安全"))
+        assertEquals("NTT Institution Call — Safe to Answer", result)
     }
-
-    // ═══════════════════════════════════════════════════════════
-    // 시나리오 4: KR 기기 + 짧은 번호 (114)
-    // ═══════════════════════════════════════════════════════════
 
     @Test
     fun `KR device - short number 114 - still searchable`() {
@@ -176,23 +141,16 @@ class DeviceContextEndToEndTest {
         assertEquals("114", phoneCtx.deviceCanonicalNumber)
         assertTrue(phoneCtx.searchVariants.contains("114"))
 
-        // 짧은 번호도 로컬라이즈는 동일하게 동작
         val result = localizer.localize(
             intensityKey = "SAFE",
             categoryKey = "INSTITUTION_LIKELY",
-            context = contextForLanguage(SupportedLanguage.KO),
             entityName = "KT",
         )
-        assertTrue(result.contains("KT"))
-        assertTrue(result.contains("수신 안전"))
+        assertEquals("KT Institution Call — Safe to Answer", result)
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // 시나리오 5: KR 기기 + EN 오버라이드
-    // ═══════════════════════════════════════════════════════════
-
     @Test
-    fun `KR device - language override to EN - English output`() {
+    fun `KR device - language is always EN regardless of override attempt`() {
         val phoneCtx = phoneContextBuilder.build(
             rawNumber = "010-1234-5678",
             deviceCountryCode = "KR",
@@ -200,20 +158,16 @@ class DeviceContextEndToEndTest {
         )
         assertEquals("KR", phoneCtx.deviceCountryCode)
 
-        // 사용자가 딥 설정에서 EN으로 오버라이드한 경우
+        // 헌법 §9-1: SupportedLanguage.EN 만 존재. 오버라이드 미지원.
         val overrideLanguage = SupportedLanguage.EN
 
         val result = localizer.localize(
             intensityKey = "CAUTION",
             categoryKey = "SALES_SPAM_SUSPECTED",
-            context = contextForLanguage(overrideLanguage),
         )
         assertEquals("Suspected Spam/Sales — Be Cautious", result)
+        assertEquals(SupportedLanguage.EN, overrideLanguage)
     }
-
-    // ═══════════════════════════════════════════════════════════
-    // 시나리오 6: 미지원 국가 기기 + EN 폴백
-    // ═══════════════════════════════════════════════════════════
 
     @Test
     fun `unsupported country device - EN fallback language`() {
@@ -224,44 +178,29 @@ class DeviceContextEndToEndTest {
         )
         assertEquals("FR", phoneCtx.deviceCountryCode)
 
-        // FR은 SupportedLanguage에 없으므로 EN 폴백
         val language = SupportedLanguage.fromCodeOrDefault("fr")
         assertEquals(SupportedLanguage.EN, language)
 
         val result = localizer.localize(
             intensityKey = "REFERENCE",
             categoryKey = "INSUFFICIENT_EVIDENCE",
-            context = contextForLanguage(language),
         )
         assertEquals("Insufficient Evidence — For Reference", result)
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // 시나리오 7: 전체 7개 언어 × SCAM 시나리오
-    // ═══════════════════════════════════════════════════════════
-
     @Test
-    fun `all 7 languages produce non-empty scam warning`() {
+    fun `every supported language entry produces English scam warning`() {
         for (lang in SupportedLanguage.entries) {
+            assertEquals(SupportedLanguage.EN, lang)
             val result = localizer.localize(
                 intensityKey = "DANGER",
                 categoryKey = "SCAM_RISK_HIGH",
-                context = contextForLanguage(lang),
             )
-            assertTrue(
-                "Language ${lang.code} should produce non-empty scam warning",
-                result.isNotEmpty()
-            )
-            assertTrue(
-                "Language ${lang.code} result should contain dash separator",
-                result.contains("—")
-            )
+            assertTrue("Result must be non-empty", result.isNotEmpty())
+            assertTrue("Result should contain dash separator", result.contains("—"))
+            assertEquals("Scam/Phishing Risk — High Risk", result)
         }
     }
-
-    // ═══════════════════════════════════════════════════════════
-    // 시나리오 8: 다양한 sourceContext
-    // ═══════════════════════════════════════════════════════════
 
     @Test
     fun `SMS source context preserved in phone context`() {
