@@ -591,7 +591,7 @@ private fun HomeScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Six Surfaces (헌법 §8): LazyVerticalGrid 2 columns × 3 rows — Call, Message, Push, Card, Camera, Mic
+        // Six Surfaces (헌법 §7): LazyVerticalGrid 2 columns × 3 rows — Call, Message, Push, Card, Camera, Mic
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier

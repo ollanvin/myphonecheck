@@ -10,7 +10,7 @@ A multi-module Android application for intelligent call verification and decisio
 
 ## Core Principles
 
-MyPhoneCheck operates under 7 constitutional principles (see `docs/00_governance/architecture/v1.8.0/05_constitution.md` for full text):
+MyPhoneCheck operates under 7 constitutional principles (see `docs/00_governance/architecture/v2.7.0/05_constitution.md` for full text):
 
 1. **Out-Bound Zero**: No user data transmitted to operator-controlled or third-party servers
 2. **In-Bound Zero**: External raw text never persisted; only feature counts stored in NKB
@@ -25,15 +25,34 @@ MyPhoneCheck operates under 7 constitutional principles (see `docs/00_governance
 ## Project Structure
 
 ### Core Modules
+- `core:common` - Shared output contracts (RiskKnowledge), damage taxonomy, identifier sealed hierarchy
 - `core:model` - Domain models and data classes
 - `core:util` - Utility functions (phone number normalization, time utilities, Result wrapper)
+- `core:security` - Security primitives
+- `core:global-engine` - SIM-Oriented single core (Decision Engine, NKB, currency parser, search aggregator)
 
-### Feature Modules
-- `feature:call-intercept` - Call interception and screening logic
+### Feature Modules — Six Surfaces (Call/Message/Mic/Camera/Push/Card)
+- `feature:call-check` - CallCheck Surface (사용자 가치 추출)
+- `feature:message-check` - MessageCheck Surface
+- `feature:privacy-check` - MicCheck + CameraCheck (통합 호칭 PrivacyCheck)
+- `feature:push-trash` - PushCheck Surface (푸시 휴지통)
+- `feature:card-check` - CardCheck Surface (월별 카드 사용액)
+
+### Feature Modules — System Integration / Ingestion
+- `feature:call-intercept` - Call interception logic
+- `feature:call-screening` - CallScreeningService 시스템 통합
+- `feature:message-intercept` - SMS/Push 인입 라우터 (IngestRouter → MessageHub + CardTransaction)
+- `feature:sms-block` - SMS 차단 통합
+
+### Feature Modules — Engine / UI / Decision
+- `feature:decision-engine` - Decision making (코어 위임)
+- `feature:decision-ui` - 4-attribute card / SurfaceContext 6 enum 단일 SOT
+- `feature:initial-scan` - Initial Scan (최초 론칭 6 Surface 베이스데이터)
+- `feature:tag-system` - Tag System (휘발성 메모)
 - `feature:device-evidence` - Device-based evidence collection
-- `feature:search-enrichment` - Search-based enrichment logic
-- `feature:decision-engine` - Core decision making engine
-- `feature:decision-ui` - UI for displaying decisions
+
+### Feature Modules — Operations
+- `feature:onboarding` - Onboarding flow
 - `feature:settings` - User settings screens
 - `feature:billing` - In-app billing and subscription management
 - `feature:country-config` - Country-specific configurations
@@ -42,11 +61,10 @@ MyPhoneCheck operates under 7 constitutional principles (see `docs/00_governance
 - `data:contacts` - Contact data access
 - `data:calllog` - Call log data access
 - `data:sms` - SMS data access
-- `data:search` - Search results data access
-- `data:local-cache` - Local database caching with Room
+- `data:local-cache` - Room database (24 entities, version 19)
 
 ### Build Logic
-- `build-logic:convention` - Gradle convention plugins for consistent configuration
+- `build-logic` - Gradle convention plugins (composite build via `includeBuild`)
 
 ---
 
@@ -69,8 +87,8 @@ All project documentation lives under `docs/`:
 
 Project governance is split into two paired Working Canonicals:
 
-- **Architecture**: `docs/00_governance/architecture/v1.8.0/` — Product design (constitution, Four Surfaces, NKB, Decision Engine)
-- **Infrastructure**: `docs/00_governance/infrastructure/v1.1/` — Operations (toolmap, build pipelines, SOPs)
+- **Architecture**: `docs/00_governance/architecture/v2.7.0/` — Product design (constitution, Six Surfaces, NKB, Decision Engine)
+- **Infrastructure**: `docs/00_governance/infrastructure/v1.3/` — Operations (toolmap, build pipelines, SOPs)
 
 For detailed governance rules, see `docs/00_governance/project-governance.md`.
 
@@ -90,7 +108,7 @@ Built with Gradle and JDK 17. Run:
 ./gradlew build
 ```
 
-For Fastlane Mac builds, see `docs/00_governance/infrastructure/v1.1/MyPhoneCheck_Infra_Ops_v1.1.md`.
+For Fastlane Mac builds, see `docs/00_governance/infrastructure/v1.3/MyPhoneCheck_Infra_Ops_v1.3.md`.
 
 ---
 
@@ -99,8 +117,8 @@ For Fastlane Mac builds, see `docs/00_governance/infrastructure/v1.1/MyPhoneChec
 - Stage 0-hotfix: Complete (Java 17 migration)
 - Stage 0 core/common: Complete (FROZEN)
 - Stage 1: Preparation
-- Architecture v1.8.0: Working Canonical
-- Infrastructure v1.1: Working Canonical
+- Architecture v2.7.0: Working Canonical
+- Infrastructure v1.3: Working Canonical
 
 ---
 

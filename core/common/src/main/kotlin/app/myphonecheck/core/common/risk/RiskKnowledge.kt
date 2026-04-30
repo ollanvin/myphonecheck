@@ -3,7 +3,7 @@ package app.myphonecheck.core.common.risk
 import app.myphonecheck.core.common.identifier.IdentifierType
 
 /**
- * Common output contract for four surfaces (golden-egg four attributes + identifier).
+ * Common output contract for six surfaces (golden-egg four attributes + identifier).
  * FREEZE: required properties until MAJOR; extra fields only on concrete types.
  */
 interface RiskKnowledge {

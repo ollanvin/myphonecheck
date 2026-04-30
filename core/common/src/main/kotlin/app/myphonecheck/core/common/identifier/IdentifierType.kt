@@ -1,7 +1,7 @@
 package app.myphonecheck.core.common.identifier
 
 /**
- * Sealed hierarchy for four-surface inputs (v1.6.1 §33-1-1).
+ * Sealed hierarchy for six-surface inputs (v2.7.0 §7).
  * FREEZE: new subclasses require MAJOR version bump.
  */
 sealed class IdentifierType {
