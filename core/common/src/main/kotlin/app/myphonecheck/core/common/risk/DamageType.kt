@@ -1,7 +1,7 @@
 package app.myphonecheck.core.common.risk
 
 /**
- * Damage category shared across four surfaces. FREEZE: new enum values = MINOR.
+ * Damage category shared across six surfaces. FREEZE: new enum values = MINOR.
  */
 enum class DamageType {
     FINANCIAL_FRAUD,
